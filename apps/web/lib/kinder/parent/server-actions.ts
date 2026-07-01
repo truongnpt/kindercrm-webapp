@@ -6,6 +6,7 @@ import { enhanceAction } from '@kit/next/actions';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import pathsConfig from '~/config/paths.config';
+import { provisionUserAccount } from '~/lib/kinder/auth/provision-user-account';
 import { upsertDailyReportAction } from '~/lib/kinder/daily-reports/server-actions';
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
 import { findAccountByEmailForSchool } from '~/lib/kinder/tenant/account-lookup';
@@ -47,20 +48,56 @@ async function assertSchoolStaffAdmin(schoolId: string, userId: string) {
   }
 }
 
+async function getSchoolName(schoolId: string) {
+  const client = getSupabaseServerClient();
+
+  const { data, error } = await client
+    .from('schools')
+    .select('name')
+    .eq('id', schoolId)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data.name;
+}
+
 /** PARENT-001 Link parent portal account */
 export const linkParentAccountAction = enhanceAction(
   async (data, user) => {
     await assertSchoolStaffAdmin(data.schoolId, user.id);
 
     const client = getSupabaseServerClient();
+    const schoolName = await getSchoolName(data.schoolId);
 
-    const account = await findAccountByEmailForSchool(data.schoolId, data.email);
+    let account = await findAccountByEmailForSchool(data.schoolId, data.email);
+    let accountCreated = false;
+    let credentialsEmailSent = false;
 
     if (!account) {
-      throw new KinderError(
-        KINDER_ERROR_CODES.PARENT_ACCOUNT_NOT_FOUND,
-        'No registered account found for this email',
-      );
+      const { data: student } = await client
+        .from('students')
+        .select('full_name')
+        .eq('id', data.studentId)
+        .eq('school_id', data.schoolId)
+        .single();
+
+      const provisioned = await provisionUserAccount({
+        email: data.email,
+        name: student?.full_name ? `Phụ huynh ${student.full_name}` : data.email,
+        accountType: 'parent',
+        schoolName,
+      });
+
+      account = {
+        id: provisioned.userId,
+        email: provisioned.email,
+        name: student?.full_name ? `Phụ huynh ${student.full_name}` : provisioned.email,
+      };
+      accountCreated = provisioned.created;
+      credentialsEmailSent = provisioned.credentialsEmailSent;
     }
 
     const { data: link, error: linkError } = await client
@@ -97,10 +134,20 @@ export const linkParentAccountAction = enhanceAction(
         user_id: account.id,
         role: 'parent',
       });
+    } else {
+      await client
+        .from('school_members')
+        .update({ deleted_at: null, role: 'parent' })
+        .eq('id', existingMember.id);
     }
 
     revalidateParentPaths(data.studentId);
-    return { success: true, linkId: link?.id };
+    return {
+      success: true,
+      linkId: link?.id,
+      accountCreated,
+      credentialsEmailSent,
+    };
   },
   { schema: LinkParentAccountSchema },
 );

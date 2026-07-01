@@ -93,6 +93,7 @@ export function LeadListTable({
           titleKey="kinder:workspace.searchEmpty"
         />
       ) : (
+        <>
         <DataTableCard
           description={<Trans i18nKey="kinder:crm.listDescription" />}
           title={<Trans i18nKey="kinder:crm.list" />}
@@ -207,6 +208,7 @@ export function LeadListTable({
             </article>
           ))}
         </div>
+        </>
       )}
 
       {editLead ? (

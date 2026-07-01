@@ -108,6 +108,22 @@ export const createPositionAction = enhanceAction(
   { schema: CreatePositionSchema },
 );
 
+async function getSchoolName(schoolId: string) {
+  const client = getSupabaseServerClient();
+
+  const { data, error } = await client
+    .from('schools')
+    .select('name')
+    .eq('id', schoolId)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data.name;
+}
+
 export const createStaffEmployeeAction = enhanceAction(
   async (data, user) => {
     await assertSchoolAdmin(data.schoolId, user.id);
@@ -148,10 +164,14 @@ export const createStaffEmployeeAction = enhanceAction(
       throw error ?? new Error('Failed to create employee');
     }
 
+    const schoolName = await getSchoolName(data.schoolId);
+
     await syncStaffMemberAccess(client, {
       schoolId: data.schoolId,
       employeeId: employee.id,
       email: data.email || null,
+      fullName: data.fullName,
+      schoolName,
       accessRole: data.accessRole,
       grantSystemAccess: data.grantSystemAccess,
       employmentStatus: 'active',
@@ -199,10 +219,14 @@ export const updateStaffEmployeeAction = enhanceAction(
       throw error;
     }
 
+    const schoolName = await getSchoolName(data.schoolId);
+
     await syncStaffMemberAccess(client, {
       schoolId: data.schoolId,
       employeeId: data.employeeId,
       email: data.email || null,
+      fullName: data.fullName,
+      schoolName,
       accessRole: data.accessRole,
       grantSystemAccess: data.grantSystemAccess,
       employmentStatus: data.employmentStatus,
