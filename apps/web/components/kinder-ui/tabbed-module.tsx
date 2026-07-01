@@ -24,7 +24,7 @@ export function TabbedModuleList({
   className,
 }: React.PropsWithChildren<{ className?: string }>) {
   return (
-    <TabsList className={cn('kinder-tab-list', className)}>{children}</TabsList>
+    <TabsList className={cn('', className)}>{children}</TabsList>
   );
 }
 

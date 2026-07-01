@@ -2,10 +2,8 @@ import { use } from 'react';
 
 import { redirect } from 'next/navigation';
 
-import { Page, PageMobileNavigation, PageNavigation } from '@kit/ui/page';
 import { SidebarProvider } from '@kit/ui/shadcn-sidebar';
 
-import { AppLogo } from '~/components/app-logo';
 import { navigationConfig } from '~/config/navigation.config';
 import pathsConfig from '~/config/paths.config';
 import { getKinderNavigationConfig } from '~/lib/kinder/navigation/get-kinder-navigation';
@@ -22,9 +20,11 @@ import { requireUserInServerComponent } from '~/lib/server/require-user-in-serve
 
 import { getPlatformAdminContext } from '~/lib/kinder/platform/require-platform-admin';
 
-import { WorkspaceHeader } from '~/components/kinder-ui';
+import {
+  WorkspaceHeader,
+  WorkspaceMobileHeader,
+} from '~/components/kinder-ui';
 
-import { AppMobileNavigation } from '../_components/app-mobile-navigation';
 import { AppSidebar } from '../_components/app-sidebar';
 
 function WorkspaceLayout({ children }: React.PropsWithChildren) {
@@ -42,43 +42,44 @@ function WorkspaceLayout({ children }: React.PropsWithChildren) {
   const sidebarDefaultOpen = !navigationConfig.sidebarCollapsed;
 
   return (
-    <SidebarProvider defaultOpen={sidebarDefaultOpen}>
-      <Page className="kinder-workspace" style={'sidebar'}>
-        <PageNavigation>
-          <AppSidebar
-            activeSchoolId={context.school.id}
-            navigation={navigation}
-            schools={schools}
-            user={user}
-          />
-        </PageNavigation>
+    <SidebarProvider
+      className="flex h-dvh w-full overflow-hidden bg-background"
+      defaultOpen={sidebarDefaultOpen}
+    >
+      <AppSidebar
+        activeSchoolId={context.school.id}
+        navigation={navigation}
+        schools={schools}
+        user={user}
+      />
 
-        <PageMobileNavigation className="kinder-sticky-header flex items-center justify-between gap-3 px-4 py-3">
-          <AppLogo href={pathsConfig.app.home} />
-          <AppMobileNavigation
-            navigation={navigation}
-            notifications={notifications}
-            unreadCount={unreadCount}
-            schools={schools}
-            activeSchoolId={context.school.id}
-            user={user}
-          />
-        </PageMobileNavigation>
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        <WorkspaceMobileHeader
+          activeSchoolId={context.school.id}
+          navigation={navigation}
+          notifications={notifications}
+          schools={schools}
+          showPlatformLink={showPlatformLink}
+          unreadCount={unreadCount}
+          user={user}
+        />
 
-        <div className="flex min-h-0 flex-1 flex-col">
-          <WorkspaceHeader
-            activeSchoolId={context.school.id}
-            navigation={navigation}
-            notifications={notifications}
-            schools={schools}
-            showPlatformLink={showPlatformLink}
-            unreadCount={unreadCount}
-            user={user}
-          />
+        <WorkspaceHeader
+          activeSchoolId={context.school.id}
+          navigation={navigation}
+          notifications={notifications}
+          schools={schools}
+          showPlatformLink={showPlatformLink}
+          unreadCount={unreadCount}
+          user={user}
+        />
 
-          <div className="kinder-workspace-content">{children}</div>
-        </div>
-      </Page>
+        <main className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto bg-muted/30">
+          <div className="mx-auto w-full max-w-[1536px] px-4 py-6 sm:px-6 lg:px-8">
+            {children}
+          </div>
+        </main>
+      </div>
     </SidebarProvider>
   );
 }

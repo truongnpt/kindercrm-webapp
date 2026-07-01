@@ -17,6 +17,7 @@ import {
 } from '@kit/ui/dialog';
 import { Trans } from '@kit/ui/trans';
 
+import { KinderSubmitButton } from '~/components/kinder-ui';
 import { importLeadsAction } from '~/lib/kinder/crm/server-actions';
 import type { LeadRow } from '~/lib/kinder/crm/load-leads';
 import { LEAD_STAGES } from '~/lib/kinder/crm/pipeline-stages';
@@ -139,19 +140,25 @@ export function LeadImportExport({
 
   return (
     <div className="flex items-center gap-2">
-      <Button onClick={handleExport} size="sm" type="button" variant="outline">
-        <Download className="mr-2 h-4 w-4" />
+      <Button
+        className="rounded-full"
+        onClick={handleExport}
+        size="sm"
+        type="button"
+        variant="outline"
+      >
+        <Download className="mr-2 size-4" />
         <Trans i18nKey="kinder:importExport.export" />
       </Button>
 
       <Dialog onOpenChange={setOpen} open={open}>
         <DialogTrigger asChild>
-          <Button size="sm" type="button" variant="outline">
-            <Upload className="mr-2 h-4 w-4" />
+          <Button className="rounded-full" size="sm" type="button" variant="outline">
+            <Upload className="mr-2 size-4" />
             <Trans i18nKey="kinder:importExport.import" />
           </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="kinder-bento-dialog">
           <DialogHeader>
             <DialogTitle>
               <Trans i18nKey="kinder:importExport.importLeads" />
@@ -175,13 +182,14 @@ export function LeadImportExport({
             ref={fileRef}
             type="file"
           />
-          <Button
-            disabled={pending}
+          <KinderSubmitButton
+            className="rounded-full"
+            loading={pending}
             onClick={() => fileRef.current?.click()}
             type="button"
           >
             <Trans i18nKey="kinder:importExport.chooseFile" />
-          </Button>
+          </KinderSubmitButton>
         </DialogContent>
       </Dialog>
     </div>

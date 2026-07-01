@@ -3,18 +3,10 @@
 import { useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Building2, Plus, Briefcase } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
 
 import { Button } from '@kit/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@kit/ui/dialog';
 import {
   Form,
   FormControl,
@@ -25,6 +17,16 @@ import {
 import { Input } from '@kit/ui/input';
 import { Trans } from '@kit/ui/trans';
 
+import {
+  BentoGrid,
+  BentoTile,
+  BentoTileHeader,
+  KinderFormDialog,
+  KinderSubmitButton,
+  kinderQueryKeys,
+  PanelEmpty,
+  useKinderMutation,
+} from '~/components/kinder-ui';
 import {
   CreateDepartmentSchema,
   CreatePositionSchema,
@@ -44,7 +46,6 @@ export function StaffSetupPanel({
   departments: StaffDepartment[];
   positions: Array<{ id: string; name: string; department_id: string | null }>;
 }) {
-  const { t } = useTranslation('kinder');
   const [deptOpen, setDeptOpen] = useState(false);
   const [posOpen, setPosOpen] = useState(false);
 
@@ -58,138 +59,171 @@ export function StaffSetupPanel({
     defaultValues: { schoolId, name: '', departmentId: '', description: '' },
   });
 
-  return (
-    <div className="grid gap-8 lg:grid-cols-2">
-      <section className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="font-semibold">
-            <Trans i18nKey="kinder:staff.departments" />
-          </h2>
-          <Dialog onOpenChange={setDeptOpen} open={deptOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm" variant="outline">
-                <Trans i18nKey="kinder:staff.addDepartment" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>
-                  <Trans i18nKey="kinder:staff.addDepartment" />
-                </DialogTitle>
-              </DialogHeader>
-              <Form {...deptForm}>
-                <form
-                  className="space-y-4"
-                  onSubmit={deptForm.handleSubmit(async (data) => {
-                    const promise = createDepartmentAction(data);
-                    toast.promise(promise, {
-                      loading: t('schoolSettings.saving'),
-                      success: t('schoolSettings.saved'),
-                      error: t('common:genericServerError', { ns: 'common' }),
-                    });
-                    await promise;
-                    deptForm.reset({ schoolId, name: '', description: '' });
-                    setDeptOpen(false);
-                  })}
-                >
-                  <FormField
-                    control={deptForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          <Trans i18nKey="kinder:staff.department" />
-                        </FormLabel>
-                        <FormControl>
-                          <Input {...field} required />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit">
-                    <Trans i18nKey="kinder:staff.addDepartment" />
-                  </Button>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
-        </div>
-        <ul className="kinder-list-panel">
-          {departments.map((department) => (
-            <li className="px-4 py-3 text-sm" key={department.id}>
-              {department.name}
-            </li>
-          ))}
-        </ul>
-      </section>
+  const createDepartment = useKinderMutation({
+    mutationFn: createDepartmentAction,
+    invalidateKeys: [kinderQueryKeys.staff.all(schoolId)],
+    onSuccess: () => {
+      deptForm.reset({ schoolId, name: '', description: '' });
+      setDeptOpen(false);
+    },
+  });
 
-      <section className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="font-semibold">
-            <Trans i18nKey="kinder:staff.positions" />
-          </h2>
-          <Dialog onOpenChange={setPosOpen} open={posOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm" variant="outline">
-                <Trans i18nKey="kinder:staff.addPosition" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>
-                  <Trans i18nKey="kinder:staff.addPosition" />
-                </DialogTitle>
-              </DialogHeader>
-              <Form {...posForm}>
-                <form
-                  className="space-y-4"
-                  onSubmit={posForm.handleSubmit(async (data) => {
-                    const promise = createPositionAction(data);
-                    toast.promise(promise, {
-                      loading: t('schoolSettings.saving'),
-                      success: t('schoolSettings.saved'),
-                      error: t('common:genericServerError', { ns: 'common' }),
-                    });
-                    await promise;
-                    posForm.reset({
-                      schoolId,
-                      name: '',
-                      departmentId: '',
-                      description: '',
-                    });
-                    setPosOpen(false);
-                  })}
-                >
-                  <FormField
-                    control={posForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          <Trans i18nKey="kinder:staff.position" />
-                        </FormLabel>
-                        <FormControl>
-                          <Input {...field} required />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit">
-                    <Trans i18nKey="kinder:staff.addPosition" />
-                  </Button>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
+  const createPosition = useKinderMutation({
+    mutationFn: createPositionAction,
+    invalidateKeys: [kinderQueryKeys.staff.all(schoolId)],
+    onSuccess: () => {
+      posForm.reset({ schoolId, name: '', departmentId: '', description: '' });
+      setPosOpen(false);
+    },
+  });
+
+  return (
+    <BentoGrid columns={2}>
+      <BentoTile>
+        <div className="flex items-start justify-between gap-3">
+          <BentoTileHeader
+            description={<Trans i18nKey="kinder:staff.departmentsHint" />}
+            title={<Trans i18nKey="kinder:staff.departments" />}
+          />
+          <Button
+            className="shrink-0 rounded-full"
+            onClick={() => setDeptOpen(true)}
+            size="sm"
+            type="button"
+            variant="outline"
+          >
+            <Plus className="mr-1.5 size-4" />
+            <Trans i18nKey="kinder:staff.addDepartment" />
+          </Button>
         </div>
-        <ul className="kinder-list-panel">
-          {positions.map((position) => (
-            <li className="px-4 py-3 text-sm" key={position.id}>
-              {position.name}
-            </li>
-          ))}
-        </ul>
-      </section>
-    </div>
+
+        {departments.length > 0 ? (
+          <ul className="mt-4 flex flex-col gap-2">
+            {departments.map((department) => (
+              <li
+                className="flex items-center gap-3 rounded-2xl bg-muted/25 px-4 py-3 text-sm"
+                key={department.id}
+              >
+                <Building2 className="text-primary size-4 shrink-0" />
+                <span className="font-medium">{department.name}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="mt-4">
+            <PanelEmpty messageKey="kinder:staff.departmentsEmpty" />
+          </div>
+        )}
+      </BentoTile>
+
+      <BentoTile>
+        <div className="flex items-start justify-between gap-3">
+          <BentoTileHeader
+            description={<Trans i18nKey="kinder:staff.positionsHint" />}
+            title={<Trans i18nKey="kinder:staff.positions" />}
+          />
+          <Button
+            className="shrink-0 rounded-full"
+            onClick={() => setPosOpen(true)}
+            size="sm"
+            type="button"
+            variant="outline"
+          >
+            <Plus className="mr-1.5 size-4" />
+            <Trans i18nKey="kinder:staff.addPosition" />
+          </Button>
+        </div>
+
+        {positions.length > 0 ? (
+          <ul className="mt-4 flex flex-col gap-2">
+            {positions.map((position) => (
+              <li
+                className="flex items-center gap-3 rounded-2xl bg-muted/25 px-4 py-3 text-sm"
+                key={position.id}
+              >
+                <Briefcase className="text-primary size-4 shrink-0" />
+                <span className="font-medium">{position.name}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="mt-4">
+            <PanelEmpty messageKey="kinder:staff.positionsEmpty" />
+          </div>
+        )}
+      </BentoTile>
+
+      <KinderFormDialog
+        onOpenChange={setDeptOpen}
+        open={deptOpen}
+        size="sm"
+        title={<Trans i18nKey="kinder:staff.addDepartment" />}
+        footer={
+          <KinderSubmitButton
+            loading={createDepartment.isPending}
+            onClick={deptForm.handleSubmit((data) =>
+              createDepartment.mutate(data),
+            )}
+            type="button"
+          >
+            <Trans i18nKey="kinder:staff.addDepartment" />
+          </KinderSubmitButton>
+        }
+      >
+        <Form {...deptForm}>
+          <form className="space-y-4">
+            <FormField
+              control={deptForm.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    <Trans i18nKey="kinder:staff.department" />
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} required />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
+      </KinderFormDialog>
+
+      <KinderFormDialog
+        onOpenChange={setPosOpen}
+        open={posOpen}
+        size="sm"
+        title={<Trans i18nKey="kinder:staff.addPosition" />}
+        footer={
+          <KinderSubmitButton
+            loading={createPosition.isPending}
+            onClick={posForm.handleSubmit((data) => createPosition.mutate(data))}
+            type="button"
+          >
+            <Trans i18nKey="kinder:staff.addPosition" />
+          </KinderSubmitButton>
+        }
+      >
+        <Form {...posForm}>
+          <form className="space-y-4">
+            <FormField
+              control={posForm.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    <Trans i18nKey="kinder:staff.position" />
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} required />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
+      </KinderFormDialog>
+    </BentoGrid>
   );
 }

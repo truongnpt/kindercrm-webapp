@@ -58,6 +58,7 @@ async function SubscriptionPage() {
   return (
     <>
       <KinderPageHeader
+        breadcrumbs={[{ label: <Trans i18nKey="kinder:subscription.title" /> }]}
         description={<Trans i18nKey="kinder:subscription.description" />}
         title={<Trans i18nKey="kinder:subscription.title" />}
       />

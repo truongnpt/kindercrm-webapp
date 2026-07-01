@@ -46,7 +46,7 @@ export function StudentStatusFilter() {
       }}
       value={current}
     >
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="h-11 w-full rounded-lg border-border bg-muted/30 shadow-none sm:w-[200px]">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

@@ -7,9 +7,11 @@ import { Trans } from '@kit/ui/trans';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import {
+  BentoGrid,
+  BentoTile,
+  BentoTileHeader,
   KinderPageBody,
   KinderPageHeader,
-  SectionCard,
 } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import { getAiCreditStatus } from '~/lib/kinder/ai/credits';
@@ -73,6 +75,7 @@ async function DashboardPage() {
   return (
     <>
       <KinderPageHeader
+        breadcrumbs={[{ label: <Trans i18nKey="kinder:dashboard.title" /> }]}
         description={
           <Trans
             i18nKey="kinder:dashboard.description"
@@ -88,17 +91,18 @@ async function DashboardPage() {
           usage={usageSummary.usage}
         />
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <SectionCard
-            action={
-              <Button asChild size="sm" variant="outline">
-                <Link href={pathsConfig.app.settingsSubscription}>
-                  <Trans i18nKey="kinder:subscription.title" />
-                </Link>
-              </Button>
-            }
-            title={<Trans i18nKey="kinder:dashboard.packageLabel" />}
-          >
+        <BentoGrid columns={2}>
+          <BentoTile>
+            <BentoTileHeader
+              action={
+                <Button asChild size="sm" variant="outline">
+                  <Link href={pathsConfig.app.settingsSubscription}>
+                    <Trans i18nKey="kinder:subscription.title" />
+                  </Link>
+                </Button>
+              }
+              title={<Trans i18nKey="kinder:dashboard.packageLabel" />}
+            />
             <p className="text-foreground text-2xl font-semibold tracking-tight">
               {context.package?.name ?? '—'}
             </p>
@@ -110,24 +114,25 @@ async function DashboardPage() {
                 />
               </p>
             ) : null}
-          </SectionCard>
+          </BentoTile>
 
           {hasAi && aiCredits ? (
-            <SectionCard
-              action={
-                <Button asChild size="sm" variant="outline">
-                  <Link href={pathsConfig.app.ai}>
-                    <Trans i18nKey="kinder:ai.title" />
-                  </Link>
-                </Button>
-              }
-              title={
-                <span className="inline-flex items-center gap-2">
-                  <Sparkles className="text-primary size-5" />
-                  <Trans i18nKey="kinder:ai.creditsLabel" />
-                </span>
-              }
-            >
+            <BentoTile>
+              <BentoTileHeader
+                action={
+                  <Button asChild size="sm" variant="outline">
+                    <Link href={pathsConfig.app.ai}>
+                      <Trans i18nKey="kinder:ai.title" />
+                    </Link>
+                  </Button>
+                }
+                title={
+                  <span className="inline-flex items-center gap-2">
+                    <Sparkles className="text-primary size-5" />
+                    <Trans i18nKey="kinder:ai.creditsLabel" />
+                  </span>
+                }
+              />
               <p className="text-foreground text-2xl font-semibold tracking-tight">
                 {aiCredits.creditsRemaining} / {aiCredits.creditsLimit}
               </p>
@@ -138,9 +143,9 @@ async function DashboardPage() {
                   <Trans i18nKey="kinder:ai.providerFallback" />
                 )}
               </p>
-            </SectionCard>
+            </BentoTile>
           ) : null}
-        </div>
+        </BentoGrid>
 
         <DashboardOverview features={features} summary={summary} />
       </KinderPageBody>

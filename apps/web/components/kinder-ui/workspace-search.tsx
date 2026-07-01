@@ -65,21 +65,16 @@ export function WorkspaceSearch({
   return (
     <>
       <Button
-        className={cn(
-          'text-muted-foreground hover:text-foreground hidden h-10 w-full max-w-md justify-start gap-2 rounded-xl border border-border/70 bg-muted/30 px-3 font-normal shadow-none md:flex',
-          className,
-        )}
+        className={cn('kinder-search-trigger hidden md:flex', className)}
         onClick={() => setOpen(true)}
         type="button"
-        variant="outline"
+        variant="ghost"
       >
         <Search className="size-4 shrink-0 opacity-70" />
-        <span className="flex-1 truncate text-left text-sm">
+        <span className="flex-1 truncate text-left">
           <Trans i18nKey="kinder:workspace.searchPlaceholder" />
         </span>
-        <kbd className="bg-background text-muted-foreground hidden rounded-md border px-1.5 py-0.5 text-[10px] font-medium lg:inline">
-          ⌘K
-        </kbd>
+        <kbd className="kinder-search-kbd">⌘K</kbd>
       </Button>
 
       <CommandDialog onOpenChange={setOpen} open={open}>

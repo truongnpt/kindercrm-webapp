@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation';
 
+import { Trans } from '@kit/ui/trans';
+
 import {
   DetailPageHeader,
   KinderPageBody,
@@ -16,8 +18,7 @@ import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
-import { MenuWeekPlanner } from './_components/menu-week-planner';
-import { MenuNutritionReport } from './_components/menu-nutrition-report';
+import { MenuDetailWorkspace } from './_components/menu-detail-workspace';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -60,19 +61,24 @@ async function MenuDetailPage({
     <>
       <DetailPageHeader
         backHref={pathsConfig.app.menu}
+        breadcrumbs={[
+          {
+            label: <Trans i18nKey="kinder:mealMenu.title" />,
+            href: pathsConfig.app.menu,
+          },
+          { label: menu.title },
+        ]}
         description={`${menu.start_date} → ${menu.end_date}`}
         title={menu.title}
       />
 
       <KinderPageBody>
-        <div className="flex flex-col gap-6">
-          <MenuNutritionReport summary={nutritionSummary} />
-          <MenuWeekPlanner
-            dishes={dishes}
-            menu={menu}
-            schoolId={context.school.id}
-          />
-        </div>
+        <MenuDetailWorkspace
+          dishes={dishes}
+          menu={menu}
+          nutritionSummary={nutritionSummary}
+          schoolId={context.school.id}
+        />
       </KinderPageBody>
     </>
   );

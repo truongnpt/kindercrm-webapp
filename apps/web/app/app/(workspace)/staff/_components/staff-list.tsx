@@ -1,32 +1,67 @@
 'use client';
 
+import { useState } from 'react';
+
 import Link from 'next/link';
 
 import { Users } from 'lucide-react';
 
 import { Badge } from '@kit/ui/badge';
-import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
 
-import { DataTableShell, EmptyState } from '~/components/kinder-ui';
+import {
+  DataTableCard,
+  EmptyState,
+  EntityRowActions,
+  KinderConfirmDialog,
+  kinderQueryKeys,
+  useKinderMutation,
+} from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
-import type { StaffEmployeeListItem } from '~/lib/kinder/staff/types';
+import type { Campus } from '~/lib/kinder/types';
+import { deleteStaffEmployeeAction } from '~/lib/kinder/staff/server-actions';
+import type {
+  StaffDepartment,
+  StaffEmployeeListItem,
+  StaffPosition,
+} from '~/lib/kinder/staff/types';
 
-const STATUS_VARIANT: Record<
-  StaffEmployeeListItem['employment_status'],
-  'default' | 'secondary' | 'outline' | 'destructive'
-> = {
-  active: 'default',
-  inactive: 'secondary',
-  on_leave: 'outline',
-  terminated: 'destructive',
-};
+import { EditStaffDialog } from './edit-staff-dialog';
+import { StaffAvatar } from './staff-avatar';
+import { StaffStatusBadge } from './staff-status-badge';
 
-export function StaffList({ employees }: { employees: StaffEmployeeListItem[] }) {
+export function StaffList({
+  employees,
+  schoolId,
+  departments,
+  positions,
+  campuses,
+  canManage,
+}: {
+  employees: StaffEmployeeListItem[];
+  schoolId: string;
+  departments: StaffDepartment[];
+  positions: StaffPosition[];
+  campuses: Campus[];
+  canManage: boolean;
+}) {
+  const [editEmployee, setEditEmployee] = useState<StaffEmployeeListItem | null>(
+    null,
+  );
+  const [deleteEmployee, setDeleteEmployee] =
+    useState<StaffEmployeeListItem | null>(null);
+
+  const deleteMutation = useKinderMutation({
+    mutationFn: deleteStaffEmployeeAction,
+    invalidateKeys: [kinderQueryKeys.staff.all(schoolId)],
+    onSuccess: () => setDeleteEmployee(null),
+  });
+
   if (employees.length === 0) {
     return (
       <EmptyState
-        descriptionKey="kinder:ui.emptyDefaultDescription"
+        compact
+        descriptionKey="kinder:staff.emptyDescription"
         icon={Users}
         titleKey="kinder:staff.empty"
       />
@@ -36,13 +71,13 @@ export function StaffList({ employees }: { employees: StaffEmployeeListItem[] })
   return (
     <>
       <div className="hidden md:block">
-        <DataTableShell>
+        <DataTableCard
+          description={<Trans i18nKey="kinder:staff.listDescription" />}
+          title={<Trans i18nKey="kinder:staff.directory" />}
+        >
           <table className="w-full text-sm">
             <thead>
               <tr>
-                <th>
-                  <Trans i18nKey="kinder:staff.code" />
-                </th>
                 <th>
                   <Trans i18nKey="kinder:staff.fullName" />
                 </th>
@@ -58,14 +93,28 @@ export function StaffList({ employees }: { employees: StaffEmployeeListItem[] })
                 <th>
                   <Trans i18nKey="kinder:staff.status" />
                 </th>
-                <th className="text-right" />
+                {canManage ? <th className="text-right" /> : null}
               </tr>
             </thead>
             <tbody>
               {employees.map((employee) => (
                 <tr key={employee.id}>
-                  <td className="font-mono text-xs">{employee.employee_code}</td>
-                  <td className="font-medium">{employee.full_name}</td>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <StaffAvatar name={employee.full_name} size="sm" />
+                      <div className="min-w-0">
+                        <Link
+                          className="font-medium hover:text-primary hover:underline"
+                          href={`${pathsConfig.app.staffDetail}/${employee.id}`}
+                        >
+                          {employee.full_name}
+                        </Link>
+                        <p className="text-muted-foreground font-mono text-xs">
+                          {employee.employee_code}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
                   <td className="text-muted-foreground">
                     {employee.department?.name ?? '—'}
                   </td>
@@ -73,63 +122,127 @@ export function StaffList({ employees }: { employees: StaffEmployeeListItem[] })
                     {employee.position?.name ?? '—'}
                   </td>
                   <td>
-                    <Badge variant="outline">
-                      <Trans
-                        i18nKey={`kinder:staff.accessRoles.${employee.access_role}`}
-                      />
-                    </Badge>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <Badge variant="outline">
+                        <Trans
+                          i18nKey={`kinder:staff.accessRoles.${employee.access_role}`}
+                        />
+                      </Badge>
+                      {employee.is_teacher ? (
+                        <Badge variant="secondary">
+                          <Trans i18nKey="kinder:staff.teacherBadge" />
+                        </Badge>
+                      ) : null}
+                    </div>
                   </td>
                   <td>
-                    <Badge variant={STATUS_VARIANT[employee.employment_status]}>
-                      <Trans
-                        i18nKey={`kinder:staff.statuses.${employee.employment_status}`}
+                    <StaffStatusBadge status={employee.employment_status} />
+                  </td>
+                  {canManage ? (
+                    <td className="text-right">
+                      <EntityRowActions
+                        onDelete={() => setDeleteEmployee(employee)}
+                        onEdit={() => setEditEmployee(employee)}
                       />
-                    </Badge>
-                  </td>
-                  <td className="text-right">
-                    <Button asChild size="sm" variant="ghost">
-                      <Link
-                        href={`${pathsConfig.app.staffDetail}/${employee.id}`}
-                      >
-                        <Trans i18nKey="kinder:staff.detail" />
-                      </Link>
-                    </Button>
-                  </td>
+                    </td>
+                  ) : null}
                 </tr>
               ))}
             </tbody>
           </table>
-        </DataTableShell>
+        </DataTableCard>
       </div>
 
-      <div className="flex flex-col gap-3 md:hidden">
+      <div className="space-y-3 md:hidden">
         {employees.map((employee) => (
           <article className="kinder-mobile-card" key={employee.id}>
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <p className="font-medium">{employee.full_name}</p>
-                <p className="text-muted-foreground font-mono text-xs">
-                  {employee.employee_code}
+            <div className="flex items-start gap-3">
+              <StaffAvatar name={employee.full_name} size="md" />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <Link
+                      className="text-foreground truncate font-medium hover:text-primary hover:underline"
+                      href={`${pathsConfig.app.staffDetail}/${employee.id}`}
+                    >
+                      {employee.full_name}
+                    </Link>
+                    <p className="text-muted-foreground mt-0.5 font-mono text-xs">
+                      {employee.employee_code}
+                    </p>
+                  </div>
+                  <StaffStatusBadge status={employee.employment_status} />
+                </div>
+
+                <p className="text-muted-foreground mt-2 text-sm">
+                  {employee.department?.name ?? '—'} ·{' '}
+                  {employee.position?.name ?? '—'}
                 </p>
+
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  <Badge variant="outline">
+                    <Trans
+                      i18nKey={`kinder:staff.accessRoles.${employee.access_role}`}
+                    />
+                  </Badge>
+                  {employee.is_teacher ? (
+                    <Badge variant="secondary">
+                      <Trans i18nKey="kinder:staff.teacherBadge" />
+                    </Badge>
+                  ) : null}
+                </div>
+
+                {canManage ? (
+                  <div className="mt-3">
+                    <EntityRowActions
+                      onDelete={() => setDeleteEmployee(employee)}
+                      onEdit={() => setEditEmployee(employee)}
+                    />
+                  </div>
+                ) : null}
               </div>
-              <Badge variant={STATUS_VARIANT[employee.employment_status]}>
-                <Trans
-                  i18nKey={`kinder:staff.statuses.${employee.employment_status}`}
-                />
-              </Badge>
             </div>
-            <p className="text-muted-foreground text-sm">
-              {employee.department?.name ?? '—'} ·{' '}
-              {employee.position?.name ?? '—'}
-            </p>
-            <Button asChild className="w-full" size="sm" variant="outline">
-              <Link href={`${pathsConfig.app.staffDetail}/${employee.id}`}>
-                <Trans i18nKey="kinder:staff.detail" />
-              </Link>
-            </Button>
           </article>
         ))}
       </div>
+
+      {editEmployee ? (
+        <EditStaffDialog
+          campuses={campuses}
+          departments={departments}
+          employee={editEmployee}
+          hideTrigger
+          onOpenChange={(open) => {
+            if (!open) {
+              setEditEmployee(null);
+            }
+          }}
+          open
+          positions={positions}
+          schoolId={schoolId}
+        />
+      ) : null}
+
+      <KinderConfirmDialog
+        confirmLabel={<Trans i18nKey="kinder:staff.delete" />}
+        description={<Trans i18nKey="kinder:ui.confirmDeleteDescription" />}
+        onConfirm={() => {
+          if (deleteEmployee) {
+            deleteMutation.mutate({
+              employeeId: deleteEmployee.id,
+              schoolId,
+            });
+          }
+        }}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDeleteEmployee(null);
+          }
+        }}
+        open={Boolean(deleteEmployee)}
+        pending={deleteMutation.isPending}
+        title={<Trans i18nKey="kinder:ui.confirmDelete" />}
+      />
     </>
   );
 }

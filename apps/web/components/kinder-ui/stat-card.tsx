@@ -10,15 +10,23 @@ type StatCardProps = {
   href?: string;
   icon?: LucideIcon;
   trend?: string;
+  trendDirection?: 'up' | 'down' | 'neutral';
+  trendLabelKey?: string;
   tone?: 'default' | 'success' | 'warning' | 'info';
   className?: string;
 };
 
-const toneStyles = {
-  default: 'from-primary/10 to-primary/5 text-primary',
-  success: 'from-emerald-500/10 to-emerald-500/5 text-emerald-600',
-  warning: 'from-amber-500/10 to-amber-500/5 text-amber-600',
-  info: 'from-sky-500/10 to-sky-500/5 text-sky-600',
+const toneIconStyles = {
+  default: 'bg-primary/10 text-primary',
+  success: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+  warning: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+  info: 'bg-sky-500/10 text-sky-600 dark:text-sky-400',
+};
+
+const trendDirectionStyles = {
+  up: 'text-emerald-600 dark:text-emerald-400',
+  down: 'text-destructive',
+  neutral: 'text-muted-foreground',
 };
 
 export function StatCard({
@@ -27,37 +35,49 @@ export function StatCard({
   href,
   icon: Icon,
   trend,
+  trendDirection = 'neutral',
+  trendLabelKey = 'kinder:ui.vsLastMonth',
   tone = 'default',
   className,
 }: StatCardProps) {
   const content = (
     <>
       <div className="flex items-start justify-between gap-3">
-        <p className="text-muted-foreground text-sm font-medium">
+        <p className="kinder-stat-card__label">
           <Trans i18nKey={labelKey} />
         </p>
         {Icon ? (
           <div
             className={cn(
-              'flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br',
-              toneStyles[tone],
+              'kinder-stat-card__icon',
+              toneIconStyles[tone],
             )}
           >
-            <Icon className="size-5" />
+            <Icon className="size-6" />
           </div>
         ) : null}
       </div>
-      <p className="text-foreground mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
-        {value}
-      </p>
+      <p className="kinder-stat-card__value">{value}</p>
       {trend ? (
-        <p className="text-muted-foreground mt-1 text-xs">{trend}</p>
+        <p className="mt-2 flex flex-wrap items-center gap-1.5 text-xs">
+          <span
+            className={cn(
+              'font-semibold tabular-nums',
+              trendDirectionStyles[trendDirection],
+            )}
+          >
+            {trend}
+          </span>
+          <span className="text-muted-foreground">
+            <Trans i18nKey={trendLabelKey} />
+          </span>
+        </p>
       ) : null}
     </>
   );
 
   const cardClass = cn(
-    'kinder-surface-interactive flex flex-col p-5 sm:p-6',
+    'kinder-stat-card kinder-bento-tile-interactive',
     href && 'group cursor-pointer',
     className,
   );
@@ -83,11 +103,11 @@ export function MiniStatCard({
   className?: string;
 }) {
   return (
-    <div className={cn('kinder-surface p-4 sm:p-5', className)}>
-      <p className="text-muted-foreground text-sm">
+    <div className={cn('kinder-stat-inline', className)}>
+      <p className="kinder-stat-card__label">
         <Trans i18nKey={labelKey} />
       </p>
-      <p className="text-foreground mt-2 text-xl font-semibold">{value}</p>
+      <p className="text-foreground mt-2 text-xl font-bold">{value}</p>
     </div>
   );
 }
@@ -104,14 +124,14 @@ export function SectionCard({
   className?: string;
 }) {
   return (
-    <section className={cn('kinder-surface overflow-hidden', className)}>
+    <section className={cn('kinder-bento-tile overflow-hidden p-0', className)}>
       {title ? (
-        <div className="flex items-center justify-between gap-3 bg-muted/20 px-5 py-4">
+        <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4 sm:px-6">
           <h3 className="kinder-section-title">{title}</h3>
           {action}
         </div>
       ) : null}
-      <div className="p-5 sm:p-6">{children}</div>
+      <div className="px-5 py-5 sm:px-6 sm:py-6">{children}</div>
     </section>
   );
 }

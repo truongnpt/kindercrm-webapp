@@ -27,11 +27,11 @@ export function EmptyState({
   const actionButton =
     actionLabelKey && (onAction || actionHref) ? (
       onAction ? (
-        <Button className="mt-6" onClick={onAction} type="button">
+        <Button className="mt-5 rounded-lg" onClick={onAction} type="button">
           <Trans i18nKey={actionLabelKey} />
         </Button>
       ) : actionHref ? (
-        <Button asChild className="mt-6">
+        <Button asChild className="mt-5 rounded-lg">
           <Link href={actionHref}>
             <Trans i18nKey={actionLabelKey} />
           </Link>
@@ -43,7 +43,7 @@ export function EmptyState({
     return (
       <div
         className={cn(
-          'flex flex-col items-center justify-center rounded-2xl bg-muted/30 px-6 py-12 text-center',
+          'kinder-panel-empty flex flex-col items-center justify-center px-6 py-10 text-center',
           className,
         )}
       >
@@ -59,7 +59,7 @@ export function EmptyState({
           </p>
         ) : null}
         {actionButton ? (
-          <div className="mt-4">{actionButton}</div>
+          <div className="mt-3">{actionButton}</div>
         ) : null}
       </div>
     );
@@ -68,14 +68,14 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'kinder-surface kinder-empty-glow relative flex flex-col items-center justify-center overflow-hidden px-6 py-16 text-center',
+        'kinder-bento-tile flex flex-col items-center justify-center px-6 py-14 text-center',
         className,
       )}
     >
-      <div className="bg-primary/10 text-primary mb-5 flex size-16 items-center justify-center rounded-2xl">
-        <Icon className="size-8" />
+      <div className="bg-primary/10 text-primary mb-4 flex size-14 items-center justify-center rounded-xl">
+        <Icon className="size-7" />
       </div>
-      <h3 className="text-foreground text-lg font-semibold tracking-tight">
+      <h3 className="text-foreground text-base font-semibold">
         <Trans i18nKey={titleKey} />
       </h3>
       {descriptionKey ? (

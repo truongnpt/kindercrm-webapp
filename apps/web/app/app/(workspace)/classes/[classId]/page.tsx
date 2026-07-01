@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation';
 
+import { Trans } from '@kit/ui/trans';
+
 import {
   DetailPageHeader,
   KinderPageBody,
@@ -19,7 +21,8 @@ import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
-import { ClassDetailPanel } from './_components/class-detail-panel';
+import { ClassDetailActions } from './_components/class-detail-actions';
+import { ClassDetailWorkspace } from './_components/class-detail-workspace';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -65,13 +68,27 @@ async function ClassDetailPage({
   return (
     <>
       <DetailPageHeader
+        actions={
+          <ClassDetailActions
+            cls={cls}
+            schoolId={context.school.id}
+            teachers={teachers}
+          />
+        }
         backHref={pathsConfig.app.classes}
+        breadcrumbs={[
+          {
+            label: <Trans i18nKey="kinder:classes.title" />,
+            href: pathsConfig.app.classes,
+          },
+          { label: cls.name },
+        ]}
         description={cls.code}
         title={cls.name}
       />
 
       <KinderPageBody>
-        <ClassDetailPanel
+        <ClassDetailWorkspace
           allClasses={allClasses.map((item) => ({
             id: item.id,
             name: item.name,
@@ -82,7 +99,6 @@ async function ClassDetailPage({
           schedules={schedules}
           schoolId={context.school.id}
           teacherName={teacherName}
-          teachers={teachers}
           unassignedStudents={unassignedStudents}
         />
       </KinderPageBody>

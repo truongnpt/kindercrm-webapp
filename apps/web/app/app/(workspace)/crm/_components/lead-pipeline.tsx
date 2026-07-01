@@ -1,11 +1,25 @@
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
+
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  useDraggable,
+  useDroppable,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragStartEvent,
+  type DraggableAttributes,
+} from '@dnd-kit/core';
+import type { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
+import { CSS } from '@dnd-kit/utilities';
+import { Baby, GripVertical, Kanban, Phone } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
-import { Kanban, Users } from 'lucide-react';
-
-import { Badge } from '@kit/ui/badge';
-import { Button } from '@kit/ui/button';
 import {
   Select,
   SelectContent,
@@ -13,9 +27,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@kit/ui/select';
+import { cn } from '@kit/ui/utils';
 import { Trans } from '@kit/ui/trans';
 
-import { DataTableShell, EmptyState } from '~/components/kinder-ui';
+import {
+  EmptyState,
+  kinderQueryKeys,
+  useKinderMutation,
+} from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import type { LeadRow } from '~/lib/kinder/crm/load-leads';
 import {
@@ -25,6 +44,38 @@ import {
 } from '~/lib/kinder/crm/pipeline-stages';
 import { updateLeadStageAction } from '~/lib/kinder/crm/server-actions';
 
+import { CrmLeadAvatar } from './crm-lead-avatar';
+import { CrmStageDot } from './crm-stage-badge';
+
+type LeadsByStage = Record<LeadStage, LeadRow[]>;
+
+function groupLeadsByStage(leads: LeadRow[]): LeadsByStage {
+  const grouped = Object.fromEntries(
+    ACTIVE_PIPELINE_STAGES.map((stage) => [stage, [] as LeadRow[]]),
+  ) as LeadsByStage;
+
+  for (const lead of leads) {
+    if (ACTIVE_PIPELINE_STAGES.includes(lead.stage)) {
+      grouped[lead.stage].push(lead);
+    }
+  }
+
+  return grouped;
+}
+
+function findLeadStage(
+  grouped: LeadsByStage,
+  leadId: string,
+): LeadStage | null {
+  for (const stage of ACTIVE_PIPELINE_STAGES) {
+    if (grouped[stage].some((lead) => lead.id === leadId)) {
+      return stage;
+    }
+  }
+
+  return null;
+}
+
 export function LeadPipelineBoard({
   leads,
   schoolId,
@@ -32,156 +83,341 @@ export function LeadPipelineBoard({
   leads: LeadRow[];
   schoolId: string;
 }) {
+  const [items, setItems] = useState<LeadsByStage>(() =>
+    groupLeadsByStage(leads),
+  );
+  const [activeLeadId, setActiveLeadId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setItems(groupLeadsByStage(leads));
+  }, [leads]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 6 },
+    }),
+  );
+
+  const updateStage = useKinderMutation({
+    mutationFn: updateLeadStageAction,
+    invalidateKeys: [kinderQueryKeys.crm.leads(schoolId)],
+  });
+
+  const activeLead = useMemo(() => {
+    if (!activeLeadId) {
+      return null;
+    }
+
+    for (const stage of ACTIVE_PIPELINE_STAGES) {
+      const lead = items[stage].find((item) => item.id === activeLeadId);
+
+      if (lead) {
+        return lead;
+      }
+    }
+
+    return null;
+  }, [activeLeadId, items]);
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveLeadId(String(event.active.id));
+  };
+
+  const moveLead = (leadId: string, targetStage: LeadStage) => {
+    const sourceStage = findLeadStage(items, leadId);
+
+    if (!sourceStage || sourceStage === targetStage) {
+      return;
+    }
+
+    const previous = items;
+
+    setItems((current) => {
+      const lead = current[sourceStage].find((item) => item.id === leadId);
+
+      if (!lead) {
+        return current;
+      }
+
+      return {
+        ...current,
+        [sourceStage]: current[sourceStage].filter((item) => item.id !== leadId),
+        [targetStage]: [
+          ...current[targetStage],
+          { ...lead, stage: targetStage },
+        ],
+      };
+    });
+
+    updateStage.mutate(
+      { leadId, schoolId, stage: targetStage },
+      {
+        onError: () => {
+          setItems(previous);
+        },
+      },
+    );
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    setActiveLeadId(null);
+
+    const { active, over } = event;
+
+    if (!over) {
+      return;
+    }
+
+    const targetStage = String(over.id) as LeadStage;
+
+    if (!ACTIVE_PIPELINE_STAGES.includes(targetStage)) {
+      return;
+    }
+
+    moveLead(String(active.id), targetStage);
+  };
+
+  const handleDragCancel = () => {
+    setActiveLeadId(null);
+  };
+
   if (leads.length === 0) {
     return (
       <EmptyState
-        descriptionKey="kinder:ui.emptyDefaultDescription"
+        actionLabelKey="kinder:crm.createLead"
+        descriptionKey="kinder:crm.emptyDescription"
         icon={Kanban}
         titleKey="kinder:crm.empty"
       />
     );
   }
 
+  const totalLeads = leads.length;
+
   return (
-    <div className="grid gap-4 overflow-x-auto pb-2 lg:grid-cols-3 xl:grid-cols-6">
-      {ACTIVE_PIPELINE_STAGES.map((stage) => (
-        <PipelineColumn
-          key={stage}
-          leads={leads.filter((lead) => lead.stage === stage)}
-          schoolId={schoolId}
-          stage={stage}
-        />
-      ))}
-    </div>
+    <DndContext
+      onDragCancel={handleDragCancel}
+      onDragEnd={handleDragEnd}
+      onDragStart={handleDragStart}
+      sensors={sensors}
+    >
+      <div className="kinder-crm-kanban-toolbar">
+        <div className="kinder-crm-stage-pills">
+          <span className="kinder-crm-stage-pill kinder-crm-stage-pill--active">
+            <Trans i18nKey="kinder:crm.allLeads" />
+            <span className="kinder-crm-stage-pill__count">{totalLeads}</span>
+          </span>
+          {ACTIVE_PIPELINE_STAGES.map((stage) => (
+            <span className="kinder-crm-stage-pill" key={stage}>
+              <Trans i18nKey={LEAD_STAGE_I18N_KEYS[stage]} />
+              <span className="kinder-crm-stage-pill__count">
+                {items[stage].length}
+              </span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="kinder-crm-kanban">
+        {ACTIVE_PIPELINE_STAGES.map((stage) => (
+          <PipelineColumn
+            key={stage}
+            leads={items[stage]}
+            onStageChange={moveLead}
+            stage={stage}
+          />
+        ))}
+      </div>
+
+      <DragOverlay dropAnimation={{ duration: 180, easing: 'ease-out' }}>
+        {activeLead ? (
+          <LeadPipelineCardContent
+            className="kinder-crm-lead-card--overlay"
+            dragHandle={false}
+            isOverlay
+            lead={activeLead}
+          />
+        ) : null}
+      </DragOverlay>
+    </DndContext>
   );
 }
 
 function PipelineColumn({
   stage,
   leads,
-  schoolId,
+  onStageChange,
 }: {
   stage: LeadStage;
   leads: LeadRow[];
-  schoolId: string;
+  onStageChange: (leadId: string, targetStage: LeadStage) => void;
 }) {
-  return (
-    <div className="kinder-pipeline-column">
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold">
-          <Trans i18nKey={LEAD_STAGE_I18N_KEYS[stage]} />
-        </h3>
-        <Badge variant="secondary">{leads.length}</Badge>
-      </div>
+  const { isOver, setNodeRef } = useDroppable({ id: stage });
 
-      <div className="flex flex-col gap-2">
-        {leads.map((lead) => (
-          <LeadPipelineCard key={lead.id} lead={lead} schoolId={schoolId} />
-        ))}
+  return (
+    <section
+      className={cn(
+        'kinder-crm-column flex min-w-0 flex-col',
+        isOver && 'kinder-crm-column--over',
+      )}
+      ref={setNodeRef}
+    >
+      <header className="mb-3 flex items-center justify-between gap-2 px-0.5">
+        <div className="flex min-w-0 items-center gap-2">
+          <CrmStageDot stage={stage} />
+          <h3 className="truncate text-sm font-semibold">
+            <Trans i18nKey={LEAD_STAGE_I18N_KEYS[stage]} />
+          </h3>
+        </div>
+        <span className="kinder-crm-stage-pill__count bg-muted px-2 py-0.5">
+          {leads.length}
+        </span>
+      </header>
+
+      <div className="flex min-h-[120px] flex-1 flex-col gap-2.5 overflow-y-auto">
+        {leads.length === 0 ? (
+          <p className="text-muted-foreground rounded-2xl border border-dashed border-border/50 bg-muted/20 px-4 py-8 text-center text-xs leading-relaxed">
+            <Trans i18nKey="kinder:crm.columnEmpty" />
+          </p>
+        ) : (
+          leads.map((lead) => (
+            <LeadPipelineCard
+              key={lead.id}
+              lead={lead}
+              onStageChange={onStageChange}
+            />
+          ))
+        )}
       </div>
-    </div>
+    </section>
   );
 }
 
 function LeadPipelineCard({
   lead,
-  schoolId,
+  onStageChange,
 }: {
   lead: LeadRow;
-  schoolId: string;
+  onStageChange: (leadId: string, targetStage: LeadStage) => void;
 }) {
-  return (
-    <div className="kinder-pipeline-card">
-      <Link
-        className="font-medium hover:text-primary hover:underline"
-        href={`${pathsConfig.app.crmLead}/${lead.id}`}
-      >
-        {lead.parent_name}
-      </Link>
-      <p className="text-muted-foreground text-xs">{lead.phone}</p>
-      {lead.source?.name ? (
-        <Badge className="text-xs" variant="outline">
-          {lead.source.name}
-        </Badge>
-      ) : null}
+  const { attributes, isDragging, listeners, setNodeRef, transform } =
+    useDraggable({
+      id: lead.id,
+      data: { stage: lead.stage },
+    });
 
-      <Select
-        onValueChange={(value) => {
-          void updateLeadStageAction({
-            leadId: lead.id,
-            schoolId,
-            stage: value as LeadStage,
-          });
-        }}
-        value={lead.stage}
-      >
-        <SelectTrigger className="h-8 text-xs">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {[...ACTIVE_PIPELINE_STAGES, 'lost' as const].map((stage) => (
-            <SelectItem key={stage} value={stage}>
-              <Trans i18nKey={LEAD_STAGE_I18N_KEYS[stage]} />
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+  const style = transform
+    ? { transform: CSS.Translate.toString(transform) }
+    : undefined;
+
+  return (
+    <div
+      className={cn(isDragging && 'kinder-crm-lead-card--dragging')}
+      ref={setNodeRef}
+      style={style}
+    >
+      <LeadPipelineCardContent
+        dragAttributes={attributes}
+        dragListeners={listeners}
+        lead={lead}
+        onStageChange={onStageChange}
+      />
     </div>
   );
 }
 
-export function LeadListTable({ leads }: { leads: LeadRow[] }) {
-  if (leads.length === 0) {
-    return (
-      <EmptyState
-        compact
-        descriptionKey="kinder:ui.emptyDefaultDescription"
-        icon={Users}
-        titleKey="kinder:crm.empty"
-      />
-    );
-  }
+function LeadPipelineCardContent({
+  lead,
+  onStageChange,
+  dragListeners,
+  dragAttributes,
+  dragHandle = true,
+  isOverlay = false,
+  className,
+}: {
+  lead: LeadRow;
+  onStageChange?: (leadId: string, targetStage: LeadStage) => void;
+  dragListeners?: SyntheticListenerMap;
+  dragAttributes?: DraggableAttributes;
+  dragHandle?: boolean;
+  isOverlay?: boolean;
+  className?: string;
+}) {
+  const { t } = useTranslation('kinder');
 
   return (
-    <DataTableShell>
-      <table className="w-full text-sm">
-        <thead>
-          <tr>
-            <th>
-              <Trans i18nKey="kinder:crm.parentName" />
-            </th>
-            <th>
-              <Trans i18nKey="kinder:crm.phone" />
-            </th>
-            <th>
-              <Trans i18nKey="kinder:crm.source" />
-            </th>
-            <th>
-              <Trans i18nKey="kinder:crm.stage" />
-            </th>
-            <th className="text-right" />
-          </tr>
-        </thead>
-        <tbody>
-          {leads.map((lead) => (
-            <tr key={lead.id}>
-              <td>{lead.parent_name}</td>
-              <td>{lead.phone}</td>
-              <td>{lead.source?.name ?? '—'}</td>
-              <td>
-                <Trans i18nKey={LEAD_STAGE_I18N_KEYS[lead.stage]} />
-              </td>
-              <td className="text-right">
-                <Button asChild size="sm" variant="ghost">
-                  <Link href={`${pathsConfig.app.crmLead}/${lead.id}`}>
-                    <Trans i18nKey="kinder:crm.detail" />
-                  </Link>
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </DataTableShell>
+    <article
+      className={cn('kinder-crm-lead-card group min-w-0', className)}
+    >
+      <div className="flex items-start gap-2">
+        {dragHandle ? (
+          <button
+            aria-label={t('crm.dragLead')}
+            className="text-muted-foreground hover:text-foreground mt-0.5 shrink-0 cursor-grab touch-none rounded-md p-0.5 active:cursor-grabbing"
+            type="button"
+            {...dragAttributes}
+            {...dragListeners}
+          >
+            <GripVertical className="size-4" />
+          </button>
+        ) : null}
+
+        <CrmLeadAvatar name={lead.parent_name} size="sm" />
+
+        <div className="min-w-0 flex-1">
+          {isOverlay ? (
+            <p className="text-foreground line-clamp-2 text-sm leading-snug font-semibold">
+              {lead.parent_name}
+            </p>
+          ) : (
+            <Link
+              className="text-foreground group-hover:text-primary line-clamp-2 text-sm leading-snug font-semibold transition-colors"
+              href={`${pathsConfig.app.crmLead}/${lead.id}`}
+            >
+              {lead.parent_name}
+            </Link>
+          )}
+
+          <div className="text-muted-foreground mt-1.5 flex flex-col gap-1 text-xs">
+            <span className="inline-flex items-center gap-1.5">
+              <Phone className="size-3 shrink-0 opacity-70" />
+              {lead.phone}
+            </span>
+            {lead.child_name ? (
+              <span className="inline-flex items-center gap-1.5">
+                <Baby className="size-3 shrink-0 opacity-70" />
+                {lead.child_name}
+              </span>
+            ) : null}
+          </div>
+        </div>
+      </div>
+
+      {lead.source?.name ? (
+        <span className="bg-muted/60 text-muted-foreground mt-3 inline-flex w-fit rounded-full px-2.5 py-1 text-[11px] font-medium">
+          {lead.source.name}
+        </span>
+      ) : null}
+
+      {!isOverlay ? (
+        <Select
+          onValueChange={(value) => {
+            onStageChange?.(lead.id, value as LeadStage);
+          }}
+          value={lead.stage}
+        >
+          <SelectTrigger className="mt-3 h-9 w-full max-w-full rounded-lg border-0 bg-muted/40 text-xs shadow-none">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {[...ACTIVE_PIPELINE_STAGES, 'lost' as const].map((stage) => (
+              <SelectItem key={stage} value={stage}>
+                <Trans i18nKey={LEAD_STAGE_I18N_KEYS[stage]} />
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      ) : null}
+    </article>
   );
 }

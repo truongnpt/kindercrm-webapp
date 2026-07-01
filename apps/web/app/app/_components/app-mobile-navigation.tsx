@@ -80,10 +80,10 @@ export function AppMobileNavigation({
   });
 
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
       <Button
         aria-label="Search"
-        className="size-9 rounded-xl"
+        className="size-9 shrink-0 rounded-xl"
         onClick={() => {
           document.dispatchEvent(
             new KeyboardEvent('keydown', { key: 'k', metaKey: true }),
@@ -102,10 +102,10 @@ export function AppMobileNavigation({
       />
 
       {featuresFlagConfig.enableThemeToggle ? (
-        <ModeToggle className="size-9 rounded-xl" />
+        <ModeToggle className="hidden size-9 shrink-0 rounded-xl sm:inline-flex" />
       ) : null}
 
-      <LanguageToggle />
+      <LanguageToggle className="hidden shrink-0 sm:inline-flex" />
 
       <Sheet>
         <SheetTrigger asChild>
@@ -137,6 +137,12 @@ export function AppMobileNavigation({
           </nav>
 
           <div className="border-t border-border/50 p-3">
+            <div className="mb-3 flex items-center justify-between gap-2 px-2 sm:hidden">
+              {featuresFlagConfig.enableThemeToggle ? (
+                <ModeToggle className="rounded-xl" />
+              ) : null}
+              <LanguageToggle />
+            </div>
             <div className="mb-2 px-2">
               <AppAccountDropdown user={user} />
             </div>

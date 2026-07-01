@@ -1,5 +1,3 @@
-import { Suspense } from 'react';
-
 import { Trans } from '@kit/ui/trans';
 
 import { KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
@@ -11,9 +9,8 @@ import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
 import { CreateStudentDialog } from './_components/create-student-dialog';
-import { StudentImportExport } from './_components/student-import-export';
-import { StudentStatusFilter } from './_components/student-status-filter';
-import { StudentsList } from './_components/students-list';
+import { StudentsOverview } from './_components/students-overview';
+import { StudentsWorkspace } from './_components/students-workspace';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -38,29 +35,28 @@ async function StudentsPage({
 
   requirePackageFeature(context, 'students');
 
-  const students = await loadStudents(context.school.id, status);
+  const [students, allStudents] = await Promise.all([
+    loadStudents(context.school.id, status),
+    loadStudents(context.school.id),
+  ]);
 
   return (
     <>
       <KinderPageHeader
         actions={
-          <>
-            <Suspense>
-              <StudentStatusFilter />
-            </Suspense>
-            <StudentImportExport
-              schoolId={context.school.id}
-              students={students}
-            />
-            <CreateStudentDialog schoolId={context.school.id} />
-          </>
+          <CreateStudentDialog schoolId={context.school.id} />
         }
+        breadcrumbs={[{ label: <Trans i18nKey="kinder:students.title" /> }]}
         description={<Trans i18nKey="kinder:students.description" />}
         title={<Trans i18nKey="kinder:students.title" />}
       />
 
       <KinderPageBody>
-        <StudentsList students={students} />
+        <StudentsOverview students={allStudents} />
+        <StudentsWorkspace
+          schoolId={context.school.id}
+          students={students}
+        />
       </KinderPageBody>
     </>
   );

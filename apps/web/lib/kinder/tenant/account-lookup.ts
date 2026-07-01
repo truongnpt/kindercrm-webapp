@@ -35,7 +35,7 @@ export async function getSchoolMemberAccounts(
 
   const { data, error } = await client.rpc('get_school_member_accounts', {
     p_school_id: schoolId,
-    p_user_ids: userIds?.length ? userIds : undefined,
+    ...(userIds?.length ? { p_user_ids: userIds } : {}),
   });
 
   if (error) {

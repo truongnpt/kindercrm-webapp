@@ -17,7 +17,7 @@ export function PageError({
 }) {
   return (
     <div className="kinder-surface kinder-empty-glow flex flex-col items-center px-6 py-20 text-center">
-      <div className="bg-destructive/10 text-destructive mb-5 flex size-16 items-center justify-center rounded-2xl">
+      <div className="bg-destructive/10 text-destructive mb-5 flex size-16 items-center justify-center rounded-xl">
         <AlertCircle className="size-8" />
       </div>
 

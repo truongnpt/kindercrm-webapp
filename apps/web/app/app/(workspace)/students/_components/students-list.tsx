@@ -1,29 +1,56 @@
 'use client';
 
+import { useState } from 'react';
+
 import Link from 'next/link';
 
 import { GraduationCap } from 'lucide-react';
 
-import { Badge } from '@kit/ui/badge';
-import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
 
-import { DataTableShell, EmptyState } from '~/components/kinder-ui';
+import {
+  DataTableCard,
+  EmptyState,
+  EntityRowActions,
+  KinderConfirmDialog,
+  kinderQueryKeys,
+  StatusBadge,
+  useKinderMutation,
+} from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
+import { deleteStudentAction } from '~/lib/kinder/students/server-actions';
 import type { Student } from '~/lib/kinder/students/types';
 
-const STATUS_VARIANT: Record<
+import { EditStudentDialog } from './edit-student-dialog';
+
+const STATUS_TONE: Record<
   Student['status'],
-  'default' | 'secondary' | 'outline'
+  'default' | 'success' | 'muted' | 'warning'
 > = {
-  active: 'default',
-  inactive: 'secondary',
-  graduated: 'outline',
-  transferred: 'outline',
-  withdrawn: 'secondary',
+  active: 'success',
+  inactive: 'muted',
+  graduated: 'default',
+  transferred: 'warning',
+  withdrawn: 'muted',
 };
 
-export function StudentsList({ students }: { students: Student[] }) {
+export function StudentsList({
+  students,
+  schoolId,
+}: {
+  students: Student[];
+  schoolId: string;
+}) {
+  const [editStudent, setEditStudent] = useState<Student | null>(null);
+  const [deleteStudent, setDeleteStudent] = useState<Student | null>(null);
+
+  const deleteMutation = useKinderMutation({
+    mutationFn: deleteStudentAction,
+    invalidateKeys: [kinderQueryKeys.students.list(schoolId)],
+    refresh: false,
+    onSuccess: () => setDeleteStudent(null),
+  });
+
   if (students.length === 0) {
     return (
       <EmptyState
@@ -37,7 +64,10 @@ export function StudentsList({ students }: { students: Student[] }) {
   return (
     <>
       <div className="hidden md:block">
-        <DataTableShell>
+        <DataTableCard
+          description={<Trans i18nKey="kinder:students.listDescription" />}
+          title={<Trans i18nKey="kinder:students.directory" />}
+        >
           <table className="w-full text-sm">
             <thead>
               <tr>
@@ -60,31 +90,35 @@ export function StudentsList({ students }: { students: Student[] }) {
               {students.map((student) => (
                 <tr key={student.id}>
                   <td className="font-mono text-xs">{student.student_code}</td>
-                  <td className="font-medium">{student.full_name}</td>
+                  <td>
+                    <Link
+                      className="font-medium hover:text-primary hover:underline"
+                      href={`${pathsConfig.app.studentDetail}/${student.id}`}
+                    >
+                      {student.full_name}
+                    </Link>
+                  </td>
                   <td className="text-muted-foreground">
                     {student.class_name ?? '—'}
                   </td>
                   <td>
-                    <Badge variant={STATUS_VARIANT[student.status]}>
+                    <StatusBadge tone={STATUS_TONE[student.status]}>
                       <Trans
                         i18nKey={`kinder:students.statuses.${student.status}`}
                       />
-                    </Badge>
+                    </StatusBadge>
                   </td>
                   <td className="text-right">
-                    <Button asChild size="sm" variant="ghost">
-                      <Link
-                        href={`${pathsConfig.app.studentDetail}/${student.id}`}
-                      >
-                        <Trans i18nKey="kinder:students.detail" />
-                      </Link>
-                    </Button>
+                    <EntityRowActions
+                      onDelete={() => setDeleteStudent(student)}
+                      onEdit={() => setEditStudent(student)}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </DataTableShell>
+        </DataTableCard>
       </div>
 
       <div className="space-y-3 md:hidden">
@@ -92,18 +126,21 @@ export function StudentsList({ students }: { students: Student[] }) {
           <article className="kinder-mobile-card" key={student.id}>
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-foreground truncate font-medium">
+                <Link
+                  className="text-foreground truncate font-medium hover:text-primary hover:underline"
+                  href={`${pathsConfig.app.studentDetail}/${student.id}`}
+                >
                   {student.full_name}
-                </p>
+                </Link>
                 <p className="text-muted-foreground mt-0.5 font-mono text-xs">
                   {student.student_code}
                 </p>
               </div>
-              <Badge variant={STATUS_VARIANT[student.status]}>
+              <StatusBadge tone={STATUS_TONE[student.status]}>
                 <Trans
                   i18nKey={`kinder:students.statuses.${student.status}`}
                 />
-              </Badge>
+              </StatusBadge>
             </div>
 
             <div className="text-muted-foreground text-sm">
@@ -113,14 +150,48 @@ export function StudentsList({ students }: { students: Student[] }) {
               </span>
             </div>
 
-            <Button asChild className="w-full" size="sm" variant="outline">
-              <Link href={`${pathsConfig.app.studentDetail}/${student.id}`}>
-                <Trans i18nKey="kinder:students.detail" />
-              </Link>
-            </Button>
+            <EntityRowActions
+              onDelete={() => setDeleteStudent(student)}
+              onEdit={() => setEditStudent(student)}
+            />
           </article>
         ))}
       </div>
+
+      {editStudent ? (
+        <EditStudentDialog
+          hideTrigger
+          onOpenChange={(open) => {
+            if (!open) {
+              setEditStudent(null);
+            }
+          }}
+          open
+          schoolId={schoolId}
+          student={editStudent}
+        />
+      ) : null}
+
+      <KinderConfirmDialog
+        description={<Trans i18nKey="kinder:ui.confirmDeleteDescription" />}
+        onConfirm={() => {
+          if (deleteStudent) {
+            deleteMutation.mutate({
+              studentId: deleteStudent.id,
+              schoolId,
+            });
+          }
+        }}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDeleteStudent(null);
+          }
+        }}
+        open={Boolean(deleteStudent)}
+        pending={deleteMutation.isPending}
+        title={<Trans i18nKey="kinder:ui.confirmDelete" />}
+        confirmLabel={<Trans i18nKey="kinder:students.delete" />}
+      />
     </>
   );
 }

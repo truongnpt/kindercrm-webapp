@@ -55,6 +55,7 @@ export function InvoiceDetailPanel({
   adjustments,
   payments,
   refunds,
+  view = 'all',
 }: {
   invoice: InvoiceWithStudent;
   schoolId: string;
@@ -62,6 +63,7 @@ export function InvoiceDetailPanel({
   adjustments: InvoiceAdjustment[];
   payments: InvoicePayment[];
   refunds: PaymentRefund[];
+  view?: 'all' | 'overview' | 'payments';
 }) {
   const { t } = useTranslation('kinder');
   const balance = Math.max(0, invoice.total_amount - invoice.paid_amount);
@@ -107,6 +109,8 @@ export function InvoiceDetailPanel({
 
   return (
     <div className="space-y-8">
+      {view === 'all' || view === 'overview' ? (
+        <>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <div className="kinder-mobile-card">
           <p className="text-muted-foreground text-sm">
@@ -297,7 +301,11 @@ export function InvoiceDetailPanel({
           </Form>
         ) : null}
       </section>
+        </>
+      ) : null}
 
+      {view === 'all' || view === 'payments' ? (
+        <>
       <section className="space-y-3">
         <h2 className="font-semibold">
           <Trans i18nKey="kinder:finance.payments.title" />
@@ -539,6 +547,8 @@ export function InvoiceDetailPanel({
         >
           <Trans i18nKey="kinder:finance.invoices.cancel" />
         </Button>
+      ) : null}
+        </>
       ) : null}
     </div>
   );

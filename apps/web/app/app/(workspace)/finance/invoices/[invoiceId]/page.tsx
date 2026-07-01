@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation';
 
-import { Badge } from '@kit/ui/badge';
 import { Trans } from '@kit/ui/trans';
 
 import {
   DetailPageHeader,
   KinderPageBody,
+  StatusBadge,
 } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import { getVietQrConfig } from '~/lib/kinder/finance/vietqr';
@@ -22,8 +22,19 @@ import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
-import { InvoiceDetailPanel } from './_components/invoice-detail-panel';
-import { InvoiceVietQrPanel } from './_components/invoice-vietqr-panel';
+import { InvoiceDetailWorkspace } from './_components/invoice-detail-workspace';
+
+const INVOICE_STATUS_TONE: Record<
+  string,
+  'default' | 'success' | 'muted' | 'warning' | 'danger'
+> = {
+  draft: 'muted',
+  issued: 'default',
+  partial: 'warning',
+  paid: 'success',
+  cancelled: 'danger',
+  overdue: 'danger',
+};
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -68,7 +79,7 @@ async function InvoiceDetailPage({
   const balance = Math.max(0, invoice.total_amount - invoice.paid_amount);
   const vietQrConfig = getVietQrConfig();
   const showQr =
-    vietQrConfig &&
+    Boolean(vietQrConfig) &&
     balance > 0 &&
     invoice.status !== 'cancelled' &&
     invoice.status !== 'paid';
@@ -77,35 +88,37 @@ async function InvoiceDetailPage({
     <>
       <DetailPageHeader
         backHref={pathsConfig.app.finance}
+        breadcrumbs={[
+          {
+            label: <Trans i18nKey="kinder:finance.title" />,
+            href: pathsConfig.app.finance,
+          },
+          { label: invoice.title },
+        ]}
         description={
           <span className="flex flex-wrap items-center gap-2">
             <span className="font-mono text-xs">{invoice.invoice_number}</span>
-            <Badge>
+            <StatusBadge tone={INVOICE_STATUS_TONE[invoice.status] ?? 'default'}>
               <Trans
                 i18nKey={`kinder:finance.invoices.statuses.${invoice.status}`}
               />
-            </Badge>
+            </StatusBadge>
           </span>
         }
         title={invoice.title}
       />
 
       <KinderPageBody>
-        {showQr && vietQrConfig ? (
-          <InvoiceVietQrPanel
-            amount={balance}
-            config={vietQrConfig}
-            invoiceNumber={invoice.invoice_number}
-            studentName={invoice.student?.full_name ?? ''}
-          />
-        ) : null}
-        <InvoiceDetailPanel
+        <InvoiceDetailWorkspace
           adjustments={adjustments}
+          balance={balance}
           invoice={invoice}
           lineItems={lineItems}
           payments={payments}
           refunds={refunds}
           schoolId={context.school.id}
+          showQr={showQr}
+          vietQrConfig={vietQrConfig}
         />
       </KinderPageBody>
     </>

@@ -75,6 +75,7 @@ async function AiAssistantPage({
   return (
     <>
       <KinderPageHeader
+        breadcrumbs={[{ label: <Trans i18nKey="kinder:ai.title" /> }]}
         description={
           aiConfig.isConfigured ? (
             <Trans i18nKey="kinder:ai.description" />

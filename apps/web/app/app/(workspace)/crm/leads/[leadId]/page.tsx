@@ -5,7 +5,6 @@ import { Trans } from '@kit/ui/trans';
 import {
   DetailPageHeader,
   KinderPageBody,
-  SectionCard,
 } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import {
@@ -22,8 +21,8 @@ import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
-import { LeadDetailForm } from './_components/lead-detail-form';
-import { LeadNotesPanel } from './_components/lead-notes-panel';
+import { LeadDetailActions } from './_components/lead-detail-actions';
+import { LeadDetailWorkspace } from './_components/lead-detail-workspace';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -64,24 +63,32 @@ async function LeadDetailPage({
   return (
     <>
       <DetailPageHeader
-        backHref={pathsConfig.app.crm}
-        description={<Trans i18nKey={LEAD_STAGE_I18N_KEYS[lead.stage]} />}
-        title={lead.parent_name}
-      />
-
-      <KinderPageBody>
-        <SectionCard>
-          <LeadDetailForm
+        actions={
+          <LeadDetailActions
             lead={lead}
             members={members}
             schoolId={context.school.id}
             sources={sources}
           />
-        </SectionCard>
+        }
+        backHref={pathsConfig.app.crm}
+        breadcrumbs={[
+          {
+            label: <Trans i18nKey="kinder:crm.title" />,
+            href: pathsConfig.app.crm,
+          },
+          { label: lead.parent_name },
+        ]}
+        description={<Trans i18nKey={LEAD_STAGE_I18N_KEYS[lead.stage]} />}
+        title={lead.parent_name}
+      />
 
-        <LeadNotesPanel
+      <KinderPageBody>
+        <LeadDetailWorkspace
           activities={activities}
+          lead={lead}
           leadId={leadId}
+          members={members}
           notes={notes}
           schoolId={context.school.id}
         />

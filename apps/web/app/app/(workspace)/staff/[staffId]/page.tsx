@@ -1,9 +1,8 @@
 import { notFound } from 'next/navigation';
 
-import {
-  DetailPageHeader,
-  KinderPageBody,
-} from '~/components/kinder-ui';
+import { Trans } from '@kit/ui/trans';
+
+import { DetailPageHeader, KinderPageBody } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import {
   loadActiveClassesForStaff,
@@ -22,7 +21,8 @@ import { requireUserInServerComponent } from '~/lib/server/require-user-in-serve
 
 import type { StaffHomeroomClass } from '~/lib/kinder/staff/types';
 
-import { StaffDetailPanel } from './_components/staff-detail-panel';
+import { StaffDetailActions } from './_components/staff-detail-actions';
+import { StaffDetailWorkspace } from './_components/staff-detail-workspace';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -72,6 +72,7 @@ async function StaffDetailPage({
   ]);
 
   const canManage = ['owner', 'admin'].includes(context.role);
+  const activeContract = contracts.find((contract) => contract.is_active);
 
   const normalizedAssignments = (classAssignments as Array<{
     id: string;
@@ -86,22 +87,38 @@ async function StaffDetailPage({
   return (
     <>
       <DetailPageHeader
+        actions={
+          canManage ? (
+            <StaffDetailActions
+              campuses={campuses}
+              departments={departments}
+              employee={employee}
+              positions={positions}
+              schoolId={context.school.id}
+            />
+          ) : undefined
+        }
         backHref={pathsConfig.app.staff}
+        breadcrumbs={[
+          {
+            label: <Trans i18nKey="kinder:staff.title" />,
+            href: pathsConfig.app.staff,
+          },
+          { label: employee.full_name },
+        ]}
         description={employee.employee_code}
         title={employee.full_name}
       />
 
       <KinderPageBody>
-        <StaffDetailPanel
+        <StaffDetailWorkspace
+          activeContract={activeContract}
+          assignments={normalizedAssignments}
           availableClasses={availableClasses}
-          campuses={campuses}
           canManage={canManage}
-          classAssignments={normalizedAssignments}
           contracts={contracts}
-          departments={departments}
           employee={employee}
           homeroomClasses={homeroomClasses}
-          positions={positions}
           schoolId={context.school.id}
         />
       </KinderPageBody>

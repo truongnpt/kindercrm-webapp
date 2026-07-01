@@ -27,6 +27,7 @@ import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
+import { AttendanceCalendarPanel } from './_components/attendance-calendar-panel';
 import { ClassDateFilters } from './_components/class-date-filters';
 import { DailyAttendancePanel } from './_components/daily-attendance-panel';
 import { LeaveRequestsPanel } from './_components/leave-requests-panel';
@@ -81,7 +82,8 @@ async function AttendancePage({
       : undefined;
   const defaultTab = params.tab ?? 'daily';
 
-  const [roster, leaveRequests, students, monthlySummary] = await Promise.all([
+  const [roster, leaveRequests, allLeaveRequests, students, monthlySummary] =
+    await Promise.all([
     classId
       ? loadAttendanceForClassDate(
           context.school.id,
@@ -90,6 +92,7 @@ async function AttendancePage({
         )
       : Promise.resolve([]),
     loadLeaveRequests(context.school.id, 'pending'),
+    loadLeaveRequests(context.school.id),
     loadStudentsForLeaveRequest(context.school.id),
     loadAttendanceMonthlySummary(context.school.id, month, reportClassId),
   ]);
@@ -97,6 +100,7 @@ async function AttendancePage({
   return (
     <>
       <KinderPageHeader
+        breadcrumbs={[{ label: <Trans i18nKey="kinder:attendance.title" /> }]}
         description={<Trans i18nKey="kinder:attendance.description" />}
         title={<Trans i18nKey="kinder:attendance.title" />}
       />
@@ -109,6 +113,9 @@ async function AttendancePage({
             </TabbedModuleTrigger>
             <TabbedModuleTrigger value="leave">
               <Trans i18nKey="kinder:attendance.tabs.leave" />
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="calendar">
+              <Trans i18nKey="kinder:attendance.tabs.calendar" />
             </TabbedModuleTrigger>
             <TabbedModuleTrigger value="report">
               <Trans i18nKey="kinder:attendance.tabs.report" />
@@ -148,6 +155,10 @@ async function AttendancePage({
               schoolId={context.school.id}
               students={students}
             />
+          </TabbedModuleContent>
+
+          <TabbedModuleContent value="calendar">
+            <AttendanceCalendarPanel leaveRequests={allLeaveRequests} />
           </TabbedModuleContent>
 
           <TabbedModuleContent value="report">

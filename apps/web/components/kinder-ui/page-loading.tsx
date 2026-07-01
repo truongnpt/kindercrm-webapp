@@ -10,12 +10,12 @@ export function PageLoading() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, index) => (
-          <Skeleton className="h-28 rounded-2xl" key={index} />
+          <Skeleton className="h-28 rounded-xl" key={index} />
         ))}
       </div>
 
-      <Skeleton className="h-12 w-full max-w-md rounded-2xl" />
-      <Skeleton className="h-80 rounded-2xl" />
+      <Skeleton className="h-12 w-full max-w-md rounded-xl" />
+      <Skeleton className="h-80 rounded-xl" />
     </div>
   );
 }

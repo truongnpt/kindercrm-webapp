@@ -7,7 +7,7 @@ import { Wallet } from 'lucide-react';
 import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
 
-import { DataTableShell, EmptyState } from '~/components/kinder-ui';
+import { DataTableCard, EmptyState } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
 import type { InvoiceWithStudent } from '~/lib/kinder/finance/types';
@@ -25,17 +25,20 @@ export function DebtsList({ debts }: { debts: InvoiceWithStudent[] }) {
   }
 
   return (
-    <DataTableShell>
+    <DataTableCard
+      description={<Trans i18nKey="kinder:finance.debts.listDescription" />}
+      title={<Trans i18nKey="kinder:finance.debts.title" />}
+    >
       <table className="w-full text-sm">
         <thead>
           <tr>
             <th>
               <Trans i18nKey="kinder:finance.invoices.student" />
             </th>
-            <th>
+            <th className="hidden sm:table-cell">
               <Trans i18nKey="kinder:finance.invoices.number" />
             </th>
-            <th>
+            <th className="hidden lg:table-cell">
               <Trans i18nKey="kinder:finance.invoices.dueDate" />
             </th>
             <th className="text-right">
@@ -51,16 +54,20 @@ export function DebtsList({ debts }: { debts: InvoiceWithStudent[] }) {
             return (
               <tr key={invoice.id}>
                 <td>
-                  <p>{invoice.student.full_name}</p>
+                  <p className="font-medium">{invoice.student.full_name}</p>
                   <p className="text-muted-foreground text-xs">
                     {invoice.student.class_name ?? '—'}
                   </p>
                 </td>
-                <td className="font-mono text-xs">{invoice.invoice_number}</td>
-                <td>{invoice.due_date}</td>
-                <td className="text-right font-medium">{formatVnd(balance)}</td>
+                <td className="hidden font-mono text-xs sm:table-cell">
+                  {invoice.invoice_number}
+                </td>
+                <td className="hidden lg:table-cell">{invoice.due_date}</td>
+                <td className="text-right font-semibold">
+                  {formatVnd(balance)}
+                </td>
                 <td className="text-right">
-                  <Button asChild size="sm" variant="outline">
+                  <Button asChild className="rounded-lg" size="sm" variant="outline">
                     <Link
                       href={`${pathsConfig.app.financeInvoice}/${invoice.id}`}
                     >
@@ -73,6 +80,6 @@ export function DebtsList({ debts }: { debts: InvoiceWithStudent[] }) {
           })}
         </tbody>
       </table>
-    </DataTableShell>
+    </DataTableCard>
   );
 }

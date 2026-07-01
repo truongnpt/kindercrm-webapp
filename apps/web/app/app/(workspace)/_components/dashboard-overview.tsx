@@ -13,6 +13,9 @@ import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
 
 import {
+  BentoGrid,
+  BentoTile,
+  BentoTileHeader,
   MiniStatCard,
   SectionCard,
   StatCard,
@@ -36,7 +39,7 @@ export function DashboardOverview({
 }) {
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <BentoGrid columns={4}>
         {features.students ? (
           <StatCard
             href={pathsConfig.app.students}
@@ -73,20 +76,21 @@ export function DashboardOverview({
             value={formatVnd(summary.outstandingDebt)}
           />
         ) : null}
-      </div>
+      </BentoGrid>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <BentoGrid columns={2}>
         {features.attendance ? (
-          <SectionCard
-            action={
-              <Button asChild size="sm" variant="ghost">
-                <Link href={pathsConfig.app.attendance}>
-                  <Trans i18nKey="kinder:attendance.title" />
-                </Link>
-              </Button>
-            }
-            title={<Trans i18nKey="kinder:dashboard.stats.attendanceToday" />}
-          >
+          <BentoTile colSpan={1}>
+            <BentoTileHeader
+              action={
+                <Button asChild size="sm" variant="ghost">
+                  <Link href={pathsConfig.app.attendance}>
+                    <Trans i18nKey="kinder:attendance.title" />
+                  </Link>
+                </Button>
+              }
+              title={<Trans i18nKey="kinder:dashboard.stats.attendanceToday" />}
+            />
             <div className="flex items-end gap-3">
               <p className="text-foreground text-3xl font-semibold tracking-tight">
                 {summary.attendanceToday.present}/{summary.attendanceToday.total}
@@ -101,13 +105,14 @@ export function DashboardOverview({
                 style={{ width: `${summary.attendanceToday.rate}%` }}
               />
             </div>
-          </SectionCard>
+          </BentoTile>
         ) : null}
 
         {features.crm ? (
-          <SectionCard
-            title={<Trans i18nKey="kinder:dashboard.stats.leadPipeline" />}
-          >
+          <BentoTile colSpan={1}>
+            <BentoTileHeader
+              title={<Trans i18nKey="kinder:dashboard.stats.leadPipeline" />}
+            />
             <ul className="space-y-3">
               {Object.entries(summary.leadsByStage)
                 .filter(([, count]) => count > 0)
@@ -131,28 +136,32 @@ export function DashboardOverview({
                   </li>
                 ))}
             </ul>
-          </SectionCard>
+          </BentoTile>
         ) : null}
-      </div>
+      </BentoGrid>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {features.students ? (
+      <SectionCard
+        title={<Trans i18nKey="kinder:dashboard.sections.quickStats" />}
+      >
+        <BentoGrid columns={3}>
+          {features.students ? (
+            <MiniStatCard
+              labelKey="kinder:dashboard.stats.activeStudents"
+              value={String(summary.activeStudents)}
+            />
+          ) : null}
           <MiniStatCard
-            labelKey="kinder:dashboard.stats.activeStudents"
-            value={String(summary.activeStudents)}
+            labelKey="kinder:dashboard.stats.activeClasses"
+            value={String(summary.activeClasses)}
           />
-        ) : null}
-        <MiniStatCard
-          labelKey="kinder:dashboard.stats.activeClasses"
-          value={String(summary.activeClasses)}
-        />
-        {features.attendance ? (
-          <MiniStatCard
-            labelKey="kinder:dashboard.stats.pendingLeave"
-            value={String(summary.pendingLeaveRequests)}
-          />
-        ) : null}
-      </div>
+          {features.attendance ? (
+            <MiniStatCard
+              labelKey="kinder:dashboard.stats.pendingLeave"
+              value={String(summary.pendingLeaveRequests)}
+            />
+          ) : null}
+        </BentoGrid>
+      </SectionCard>
     </div>
   );
 }

@@ -50,14 +50,21 @@ export function WorkspaceHeader({
   className?: string;
 }) {
   return (
-    <header className={cn('kinder-sticky-header hidden lg:block', className)}>
-      <div className="flex h-16 items-center gap-3 px-6">
-        <SidebarTrigger className="text-muted-foreground hover:text-foreground kinder-focus-ring size-9 shrink-0" />
+    <header
+      className={cn(
+        'sticky top-0 z-30 hidden h-16 shrink-0 border-b border-border bg-card lg:flex',
+        className,
+      )}
+    >
+      <div className="flex h-full w-full items-center gap-4 px-4 sm:px-6 lg:px-8">
+        <SidebarTrigger className="text-muted-foreground hover:bg-muted hover:text-foreground size-10 shrink-0 rounded-lg" />
 
-        <WorkspaceSearch navigation={navigation} />
+        <div className="min-w-0 flex-1">
+          <WorkspaceSearch navigation={navigation} />
+        </div>
 
-        <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
-          <div className="hidden min-w-[140px] xl:block">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <div className="hidden min-w-[148px] xl:block">
             <SchoolSwitcher activeSchoolId={activeSchoolId} schools={schools} />
           </div>
 
@@ -67,7 +74,12 @@ export function WorkspaceHeader({
           />
 
           {showPlatformLink ? (
-            <Button asChild className="hidden xl:inline-flex" size="sm" variant="outline">
+            <Button
+              asChild
+              className="hidden rounded-lg xl:inline-flex"
+              size="sm"
+              variant="outline"
+            >
               <Link href={pathsConfig.platform.home}>
                 <Shield className="mr-1.5 size-4" />
                 <Trans i18nKey="kinder:platform.nav.short" />
@@ -75,11 +87,11 @@ export function WorkspaceHeader({
             </Button>
           ) : null}
 
-          {featuresFlagConfig.enableThemeToggle ? <ModeToggle /> : null}
+          {featuresFlagConfig.enableThemeToggle ? (
+            <ModeToggle className="rounded-lg" />
+          ) : null}
 
-          <div className="border-border/60 ml-1 border-l pl-2">
-            <AppAccountDropdown user={user} />
-          </div>
+          <AppAccountDropdown user={user} />
         </div>
       </div>
     </header>

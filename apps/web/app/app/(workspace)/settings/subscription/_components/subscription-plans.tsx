@@ -1,21 +1,19 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
 
 import { Badge } from '@kit/ui/badge';
 import { Button } from '@kit/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@kit/ui/card';
 import { If } from '@kit/ui/if';
 import { Trans } from '@kit/ui/trans';
 
+import {
+  kinderQueryKeys,
+  KinderSubmitButton,
+  PricingCard,
+  PricingGrid,
+  useKinderMutation,
+} from '~/components/kinder-ui';
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
 import { hasPackageFeature } from '~/lib/kinder/subscription/package-features';
 import { changePackageAction } from '~/lib/kinder/subscription/server-actions';
@@ -33,7 +31,7 @@ export function SubscriptionPlans({
   isOwner: boolean;
 }) {
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <PricingGrid>
       {packages.map((pkg) => (
         <PlanCard
           currentPackageId={currentPackageId}
@@ -43,7 +41,7 @@ export function SubscriptionPlans({
           schoolId={schoolId}
         />
       ))}
-    </div>
+    </PricingGrid>
   );
 }
 
@@ -61,88 +59,86 @@ function PlanCard({
   const { t } = useTranslation('kinder');
   const isCurrent = pkg.id === currentPackageId;
   const isEnterprise = pkg.code === 'enterprise';
+  const isRecommended = pkg.code === 'pro';
 
-  const onSelect = async () => {
-    const promise = changePackageAction({
-      schoolId,
-      packageId: pkg.id,
-    });
-
-    toast.promise(promise, {
+  const changePackage = useKinderMutation({
+    mutationFn: changePackageAction,
+    invalidateKeys: [
+      kinderQueryKeys.subscription(schoolId),
+      kinderQueryKeys.school(schoolId),
+    ],
+    toast: {
       loading: t('subscription.changing'),
       success: t('subscription.changed'),
-      error: t('common:genericServerError', { ns: 'common' }),
-    });
+      error: t('ui.toast.error'),
+    },
+  });
 
-    await promise;
+  const onSelect = () => {
+    changePackage.mutate({ schoolId, packageId: pkg.id });
   };
 
+  const features = [
+    <Trans
+      i18nKey="kinder:subscription.maxStudents"
+      key="students"
+      values={{ count: pkg.max_students }}
+    />,
+    <Trans
+      i18nKey="kinder:subscription.maxCampuses"
+      key="campuses"
+      values={{ count: pkg.max_campuses }}
+    />,
+    ...(hasPackageFeature(pkg, 'crm') ? ['CRM'] : []),
+    ...(hasPackageFeature(pkg, 'classes') ? ['Classes'] : []),
+  ];
+
   return (
-    <Card className={isCurrent ? 'border-primary' : undefined}>
-      <CardHeader>
-        <div className="flex items-center justify-between gap-2">
-          <CardTitle>{pkg.name}</CardTitle>
-          <If condition={isCurrent}>
-            <Badge>
-              <Trans i18nKey="kinder:subscription.current" />
-            </Badge>
-          </If>
-        </div>
-        <CardDescription>{pkg.description}</CardDescription>
-      </CardHeader>
-
-      <CardContent className="space-y-2 text-sm">
-        <p className="text-2xl font-semibold">
-          {formatVnd(pkg.price_monthly)}
-          {pkg.price_monthly > 0 ? (
-            <span className="text-muted-foreground text-sm font-normal">
-              {' '}
-              <Trans i18nKey="kinder:subscription.perMonth" />
-            </span>
-          ) : null}
-        </p>
-        <ul className="text-muted-foreground space-y-1">
-          <li>
-            <Trans
-              i18nKey="kinder:subscription.maxStudents"
-              values={{ count: pkg.max_students }}
-            />
-          </li>
-          <li>
-            <Trans
-              i18nKey="kinder:subscription.maxCampuses"
-              values={{ count: pkg.max_campuses }}
-            />
-          </li>
-          <If condition={hasPackageFeature(pkg, 'crm')}>
-            <li>CRM</li>
-          </If>
-          <If condition={hasPackageFeature(pkg, 'classes')}>
-            <li>Classes</li>
-          </If>
-        </ul>
-      </CardContent>
-
-      <CardFooter>
-        {isCurrent ? (
-          <Button className="w-full" disabled variant="secondary">
+    <PricingCard
+      badge={
+        isCurrent ? (
+          <Badge className="rounded-md">
+            <Trans i18nKey="kinder:subscription.current" />
+          </Badge>
+        ) : isRecommended ? (
+          <Badge className="bg-primary/10 text-primary rounded-md border-primary/20">
+            <Trans i18nKey="kinder:subscription.recommended" />
+          </Badge>
+        ) : undefined
+      }
+      description={pkg.description}
+      features={features}
+      footer={
+        isCurrent ? (
+          <Button className="w-full rounded-lg" disabled variant="secondary">
             <Trans i18nKey="kinder:subscription.current" />
           </Button>
         ) : isEnterprise ? (
-          <Button className="w-full" disabled variant="outline">
+          <Button className="w-full rounded-lg" disabled variant="outline">
             <Trans i18nKey="kinder:subscription.enterpriseContact" />
           </Button>
         ) : (
-          <Button
-            className="w-full"
+          <KinderSubmitButton
+            className="w-full rounded-lg"
             disabled={!isOwner}
-            onClick={() => void onSelect()}
+            loading={changePackage.isPending}
+            onClick={onSelect}
             variant="default"
           >
             <Trans i18nKey="kinder:subscription.selectPlan" />
-          </Button>
-        )}
-      </CardFooter>
-    </Card>
+          </KinderSubmitButton>
+        )
+      }
+      highlighted={isCurrent || isRecommended}
+      name={pkg.name}
+      price={formatVnd(pkg.price_monthly)}
+      priceSuffix={
+        pkg.price_monthly > 0 ? (
+          <Trans i18nKey="kinder:subscription.perMonth" />
+        ) : (
+          <Trans i18nKey="kinder:subscription.freeForever" />
+        )
+      }
+    />
   );
 }

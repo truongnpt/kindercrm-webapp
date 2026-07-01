@@ -25,7 +25,7 @@ export function InlineAlert({
   return (
     <div
       className={cn(
-        'flex gap-3 rounded-2xl border-0 px-4 py-3.5',
+        'flex gap-3 rounded-lg border border-border px-4 py-3.5',
         toneStyles[tone],
         className,
       )}

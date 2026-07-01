@@ -4,31 +4,31 @@ import Link from 'next/link';
 
 import { Receipt } from 'lucide-react';
 
-import { Badge } from '@kit/ui/badge';
 import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
 
-import { DataTableShell, EmptyState } from '~/components/kinder-ui';
+import { DataTableCard, EmptyState, StatusBadge } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
 import type { InvoiceWithStudent } from '~/lib/kinder/finance/types';
 
-const STATUS_VARIANT: Record<
+const STATUS_TONE: Record<
   InvoiceWithStudent['status'],
-  'default' | 'secondary' | 'outline' | 'destructive'
+  'default' | 'success' | 'warning' | 'danger' | 'muted' | 'info'
 > = {
-  draft: 'secondary',
-  issued: 'outline',
-  partial: 'default',
-  paid: 'default',
-  overdue: 'destructive',
-  cancelled: 'secondary',
+  draft: 'muted',
+  issued: 'info',
+  partial: 'warning',
+  paid: 'success',
+  overdue: 'danger',
+  cancelled: 'muted',
 };
 
 export function InvoicesList({ invoices }: { invoices: InvoiceWithStudent[] }) {
   if (invoices.length === 0) {
     return (
       <EmptyState
+        compact
         descriptionKey="kinder:ui.emptyDefaultDescription"
         icon={Receipt}
         titleKey="kinder:finance.invoices.empty"
@@ -37,7 +37,10 @@ export function InvoicesList({ invoices }: { invoices: InvoiceWithStudent[] }) {
   }
 
   return (
-    <DataTableShell>
+    <DataTableCard
+      description={<Trans i18nKey="kinder:finance.invoices.listDescription" />}
+      title={<Trans i18nKey="kinder:finance.invoices.recent" />}
+    >
       <table className="w-full text-sm">
         <thead>
           <tr>
@@ -47,7 +50,7 @@ export function InvoicesList({ invoices }: { invoices: InvoiceWithStudent[] }) {
             <th>
               <Trans i18nKey="kinder:finance.invoices.student" />
             </th>
-            <th>
+            <th className="hidden md:table-cell">
               <Trans i18nKey="kinder:finance.invoices.total" />
             </th>
             <th>
@@ -60,19 +63,26 @@ export function InvoicesList({ invoices }: { invoices: InvoiceWithStudent[] }) {
           {invoices.map((invoice) => (
             <tr key={invoice.id}>
               <td className="font-mono text-xs">{invoice.invoice_number}</td>
-              <td className="font-medium">
-                {invoice.student?.full_name ?? '—'}
-              </td>
-              <td>{formatVnd(invoice.total_amount)}</td>
               <td>
-                <Badge variant={STATUS_VARIANT[invoice.status]}>
+                <p className="font-medium">
+                  {invoice.student?.full_name ?? '—'}
+                </p>
+                <p className="text-muted-foreground mt-0.5 text-xs md:hidden">
+                  {formatVnd(invoice.total_amount)}
+                </p>
+              </td>
+              <td className="hidden md:table-cell">
+                {formatVnd(invoice.total_amount)}
+              </td>
+              <td>
+                <StatusBadge tone={STATUS_TONE[invoice.status]}>
                   <Trans
                     i18nKey={`kinder:finance.invoices.statuses.${invoice.status}`}
                   />
-                </Badge>
+                </StatusBadge>
               </td>
               <td className="text-right">
-                <Button asChild size="sm" variant="ghost">
+                <Button asChild className="rounded-lg" size="sm" variant="outline">
                   <Link
                     href={`${pathsConfig.app.financeInvoice}/${invoice.id}`}
                   >
@@ -84,6 +94,6 @@ export function InvoicesList({ invoices }: { invoices: InvoiceWithStudent[] }) {
           ))}
         </tbody>
       </table>
-    </DataTableShell>
+    </DataTableCard>
   );
 }

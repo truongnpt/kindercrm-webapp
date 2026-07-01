@@ -2,14 +2,7 @@ import { Suspense } from 'react';
 
 import { Trans } from '@kit/ui/trans';
 
-import {
-  KinderPageBody,
-  KinderPageHeader,
-  TabbedModule,
-  TabbedModuleContent,
-  TabbedModuleList,
-  TabbedModuleTrigger,
-} from '~/components/kinder-ui';
+import { KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
 import {
   loadActiveStudentsForFinance,
   loadActiveTuitionFeeItems,
@@ -25,11 +18,9 @@ import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
 import { CreateInvoiceDialog } from './_components/create-invoice-dialog';
-import { DebtsList } from './_components/debts-list';
-import { FinanceDashboard } from './_components/finance-dashboard';
+import { FinanceOverview } from './_components/finance-overview';
+import { FinanceWorkspace } from './_components/finance-workspace';
 import { InvoiceStatusFilter } from './_components/invoice-status-filter';
-import { InvoicesList } from './_components/invoices-list';
-import { TuitionFeesPanel } from './_components/tuition-fees-panel';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -87,43 +78,21 @@ async function FinancePage({
             />
           </>
         }
+        breadcrumbs={[{ label: <Trans i18nKey="kinder:finance.title" /> }]}
         description={<Trans i18nKey="kinder:finance.description" />}
         title={<Trans i18nKey="kinder:finance.title" />}
       />
 
       <KinderPageBody>
-        <TabbedModule defaultValue={defaultTab}>
-          <TabbedModuleList>
-            <TabbedModuleTrigger value="overview">
-              <Trans i18nKey="kinder:finance.tabs.overview" />
-            </TabbedModuleTrigger>
-            <TabbedModuleTrigger value="invoices">
-              <Trans i18nKey="kinder:finance.tabs.invoices" />
-            </TabbedModuleTrigger>
-            <TabbedModuleTrigger value="tuition">
-              <Trans i18nKey="kinder:finance.tabs.tuition" />
-            </TabbedModuleTrigger>
-            <TabbedModuleTrigger value="debts">
-              <Trans i18nKey="kinder:finance.tabs.debts" />
-            </TabbedModuleTrigger>
-          </TabbedModuleList>
-
-          <TabbedModuleContent value="overview">
-            <FinanceDashboard summary={summary} />
-          </TabbedModuleContent>
-
-          <TabbedModuleContent value="invoices">
-            <InvoicesList invoices={invoices} />
-          </TabbedModuleContent>
-
-          <TabbedModuleContent value="tuition">
-            <TuitionFeesPanel feeItems={feeItems} schoolId={context.school.id} />
-          </TabbedModuleContent>
-
-          <TabbedModuleContent value="debts">
-            <DebtsList debts={debts} />
-          </TabbedModuleContent>
-        </TabbedModule>
+        <FinanceOverview summary={summary} />
+        <FinanceWorkspace
+          debts={debts}
+          defaultTab={defaultTab}
+          feeItems={feeItems}
+          invoices={invoices}
+          schoolId={context.school.id}
+          summary={summary}
+        />
       </KinderPageBody>
     </>
   );

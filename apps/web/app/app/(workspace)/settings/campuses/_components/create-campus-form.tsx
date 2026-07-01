@@ -3,9 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
 
-import { Button } from '@kit/ui/button';
 import {
   Form,
   FormControl,
@@ -25,6 +23,7 @@ import {
 import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
+import { kinderQueryKeys, KinderSubmitButton, useKinderMutation } from '~/components/kinder-ui';
 import { CreateCampusSchema } from '~/lib/kinder/tenant/schemas/campus.schema';
 import { createCampusAction } from '~/lib/kinder/tenant/server-actions';
 import type { Campus } from '~/lib/kinder/types';
@@ -54,25 +53,29 @@ export function CreateCampusForm({
 
   const campusType = form.watch('campusType');
 
-  const onSubmit = form.handleSubmit(async (data) => {
-    const promise = createCampusAction(data);
-
-    toast.promise(promise, {
+  const createCampus = useKinderMutation({
+    mutationFn: createCampusAction,
+    invalidateKeys: [kinderQueryKeys.settings.campuses(schoolId)],
+    toast: {
       loading: t('campuses.creating'),
       success: t('campuses.created'),
-      error: t('common:genericServerError', { ns: 'common' }),
-    });
+      error: t('ui.toast.error'),
+    },
+    onSuccess: () => {
+      form.reset({
+        schoolId,
+        name: '',
+        campusType: 'campus',
+        parentCampusId: '',
+        address: '',
+        phone: '',
+        isMain: false,
+      });
+    },
+  });
 
-    await promise;
-    form.reset({
-      schoolId,
-      name: '',
-      campusType: 'campus',
-      parentCampusId: '',
-      address: '',
-      phone: '',
-      isMain: false,
-    });
+  const onSubmit = form.handleSubmit((data) => {
+    createCampus.mutate(data);
   });
 
   return (
@@ -86,10 +89,7 @@ export function CreateCampusForm({
               <FormLabel>
                 <Trans i18nKey="kinder:campuses.type" />
               </FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                value={field.value}
-              >
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue />
@@ -186,9 +186,9 @@ export function CreateCampusForm({
           )}
         />
 
-        <Button type="submit">
+        <KinderSubmitButton loading={createCampus.isPending} type="submit">
           <Trans i18nKey="kinder:campuses.create" />
-        </Button>
+        </KinderSubmitButton>
       </form>
     </Form>
   );

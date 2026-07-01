@@ -8,10 +8,11 @@ import { toast } from 'sonner';
 
 import { Button } from '@kit/ui/button';
 import { Input } from '@kit/ui/input';
+import { cn } from '@kit/ui/utils';
 import { Trans } from '@kit/ui/trans';
 
-import { sendAiChatMessageAction } from '~/lib/kinder/ai/server-actions';
 import { PanelEmpty } from '~/components/kinder-ui';
+import { sendAiChatMessageAction } from '~/lib/kinder/ai/server-actions';
 import type { AiChatMessage, AiChatSession } from '~/lib/kinder/ai/types';
 
 export function AiChatPanel({
@@ -29,7 +30,9 @@ export function AiChatPanel({
 }) {
   const { t } = useTranslation('kinder');
   const [pending, startTransition] = useTransition();
-  const [sessionId, setSessionId] = useState(initialSessionId ?? sessions[0]?.id);
+  const [sessionId, setSessionId] = useState(
+    initialSessionId ?? sessions[0]?.id,
+  );
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState('');
 
@@ -85,47 +88,93 @@ export function AiChatPanel({
   };
 
   return (
-    <div className="kinder-surface flex h-[32rem] flex-col overflow-hidden">
-      <div className="text-muted-foreground border-b px-4 py-2 text-xs">
-        <Trans
-          i18nKey="kinder:ai.creditsRemaining"
-          values={{ count: creditsRemaining }}
-        />
-      </div>
-      <div className="flex-1 space-y-3 overflow-y-auto p-4">
-        {messages.length === 0 ? (
-          <PanelEmpty messageKey="kinder:ai.chatEmpty" />
-        ) : (
-          messages.map((message) => (
-            <div
-              className={
-                message.role === 'user'
-                  ? 'bg-primary/10 ml-8 rounded-lg p-3 text-sm'
-                  : 'bg-muted mr-8 rounded-lg p-3 text-sm'
+    <div className="kinder-chat-layout">
+      <aside className="kinder-chat-sidebar">
+        <div className="border-b border-border px-4 py-3">
+          <p className="text-foreground text-sm font-semibold">
+            <Trans i18nKey="kinder:ai.chatSessions" />
+          </p>
+          <p className="text-muted-foreground mt-1 text-xs">
+            <Trans
+              i18nKey="kinder:ai.creditsRemaining"
+              values={{ count: creditsRemaining }}
+            />
+          </p>
+        </div>
+        <ul className="max-h-48 overflow-y-auto lg:max-h-none lg:flex-1">
+          {sessions.length === 0 ? (
+            <li className="text-muted-foreground px-4 py-6 text-center text-sm">
+              <Trans i18nKey="kinder:ai.noSessions" />
+            </li>
+          ) : (
+            sessions.map((session) => (
+              <li key={session.id}>
+                <button
+                  className={cn(
+                    'hover:bg-muted/50 w-full border-b border-border/60 px-4 py-3 text-left text-sm transition-colors',
+                    sessionId === session.id && 'bg-primary/5 text-primary',
+                  )}
+                  onClick={() => {
+                    setSessionId(session.id);
+                    setMessages([]);
+                  }}
+                  type="button"
+                >
+                  <p className="line-clamp-2 font-medium">
+                    {session.title || t('ai.newChat')}
+                  </p>
+                  <p className="text-muted-foreground mt-0.5 text-xs">
+                    {new Date(session.updated_at).toLocaleString()}
+                  </p>
+                </button>
+              </li>
+            ))
+          )}
+        </ul>
+      </aside>
+
+      <div className="kinder-chat-main">
+        <div className="kinder-chat-messages">
+          {messages.length === 0 ? (
+            <PanelEmpty messageKey="kinder:ai.chatEmpty" />
+          ) : (
+            messages.map((message) => (
+              <div
+                className={
+                  message.role === 'user'
+                    ? 'kinder-chat-bubble--user'
+                    : 'kinder-chat-bubble--assistant'
+                }
+                key={message.id}
+              >
+                {message.content}
+              </div>
+            ))
+          )}
+        </div>
+        <div className="kinder-chat-composer">
+          <Input
+            className="h-11 flex-1 rounded-lg border-border bg-muted/30 shadow-none"
+            disabled={pending || creditsRemaining <= 0}
+            onChange={(event) => setInput(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                onSend();
               }
-              key={message.id}
-            >
-              {message.content}
-            </div>
-          ))
-        )}
-      </div>
-      <div className="flex gap-2 border-t p-3">
-        <Input
-          disabled={pending || creditsRemaining <= 0}
-          onChange={(event) => setInput(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' && !event.shiftKey) {
-              event.preventDefault();
-              onSend();
-            }
-          }}
-          placeholder={t('ai.chatPlaceholder')}
-          value={input}
-        />
-        <Button disabled={pending || creditsRemaining <= 0} onClick={onSend} type="button">
-          <Send className="h-4 w-4" />
-        </Button>
+            }}
+            placeholder={t('ai.chatPlaceholder')}
+            value={input}
+          />
+          <Button
+            className="rounded-lg"
+            disabled={pending || creditsRemaining <= 0}
+            onClick={onSend}
+            type="button"
+          >
+            <Send className="size-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );

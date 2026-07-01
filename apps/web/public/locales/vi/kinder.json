@@ -18,6 +18,9 @@
     "welcome": "Chào mừng đến Kinder CRM",
     "packageLabel": "Gói hiện tại",
     "trialEnds": "Dùng thử đến {{date}}",
+    "sections": {
+      "quickStats": "Thống kê nhanh"
+    },
     "statsPlaceholder": "Các chỉ số CRM, học sinh và tài chính sẽ hiển thị tại đây trong các sprint tiếp theo.",
     "usageTitle": "Hạn mức gói",
     "campusesUsed": "Cơ sở: {{used}} / {{max}}",
@@ -35,6 +38,7 @@
     }
   },
   "workspace": {
+    "search": "Tìm kiếm",
     "searchPlaceholder": "Tìm trang và module…",
     "searchEmpty": "Không tìm thấy kết quả.",
     "searchGroup": "Điều hướng"
@@ -128,6 +132,8 @@
     "upgrade": "Nâng cấp",
     "downgrade": "Hạ gói",
     "enterpriseContact": "Liên hệ sales",
+    "recommended": "Đề xuất",
+    "freeForever": "Miễn phí vĩnh viễn",
     "limits": "Hạn mức",
     "maxStudents": "Tối đa {{count}} học sinh",
     "maxCampuses": "Tối đa {{count}} cơ sở",
@@ -186,10 +192,24 @@
   },
   "crm": {
     "title": "Tuyển sinh",
-    "description": "Quản lý lead và pipeline tuyển sinh.",
+    "description": "Theo dõi phụ huynh quan tâm và chuyển hoá thành học sinh một cách dễ dàng.",
+    "workspaceHint": "Kéo thả lead giữa các cột hoặc dùng menu giai đoạn để cập nhật pipeline.",
+    "emptyDescription": "Bắt đầu bằng cách thêm lead đầu tiên hoặc nhập từ file CSV.",
+    "dragLead": "Kéo lead",
+    "columnEmpty": "Chưa có lead ở giai đoạn này",
+    "searchPlaceholder": "Tìm theo tên, SĐT, nguồn...",
+    "searchEmpty": "Không tìm thấy lead phù hợp với từ khóa.",
+    "stats": {
+      "totalLeads": "Tổng lead",
+      "inPipeline": "Đang theo dõi",
+      "enrolled": "Đã nhập học",
+      "newLeads": "Lead mới"
+    },
     "createLead": "Thêm lead",
     "pipeline": "Pipeline",
     "list": "Danh sách",
+    "listDescription": "Tìm kiếm và quản lý tất cả lead tại một nơi.",
+    "allLeads": "Tất cả lead",
     "empty": "Chưa có lead nào.",
     "parentName": "Tên phụ huynh",
     "phone": "Số điện thoại",
@@ -207,6 +227,8 @@
     "activitiesEmpty": "Chưa có hoạt động nào.",
     "timeline": "Hoạt động",
     "detail": "Chi tiết lead",
+    "detailHint": "Xem thông tin lead, ghi chú và hoạt động pipeline.",
+    "leadProfile": "Thông tin lead",
     "unassigned": "Chưa gán",
     "stages": {
       "new": "Lead mới",
@@ -221,6 +243,15 @@
   "students": {
     "title": "Học sinh",
     "description": "Quản lý hồ sơ và thông tin học sinh.",
+    "directory": "Danh sách học sinh",
+    "listDescription": "Xem và quản lý tất cả học sinh đang theo học.",
+    "workspaceHint": "Lọc theo trạng thái, nhập/xuất dữ liệu và mở hồ sơ học sinh.",
+    "stats": {
+      "total": "Tổng học sinh",
+      "active": "Đang học",
+      "graduated": "Đã tốt nghiệp",
+      "inactive": "Nghỉ / chuyển trường"
+    },
     "create": "Thêm học sinh",
     "empty": "Chưa có học sinh nào.",
     "code": "Mã học sinh",
@@ -238,6 +269,9 @@
     "save": "Lưu",
     "delete": "Xóa học sinh",
     "detail": "Hồ sơ học sinh",
+    "detailHint": "Xem hồ sơ, liên hệ, quyền phụ huynh và lịch sử hoạt động.",
+    "profilePersonal": "Thông tin cá nhân",
+    "enrollmentSource": "Nguồn tuyển sinh",
     "filterAll": "Tất cả",
     "parents": "Phụ huynh",
     "emergency": "Liên hệ khẩn cấp",
@@ -286,6 +320,23 @@
     "semester": "Học kỳ",
     "classroom": "Phòng học",
     "detail": "Chi tiết lớp",
+    "detailHint": "Quản lý thông tin lớp, danh sách học sinh và thời khóa biểu.",
+    "general": "Thông tin chung",
+    "profileAcademic": "Thông tin học tập",
+    "profileSummary": "Tóm tắt lớp",
+    "editClass": "Chỉnh sửa lớp",
+    "editClassDescription": "Cập nhật tên, mã, sĩ số và giáo viên chủ nhiệm.",
+    "confirmArchive": "Lưu trữ lớp này?",
+    "confirmArchiveDescription": "Lớp sẽ được lưu trữ và ẩn khỏi danh sách đang hoạt động. Danh sách học sinh vẫn được giữ.",
+    "rosterHint": "Học sinh đang theo học tại lớp này.",
+    "timetableHint": "Lịch hoạt động trong tuần của lớp.",
+    "scheduleSlots": "{{count}} tiết",
+    "time": "Thời gian",
+    "status": "Trạng thái",
+    "statuses": {
+      "active": "Đang hoạt động",
+      "archived": "Đã lưu trữ"
+    },
     "save": "Lưu",
     "archive": "Lưu trữ lớp",
     "roster": "Danh sách học sinh",
@@ -325,6 +376,8 @@
   "finance": {
     "title": "Tài chính",
     "description": "Quản lý học phí, hóa đơn, thanh toán và công nợ.",
+    "workspaceTitle": "Không gian tài chính",
+    "workspaceHint": "Theo dõi doanh thu, hóa đơn, khoản phí và công nợ.",
     "recordPayment": "Ghi nhận thanh toán",
     "tabs": {
       "overview": "Tổng quan",
@@ -337,6 +390,11 @@
       "outstandingDebt": "Công nợ còn lại",
       "invoicesThisMonth": "Hóa đơn tháng này",
       "paidInvoicesThisMonth": "Đã thanh toán tháng này"
+    },
+    "overview": {
+      "collection": "Tỷ lệ thu",
+      "paidOfTotal": "{{paid}}/{{total}} hóa đơn đã thanh toán",
+      "snapshot": "Tóm tắt tài chính"
     },
     "tuition": {
       "title": "Khoản phí",
@@ -360,6 +418,8 @@
     "invoices": {
       "create": "Tạo hóa đơn",
       "empty": "Chưa có hóa đơn nào.",
+      "recent": "Hóa đơn gần đây",
+      "listDescription": "Theo dõi trạng thái thanh toán và mở chi tiết hóa đơn.",
       "number": "Số HĐ",
       "student": "Học sinh",
       "selectStudent": "Chọn học sinh",
@@ -370,6 +430,7 @@
       "paid": "Đã thu",
       "status": "Trạng thái",
       "detail": "Chi tiết hóa đơn",
+      "detailHint": "Xem khoản thu, ghi nhận thanh toán và tạo mã QR.",
       "notes": "Ghi chú",
       "lineItems": "Chi tiết khoản thu",
       "quantity": "SL",
@@ -385,6 +446,8 @@
       }
     },
     "debts": {
+      "title": "Công nợ",
+      "listDescription": "Học sinh còn hóa đơn chưa thanh toán hoặc thanh toán một phần.",
       "empty": "Không có công nợ.",
       "balance": "Còn nợ"
     },
@@ -440,6 +503,9 @@
     "imported": "Đã nhập {{count}} bản ghi.",
     "partialSuccess": "Nhập {{imported}} thành công, {{failed}} lỗi."
   },
+  "calendar": {
+    "eventsOnDate": "Sự kiện trong ngày đã chọn"
+  },
   "attendance": {
     "title": "Điểm danh",
     "description": "Điểm danh hàng ngày theo lớp, quản lý nghỉ phép và báo cáo.",
@@ -458,6 +524,7 @@
     "tabs": {
       "daily": "Hàng ngày",
       "leave": "Nghỉ phép",
+      "calendar": "Lịch",
       "report": "Báo cáo"
     },
     "summary": {
@@ -503,16 +570,27 @@
     "title": "Nhân viên",
     "description": "Quản lý hồ sơ nhân sự, phòng ban, hợp đồng và phân công lớp.",
     "create": "Thêm nhân viên",
+    "createDescription": "Tạo hồ sơ nhân viên mới và tùy chọn cấp quyền hệ thống.",
+    "editDescription": "Cập nhật thông tin, vai trò và trạng thái làm việc.",
     "empty": "Chưa có nhân viên nào.",
+    "emptyDescription": "Thêm nhân viên đầu tiên hoặc điều chỉnh bộ lọc để xem thêm kết quả.",
+    "workspaceHint": "Duyệt danh sách, lọc theo phòng ban và quản lý thiết lập tổ chức.",
+    "directory": "Danh sách nhân viên",
+    "listDescription": "Xem và quản lý tất cả nhân viên trong trường.",
+    "searchPlaceholder": "Tìm theo tên, email hoặc mã nhân viên…",
     "detail": "Chi tiết nhân viên",
+    "detailHint": "Xem hồ sơ, hợp đồng và phân công lớp học.",
     "code": "Mã NV",
     "fullName": "Họ và tên",
     "email": "Email",
     "phone": "Số điện thoại",
+    "contact": "Liên hệ",
+    "organization": "Tổ chức",
     "department": "Phòng ban",
     "position": "Chức vụ",
     "campus": "Cơ sở",
     "role": "Vai trò HT",
+    "hireDate": "Ngày vào làm",
     "accessRole": "Quyền hệ thống",
     "accessRoleHint": "Quyền đăng nhập vào ứng dụng (không liên quan đến giáo viên).",
     "isTeacher": "Là giáo viên",
@@ -533,11 +611,22 @@
     "teachersOnly": "Chỉ giáo viên",
     "departments": "Phòng ban",
     "positions": "Chức vụ",
+    "departmentsHint": "Đơn vị tổ chức để nhóm nhân viên.",
+    "positionsHint": "Chức danh dùng khi phân công nhân sự.",
+    "departmentsEmpty": "Chưa có phòng ban. Thêm mới để bắt đầu.",
+    "positionsEmpty": "Chưa có chức vụ. Thêm mới để bắt đầu.",
     "addDepartment": "Thêm phòng ban",
     "addPosition": "Thêm chức vụ",
     "tabs": {
       "employees": "Danh sách",
-      "setup": "Thiết lập"
+      "setup": "Thiết lập",
+      "profile": "Hồ sơ"
+    },
+    "stats": {
+      "total": "Tổng nhân viên",
+      "active": "Đang làm việc",
+      "teachers": "Giáo viên",
+      "onLeave": "Nghỉ phép"
     },
     "accessRoles": {
       "staff": "Nhân viên",
@@ -553,6 +642,7 @@
     },
     "contracts": {
       "title": "Hợp đồng",
+      "hint": "Hợp đồng lao động và mức lương.",
       "empty": "Chưa có hợp đồng.",
       "add": "Thêm hợp đồng",
       "titleLabel": "Tên hợp đồng",
@@ -569,6 +659,7 @@
     },
     "classes": {
       "title": "Phân công lớp",
+      "hint": "Lớp chủ nhiệm và phân công giảng dạy.",
       "homeroom": "Lớp chủ nhiệm",
       "empty": "Chưa được phân công lớp nào.",
       "class": "Lớp",
@@ -711,6 +802,7 @@
     "emptyDishes": "Chưa có món ăn.",
     "emptyIngredients": "Chưa có nguyên liệu.",
     "weekPlanner": "Lập lịch tuần",
+    "detailHint": "Lập thực đơn theo tuần và xem báo cáo dinh dưỡng.",
     "customDish": "Món tùy chỉnh",
     "saveTemplate": "Lưu mẫu",
     "templateName": "Tên mẫu",
@@ -803,6 +895,9 @@
     },
     "chatEmpty": "Hỏi về điểm danh, nhật ký, thực đơn, kho hoặc tuyển sinh.",
     "chatPlaceholder": "Nhập câu hỏi...",
+    "chatSessions": "Hội thoại",
+    "noSessions": "Chưa có hội thoại nào.",
+    "newChat": "Chat mới",
     "creditsRemaining": "Còn {{count}} AI credits tháng này",
     "creditsLabel": "AI credits tháng này",
     "providerReady": "OpenAI đã cấu hình",
@@ -901,7 +996,20 @@
     "retry": "Thử lại",
     "goHome": "Về bảng điều khiển",
     "back": "Quay lại",
+    "home": "Trang chủ",
+    "previous": "Trước",
+    "next": "Sau",
+    "pageOf": "Trang {{page}} / {{totalPages}}",
+    "paginationSummary": "Hiển thị {{from}}–{{to}} trong tổng {{total}} mục",
+    "vsLastMonth": "so với tháng trước",
     "emptyDefaultDescription": "Chưa có dữ liệu. Hãy tạo bản ghi đầu tiên để bắt đầu.",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "confirmDelete": "Xóa mục này?",
+    "confirmDeleteDescription": "Hành động này không thể hoàn tác.",
+    "actions": "Thao tác",
     "toast": {
       "saving": "Đang lưu…",
       "saved": "Đã lưu thành công",

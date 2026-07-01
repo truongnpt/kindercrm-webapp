@@ -2,10 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
-
-import { Button } from '@kit/ui/button';
 import {
   Form,
   FormControl,
@@ -16,7 +12,13 @@ import {
 import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
-import { PanelEmpty, SectionCard } from '~/components/kinder-ui';
+import {
+  kinderQueryKeys,
+  KinderSubmitButton,
+  PanelEmpty,
+  SectionCard,
+  useKinderMutation,
+} from '~/components/kinder-ui';
 import { CreateLeadNoteSchema } from '~/lib/kinder/crm/schemas/lead.schema';
 import { createLeadNoteAction } from '~/lib/kinder/crm/server-actions';
 
@@ -36,8 +38,6 @@ export function LeadNotesPanel({
     created_at: string;
   }>;
 }) {
-  const { t } = useTranslation('kinder');
-
   const form = useForm({
     resolver: zodResolver(CreateLeadNoteSchema),
     defaultValues: {
@@ -47,17 +47,16 @@ export function LeadNotesPanel({
     },
   });
 
-  const onSubmit = form.handleSubmit(async (data) => {
-    const promise = createLeadNoteAction(data);
+  const createNote = useKinderMutation({
+    mutationFn: createLeadNoteAction,
+    invalidateKeys: [kinderQueryKeys.crm.lead(schoolId, leadId)],
+    onSuccess: () => {
+      form.reset({ leadId, schoolId, body: '' });
+    },
+  });
 
-    toast.promise(promise, {
-      loading: t('ui.toast.saving'),
-      success: t('ui.toast.saved'),
-      error: t('ui.toast.error'),
-    });
-
-    await promise;
-    form.reset({ leadId, schoolId, body: '' });
+  const onSubmit = form.handleSubmit((data) => {
+    createNote.mutate(data);
   });
 
   return (
@@ -77,9 +76,9 @@ export function LeadNotesPanel({
                 </FormItem>
               )}
             />
-            <Button type="submit">
+            <KinderSubmitButton loading={createNote.isPending} type="submit">
               <Trans i18nKey="kinder:crm.addNote" />
-            </Button>
+            </KinderSubmitButton>
           </form>
         </Form>
 

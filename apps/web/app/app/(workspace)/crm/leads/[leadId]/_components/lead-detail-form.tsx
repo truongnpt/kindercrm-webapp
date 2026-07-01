@@ -2,8 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
 
 import { Button } from '@kit/ui/button';
 import {
@@ -25,6 +23,7 @@ import {
 import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
+import { kinderQueryKeys, useKinderMutation } from '~/components/kinder-ui';
 import type { LeadRow } from '~/lib/kinder/crm/load-leads';
 import {
   LEAD_STAGE_I18N_KEYS,
@@ -49,7 +48,29 @@ export function LeadDetailForm({
   sources: Array<{ id: string; name: string }>;
   members: Array<{ id: string; name: string; email: string | null }>;
 }) {
-  const { t } = useTranslation('kinder');
+  const invalidateLead = [
+    kinderQueryKeys.crm.lead(schoolId, lead.id),
+    kinderQueryKeys.crm.leads(schoolId),
+  ] as const;
+
+  const updateLead = useKinderMutation({
+    mutationFn: updateLeadAction,
+    invalidateKeys: [...invalidateLead],
+  });
+
+  const convertLead = useKinderMutation({
+    mutationFn: convertLeadToStudentAction,
+    invalidateKeys: [
+      ...invalidateLead,
+      kinderQueryKeys.students.list(schoolId),
+    ],
+  });
+
+  const deleteLead = useKinderMutation({
+    mutationFn: deleteLeadAction,
+    invalidateKeys: [kinderQueryKeys.crm.leads(schoolId)],
+    refresh: false,
+  });
 
   const form = useForm({
     resolver: zodResolver(UpdateLeadSchema),
@@ -68,16 +89,8 @@ export function LeadDetailForm({
     },
   });
 
-  const onSubmit = form.handleSubmit(async (data) => {
-    const promise = updateLeadAction(data);
-
-    toast.promise(promise, {
-      loading: t('schoolSettings.saving'),
-      success: t('schoolSettings.saved'),
-      error: t('common:genericServerError', { ns: 'common' }),
-    });
-
-    await promise;
+  const onSubmit = form.handleSubmit((data) => {
+    updateLead.mutate(data);
   });
 
   return (
@@ -235,12 +248,13 @@ export function LeadDetailForm({
           />
 
           <div className="flex flex-wrap gap-2">
-            <Button type="submit">
+            <Button disabled={updateLead.isPending} type="submit">
               <Trans i18nKey="kinder:crm.save" />
             </Button>
             <Button
+              disabled={convertLead.isPending}
               onClick={() =>
-                void convertLeadToStudentAction({
+                convertLead.mutate({
                   leadId: lead.id,
                   schoolId,
                 })
@@ -251,7 +265,8 @@ export function LeadDetailForm({
               <Trans i18nKey="kinder:students.convertFromLead" />
             </Button>
             <Button
-              onClick={() => void deleteLeadAction({ leadId: lead.id, schoolId })}
+              disabled={deleteLead.isPending}
+              onClick={() => deleteLead.mutate({ leadId: lead.id, schoolId })}
               type="button"
               variant="destructive"
             >
@@ -282,14 +297,21 @@ function AssignLeadSelect({
   assignedTo: string | null;
   members: Array<{ id: string; name: string; email: string | null }>;
 }) {
+  const assignLead = useKinderMutation({
+    mutationFn: assignLeadAction,
+    invalidateKeys: [kinderQueryKeys.crm.lead(schoolId, leadId)],
+    toast: false,
+  });
+
   return (
     <div className="max-w-md space-y-2">
       <p className="text-sm font-medium">
         <Trans i18nKey="kinder:crm.assignedTo" />
       </p>
       <Select
+        disabled={assignLead.isPending}
         onValueChange={(value) => {
-          void assignLeadAction({
+          assignLead.mutate({
             leadId,
             schoolId,
             assignedTo: value === 'none' ? '' : value,

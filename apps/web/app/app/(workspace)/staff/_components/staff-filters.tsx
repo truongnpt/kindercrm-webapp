@@ -2,6 +2,9 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 
+import { Search } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+
 import { Input } from '@kit/ui/input';
 import {
   Select,
@@ -22,6 +25,7 @@ export function StaffFilters({
 }: {
   departments: StaffDepartment[];
 }) {
+  const { t } = useTranslation('kinder');
   const router = useRouter();
   const searchParams = useSearchParams();
   const status = searchParams.get('status') ?? 'all';
@@ -45,67 +49,69 @@ export function StaffFilters({
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <Input
-        className="w-[200px]"
-        onChange={(event) => update({ search: event.target.value || null })}
-        placeholder="Tìm kiếm..."
-        value={search}
-      />
+    <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
+      <div className="relative min-w-0 flex-1 lg:max-w-xs">
+        <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+        <Input
+          className="h-11 rounded-lg border-border bg-muted/30 pl-10 shadow-none focus-visible:border-primary/40"
+          onChange={(event) => update({ search: event.target.value || null })}
+          placeholder={t('staff.searchPlaceholder')}
+          value={search}
+        />
+      </div>
 
-      <Select
-        onValueChange={(value) => update({ status: value })}
-        value={status}
-      >
-        <SelectTrigger className="w-[160px]">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {STATUSES.map((item) => (
-            <SelectItem key={item} value={item}>
-              <Trans i18nKey={`kinder:staff.statuses.${item}`} />
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 lg:flex lg:flex-wrap">
+        <Select onValueChange={(value) => update({ status: value })} value={status}>
+          <SelectTrigger className="h-11 rounded-lg border-border bg-muted/30 shadow-none">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {STATUSES.map((item) => (
+              <SelectItem key={item} value={item}>
+                <Trans i18nKey={`kinder:staff.statuses.${item}`} />
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select
+          onValueChange={(value) => update({ departmentId: value })}
+          value={departmentId}
+        >
+          <SelectTrigger className="h-11 rounded-lg border-border bg-muted/30 shadow-none">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">
+              <Trans i18nKey="kinder:staff.allDepartments" />
             </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+            {departments.map((department) => (
+              <SelectItem key={department.id} value={department.id}>
+                {department.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <Select
-        onValueChange={(value) => update({ departmentId: value })}
-        value={departmentId}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">
-            <Trans i18nKey="kinder:staff.allDepartments" />
-          </SelectItem>
-          {departments.map((department) => (
-            <SelectItem key={department.id} value={department.id}>
-              {department.name}
+        <Select
+          onValueChange={(value) =>
+            update({ teachersOnly: value === '1' ? '1' : null })
+          }
+          value={teachersOnly ? '1' : '0'}
+        >
+          <SelectTrigger className="h-11 rounded-lg border-border bg-muted/30 shadow-none">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="0">
+              <Trans i18nKey="kinder:staff.allEmployees" />
             </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      <Select
-        onValueChange={(value) =>
-          update({ teachersOnly: value === '1' ? '1' : null })
-        }
-        value={teachersOnly ? '1' : '0'}
-      >
-        <SelectTrigger className="w-[160px]">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="0">
-            <Trans i18nKey="kinder:staff.allEmployees" />
-          </SelectItem>
-          <SelectItem value="1">
-            <Trans i18nKey="kinder:staff.teachersOnly" />
-          </SelectItem>
-        </SelectContent>
-      </Select>
+            <SelectItem value="1">
+              <Trans i18nKey="kinder:staff.teachersOnly" />
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   );
 }

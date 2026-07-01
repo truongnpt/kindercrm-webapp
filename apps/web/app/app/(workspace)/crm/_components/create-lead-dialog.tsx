@@ -7,34 +7,19 @@ import { Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@kit/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@kit/ui/dialog';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@kit/ui/form';
-import { Input } from '@kit/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@kit/ui/select';
-import { Textarea } from '@kit/ui/textarea';
+import { Form } from '@kit/ui/form';
 import { Trans } from '@kit/ui/trans';
 
+import {
+  KinderFormDialog,
+  KinderSubmitButton,
+  kinderQueryKeys,
+  useKinderMutation,
+} from '~/components/kinder-ui';
 import { CreateLeadSchema } from '~/lib/kinder/crm/schemas/lead.schema';
 import { createLeadAction } from '~/lib/kinder/crm/server-actions';
+
+import { LeadFormFields } from './lead-form-fields';
 
 export function CreateLeadDialog({
   schoolId,
@@ -60,159 +45,53 @@ export function CreateLeadDialog({
     },
   });
 
+  const createLead = useKinderMutation({
+    mutationFn: createLeadAction,
+    invalidateKeys: [kinderQueryKeys.crm.leads(schoolId)],
+    onSuccess: () => {
+      form.reset({
+        schoolId,
+        parentName: '',
+        phone: '',
+        email: '',
+        childName: '',
+        childDob: '',
+        sourceId: '',
+        notes: '',
+        stage: 'new',
+      });
+      setOpen(false);
+    },
+  });
+
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
+    <KinderFormDialog
+      description={<Trans i18nKey="kinder:crm.description" />}
+      onOpenChange={setOpen}
+      open={open}
+      size="lg"
+      title={<Trans i18nKey="kinder:crm.createLead" />}
+      trigger={
+        <Button className="rounded-full px-5">
+          <Plus className="mr-2 size-4" />
           <Trans i18nKey="kinder:crm.createLead" />
         </Button>
-      </DialogTrigger>
-
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>
-            <Trans i18nKey="kinder:crm.createLead" />
-          </DialogTitle>
-        </DialogHeader>
-
-        <Form {...form}>
-          <form
-            className="space-y-4"
-            onSubmit={form.handleSubmit(async (data) => {
-              await createLeadAction(data);
-              setOpen(false);
-            })}
-          >
-            <FormField
-              control={form.control}
-              name="parentName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:crm.parentName" />
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} required />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:crm.phone" />
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} required />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:crm.email" />
-                  </FormLabel>
-                  <FormControl>
-                    <Input type="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="childName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:crm.childName" />
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="childDob"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:crm.childDob" />
-                  </FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="sourceId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:crm.source" />
-                  </FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="—" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {sources.map((source) => (
-                        <SelectItem key={source.id} value={source.id}>
-                          {source.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="notes"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:crm.notes" />
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea rows={3} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button className="w-full" type="submit">
-              <Trans i18nKey="kinder:crm.createLead" />
-            </Button>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+      }
+      footer={
+        <KinderSubmitButton
+          loading={createLead.isPending}
+          onClick={form.handleSubmit((data) => createLead.mutate(data))}
+          type="button"
+        >
+          <Trans i18nKey="kinder:crm.createLead" />
+        </KinderSubmitButton>
+      }
+    >
+      <Form {...form}>
+        <form className="flex flex-col gap-4">
+          <LeadFormFields form={form} sources={sources} />
+        </form>
+      </Form>
+    </KinderFormDialog>
   );
 }

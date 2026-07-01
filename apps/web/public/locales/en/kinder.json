@@ -18,6 +18,9 @@
     "welcome": "Welcome to Kinder CRM",
     "packageLabel": "Current plan",
     "trialEnds": "Trial ends {{date}}",
+    "sections": {
+      "quickStats": "Quick stats"
+    },
     "statsPlaceholder": "CRM, student, and finance metrics will appear here in upcoming sprints.",
     "usageTitle": "Plan limits",
     "campusesUsed": "Campuses: {{used}} / {{max}}",
@@ -35,6 +38,7 @@
     }
   },
   "workspace": {
+    "search": "Search",
     "searchPlaceholder": "Search pages and modules…",
     "searchEmpty": "No results found.",
     "searchGroup": "Navigation"
@@ -128,6 +132,8 @@
     "upgrade": "Upgrade",
     "downgrade": "Downgrade",
     "enterpriseContact": "Contact sales",
+    "recommended": "Recommended",
+    "freeForever": "Free forever",
     "limits": "Limits",
     "maxStudents": "Up to {{count}} students",
     "maxCampuses": "Up to {{count}} campuses",
@@ -186,10 +192,24 @@
   },
   "crm": {
     "title": "Enrollment CRM",
-    "description": "Manage leads and enrollment pipeline.",
+    "description": "Track interested parents and convert them into enrolled students with ease.",
+    "workspaceHint": "Drag leads between columns or use the stage menu to update the pipeline.",
+    "emptyDescription": "Get started by adding your first lead or importing from CSV.",
+    "dragLead": "Drag lead",
+    "columnEmpty": "No leads in this stage yet",
+    "searchPlaceholder": "Search by name, phone, source...",
+    "searchEmpty": "No leads match your search.",
+    "stats": {
+      "totalLeads": "Total leads",
+      "inPipeline": "In pipeline",
+      "enrolled": "Enrolled",
+      "newLeads": "New leads"
+    },
     "createLead": "Add lead",
     "pipeline": "Pipeline",
     "list": "List",
+    "listDescription": "Search and manage all leads in one place.",
+    "allLeads": "All leads",
     "empty": "No leads yet.",
     "parentName": "Parent name",
     "phone": "Phone",
@@ -207,6 +227,8 @@
     "activitiesEmpty": "No activity yet.",
     "timeline": "Activity",
     "detail": "Lead detail",
+    "detailHint": "View lead information, notes, and pipeline activity.",
+    "leadProfile": "Lead info",
     "unassigned": "Unassigned",
     "stages": {
       "new": "New lead",
@@ -221,6 +243,15 @@
   "students": {
     "title": "Students",
     "description": "Manage student profiles and records.",
+    "directory": "Student directory",
+    "listDescription": "View and manage all enrolled students.",
+    "workspaceHint": "Filter by status, import/export, and open student profiles.",
+    "stats": {
+      "total": "Total students",
+      "active": "Active",
+      "graduated": "Graduated",
+      "inactive": "Inactive / left"
+    },
     "create": "Add student",
     "empty": "No students yet.",
     "code": "Student code",
@@ -238,6 +269,9 @@
     "save": "Save",
     "delete": "Delete student",
     "detail": "Student profile",
+    "detailHint": "View profile, contacts, parent access, and activity history.",
+    "profilePersonal": "Personal information",
+    "enrollmentSource": "Enrollment source",
     "filterAll": "All",
     "parents": "Parents",
     "emergency": "Emergency contacts",
@@ -286,6 +320,23 @@
     "semester": "Semester",
     "classroom": "Classroom",
     "detail": "Class detail",
+    "detailHint": "Manage class settings, student roster, and weekly timetable.",
+    "general": "General",
+    "profileAcademic": "Academic information",
+    "profileSummary": "Class summary",
+    "editClass": "Edit class",
+    "editClassDescription": "Update class name, code, capacity, and homeroom teacher.",
+    "confirmArchive": "Archive this class?",
+    "confirmArchiveDescription": "The class will be archived and hidden from active lists. Enrollments are preserved.",
+    "rosterHint": "Students currently enrolled in this class.",
+    "timetableHint": "Weekly activity schedule for this class.",
+    "scheduleSlots": "{{count}} slots",
+    "time": "Time",
+    "status": "Status",
+    "statuses": {
+      "active": "Active",
+      "archived": "Archived"
+    },
     "save": "Save",
     "archive": "Archive class",
     "roster": "Student roster",
@@ -325,6 +376,8 @@
   "finance": {
     "title": "Finance",
     "description": "Manage tuition, invoices, payments, and outstanding debt.",
+    "workspaceTitle": "Finance workspace",
+    "workspaceHint": "Track revenue, invoices, fee items, and outstanding balances.",
     "recordPayment": "Record payment",
     "tabs": {
       "overview": "Overview",
@@ -337,6 +390,11 @@
       "outstandingDebt": "Outstanding debt",
       "invoicesThisMonth": "Invoices this month",
       "paidInvoicesThisMonth": "Paid this month"
+    },
+    "overview": {
+      "collection": "Collection rate",
+      "paidOfTotal": "{{paid}} of {{total}} invoices paid",
+      "snapshot": "Financial snapshot"
     },
     "tuition": {
       "title": "Fee items",
@@ -360,6 +418,8 @@
     "invoices": {
       "create": "Create invoice",
       "empty": "No invoices yet.",
+      "recent": "Recent invoices",
+      "listDescription": "Track billing status and open invoice details.",
       "number": "Invoice #",
       "student": "Student",
       "selectStudent": "Select student",
@@ -370,6 +430,7 @@
       "paid": "Paid",
       "status": "Status",
       "detail": "Invoice detail",
+      "detailHint": "Review line items, record payments, and generate QR codes.",
       "notes": "Notes",
       "lineItems": "Line items",
       "quantity": "Qty",
@@ -385,6 +446,8 @@
       }
     },
     "debts": {
+      "title": "Outstanding debts",
+      "listDescription": "Students with unpaid or partially paid invoices.",
       "empty": "No outstanding debt.",
       "balance": "Balance due"
     },
@@ -440,6 +503,9 @@
     "imported": "Imported {{count}} records.",
     "partialSuccess": "{{imported}} imported, {{failed}} failed."
   },
+  "calendar": {
+    "eventsOnDate": "Events on selected date"
+  },
   "attendance": {
     "title": "Attendance",
     "description": "Daily class attendance, leave requests, and reports.",
@@ -458,6 +524,7 @@
     "tabs": {
       "daily": "Daily",
       "leave": "Leave",
+      "calendar": "Calendar",
       "report": "Report"
     },
     "summary": {
@@ -503,16 +570,27 @@
     "title": "Staff",
     "description": "Manage employee profiles, departments, contracts, and class assignments.",
     "create": "Add employee",
+    "createDescription": "Create a new employee profile and optionally grant system access.",
+    "editDescription": "Update employee information, role, and employment status.",
     "empty": "No employees yet.",
+    "emptyDescription": "Add your first employee or adjust filters to see more results.",
+    "workspaceHint": "Browse the directory, filter by department, and manage org setup.",
+    "directory": "Employee directory",
+    "listDescription": "View and manage all employees in your school.",
+    "searchPlaceholder": "Search by name, email, or employee ID…",
     "detail": "Employee detail",
+    "detailHint": "View profile, contracts, and class assignments.",
     "code": "Employee ID",
     "fullName": "Full name",
     "email": "Email",
     "phone": "Phone",
+    "contact": "Contact",
+    "organization": "Organization",
     "department": "Department",
     "position": "Position",
     "campus": "Campus",
     "role": "App role",
+    "hireDate": "Hire date",
     "accessRole": "System access",
     "accessRoleHint": "Login permissions (separate from the teacher flag).",
     "isTeacher": "Is a teacher",
@@ -533,11 +611,22 @@
     "teachersOnly": "Teachers only",
     "departments": "Departments",
     "positions": "Positions",
+    "departmentsHint": "Organizational units for grouping employees.",
+    "positionsHint": "Job titles used when assigning staff.",
+    "departmentsEmpty": "No departments yet. Add one to get started.",
+    "positionsEmpty": "No positions yet. Add one to get started.",
     "addDepartment": "Add department",
     "addPosition": "Add position",
     "tabs": {
       "employees": "Directory",
-      "setup": "Setup"
+      "setup": "Setup",
+      "profile": "Profile"
+    },
+    "stats": {
+      "total": "Total employees",
+      "active": "Active",
+      "teachers": "Teachers",
+      "onLeave": "On leave"
     },
     "accessRoles": {
       "staff": "Staff",
@@ -553,6 +642,7 @@
     },
     "contracts": {
       "title": "Contracts",
+      "hint": "Employment contracts and salary records.",
       "empty": "No contracts yet.",
       "add": "Add contract",
       "titleLabel": "Contract title",
@@ -569,6 +659,7 @@
     },
     "classes": {
       "title": "Class assignments",
+      "hint": "Homeroom and teaching assignments.",
       "homeroom": "Homeroom classes",
       "empty": "No class assignments yet.",
       "class": "Class",
@@ -711,6 +802,7 @@
     "emptyDishes": "No dishes yet.",
     "emptyIngredients": "No ingredients yet.",
     "weekPlanner": "Week planner",
+    "detailHint": "Plan weekly meals and review nutrition summaries.",
     "customDish": "Custom dish",
     "saveTemplate": "Save template",
     "templateName": "Template name",
@@ -803,6 +895,9 @@
     },
     "chatEmpty": "Ask about attendance, daily reports, menu, inventory, or enrollment.",
     "chatPlaceholder": "Type a question...",
+    "chatSessions": "Conversations",
+    "noSessions": "No conversations yet.",
+    "newChat": "New chat",
     "creditsRemaining": "{{count}} AI credits remaining this month",
     "creditsLabel": "AI credits this month",
     "providerReady": "OpenAI configured",
@@ -901,7 +996,20 @@
     "retry": "Try again",
     "goHome": "Back to dashboard",
     "back": "Back",
+    "home": "Home",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {{page}} of {{totalPages}}",
+    "paginationSummary": "Showing {{from}} to {{to}} of {{total}} entries",
+    "vsLastMonth": "vs last month",
     "emptyDefaultDescription": "No records yet. Create your first entry to get started.",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "confirmDelete": "Delete this item?",
+    "confirmDeleteDescription": "This action cannot be undone.",
+    "actions": "Actions",
     "toast": {
       "saving": "Saving…",
       "saved": "Saved successfully",

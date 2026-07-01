@@ -7,15 +7,8 @@ import { Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@kit/ui/button';
+import { Form } from '@kit/ui/form';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@kit/ui/dialog';
-import {
-  Form,
   FormControl,
   FormField,
   FormItem,
@@ -33,6 +26,12 @@ import {
 import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
+import {
+  KinderFormDialog,
+  KinderSubmitButton,
+  kinderQueryKeys,
+  useKinderMutation,
+} from '~/components/kinder-ui';
 import { CreateStudentSchema } from '~/lib/kinder/students/schemas/student.schema';
 import { createStudentAction } from '~/lib/kinder/students/server-actions';
 
@@ -55,62 +54,85 @@ export function CreateStudentDialog({ schoolId }: { schoolId: string }) {
     },
   });
 
+  const createStudent = useKinderMutation({
+    mutationFn: createStudentAction,
+    invalidateKeys: [kinderQueryKeys.students.list(schoolId)],
+    refresh: false,
+    onSuccess: () => {
+      form.reset({
+        schoolId,
+        fullName: '',
+        studentCode: '',
+        dateOfBirth: '',
+        className: '',
+        enrollmentDate: new Date().toISOString().slice(0, 10),
+        notes: '',
+        parentName: '',
+        parentPhone: '',
+        parentEmail: '',
+      });
+      setOpen(false);
+    },
+  });
+
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>
+    <KinderFormDialog
+      description={<Trans i18nKey="kinder:students.description" />}
+      onOpenChange={setOpen}
+      open={open}
+      size="lg"
+      title={<Trans i18nKey="kinder:students.create" />}
+      trigger={
         <Button>
-          <Plus className="mr-2 h-4 w-4" />
+          <Plus className="mr-2 size-4" />
           <Trans i18nKey="kinder:students.create" />
         </Button>
-      </DialogTrigger>
+      }
+      footer={
+        <KinderSubmitButton
+          loading={createStudent.isPending}
+          onClick={form.handleSubmit((data) => createStudent.mutate(data))}
+          type="button"
+        >
+          <Trans i18nKey="kinder:students.create" />
+        </KinderSubmitButton>
+      }
+    >
+      <Form {...form}>
+        <form className="flex flex-col gap-4">
+          <FormField
+            control={form.control}
+            name="fullName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <Trans i18nKey="kinder:students.fullName" />
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} required />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>
-            <Trans i18nKey="kinder:students.create" />
-          </DialogTitle>
-        </DialogHeader>
+          <FormField
+            control={form.control}
+            name="studentCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <Trans i18nKey="kinder:students.code" />
+                </FormLabel>
+                <FormControl>
+                  <Input placeholder="Tự động nếu để trống" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <Form {...form}>
-          <form
-            className="space-y-4"
-            onSubmit={form.handleSubmit(async (data) => {
-              await createStudentAction(data);
-              setOpen(false);
-            })}
-          >
-            <FormField
-              control={form.control}
-              name="fullName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:students.fullName" />
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} required />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="studentCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:students.code" />
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="Tự động nếu để trống" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
+          <div className="grid gap-4 sm:grid-cols-2">
             <FormField
               control={form.control}
               name="dateOfBirth"
@@ -157,77 +179,73 @@ export function CreateStudentDialog({ schoolId }: { schoolId: string }) {
                 </FormItem>
               )}
             />
+          </div>
 
-            <FormField
-              control={form.control}
-              name="className"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:students.className" />
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="className"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <Trans i18nKey="kinder:students.className" />
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="parentName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:crm.parentName" />
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="parentName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <Trans i18nKey="kinder:crm.parentName" />
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="parentPhone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:crm.phone" />
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="parentPhone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <Trans i18nKey="kinder:crm.phone" />
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="notes"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:students.notes" />
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea rows={3} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button className="w-full" type="submit">
-              <Trans i18nKey="kinder:students.create" />
-            </Button>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+          <FormField
+            control={form.control}
+            name="notes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <Trans i18nKey="kinder:students.notes" />
+                </FormLabel>
+                <FormControl>
+                  <Textarea rows={3} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
+    </KinderFormDialog>
   );
 }

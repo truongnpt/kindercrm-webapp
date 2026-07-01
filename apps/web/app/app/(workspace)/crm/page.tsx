@@ -2,15 +2,12 @@ import { Trans } from '@kit/ui/trans';
 
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
+import { KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
 import {
-  KinderPageBody,
-  KinderPageHeader,
-  TabbedModule,
-  TabbedModuleContent,
-  TabbedModuleList,
-  TabbedModuleTrigger,
-} from '~/components/kinder-ui';
-import { loadLeadSources, loadLeads } from '~/lib/kinder/crm/load-leads';
+  loadLeadSources,
+  loadLeads,
+  loadSchoolMembersForAssign,
+} from '~/lib/kinder/crm/load-leads';
 import { seedDefaultLeadSources } from '~/lib/kinder/crm/seed-lead-sources';
 import { requirePackageFeature } from '~/lib/kinder/subscription/features';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
@@ -19,8 +16,9 @@ import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
 import { CreateLeadDialog } from './_components/create-lead-dialog';
+import { CrmOverview } from './_components/crm-overview';
+import { CrmWorkspace } from './_components/crm-workspace';
 import { LeadImportExport } from './_components/lead-import-export';
-import { LeadListTable, LeadPipelineBoard } from './_components/lead-pipeline';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -49,6 +47,7 @@ async function CrmPage() {
   }
 
   const leads = await loadLeads(context.school.id);
+  const members = await loadSchoolMembersForAssign(context.school.id);
 
   return (
     <>
@@ -59,29 +58,20 @@ async function CrmPage() {
             <CreateLeadDialog schoolId={context.school.id} sources={sources} />
           </>
         }
+        breadcrumbs={[{ label: <Trans i18nKey="kinder:crm.title" /> }]}
         description={<Trans i18nKey="kinder:crm.description" />}
         title={<Trans i18nKey="kinder:crm.title" />}
       />
 
       <KinderPageBody>
-        <TabbedModule defaultValue="pipeline">
-          <TabbedModuleList>
-            <TabbedModuleTrigger value="pipeline">
-              <Trans i18nKey="kinder:crm.pipeline" />
-            </TabbedModuleTrigger>
-            <TabbedModuleTrigger value="list">
-              <Trans i18nKey="kinder:crm.list" />
-            </TabbedModuleTrigger>
-          </TabbedModuleList>
+        <CrmOverview leads={leads} />
 
-          <TabbedModuleContent value="pipeline">
-            <LeadPipelineBoard leads={leads} schoolId={context.school.id} />
-          </TabbedModuleContent>
-
-          <TabbedModuleContent value="list">
-            <LeadListTable leads={leads} />
-          </TabbedModuleContent>
-        </TabbedModule>
+        <CrmWorkspace
+          leads={leads}
+          members={members}
+          schoolId={context.school.id}
+          sources={sources}
+        />
       </KinderPageBody>
     </>
   );

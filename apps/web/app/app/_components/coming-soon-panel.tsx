@@ -17,8 +17,8 @@ export function ComingSoonPanel({ moduleKey }: { moduleKey: string }) {
 
 export function OnboardingShell({ children }: React.PropsWithChildren) {
   return (
-    <div className="kinder-workspace flex min-h-screen flex-col">
-      <header className="kinder-sticky-header px-6 py-4">
+    <div className="flex min-h-dvh flex-col bg-background">
+      <header className="sticky top-0 z-30 border-b border-border bg-card px-6 py-4">
         <AppLogo href={null} />
       </header>
 
