@@ -262,7 +262,7 @@ export function BillingPanel({
                   <Trans i18nKey={'lms:billing.bankInfo'} />
                 </p>
                 <p className={'text-muted-foreground mt-1'}>
-                  Vietcombank · 1234567890 · EDUTIFY JSC
+                  Vietcombank · 1234567890 · Kinder CRM JSC
                 </p>
                 <p className={'text-muted-foreground mt-1 text-xs'}>
                   <Trans i18nKey={'lms:billing.transferNote'} />

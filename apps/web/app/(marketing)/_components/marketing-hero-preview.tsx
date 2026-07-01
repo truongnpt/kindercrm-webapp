@@ -48,7 +48,7 @@ export function MarketingHeroPreview() {
       <div className="bg-card rounded-2xl border p-4 shadow-2xl md:p-6">
         <div className="mb-4 flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold">Edutify</p>
+            <p className="text-sm font-semibold">Kinder CRM</p>
             <p className="text-muted-foreground text-xs">
               <Trans i18nKey="marketing:heroPreviewWorkspace" />
             </p>

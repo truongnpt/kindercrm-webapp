@@ -7,7 +7,7 @@ import Image from 'next/image';
 const logo = {
   width: 640,
   height: 321,
-  src: '/images/logo/edutify-logo.png',
+  src: '/images/logo/primary-logo.png',
 };
 
 function LogoImage({
