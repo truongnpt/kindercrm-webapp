@@ -14,7 +14,7 @@ import {
   loadActiveClasses,
   loadDailyReportsForClassDate,
 } from '~/lib/kinder/daily-reports/load-daily-reports';
-import { hasPackageFeature, requirePackageFeature } from '~/lib/kinder/subscription/features';
+import { hasSchoolFeature, requirePackageFeature } from '~/lib/kinder/subscription/features';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
@@ -84,7 +84,7 @@ async function DailyReportsPage({
 
             {classId ? (
               <ClassDailyReportsPanel
-                aiEnabled={hasPackageFeature(context.package, 'ai_assistant')}
+                aiEnabled={hasSchoolFeature(context, 'ai_assistant')}
                 classId={classId}
                 key={`${classId}-${reportDate}`}
                 reportDate={reportDate}

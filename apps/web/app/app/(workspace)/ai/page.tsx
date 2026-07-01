@@ -57,7 +57,11 @@ async function AiAssistantPage({
     await Promise.all([
       loadAiChatSessions(context.school.id, user.id),
       loadAiKnowledgeArticles(context.school.id),
-      getAiCreditStatus(context.school.id, context.package),
+      getAiCreditStatus(
+        context.school.id,
+        context.package,
+        context.subscription,
+      ),
       buildSchoolAiContext(context.school.id, context.school.name),
       Promise.resolve(getAiConfig()),
     ]);

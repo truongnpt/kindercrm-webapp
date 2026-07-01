@@ -12,7 +12,7 @@ import {
   loadStudentDailyReports,
 } from '~/lib/kinder/daily-reports/load-daily-reports';
 import {
-  hasPackageFeature,
+  hasSchoolFeature,
   requirePackageFeature,
 } from '~/lib/kinder/subscription/features';
 import {
@@ -57,8 +57,8 @@ async function StudentDetailPage({
 
   requirePackageFeature(context, 'students');
 
-  const hasParentPortal = hasPackageFeature(context.package, 'parent_portal');
-  const hasDailyReports = hasPackageFeature(context.package, 'daily_reports');
+  const hasParentPortal = hasSchoolFeature(context, 'parent_portal');
+  const hasDailyReports = hasSchoolFeature(context, 'daily_reports');
 
   const student = await loadStudentById(context.school.id, studentId);
 

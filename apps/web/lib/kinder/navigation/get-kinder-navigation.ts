@@ -8,7 +8,7 @@ import {
   hasPackageFeature,
   type PackageFeature,
 } from '~/lib/kinder/subscription/package-features';
-import type { Package } from '~/lib/kinder/types';
+import type { Package, SchoolSubscription } from '~/lib/kinder/types';
 
 const PATH_FEATURES: Array<{ path: string; feature: PackageFeature }> = [
   { path: pathsConfig.app.crm, feature: 'crm' },
@@ -24,17 +24,24 @@ const PATH_FEATURES: Array<{ path: string; feature: PackageFeature }> = [
   { path: pathsConfig.app.ai, feature: 'ai_assistant' },
 ];
 
-function isPathAllowed(path: string, pkg: Package | null | undefined) {
+function isPathAllowed(
+  path: string,
+  pkg: Package | null | undefined,
+  subscription?: SchoolSubscription | null,
+) {
   const match = PATH_FEATURES.find((entry) => entry.path === path);
 
   if (!match) {
     return true;
   }
 
-  return hasPackageFeature(pkg, match.feature);
+  return hasPackageFeature(pkg, match.feature, subscription);
 }
 
-export function getKinderNavigationConfig(pkg: Package | null | undefined) {
+export function getKinderNavigationConfig(
+  pkg: Package | null | undefined,
+  subscription?: SchoolSubscription | null,
+) {
   const filteredRoutes = navigationConfig.routes.map((group) => {
     if (!('children' in group)) {
       return group;
@@ -42,7 +49,9 @@ export function getKinderNavigationConfig(pkg: Package | null | undefined) {
 
     return {
       ...group,
-      children: group.children.filter((item) => isPathAllowed(item.path, pkg)),
+      children: group.children.filter((item) =>
+        isPathAllowed(item.path, pkg, subscription),
+      ),
     };
   });
 

@@ -2,7 +2,11 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { Database } from '~/lib/database.types';
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
-import type { Package, SchoolContext } from '~/lib/kinder/types';
+import {
+  isActiveTrialSubscription,
+  TRIAL_AI_CREDITS_MONTHLY,
+} from '~/lib/kinder/subscription/package-features';
+import type { Package, SchoolContext, SchoolSubscription } from '~/lib/kinder/types';
 
 export interface SchoolUsage {
   campuses: number;
@@ -32,12 +36,20 @@ export async function getSchoolUsage(
   };
 }
 
-export function getPackageLimits(pkg: Package | null | undefined) {
+export function getPackageLimits(
+  pkg: Package | null | undefined,
+  subscription?: SchoolSubscription | null,
+) {
+  const aiCreditsMonthly =
+    isActiveTrialSubscription(subscription) ?
+      TRIAL_AI_CREDITS_MONTHLY
+    : (pkg?.ai_credits_monthly ?? 0);
+
   return {
     maxStudents: pkg?.max_students ?? 0,
     maxCampuses: pkg?.max_campuses ?? 0,
     maxStorageMb: pkg?.max_storage_mb ?? 0,
-    aiCreditsMonthly: pkg?.ai_credits_monthly ?? 0,
+    aiCreditsMonthly,
   };
 }
 
@@ -78,7 +90,7 @@ export async function loadSchoolUsageSummary(
   context: SchoolContext,
 ) {
   const usage = await getSchoolUsage(client, context.school.id);
-  const limits = getPackageLimits(context.package);
+  const limits = getPackageLimits(context.package, context.subscription);
 
   return { usage, limits };
 }

@@ -9,8 +9,11 @@ import type { Package } from '~/lib/kinder/types';
 
 export {
   hasPackageFeature,
+  hasSchoolFeature,
+  isActiveTrialSubscription,
   PACKAGE_FEATURE_KEYS,
   requirePackageFeature,
+  TRIAL_AI_CREDITS_MONTHLY,
   type PackageFeature,
 } from '~/lib/kinder/subscription/package-features';
 

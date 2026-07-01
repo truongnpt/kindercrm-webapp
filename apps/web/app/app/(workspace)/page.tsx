@@ -15,7 +15,7 @@ import pathsConfig from '~/config/paths.config';
 import { getAiCreditStatus } from '~/lib/kinder/ai/credits';
 import { getAiConfig } from '~/lib/kinder/ai/config';
 import { loadDashboardSummary } from '~/lib/kinder/dashboard/load-dashboard';
-import { hasPackageFeature } from '~/lib/kinder/subscription/features';
+import { hasSchoolFeature } from '~/lib/kinder/subscription/features';
 import { loadSchoolUsageSummary } from '~/lib/kinder/subscription/quotas';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
@@ -47,10 +47,14 @@ async function DashboardPage() {
     loadDashboardSummary(context.school.id),
   ]);
 
-  const hasAi = hasPackageFeature(context.package, 'ai_assistant');
+  const hasAi = hasSchoolFeature(context, 'ai_assistant');
   const [aiCredits, aiConfig] = hasAi
     ? await Promise.all([
-        getAiCreditStatus(context.school.id, context.package),
+        getAiCreditStatus(
+          context.school.id,
+          context.package,
+          context.subscription,
+        ),
         Promise.resolve(getAiConfig()),
       ])
     : [null, null];
@@ -60,10 +64,10 @@ async function DashboardPage() {
     : null;
 
   const features = {
-    crm: hasPackageFeature(context.package, 'crm'),
-    students: hasPackageFeature(context.package, 'students'),
-    finance: hasPackageFeature(context.package, 'finance'),
-    attendance: hasPackageFeature(context.package, 'attendance'),
+    crm: hasSchoolFeature(context, 'crm'),
+    students: hasSchoolFeature(context, 'students'),
+    finance: hasSchoolFeature(context, 'finance'),
+    attendance: hasSchoolFeature(context, 'attendance'),
   };
 
   return (

@@ -107,6 +107,7 @@ export const sendAiChatMessageAction = enhanceAction(
     await consumeAiCredits({
       schoolId: data.schoolId,
       pkg: context.package,
+      subscription: context.subscription,
       credits: completion.creditsUsed,
       actionType: 'chat',
     });
@@ -161,6 +162,7 @@ Không dùng bullet, không tiêu đề.`;
     await consumeAiCredits({
       schoolId: data.schoolId,
       pkg: context.package,
+      subscription: context.subscription,
       credits: completion.creditsUsed,
       actionType: 'daily_comment',
     });
@@ -193,6 +195,7 @@ Mỗi đoạn 1-2 câu, tiếng Việt.`,
     await consumeAiCredits({
       schoolId: data.schoolId,
       pkg: context.package,
+      subscription: context.subscription,
       credits: completion.creditsUsed,
       actionType: 'report',
     });
@@ -231,6 +234,7 @@ Trả về JSON với 2 field: title (tối đa 80 ký tự) và body (2-4 câu,
     await consumeAiCredits({
       schoolId: data.schoolId,
       pkg: context.package,
+      subscription: context.subscription,
       credits: completion.creditsUsed,
       actionType: 'notification_draft',
     });

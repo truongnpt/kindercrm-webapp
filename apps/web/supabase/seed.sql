@@ -17,7 +17,7 @@ values
   (
     'free',
     'Free',
-    'Dùng thử và bắt đầu với trường quy mô nhỏ',
+    'Dùng thử 14 ngày — trải nghiệm đầy đủ mọi tính năng',
     50,
     1,
     512,

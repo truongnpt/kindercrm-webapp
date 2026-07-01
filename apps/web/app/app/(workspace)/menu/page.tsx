@@ -16,7 +16,7 @@ import {
 } from '~/lib/kinder/meal-menu/load-meal-menu';
 import { loadMenuTemplates } from '~/lib/kinder/meal-menu/load-menu-templates';
 import { loadProductsWithStock } from '~/lib/kinder/inventory/load-inventory';
-import { hasPackageFeature, requirePackageFeature } from '~/lib/kinder/subscription/features';
+import { hasSchoolFeature, requirePackageFeature } from '~/lib/kinder/subscription/features';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
@@ -56,7 +56,7 @@ async function MenuPage({
     loadDishes(context.school.id),
     loadIngredients(context.school.id),
     loadMenuTemplates(context.school.id),
-    hasPackageFeature(context.package, 'inventory')
+    hasSchoolFeature(context, 'inventory')
       ? loadProductsWithStock(context.school.id)
       : Promise.resolve([]),
   ]);

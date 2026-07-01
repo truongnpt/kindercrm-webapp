@@ -125,7 +125,7 @@ async function loadWorkspaceData() {
     : [[], 0, null];
 
   const navigation = context
-    ? getKinderNavigationConfig(context.package)
+    ? getKinderNavigationConfig(context.package, context.subscription)
     : navigationConfig;
 
   return {

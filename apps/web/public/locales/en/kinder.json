@@ -120,6 +120,7 @@
     "description": "View your plan, limits, and change history.",
     "currentPlan": "Current plan",
     "trialBadge": "Trial",
+    "trialFullAccess": "Your trial includes full access to all modules until {{date}}.",
     "activeBadge": "Active",
     "perMonth": "/ month",
     "selectPlan": "Select plan",

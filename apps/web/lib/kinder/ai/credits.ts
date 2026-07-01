@@ -2,8 +2,9 @@ import 'server-only';
 
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
+import type { Package, SchoolSubscription } from '~/lib/kinder/types';
+
 import { getPackageLimits } from '~/lib/kinder/subscription/quotas';
-import type { Package } from '~/lib/kinder/types';
 
 import { estimateCredits } from './config';
 import type { AiActionType } from './types';
@@ -13,10 +14,14 @@ function currentUsageMonth() {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
 }
 
-export async function getAiCreditStatus(schoolId: string, pkg: Package | null) {
+export async function getAiCreditStatus(
+  schoolId: string,
+  pkg: Package | null,
+  subscription?: SchoolSubscription | null,
+) {
   const client = getSupabaseServerClient();
   const usageMonth = currentUsageMonth();
-  const limits = getPackageLimits(pkg);
+  const limits = getPackageLimits(pkg, subscription);
 
   const { data, error } = await client
     .from('ai_credit_usage')
@@ -43,13 +48,18 @@ export async function getAiCreditStatus(schoolId: string, pkg: Package | null) {
 export async function consumeAiCredits(input: {
   schoolId: string;
   pkg: Package | null;
+  subscription?: SchoolSubscription | null;
   credits: number;
   actionType: AiActionType;
 }) {
   const client = getSupabaseServerClient();
   const usageMonth = currentUsageMonth();
-  const limits = getPackageLimits(input.pkg);
-  const status = await getAiCreditStatus(input.schoolId, input.pkg);
+  const limits = getPackageLimits(input.pkg, input.subscription);
+  const status = await getAiCreditStatus(
+    input.schoolId,
+    input.pkg,
+    input.subscription,
+  );
 
   if (status.creditsLimit <= 0) {
     throw new Error('Gói hiện tại không có AI credits');

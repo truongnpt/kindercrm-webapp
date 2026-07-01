@@ -6,11 +6,13 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import {
   EmptyState,
+  InlineAlert,
   KinderPageBody,
   KinderPageHeader,
   SectionCard,
 } from '~/components/kinder-ui';
 import {
+  isActiveTrialSubscription,
   loadPublicPackages,
   loadSubscriptionHistory,
 } from '~/lib/kinder/subscription/features';
@@ -48,6 +50,10 @@ async function SubscriptionPage() {
 
   const packageMap = new Map(packages.map((pkg) => [pkg.id, pkg]));
   const isOwner = context.role === 'owner';
+  const trialEnds = context.subscription?.trial_ends_at
+    ? new Date(context.subscription.trial_ends_at).toLocaleDateString('vi-VN')
+    : null;
+  const isTrial = isActiveTrialSubscription(context.subscription);
 
   return (
     <>
@@ -78,6 +84,15 @@ async function SubscriptionPage() {
             )}
           </div>
         </SectionCard>
+
+        {isTrial && trialEnds ? (
+          <InlineAlert tone="info">
+            <Trans
+              i18nKey="kinder:subscription.trialFullAccess"
+              values={{ date: trialEnds }}
+            />
+          </InlineAlert>
+        ) : null}
 
         <QuotaUsageBanner
           package={context.package}

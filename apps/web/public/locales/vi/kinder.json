@@ -120,6 +120,7 @@
     "description": "Xem gói hiện tại, hạn mức và lịch sử thay đổi.",
     "currentPlan": "Gói hiện tại",
     "trialBadge": "Dùng thử",
+    "trialFullAccess": "Gói dùng thử bao gồm đầy đủ mọi tính năng đến {{date}}.",
     "activeBadge": "Đang dùng",
     "perMonth": "/ tháng",
     "selectPlan": "Chọn gói",
