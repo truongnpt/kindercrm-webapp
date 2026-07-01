@@ -1,8 +1,15 @@
+import { History } from 'lucide-react';
+
 import { Badge } from '@kit/ui/badge';
-import { PageBody, PageHeader } from '@kit/ui/page';
 import { Trans } from '@kit/ui/trans';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
+import {
+  EmptyState,
+  KinderPageBody,
+  KinderPageHeader,
+  SectionCard,
+} from '~/components/kinder-ui';
 import {
   loadPublicPackages,
   loadSubscriptionHistory,
@@ -44,31 +51,33 @@ async function SubscriptionPage() {
 
   return (
     <>
-      <PageHeader
+      <KinderPageHeader
         description={<Trans i18nKey="kinder:subscription.description" />}
         title={<Trans i18nKey="kinder:subscription.title" />}
       />
 
-      <PageBody className="space-y-8">
-        <div className="flex flex-wrap items-center gap-3">
-          <div>
-            <p className="text-muted-foreground text-sm">
-              <Trans i18nKey="kinder:subscription.currentPlan" />
-            </p>
-            <p className="text-xl font-semibold">
-              {context.package?.name ?? '—'}
-            </p>
+      <KinderPageBody>
+        <SectionCard>
+          <div className="flex flex-wrap items-center gap-3">
+            <div>
+              <p className="text-muted-foreground text-sm">
+                <Trans i18nKey="kinder:subscription.currentPlan" />
+              </p>
+              <p className="text-foreground text-2xl font-semibold tracking-tight">
+                {context.package?.name ?? '—'}
+              </p>
+            </div>
+            {context.subscription?.status === 'trial' ? (
+              <Badge variant="secondary">
+                <Trans i18nKey="kinder:subscription.trialBadge" />
+              </Badge>
+            ) : (
+              <Badge>
+                <Trans i18nKey="kinder:subscription.activeBadge" />
+              </Badge>
+            )}
           </div>
-          {context.subscription?.status === 'trial' ? (
-            <Badge variant="secondary">
-              <Trans i18nKey="kinder:subscription.trialBadge" />
-            </Badge>
-          ) : (
-            <Badge>
-              <Trans i18nKey="kinder:subscription.activeBadge" />
-            </Badge>
-          )}
-        </div>
+        </SectionCard>
 
         <QuotaUsageBanner
           package={context.package}
@@ -82,19 +91,18 @@ async function SubscriptionPage() {
           schoolId={context.school.id}
         />
 
-        <section className="space-y-3">
-          <h2 className="text-lg font-semibold">
-            <Trans i18nKey="kinder:subscription.history" />
-          </h2>
-
+        <SectionCard title={<Trans i18nKey="kinder:subscription.history" />}>
           {history.length === 0 ? (
-            <p className="text-muted-foreground text-sm">
-              <Trans i18nKey="kinder:subscription.historyEmpty" />
-            </p>
+            <EmptyState
+              compact
+              descriptionKey="kinder:ui.emptyDefaultDescription"
+              icon={History}
+              titleKey="kinder:subscription.historyEmpty"
+            />
           ) : (
-            <ul className="divide-y rounded-lg border">
+            <ul className="flex flex-col gap-3">
               {history.map((item) => (
-                <li className="space-y-1 p-4 text-sm" key={item.id}>
+                <li className="kinder-mobile-card text-sm" key={item.id}>
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className="font-medium">
                       {packageMap.get(item.package_id)?.name ?? item.package_id}
@@ -104,21 +112,21 @@ async function SubscriptionPage() {
                     </span>
                   </div>
                   {item.previous_package_id ? (
-                    <p className="text-muted-foreground">
+                    <p className="text-muted-foreground mt-1">
                       {packageMap.get(item.previous_package_id)?.name ??
                         item.previous_package_id}{' '}
                       → {packageMap.get(item.package_id)?.name}
                     </p>
                   ) : null}
                   {item.note ? (
-                    <p className="text-muted-foreground">{item.note}</p>
+                    <p className="text-muted-foreground mt-1">{item.note}</p>
                   ) : null}
                 </li>
               ))}
             </ul>
           )}
-        </section>
-      </PageBody>
+        </SectionCard>
+      </KinderPageBody>
     </>
   );
 }

@@ -39,9 +39,9 @@ export interface ClassGroup {
   capacity: number;
   teacher_user_id: string | null;
   status: ClassStatus;
-  school_year?: SchoolYear | null;
-  semester?: Semester | null;
-  classroom?: Classroom | null;
+  school_year?: Pick<SchoolYear, 'id' | 'name'> | null;
+  semester?: Pick<Semester, 'id' | 'name'> | null;
+  classroom?: Pick<Classroom, 'id' | 'name'> | null;
   enrollment_count?: number;
 }
 

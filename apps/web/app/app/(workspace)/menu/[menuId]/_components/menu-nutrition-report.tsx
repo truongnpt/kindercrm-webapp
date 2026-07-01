@@ -3,6 +3,7 @@ import { AlertTriangle } from 'lucide-react';
 import { Trans } from '@kit/ui/trans';
 
 import type { MenuNutritionSummary } from '~/lib/kinder/meal-menu/load-menu-templates';
+import { PanelEmpty } from '~/components/kinder-ui';
 
 export function MenuNutritionReport({
   summary,
@@ -10,7 +11,7 @@ export function MenuNutritionReport({
   summary: MenuNutritionSummary;
 }) {
   return (
-    <div className="space-y-4 rounded-lg border p-4">
+    <div className="kinder-surface flex flex-col gap-4 p-4">
       <p className="font-medium">
         <Trans i18nKey="kinder:mealMenu.nutritionReport" />
       </p>
@@ -40,11 +41,9 @@ export function MenuNutritionReport({
           <Trans i18nKey="kinder:mealMenu.ingredientRequirements" />
         </p>
         {summary.ingredientRequirements.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
-            <Trans i18nKey="kinder:mealMenu.noIngredientRequirements" />
-          </p>
+          <PanelEmpty messageKey="kinder:mealMenu.noIngredientRequirements" />
         ) : (
-          <ul className="divide-y rounded-md border text-sm">
+          <ul className="kinder-list-panel text-sm">
             {summary.ingredientRequirements.map((item) => {
               const insufficient =
                 item.inventoryProductId !== null &&
@@ -53,7 +52,7 @@ export function MenuNutritionReport({
 
               return (
                 <li
-                  className="flex items-center justify-between gap-2 px-3 py-2"
+                  className="flex items-center justify-between gap-2"
                   key={item.ingredientId}
                 >
                   <div>

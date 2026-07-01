@@ -78,6 +78,10 @@ on conflict (code) do update set
   is_active = excluded.is_active,
   sort_order = excluded.sort_order;
 
+-- Platform Super Admin (EPIC-035): grant after first user signs up, e.g.:
+-- INSERT INTO public.platform_admins (user_id, role)
+-- SELECT id, 'super_admin' FROM auth.users WHERE email = 'you@example.com' LIMIT 1;
+
 -- Storage: account avatars (from base migration)
 insert into storage.buckets (id, name, public)
 values ('account_image', 'account_image', true)

@@ -25,6 +25,7 @@ import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
+import { PanelEmpty } from '~/components/kinder-ui';
 import { CreateStaffContractSchema } from '~/lib/kinder/staff/schemas/staff.schema';
 import { createStaffContractAction } from '~/lib/kinder/staff/server-actions';
 import type { StaffContract } from '~/lib/kinder/staff/types';
@@ -63,7 +64,7 @@ export function StaffContractsPanel({
       {contracts.length > 0 ? (
         <div className="space-y-2">
           {contracts.map((contract) => (
-            <div className="rounded-lg border p-4 text-sm" key={contract.id}>
+            <div className="kinder-mobile-card text-sm" key={contract.id}>
               <p className="font-medium">{contract.title}</p>
               <p className="text-muted-foreground">
                 <Trans
@@ -77,14 +78,12 @@ export function StaffContractsPanel({
           ))}
         </div>
       ) : (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:staff.contracts.empty" />
-        </p>
+        <PanelEmpty messageKey="kinder:staff.contracts.empty" />
       )}
 
       <Form {...form}>
         <form
-          className="grid max-w-2xl gap-4 rounded-lg border p-4"
+          className="kinder-form-panel max-w-2xl"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = createStaffContractAction(data);
             toast.promise(promise, {

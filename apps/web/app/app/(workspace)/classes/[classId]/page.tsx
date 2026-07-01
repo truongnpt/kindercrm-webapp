@@ -1,8 +1,10 @@
 import { notFound } from 'next/navigation';
 
-import { PageBody, PageHeader } from '@kit/ui/page';
-import { Trans } from '@kit/ui/trans';
-
+import {
+  DetailPageHeader,
+  KinderPageBody,
+} from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
 import {
   loadClassById,
   loadClassEnrollments,
@@ -62,12 +64,13 @@ async function ClassDetailPage({
 
   return (
     <>
-      <PageHeader
+      <DetailPageHeader
+        backHref={pathsConfig.app.classes}
         description={cls.code}
         title={cls.name}
       />
 
-      <PageBody>
+      <KinderPageBody>
         <ClassDetailPanel
           allClasses={allClasses.map((item) => ({
             id: item.id,
@@ -82,7 +85,7 @@ async function ClassDetailPage({
           teachers={teachers}
           unassignedStudents={unassignedStudents}
         />
-      </PageBody>
+      </KinderPageBody>
     </>
   );
 }

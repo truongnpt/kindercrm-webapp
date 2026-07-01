@@ -39,7 +39,7 @@ export function AiInsightsPanel({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border p-4">
+      <div className="kinder-mobile-card">
         <div className="mb-3 flex items-center justify-between">
           <p className="font-medium">
             <Trans i18nKey="kinder:ai.insightsTitle" />
@@ -95,7 +95,7 @@ export function AiInsightsPanel({
         </div>
       </div>
 
-      <div className="grid max-w-xl gap-3 rounded-lg border p-4">
+      <div className="kinder-form-panel max-w-xl grid-cols-1">
         <p className="font-medium">
           <Trans i18nKey="kinder:ai.notificationDraft" />
         </p>

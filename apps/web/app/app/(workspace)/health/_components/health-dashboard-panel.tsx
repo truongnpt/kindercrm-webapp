@@ -9,37 +9,37 @@ export function HealthDashboardPanel({
 }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <div className="rounded-lg border p-4">
+      <div className="kinder-mobile-card">
         <p className="text-muted-foreground text-xs">
           <Trans i18nKey="kinder:health.summary.students" />
         </p>
         <p className="text-2xl font-semibold">{summary.totalStudents}</p>
       </div>
-      <div className="rounded-lg border p-4">
+      <div className="kinder-mobile-card">
         <p className="text-muted-foreground text-xs">
           <Trans i18nKey="kinder:health.summary.allergies" />
         </p>
         <p className="text-2xl font-semibold">{summary.studentsWithAllergies}</p>
       </div>
-      <div className="rounded-lg border p-4">
+      <div className="kinder-mobile-card">
         <p className="text-muted-foreground text-xs">
           <Trans i18nKey="kinder:health.summary.vaccinationsDue" />
         </p>
         <p className="text-2xl font-semibold">{summary.vaccinationsDueSoon}</p>
       </div>
-      <div className="rounded-lg border p-4">
+      <div className="kinder-mobile-card">
         <p className="text-muted-foreground text-xs">
           <Trans i18nKey="kinder:health.summary.incidentsMonth" />
         </p>
         <p className="text-2xl font-semibold">{summary.incidentsThisMonth}</p>
       </div>
-      <div className="rounded-lg border p-4">
+      <div className="kinder-mobile-card">
         <p className="text-muted-foreground text-xs">
           <Trans i18nKey="kinder:health.summary.growthMonth" />
         </p>
         <p className="text-2xl font-semibold">{summary.growthRecordsThisMonth}</p>
       </div>
-      <div className="rounded-lg border p-4">
+      <div className="kinder-mobile-card">
         <p className="text-muted-foreground text-xs">
           <Trans i18nKey="kinder:health.summary.activeMedications" />
         </p>

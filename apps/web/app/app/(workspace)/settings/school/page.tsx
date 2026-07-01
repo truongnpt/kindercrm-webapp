@@ -1,5 +1,6 @@
-import { PageBody, PageHeader } from '@kit/ui/page';
 import { Trans } from '@kit/ui/trans';
+
+import { KinderPageBody, KinderPageHeader, SectionCard } from '~/components/kinder-ui';
 
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
@@ -26,14 +27,16 @@ async function SchoolSettingsPage() {
 
   return (
     <>
-      <PageHeader
+      <KinderPageHeader
         description={<Trans i18nKey="kinder:schoolSettings.description" />}
         title={<Trans i18nKey="kinder:schoolSettings.title" />}
       />
 
-      <PageBody>
-        <UpdateSchoolForm school={context.school} />
-      </PageBody>
+      <KinderPageBody>
+        <SectionCard>
+          <UpdateSchoolForm school={context.school} />
+        </SectionCard>
+      </KinderPageBody>
     </>
   );
 }

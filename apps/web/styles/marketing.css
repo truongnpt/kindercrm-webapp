@@ -1,0 +1,124 @@
+/*
+ * Kinder CRM marketing site design tokens & utilities
+ */
+
+.marketing-site {
+  --marketing-primary: #3fae40;
+  --marketing-primary-hover: #348a35;
+  --marketing-primary-dark: #2a6f2b;
+  --marketing-secondary: #22c55e;
+  --marketing-accent: #f59e0b;
+  --marketing-bg: #ffffff;
+  --marketing-section: #f8fafc;
+  --marketing-text: #111827;
+  --marketing-text-muted: #6b7280;
+  --marketing-border: #e5e7eb;
+  --marketing-success: #16a34a;
+  --marketing-danger: #ef4444;
+
+  color: var(--marketing-text);
+  background-color: var(--marketing-bg);
+}
+
+.marketing-gradient-hero {
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      color-mix(in srgb, var(--marketing-primary) 18%, transparent),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 100% 0%,
+      color-mix(in srgb, var(--marketing-secondary) 12%, transparent),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 50% 30% at 0% 100%,
+      color-mix(in srgb, var(--marketing-accent) 8%, transparent),
+      transparent
+    ),
+    var(--marketing-bg);
+}
+
+.marketing-gradient-cta {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--marketing-primary) 88%, var(--marketing-primary-dark)) 0%,
+    var(--marketing-primary) 45%,
+    color-mix(in srgb, var(--marketing-primary) 75%, var(--marketing-secondary)) 100%
+  );
+}
+
+.marketing-glass {
+  background: color-mix(in srgb, var(--marketing-bg) 72%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.marketing-card {
+  border: 1px solid var(--marketing-border);
+  border-radius: 1rem;
+  background: var(--marketing-bg);
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--marketing-text) 4%, transparent),
+    0 4px 24px color-mix(in srgb, var(--marketing-primary) 6%, transparent);
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease,
+    border-color 200ms ease;
+}
+
+.marketing-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--marketing-primary) 25%, var(--marketing-border));
+  box-shadow:
+    0 4px 8px color-mix(in srgb, var(--marketing-text) 6%, transparent),
+    0 12px 40px color-mix(in srgb, var(--marketing-primary) 12%, transparent);
+}
+
+.marketing-section-alt {
+  background-color: var(--marketing-section);
+}
+
+.marketing-text-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--marketing-primary) 0%,
+    color-mix(in srgb, var(--marketing-primary) 70%, var(--marketing-secondary)) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.marketing-floating {
+  animation: marketing-float 6s ease-in-out infinite;
+}
+
+.marketing-floating-delayed {
+  animation: marketing-float 6s ease-in-out 1.5s infinite;
+}
+
+@keyframes marketing-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.marketing-grid-pattern {
+  background-image:
+    linear-gradient(
+      color-mix(in srgb, var(--marketing-border) 60%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--marketing-border) 60%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 48px 48px;
+}

@@ -4,6 +4,10 @@ import { cache } from 'react';
 
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
+import { getSchoolMemberAccounts } from '~/lib/kinder/tenant/account-lookup';
+
+import type { Database } from '~/lib/database.types';
+
 import type {
   StaffClassAssignment,
   StaffContract,
@@ -74,7 +78,10 @@ export const loadStaffEmployees = cache(
       .order('full_name');
 
     if (filters?.status && filters.status !== 'all') {
-      query = query.eq('employment_status', filters.status);
+      query = query.eq(
+        'employment_status',
+        filters.status as Database['public']['Enums']['staff_employment_status'],
+      );
     }
 
     if (filters?.departmentId) {
@@ -138,13 +145,8 @@ export const loadStaffEmployeeById = cache(
     let account = null;
 
     if (data.user_id) {
-      const { data: accountData } = await client
-        .from('accounts')
-        .select('id, name, email')
-        .eq('id', data.user_id)
-        .maybeSingle();
-
-      account = accountData;
+      const accounts = await getSchoolMemberAccounts(schoolId, [data.user_id]);
+      account = accounts[0] ?? null;
     }
 
     return {

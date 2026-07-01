@@ -17,7 +17,7 @@ import { If } from '@kit/ui/if';
 import { Trans } from '@kit/ui/trans';
 
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
-import { hasPackageFeature } from '~/lib/kinder/subscription/features';
+import { hasPackageFeature } from '~/lib/kinder/subscription/package-features';
 import { changePackageAction } from '~/lib/kinder/subscription/server-actions';
 import type { Package } from '~/lib/kinder/types';
 

@@ -25,6 +25,7 @@ import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { RecordInventoryTransactionSchema } from '~/lib/kinder/inventory/schemas/inventory.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import { recordInventoryTransactionAction } from '~/lib/kinder/inventory/server-actions';
 import type { InventoryProductWithStock } from '~/lib/kinder/inventory/types';
 
@@ -62,11 +63,9 @@ export function TransactionsPanel({
   return (
     <div className="space-y-6">
       {transactions.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:inventory.emptyTransactions" />
-        </p>
+        <PanelEmpty messageKey="kinder:inventory.emptyTransactions" />
       ) : (
-        <ul className="divide-y rounded-lg border">
+        <ul className="kinder-list-panel">
           {transactions.map((tx) => (
             <li className="flex items-center justify-between p-4 text-sm" key={tx.id}>
               <div>
@@ -91,7 +90,7 @@ export function TransactionsPanel({
       {products.length > 0 ? (
         <Form {...form}>
           <form
-            className="grid max-w-xl gap-3 rounded-lg border p-4"
+            className="kinder-form-panel max-w-xl grid-cols-1"
             onSubmit={form.handleSubmit(async (data) => {
               const promise = recordInventoryTransactionAction(data);
               toast.promise(promise, {

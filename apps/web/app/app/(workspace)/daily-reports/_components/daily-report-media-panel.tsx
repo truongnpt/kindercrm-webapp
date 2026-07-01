@@ -8,7 +8,6 @@ import { toast } from 'sonner';
 
 import { useSupabase } from '@kit/supabase/hooks/use-supabase';
 import { Button } from '@kit/ui/button';
-import { Input } from '@kit/ui/input';
 import { Trans } from '@kit/ui/trans';
 
 import {
@@ -21,6 +20,7 @@ import {
   validateDailyReportMediaFile,
 } from '~/lib/kinder/daily-reports/storage';
 import type { DailyReportAttachment } from '~/lib/kinder/daily-reports/types';
+import { PanelEmpty } from '~/components/kinder-ui';
 
 async function captureVideoThumbnail(file: File): Promise<Blob | null> {
   return new Promise((resolve) => {
@@ -100,9 +100,8 @@ export function DailyReportMediaPanel({
 
     try {
       const mediaType = validateDailyReportMediaFile(file);
-      const { nanoid } = await import('nanoid');
       const extension = file.name.split('.').pop() ?? 'bin';
-      const fileName = `${nanoid(16)}.${extension}`;
+      const fileName = `${crypto.randomUUID()}.${extension}`;
       const storagePath = buildDailyReportStoragePath(
         schoolId,
         reportId,
@@ -214,9 +213,7 @@ export function DailyReportMediaPanel({
       ) : null}
 
       {attachments.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:dailyReports.mediaEmpty" />
-        </p>
+        <PanelEmpty messageKey="kinder:dailyReports.mediaEmpty" />
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {attachments.map((attachment) => {
@@ -226,7 +223,7 @@ export function DailyReportMediaPanel({
               : undefined;
 
             return (
-              <div className="overflow-hidden rounded-lg border" key={attachment.id}>
+              <div className="kinder-surface overflow-hidden" key={attachment.id}>
                 {attachment.media_type === 'video' ? (
                   <video
                     className="aspect-video w-full bg-black object-contain"

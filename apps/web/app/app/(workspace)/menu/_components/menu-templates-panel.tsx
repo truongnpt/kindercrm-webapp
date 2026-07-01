@@ -17,6 +17,7 @@ import { Input } from '@kit/ui/input';
 import { Trans } from '@kit/ui/trans';
 
 import { SaveMenuTemplateSchema } from '~/lib/kinder/meal-menu/schemas/meal-menu.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import {
   applyMenuTemplateAction,
   deleteMenuTemplateAction,
@@ -49,11 +50,9 @@ export function MenuTemplatesPanel({
   return (
     <div className="space-y-6">
       {templates.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:mealMenu.emptyTemplates" />
-        </p>
+        <PanelEmpty messageKey="kinder:mealMenu.emptyTemplates" />
       ) : (
-        <ul className="divide-y rounded-lg border">
+        <ul className="kinder-list-panel">
           {templates.map((template) => (
             <li
               className="flex flex-wrap items-center justify-between gap-2 p-4 text-sm"
@@ -125,7 +124,7 @@ export function MenuTemplatesPanel({
       {menus.length > 0 ? (
         <Form {...form}>
           <form
-            className="grid max-w-xl gap-3 rounded-lg border p-4"
+            className="kinder-form-panel max-w-xl grid-cols-1"
             onSubmit={form.handleSubmit(async (data) => {
               const promise = saveMenuTemplateAction(data);
               toast.promise(promise, {

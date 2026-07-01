@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
 
-import { PageBody, PageHeader, PageHeaderActions } from '@kit/ui/page';
 import { Trans } from '@kit/ui/trans';
 
+import { KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
 import { requirePackageFeature } from '~/lib/kinder/subscription/features';
 import { loadStudents } from '~/lib/kinder/students/load-students';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
@@ -42,25 +42,26 @@ async function StudentsPage({
 
   return (
     <>
-      <PageHeader
+      <KinderPageHeader
+        actions={
+          <>
+            <Suspense>
+              <StudentStatusFilter />
+            </Suspense>
+            <StudentImportExport
+              schoolId={context.school.id}
+              students={students}
+            />
+            <CreateStudentDialog schoolId={context.school.id} />
+          </>
+        }
         description={<Trans i18nKey="kinder:students.description" />}
         title={<Trans i18nKey="kinder:students.title" />}
-      >
-        <PageHeaderActions>
-          <Suspense>
-            <StudentStatusFilter />
-          </Suspense>
-          <StudentImportExport
-            schoolId={context.school.id}
-            students={students}
-          />
-          <CreateStudentDialog schoolId={context.school.id} />
-        </PageHeaderActions>
-      </PageHeader>
+      />
 
-      <PageBody>
+      <KinderPageBody>
         <StudentsList students={students} />
-      </PageBody>
+      </KinderPageBody>
     </>
   );
 }

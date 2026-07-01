@@ -3,6 +3,7 @@ import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { Database } from '~/lib/database.types';
+import { findAccountByEmailForSchool } from '~/lib/kinder/tenant/account-lookup';
 
 type StaffAccessRole = Database['public']['Enums']['staff_access_role'];
 type SchoolMemberRole = Database['public']['Enums']['school_member_role'];
@@ -54,11 +55,7 @@ export async function syncStaffMemberAccess(
     return { linked: false as const, reason: 'missing_email' as const };
   }
 
-  const { data: account } = await client
-    .from('accounts')
-    .select('id, email, name')
-    .ilike('email', params.email)
-    .maybeSingle();
+  const account = await findAccountByEmailForSchool(params.schoolId, params.email);
 
   if (!account) {
     return { linked: false as const, reason: 'account_not_found' as const };

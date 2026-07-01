@@ -13,11 +13,11 @@ import {
   FormItem,
   FormLabel,
 } from '@kit/ui/form';
-import { Input } from '@kit/ui/input';
 import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { CreateHealthIncidentSchema } from '~/lib/kinder/health/schemas/health.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import { createHealthIncidentAction, notifyParentIncidentAction } from '~/lib/kinder/health/server-actions';
 import type { HealthIncident, StudentOption } from '~/lib/kinder/health/types';
 
@@ -57,11 +57,9 @@ export function IncidentsPanel({
       <HealthStudentFilter studentId={studentId} students={students} tab="incidents" />
 
       {incidents.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:health.emptyIncidents" />
-        </p>
+        <PanelEmpty messageKey="kinder:health.emptyIncidents" />
       ) : (
-        <ul className="divide-y rounded-lg border">
+        <ul className="kinder-list-panel">
           {incidents.map((incident) => (
             <li className="flex items-start justify-between gap-3 p-4 text-sm" key={incident.id}>
               <div>
@@ -108,7 +106,7 @@ export function IncidentsPanel({
 
       <Form {...form}>
         <form
-          className="grid max-w-xl gap-3 rounded-lg border p-4"
+          className="kinder-form-panel max-w-xl grid-cols-1"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = createHealthIncidentAction(data);
             toast.promise(promise, {

@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 
+import { Kanban, Users } from 'lucide-react';
+
 import { Badge } from '@kit/ui/badge';
 import { Button } from '@kit/ui/button';
 import {
@@ -13,6 +15,7 @@ import {
 } from '@kit/ui/select';
 import { Trans } from '@kit/ui/trans';
 
+import { DataTableShell, EmptyState } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import type { LeadRow } from '~/lib/kinder/crm/load-leads';
 import {
@@ -29,8 +32,18 @@ export function LeadPipelineBoard({
   leads: LeadRow[];
   schoolId: string;
 }) {
+  if (leads.length === 0) {
+    return (
+      <EmptyState
+        descriptionKey="kinder:ui.emptyDefaultDescription"
+        icon={Kanban}
+        titleKey="kinder:crm.empty"
+      />
+    );
+  }
+
   return (
-    <div className="grid gap-4 overflow-x-auto lg:grid-cols-3 xl:grid-cols-6">
+    <div className="grid gap-4 overflow-x-auto pb-2 lg:grid-cols-3 xl:grid-cols-6">
       {ACTIVE_PIPELINE_STAGES.map((stage) => (
         <PipelineColumn
           key={stage}
@@ -53,7 +66,7 @@ function PipelineColumn({
   schoolId: string;
 }) {
   return (
-    <div className="bg-muted/30 min-w-[220px] rounded-lg border p-3">
+    <div className="kinder-pipeline-column">
       <div className="mb-3 flex items-center justify-between gap-2">
         <h3 className="text-sm font-semibold">
           <Trans i18nKey={LEAD_STAGE_I18N_KEYS[stage]} />
@@ -61,7 +74,7 @@ function PipelineColumn({
         <Badge variant="secondary">{leads.length}</Badge>
       </div>
 
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         {leads.map((lead) => (
           <LeadPipelineCard key={lead.id} lead={lead} schoolId={schoolId} />
         ))}
@@ -78,9 +91,9 @@ function LeadPipelineCard({
   schoolId: string;
 }) {
   return (
-    <div className="bg-background space-y-2 rounded-md border p-3 shadow-sm">
+    <div className="kinder-pipeline-card">
       <Link
-        className="font-medium hover:underline"
+        className="font-medium hover:text-primary hover:underline"
         href={`${pathsConfig.app.crmLead}/${lead.id}`}
       >
         {lead.parent_name}
@@ -120,42 +133,45 @@ function LeadPipelineCard({
 export function LeadListTable({ leads }: { leads: LeadRow[] }) {
   if (leads.length === 0) {
     return (
-      <p className="text-muted-foreground text-sm">
-        <Trans i18nKey="kinder:crm.empty" />
-      </p>
+      <EmptyState
+        compact
+        descriptionKey="kinder:ui.emptyDefaultDescription"
+        icon={Users}
+        titleKey="kinder:crm.empty"
+      />
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border">
+    <DataTableShell>
       <table className="w-full text-sm">
-        <thead className="bg-muted/50 border-b">
+        <thead>
           <tr>
-            <th className="px-4 py-3 text-left font-medium">
+            <th>
               <Trans i18nKey="kinder:crm.parentName" />
             </th>
-            <th className="px-4 py-3 text-left font-medium">
+            <th>
               <Trans i18nKey="kinder:crm.phone" />
             </th>
-            <th className="px-4 py-3 text-left font-medium">
+            <th>
               <Trans i18nKey="kinder:crm.source" />
             </th>
-            <th className="px-4 py-3 text-left font-medium">
+            <th>
               <Trans i18nKey="kinder:crm.stage" />
             </th>
-            <th className="px-4 py-3 text-left font-medium" />
+            <th className="text-right" />
           </tr>
         </thead>
-        <tbody className="divide-y">
+        <tbody>
           {leads.map((lead) => (
             <tr key={lead.id}>
-              <td className="px-4 py-3">{lead.parent_name}</td>
-              <td className="px-4 py-3">{lead.phone}</td>
-              <td className="px-4 py-3">{lead.source?.name ?? '—'}</td>
-              <td className="px-4 py-3">
+              <td>{lead.parent_name}</td>
+              <td>{lead.phone}</td>
+              <td>{lead.source?.name ?? '—'}</td>
+              <td>
                 <Trans i18nKey={LEAD_STAGE_I18N_KEYS[lead.stage]} />
               </td>
-              <td className="px-4 py-3 text-right">
+              <td className="text-right">
                 <Button asChild size="sm" variant="ghost">
                   <Link href={`${pathsConfig.app.crmLead}/${lead.id}`}>
                     <Trans i18nKey="kinder:crm.detail" />
@@ -166,6 +182,6 @@ export function LeadListTable({ leads }: { leads: LeadRow[] }) {
           ))}
         </tbody>
       </table>
-    </div>
+    </DataTableShell>
   );
 }

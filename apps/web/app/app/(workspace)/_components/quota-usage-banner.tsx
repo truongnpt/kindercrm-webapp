@@ -1,6 +1,8 @@
-import { Alert, AlertDescription, AlertTitle } from '@kit/ui/alert';
+import { AlertTriangle } from 'lucide-react';
+
 import { Trans } from '@kit/ui/trans';
 
+import { InlineAlert } from '~/components/kinder-ui';
 import type { Package } from '~/lib/kinder/types';
 
 export function QuotaUsageBanner({
@@ -15,14 +17,16 @@ export function QuotaUsageBanner({
   }
 
   const campusRatio = usage.campuses / pkg.max_campuses;
-  const showCampusWarning = campusRatio >= 0.8;
+  const studentRatio = usage.students / pkg.max_students;
+  const showWarning = campusRatio >= 0.8 || studentRatio >= 0.8;
 
   return (
-    <Alert variant={showCampusWarning ? 'warning' : 'default'}>
-      <AlertTitle>
-        <Trans i18nKey="kinder:dashboard.usageTitle" />
-      </AlertTitle>
-      <AlertDescription className="flex flex-wrap gap-4">
+    <InlineAlert
+      icon={showWarning ? AlertTriangle : undefined}
+      title={<Trans i18nKey="kinder:dashboard.usageTitle" />}
+      tone={showWarning ? 'warning' : 'default'}
+    >
+      <div className="flex flex-wrap gap-x-4 gap-y-1">
         <span>
           <Trans
             i18nKey="kinder:dashboard.campusesUsed"
@@ -35,7 +39,7 @@ export function QuotaUsageBanner({
             values={{ used: usage.students, max: pkg.max_students }}
           />
         </span>
-      </AlertDescription>
-    </Alert>
+      </div>
+    </InlineAlert>
   );
 }

@@ -1,6 +1,14 @@
-import { PageBody, PageHeader } from '@kit/ui/page';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@kit/ui/tabs';
 import { Trans } from '@kit/ui/trans';
+
+import {
+  KinderPageBody,
+  KinderPageHeader,
+  MiniStatCard,
+  TabbedModule,
+  TabbedModuleContent,
+  TabbedModuleList,
+  TabbedModuleTrigger,
+} from '~/components/kinder-ui';
 
 import {
   loadInventorySummary,
@@ -73,98 +81,92 @@ async function InventoryPage({
 
   return (
     <>
-      <PageHeader
+      <KinderPageHeader
         description={<Trans i18nKey="kinder:inventory.description" />}
         title={<Trans i18nKey="kinder:inventory.title" />}
       />
 
-      <PageBody>
+      <KinderPageBody>
         <ExpiryAlertsBanner batches={expiringBatches} />
 
-        <div className="mb-6 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-lg border p-4">
-            <p className="text-muted-foreground text-xs">
-              <Trans i18nKey="kinder:inventory.summary.products" />
-            </p>
-            <p className="text-2xl font-semibold">{summary.totalProducts}</p>
-          </div>
-          <div className="rounded-lg border p-4">
-            <p className="text-muted-foreground text-xs">
-              <Trans i18nKey="kinder:inventory.summary.lowStock" />
-            </p>
-            <p className="text-2xl font-semibold">{summary.lowStockCount}</p>
-          </div>
-          <div className="rounded-lg border p-4">
-            <p className="text-muted-foreground text-xs">
-              <Trans i18nKey="kinder:inventory.summary.totalUnits" />
-            </p>
-            <p className="text-2xl font-semibold">{summary.totalStockValue}</p>
-          </div>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <MiniStatCard
+            labelKey="kinder:inventory.summary.products"
+            value={String(summary.totalProducts)}
+          />
+          <MiniStatCard
+            labelKey="kinder:inventory.summary.lowStock"
+            value={String(summary.lowStockCount)}
+          />
+          <MiniStatCard
+            labelKey="kinder:inventory.summary.totalUnits"
+            value={String(summary.totalStockValue)}
+          />
         </div>
 
-        <Tabs defaultValue={tab ?? 'products'}>
-          <TabsList>
-            <TabsTrigger value="products">
+        <TabbedModule defaultValue={tab ?? 'products'}>
+          <TabbedModuleList className="flex-wrap">
+            <TabbedModuleTrigger value="products">
               <Trans i18nKey="kinder:inventory.tabs.products" />
-            </TabsTrigger>
-            <TabsTrigger value="transactions">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="transactions">
               <Trans i18nKey="kinder:inventory.tabs.transactions" />
-            </TabsTrigger>
-            <TabsTrigger value="suppliers">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="suppliers">
               <Trans i18nKey="kinder:inventory.tabs.suppliers" />
-            </TabsTrigger>
-            <TabsTrigger value="purchaseOrders">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="purchaseOrders">
               <Trans i18nKey="kinder:inventory.tabs.purchaseOrders" />
-            </TabsTrigger>
-            <TabsTrigger value="stockCounts">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="stockCounts">
               <Trans i18nKey="kinder:inventory.tabs.stockCounts" />
-            </TabsTrigger>
-            <TabsTrigger value="transfer">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="transfer">
               <Trans i18nKey="kinder:inventory.tabs.transfer" />
-            </TabsTrigger>
-          </TabsList>
+            </TabbedModuleTrigger>
+          </TabbedModuleList>
 
-          <TabsContent className="mt-4" value="products">
+          <TabbedModuleContent value="products">
             <ProductsPanel products={products} schoolId={context.school.id} />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="transactions">
+          <TabbedModuleContent value="transactions">
             <TransactionsPanel
               products={products}
               schoolId={context.school.id}
               transactions={transactions}
             />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="suppliers">
+          <TabbedModuleContent value="suppliers">
             <SuppliersPanel
               schoolId={context.school.id}
               suppliers={suppliers}
             />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="purchaseOrders">
+          <TabbedModuleContent value="purchaseOrders">
             <PurchaseOrdersPanel
               orders={purchaseOrders}
               products={products}
               schoolId={context.school.id}
               suppliers={suppliers}
             />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="stockCounts">
+          <TabbedModuleContent value="stockCounts">
             <StockCountsPanel
               activeCount={activeStockCount}
               schoolId={context.school.id}
               stockCounts={stockCounts}
             />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="transfer">
+          <TabbedModuleContent value="transfer">
             <TransferStockPanel products={products} schoolId={context.school.id} />
-          </TabsContent>
-        </Tabs>
-      </PageBody>
+          </TabbedModuleContent>
+        </TabbedModule>
+      </KinderPageBody>
     </>
   );
 }

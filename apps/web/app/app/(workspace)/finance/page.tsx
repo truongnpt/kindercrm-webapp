@@ -1,9 +1,15 @@
 import { Suspense } from 'react';
 
-import { PageBody, PageHeader, PageHeaderActions } from '@kit/ui/page';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@kit/ui/tabs';
 import { Trans } from '@kit/ui/trans';
 
+import {
+  KinderPageBody,
+  KinderPageHeader,
+  TabbedModule,
+  TabbedModuleContent,
+  TabbedModuleList,
+  TabbedModuleTrigger,
+} from '~/components/kinder-ui';
 import {
   loadActiveStudentsForFinance,
   loadActiveTuitionFeeItems,
@@ -68,56 +74,57 @@ async function FinancePage({
 
   return (
     <>
-      <PageHeader
+      <KinderPageHeader
+        actions={
+          <>
+            <Suspense>
+              <InvoiceStatusFilter />
+            </Suspense>
+            <CreateInvoiceDialog
+              feeItems={activeFeeItems}
+              schoolId={context.school.id}
+              students={students}
+            />
+          </>
+        }
         description={<Trans i18nKey="kinder:finance.description" />}
         title={<Trans i18nKey="kinder:finance.title" />}
-      >
-        <PageHeaderActions>
-          <Suspense>
-            <InvoiceStatusFilter />
-          </Suspense>
-          <CreateInvoiceDialog
-            feeItems={activeFeeItems}
-            schoolId={context.school.id}
-            students={students}
-          />
-        </PageHeaderActions>
-      </PageHeader>
+      />
 
-      <PageBody>
-        <Tabs defaultValue={defaultTab}>
-          <TabsList>
-            <TabsTrigger value="overview">
+      <KinderPageBody>
+        <TabbedModule defaultValue={defaultTab}>
+          <TabbedModuleList>
+            <TabbedModuleTrigger value="overview">
               <Trans i18nKey="kinder:finance.tabs.overview" />
-            </TabsTrigger>
-            <TabsTrigger value="invoices">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="invoices">
               <Trans i18nKey="kinder:finance.tabs.invoices" />
-            </TabsTrigger>
-            <TabsTrigger value="tuition">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="tuition">
               <Trans i18nKey="kinder:finance.tabs.tuition" />
-            </TabsTrigger>
-            <TabsTrigger value="debts">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="debts">
               <Trans i18nKey="kinder:finance.tabs.debts" />
-            </TabsTrigger>
-          </TabsList>
+            </TabbedModuleTrigger>
+          </TabbedModuleList>
 
-          <TabsContent className="mt-4" value="overview">
+          <TabbedModuleContent value="overview">
             <FinanceDashboard summary={summary} />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="invoices">
+          <TabbedModuleContent value="invoices">
             <InvoicesList invoices={invoices} />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="tuition">
+          <TabbedModuleContent value="tuition">
             <TuitionFeesPanel feeItems={feeItems} schoolId={context.school.id} />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="debts">
+          <TabbedModuleContent value="debts">
             <DebtsList debts={debts} />
-          </TabsContent>
-        </Tabs>
-      </PageBody>
+          </TabbedModuleContent>
+        </TabbedModule>
+      </KinderPageBody>
     </>
   );
 }

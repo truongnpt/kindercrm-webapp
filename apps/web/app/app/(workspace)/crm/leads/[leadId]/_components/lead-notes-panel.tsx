@@ -11,12 +11,12 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@kit/ui/form';
 import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
+import { PanelEmpty, SectionCard } from '~/components/kinder-ui';
 import { CreateLeadNoteSchema } from '~/lib/kinder/crm/schemas/lead.schema';
 import { createLeadNoteAction } from '~/lib/kinder/crm/server-actions';
 
@@ -51,9 +51,9 @@ export function LeadNotesPanel({
     const promise = createLeadNoteAction(data);
 
     toast.promise(promise, {
-      loading: t('schoolSettings.saving'),
-      success: t('schoolSettings.saved'),
-      error: t('common:genericServerError', { ns: 'common' }),
+      loading: t('ui.toast.saving'),
+      success: t('ui.toast.saved'),
+      error: t('ui.toast.error'),
     });
 
     await promise;
@@ -62,12 +62,9 @@ export function LeadNotesPanel({
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
-      <section className="space-y-3">
-        <h3 className="font-semibold">
-          <Trans i18nKey="kinder:crm.addNote" />
-        </h3>
+      <SectionCard title={<Trans i18nKey="kinder:crm.addNote" />}>
         <Form {...form}>
-          <form className="space-y-3" onSubmit={onSubmit}>
+          <form className="flex flex-col gap-3" onSubmit={onSubmit}>
             <FormField
               control={form.control}
               name="body"
@@ -86,34 +83,39 @@ export function LeadNotesPanel({
           </form>
         </Form>
 
-        <ul className="divide-y rounded-lg border">
-          {notes.map((note) => (
-            <li className="space-y-1 p-3 text-sm" key={note.id}>
-              <p>{note.body}</p>
-              <p className="text-muted-foreground text-xs">
-                {new Date(note.created_at).toLocaleString('vi-VN')}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </section>
+        {notes.length === 0 ? (
+          <PanelEmpty messageKey="kinder:crm.notesEmpty" />
+        ) : (
+          <ul className="kinder-list-panel mt-4">
+            {notes.map((note) => (
+              <li className="text-sm" key={note.id}>
+                <p>{note.body}</p>
+                <p className="text-muted-foreground mt-1 text-xs">
+                  {new Date(note.created_at).toLocaleString('vi-VN')}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </SectionCard>
 
-      <section className="space-y-3">
-        <h3 className="font-semibold">
-          <Trans i18nKey="kinder:crm.timeline" />
-        </h3>
-        <ul className="divide-y rounded-lg border">
-          {activities.map((activity) => (
-            <li className="space-y-1 p-3 text-sm" key={activity.id}>
-              <p className="font-medium">{activity.activity_type}</p>
-              {activity.description ? <p>{activity.description}</p> : null}
-              <p className="text-muted-foreground text-xs">
-                {new Date(activity.created_at).toLocaleString('vi-VN')}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <SectionCard title={<Trans i18nKey="kinder:crm.timeline" />}>
+        {activities.length === 0 ? (
+          <PanelEmpty messageKey="kinder:crm.activitiesEmpty" />
+        ) : (
+          <ul className="kinder-list-panel">
+            {activities.map((activity) => (
+              <li className="text-sm" key={activity.id}>
+                <p className="font-medium">{activity.activity_type}</p>
+                {activity.description ? <p>{activity.description}</p> : null}
+                <p className="text-muted-foreground mt-1 text-xs">
+                  {new Date(activity.created_at).toLocaleString('vi-VN')}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </SectionCard>
     </div>
   );
 }

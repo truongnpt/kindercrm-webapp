@@ -47,13 +47,15 @@ export const UpsertDailyReportSchema = z.object({
   activities: z.string().max(2000).optional().or(z.literal('')),
   teacherNote: z.string().max(2000).optional().or(z.literal('')),
   dailySummary: z.string().max(2000).optional().or(z.literal('')),
-  mealRecords: z.array(MealRecordSchema).default([]),
+  mealRecords: z.array(MealRecordSchema),
   sleepRecord: SleepRecordSchema.optional(),
-  toiletRecords: z.array(ToiletRecordSchema).default([]),
+  toiletRecords: z.array(ToiletRecordSchema),
   healthObservation: HealthObservationSchema.optional(),
-  medicationRecords: z.array(MedicationRecordSchema).default([]),
-  learningActivities: z.array(LearningActivitySchema).default([]),
+  medicationRecords: z.array(MedicationRecordSchema),
+  learningActivities: z.array(LearningActivitySchema),
 });
+
+export type UpsertDailyReportFormValues = z.infer<typeof UpsertDailyReportSchema>;
 
 export const PublishDailyReportSchema = z.object({
   schoolId: z.string().uuid(),

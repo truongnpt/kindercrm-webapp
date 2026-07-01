@@ -2,10 +2,13 @@
 
 import Link from 'next/link';
 
+import { Receipt } from 'lucide-react';
+
 import { Badge } from '@kit/ui/badge';
 import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
 
+import { DataTableShell, EmptyState } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
 import type { InvoiceWithStudent } from '~/lib/kinder/finance/types';
@@ -25,59 +28,50 @@ const STATUS_VARIANT: Record<
 export function InvoicesList({ invoices }: { invoices: InvoiceWithStudent[] }) {
   if (invoices.length === 0) {
     return (
-      <p className="text-muted-foreground text-sm">
-        <Trans i18nKey="kinder:finance.invoices.empty" />
-      </p>
+      <EmptyState
+        descriptionKey="kinder:ui.emptyDefaultDescription"
+        icon={Receipt}
+        titleKey="kinder:finance.invoices.empty"
+      />
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border">
+    <DataTableShell>
       <table className="w-full text-sm">
-        <thead className="bg-muted/50 border-b">
+        <thead>
           <tr>
-            <th className="px-4 py-3 text-left font-medium">
+            <th>
               <Trans i18nKey="kinder:finance.invoices.number" />
             </th>
-            <th className="px-4 py-3 text-left font-medium">
+            <th>
               <Trans i18nKey="kinder:finance.invoices.student" />
             </th>
-            <th className="px-4 py-3 text-left font-medium">
-              <Trans i18nKey="kinder:finance.invoices.period" />
-            </th>
-            <th className="px-4 py-3 text-right font-medium">
+            <th>
               <Trans i18nKey="kinder:finance.invoices.total" />
             </th>
-            <th className="px-4 py-3 text-left font-medium">
+            <th>
               <Trans i18nKey="kinder:finance.invoices.status" />
             </th>
-            <th className="px-4 py-3 text-right font-medium" />
+            <th className="text-right" />
           </tr>
         </thead>
-        <tbody className="divide-y">
+        <tbody>
           {invoices.map((invoice) => (
             <tr key={invoice.id}>
-              <td className="px-4 py-3 font-mono text-xs">
-                {invoice.invoice_number}
+              <td className="font-mono text-xs">{invoice.invoice_number}</td>
+              <td className="font-medium">
+                {invoice.student?.full_name ?? '—'}
               </td>
-              <td className="px-4 py-3">
-                <p>{invoice.student.full_name}</p>
-                <p className="text-muted-foreground text-xs">
-                  {invoice.student.student_code}
-                </p>
-              </td>
-              <td className="px-4 py-3">{invoice.billing_period}</td>
-              <td className="px-4 py-3 text-right">
-                {formatVnd(invoice.total_amount)}
-              </td>
-              <td className="px-4 py-3">
+              <td>{formatVnd(invoice.total_amount)}</td>
+              <td>
                 <Badge variant={STATUS_VARIANT[invoice.status]}>
                   <Trans
                     i18nKey={`kinder:finance.invoices.statuses.${invoice.status}`}
                   />
                 </Badge>
               </td>
-              <td className="px-4 py-3 text-right">
+              <td className="text-right">
                 <Button asChild size="sm" variant="ghost">
                   <Link
                     href={`${pathsConfig.app.financeInvoice}/${invoice.id}`}
@@ -90,6 +84,6 @@ export function InvoicesList({ invoices }: { invoices: InvoiceWithStudent[] }) {
           ))}
         </tbody>
       </table>
-    </div>
+    </DataTableShell>
   );
 }

@@ -32,6 +32,15 @@ const PathsSchema = z.object({
     inventory: z.string().min(1),
     ai: z.string().min(1),
     health: z.string().min(1),
+    suspended: z.string().min(1),
+  }),
+  platform: z.object({
+    home: z.string().min(1),
+    schools: z.string().min(1),
+    schoolDetail: z.string().min(1),
+    packages: z.string().min(1),
+    admins: z.string().min(1),
+    auditLogs: z.string().min(1),
   }),
   parent: z.object({
     home: z.string().min(1),
@@ -71,6 +80,15 @@ const pathsConfig = PathsSchema.parse({
     inventory: '/app/inventory',
     ai: '/app/ai',
     health: '/app/health',
+    suspended: '/app/suspended',
+  },
+  platform: {
+    home: '/platform',
+    schools: '/platform/schools',
+    schoolDetail: '/platform/schools',
+    packages: '/platform/packages',
+    admins: '/platform/admins',
+    auditLogs: '/platform/audit-logs',
   },
   parent: {
     home: '/parent',

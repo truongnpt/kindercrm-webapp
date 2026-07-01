@@ -27,6 +27,7 @@ import {
 import { Trans } from '@kit/ui/trans';
 
 import pathsConfig from '~/config/paths.config';
+import { PanelEmpty, SectionCard } from '~/components/kinder-ui';
 import {
   CreateScheduleSchema,
   EnrollStudentSchema,
@@ -247,20 +248,14 @@ function RosterSection({
   });
 
   return (
-    <section className="space-y-3">
-      <h3 className="font-semibold">
-        <Trans i18nKey="kinder:classes.roster" />
-      </h3>
-
+    <SectionCard title={<Trans i18nKey="kinder:classes.roster" />}>
       {enrollments.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:classes.noStudents" />
-        </p>
+        <PanelEmpty messageKey="kinder:classes.noStudents" />
       ) : (
-        <ul className="divide-y rounded-lg border">
+        <ul className="kinder-list-panel">
           {enrollments.map((row) => (
             <li
-              className="flex items-center justify-between gap-2 p-3 text-sm"
+              className="flex items-center justify-between gap-2 text-sm"
               key={row.id}
             >
               <div>
@@ -336,7 +331,7 @@ function RosterSection({
           </form>
         </Form>
       ) : null}
-    </section>
+    </SectionCard>
   );
 }
 
@@ -363,22 +358,23 @@ function ScheduleSection({
   });
 
   return (
-    <section className="space-y-3">
-      <h3 className="font-semibold">
-        <Trans i18nKey="kinder:classes.timetable" />
-      </h3>
-      <ul className="divide-y rounded-lg border text-sm">
-        {schedules.map((slot) => (
-          <li className="p-3" key={slot.id}>
+    <SectionCard title={<Trans i18nKey="kinder:classes.timetable" />}>
+      {schedules.length === 0 ? (
+        <PanelEmpty messageKey="kinder:classes.noSchedule" />
+      ) : (
+        <ul className="kinder-list-panel text-sm">
+          {schedules.map((slot) => (
+            <li key={slot.id}>
             <Trans i18nKey={`kinder:classes.days.${slot.day_of_week}`} /> ·{' '}
             {slot.start_time.slice(0, 5)}–{slot.end_time.slice(0, 5)} ·{' '}
             {slot.label}
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      )}
       <Form {...form}>
         <form
-          className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2"
+          className="kinder-form-panel sm:grid-cols-2"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = createScheduleAction(data);
             toast.promise(promise, {
@@ -466,6 +462,6 @@ function ScheduleSection({
           </div>
         </form>
       </Form>
-    </section>
+    </SectionCard>
   );
 }

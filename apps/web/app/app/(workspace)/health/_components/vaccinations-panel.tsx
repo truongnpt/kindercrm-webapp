@@ -14,10 +14,10 @@ import {
   FormLabel,
 } from '@kit/ui/form';
 import { Input } from '@kit/ui/input';
-import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { UpsertVaccinationSchema } from '~/lib/kinder/health/schemas/health.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import { upsertVaccinationAction } from '~/lib/kinder/health/server-actions';
 import type { HealthVaccination, StudentOption } from '~/lib/kinder/health/types';
 
@@ -56,11 +56,9 @@ export function VaccinationsPanel({
       <HealthStudentFilter studentId={studentId} students={students} tab="vaccinations" />
 
       {vaccinations.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:health.emptyVaccinations" />
-        </p>
+        <PanelEmpty messageKey="kinder:health.emptyVaccinations" />
       ) : (
-        <ul className="divide-y rounded-lg border">
+        <ul className="kinder-list-panel">
           {vaccinations.map((row) => (
             <li className="p-4 text-sm" key={row.id}>
               <p className="font-medium">
@@ -77,7 +75,7 @@ export function VaccinationsPanel({
 
       <Form {...form}>
         <form
-          className="grid max-w-xl gap-3 rounded-lg border p-4"
+          className="kinder-form-panel max-w-xl grid-cols-1"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = upsertVaccinationAction(data);
             toast.promise(promise, {

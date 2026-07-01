@@ -26,9 +26,9 @@ import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
+import { PanelEmpty, DataTableShell } from '~/components/kinder-ui';
 import {
   AddInvoiceAdjustmentSchema,
-  CancelInvoiceSchema,
   RecordPaymentSchema,
   RecordRefundSchema,
 } from '~/lib/kinder/finance/schemas/finance.schema';
@@ -108,7 +108,7 @@ export function InvoiceDetailPanel({
   return (
     <div className="space-y-8">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-lg border p-4">
+        <div className="kinder-mobile-card">
           <p className="text-muted-foreground text-sm">
             <Trans i18nKey="kinder:finance.invoices.student" />
           </p>
@@ -118,7 +118,7 @@ export function InvoiceDetailPanel({
           </p>
         </div>
 
-        <div className="rounded-lg border p-4">
+        <div className="kinder-mobile-card">
           <p className="text-muted-foreground text-sm">
             <Trans i18nKey="kinder:finance.invoices.total" />
           </p>
@@ -127,7 +127,7 @@ export function InvoiceDetailPanel({
           </p>
         </div>
 
-        <div className="rounded-lg border p-4">
+        <div className="kinder-mobile-card">
           <p className="text-muted-foreground text-sm">
             <Trans i18nKey="kinder:finance.invoices.paid" />
           </p>
@@ -136,7 +136,7 @@ export function InvoiceDetailPanel({
           </p>
         </div>
 
-        <div className="rounded-lg border p-4">
+        <div className="kinder-mobile-card">
           <p className="text-muted-foreground text-sm">
             <Trans i18nKey="kinder:finance.debts.balance" />
           </p>
@@ -148,9 +148,9 @@ export function InvoiceDetailPanel({
         <h2 className="font-semibold">
           <Trans i18nKey="kinder:finance.invoices.lineItems" />
         </h2>
-        <div className="overflow-x-auto rounded-lg border">
+        <DataTableShell>
           <table className="w-full text-sm">
-            <thead className="bg-muted/50 border-b">
+            <thead>
               <tr>
                 <th className="px-4 py-3 text-left font-medium">
                   <Trans i18nKey="kinder:finance.tuition.name" />
@@ -166,7 +166,7 @@ export function InvoiceDetailPanel({
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody>
               {lineItems.map((line) => (
                 <tr key={line.id}>
                   <td className="px-4 py-3">{line.description}</td>
@@ -181,7 +181,7 @@ export function InvoiceDetailPanel({
               ))}
             </tbody>
           </table>
-        </div>
+        </DataTableShell>
       </section>
 
       <section className="space-y-3">
@@ -193,7 +193,7 @@ export function InvoiceDetailPanel({
           <div className="space-y-2">
             {adjustments.map((item) => (
               <div
-                className="flex items-center justify-between rounded-lg border px-4 py-3 text-sm"
+                className="kinder-mobile-card flex-row items-center justify-between text-sm"
                 key={item.id}
               >
                 <span>
@@ -209,15 +209,13 @@ export function InvoiceDetailPanel({
             ))}
           </div>
         ) : (
-          <p className="text-muted-foreground text-sm">
-            <Trans i18nKey="kinder:finance.adjustments.empty" />
-          </p>
+          <PanelEmpty messageKey="kinder:finance.adjustments.empty" />
         )}
 
         {invoice.status !== 'cancelled' && invoice.status !== 'paid' ? (
           <Form {...adjustmentForm}>
             <form
-              className="grid max-w-2xl gap-4 rounded-lg border p-4"
+              className="kinder-form-panel max-w-2xl"
               onSubmit={adjustmentForm.handleSubmit(async (data) => {
                 const promise = addInvoiceAdjustmentAction(data);
                 toast.promise(promise, {
@@ -306,9 +304,7 @@ export function InvoiceDetailPanel({
         </h2>
 
         {payments.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
-            <Trans i18nKey="kinder:finance.payments.empty" />
-          </p>
+          <PanelEmpty messageKey="kinder:finance.payments.empty" />
         ) : (
           <div className="space-y-2">
             {payments.map((payment) => {
@@ -321,7 +317,7 @@ export function InvoiceDetailPanel({
               );
 
               return (
-                <div className="rounded-lg border p-4 text-sm" key={payment.id}>
+                <div className="kinder-mobile-card text-sm" key={payment.id}>
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div>
                       <p className="font-medium">
@@ -358,7 +354,7 @@ export function InvoiceDetailPanel({
         {canPay ? (
           <Form {...paymentForm}>
             <form
-              className="grid max-w-2xl gap-4 rounded-lg border p-4"
+              className="kinder-form-panel max-w-2xl"
               onSubmit={paymentForm.handleSubmit(async (data) => {
                 const promise = recordPaymentAction(data);
                 toast.promise(promise, {
@@ -449,7 +445,7 @@ export function InvoiceDetailPanel({
 
           <Form {...refundForm}>
             <form
-              className="grid max-w-2xl gap-4 rounded-lg border p-4"
+              className="kinder-form-panel max-w-2xl"
               onSubmit={refundForm.handleSubmit(async (data) => {
                 const promise = recordRefundAction(data);
                 toast.promise(promise, {

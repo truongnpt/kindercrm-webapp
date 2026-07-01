@@ -55,6 +55,8 @@ export interface Package {
   ai_credits_monthly: number;
   features: Record<string, boolean>;
   price_monthly: number;
+  sort_order: number;
+  is_active: boolean;
 }
 
 export interface SchoolSubscription {

@@ -1,10 +1,15 @@
-import { PageBody, PageHeader, PageHeaderActions } from '@kit/ui/page';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@kit/ui/tabs';
 import { Trans } from '@kit/ui/trans';
 
-import pathsConfig from '~/config/paths.config';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
+import {
+  KinderPageBody,
+  KinderPageHeader,
+  TabbedModule,
+  TabbedModuleContent,
+  TabbedModuleList,
+  TabbedModuleTrigger,
+} from '~/components/kinder-ui';
 import { loadLeadSources, loadLeads } from '~/lib/kinder/crm/load-leads';
 import { seedDefaultLeadSources } from '~/lib/kinder/crm/seed-lead-sources';
 import { requirePackageFeature } from '~/lib/kinder/subscription/features';
@@ -47,36 +52,37 @@ async function CrmPage() {
 
   return (
     <>
-      <PageHeader
+      <KinderPageHeader
+        actions={
+          <>
+            <LeadImportExport leads={leads} schoolId={context.school.id} />
+            <CreateLeadDialog schoolId={context.school.id} sources={sources} />
+          </>
+        }
         description={<Trans i18nKey="kinder:crm.description" />}
         title={<Trans i18nKey="kinder:crm.title" />}
-      >
-        <PageHeaderActions>
-          <LeadImportExport leads={leads} schoolId={context.school.id} />
-          <CreateLeadDialog schoolId={context.school.id} sources={sources} />
-        </PageHeaderActions>
-      </PageHeader>
+      />
 
-      <PageBody>
-        <Tabs defaultValue="pipeline">
-          <TabsList>
-            <TabsTrigger value="pipeline">
+      <KinderPageBody>
+        <TabbedModule defaultValue="pipeline">
+          <TabbedModuleList>
+            <TabbedModuleTrigger value="pipeline">
               <Trans i18nKey="kinder:crm.pipeline" />
-            </TabsTrigger>
-            <TabsTrigger value="list">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="list">
               <Trans i18nKey="kinder:crm.list" />
-            </TabsTrigger>
-          </TabsList>
+            </TabbedModuleTrigger>
+          </TabbedModuleList>
 
-          <TabsContent className="mt-4" value="pipeline">
+          <TabbedModuleContent value="pipeline">
             <LeadPipelineBoard leads={leads} schoolId={context.school.id} />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="list">
+          <TabbedModuleContent value="list">
             <LeadListTable leads={leads} />
-          </TabsContent>
-        </Tabs>
-      </PageBody>
+          </TabbedModuleContent>
+        </TabbedModule>
+      </KinderPageBody>
     </>
   );
 }

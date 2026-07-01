@@ -18,6 +18,7 @@ import { Input } from '@kit/ui/input';
 import { Trans } from '@kit/ui/trans';
 
 import { LinkParentAccountSchema } from '~/lib/kinder/parent/schemas/parent.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import {
   linkParentAccountAction,
   unlinkParentAccountAction,
@@ -58,7 +59,7 @@ export function ParentLinkPanel({
       </h3>
 
       {parentLinks.length > 0 ? (
-        <ul className="divide-y rounded-lg border">
+        <ul className="kinder-list-panel">
           {parentLinks.map((link) => (
             <li
               className="flex items-center justify-between gap-2 p-3 text-sm"
@@ -103,14 +104,12 @@ export function ParentLinkPanel({
           ))}
         </ul>
       ) : (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:parent.noLinks" />
-        </p>
+        <PanelEmpty messageKey="kinder:parent.noLinks" />
       )}
 
       <Form {...form}>
         <form
-          className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2"
+          className="kinder-form-panel sm:grid-cols-2"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = linkParentAccountAction(data);
             toast.promise(promise, {

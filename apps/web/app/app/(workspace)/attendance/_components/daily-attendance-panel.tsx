@@ -26,6 +26,7 @@ import {
 import { Trans } from '@kit/ui/trans';
 
 import { RecordClassAttendanceSchema } from '~/lib/kinder/attendance/schemas/attendance.schema';
+import { PanelEmpty, DataTableShell } from '~/components/kinder-ui';
 import {
   checkInAction,
   checkOutAction,
@@ -88,9 +89,7 @@ export function DailyAttendancePanel({
 
   if (roster.length === 0) {
     return (
-      <p className="text-muted-foreground text-sm">
-        <Trans i18nKey="kinder:attendance.emptyClass" />
-      </p>
+      <PanelEmpty messageKey="kinder:attendance.emptyClass" />
     );
   }
 
@@ -134,9 +133,9 @@ export function DailyAttendancePanel({
             await promise;
           })}
         >
-          <div className="overflow-x-auto rounded-lg border">
+          <DataTableShell>
             <table className="w-full text-sm">
-              <thead className="bg-muted/50 border-b">
+              <thead>
                 <tr>
                   <th className="px-4 py-3 text-left font-medium">
                     <Trans i18nKey="kinder:students.fullName" />
@@ -152,7 +151,7 @@ export function DailyAttendancePanel({
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody>
                 {fields.map((field, index) => {
                   const student = roster[index]!;
 
@@ -266,7 +265,7 @@ export function DailyAttendancePanel({
                 })}
               </tbody>
             </table>
-          </div>
+        </DataTableShell>
 
           <Button type="submit">
             <Trans i18nKey="kinder:attendance.save" />

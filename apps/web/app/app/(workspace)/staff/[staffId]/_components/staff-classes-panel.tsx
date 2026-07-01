@@ -23,6 +23,7 @@ import {
 import { Trans } from '@kit/ui/trans';
 
 import { AssignStaffClassSchema } from '~/lib/kinder/staff/schemas/staff.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import {
   assignStaffClassAction,
   removeStaffClassAssignmentAction,
@@ -72,7 +73,7 @@ export function StaffClassesPanel({
             <Trans i18nKey="kinder:staff.classes.homeroom" />
           </p>
           {homeroomClasses.map((cls) => (
-            <div className="rounded-lg border p-3 text-sm" key={cls.id}>
+            <div className="kinder-mobile-card text-sm" key={cls.id}>
               {cls.name} <span className="font-mono text-xs">({cls.code})</span>
             </div>
           ))}
@@ -83,7 +84,7 @@ export function StaffClassesPanel({
         <div className="space-y-2">
           {assignments.map((assignment) => (
             <div
-              className="flex items-center justify-between rounded-lg border p-3 text-sm"
+              className="kinder-mobile-card flex-row items-center justify-between text-sm"
               key={assignment.id}
             >
               <span>
@@ -121,15 +122,13 @@ export function StaffClassesPanel({
           ))}
         </div>
       ) : (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:staff.classes.empty" />
-        </p>
+        <PanelEmpty messageKey="kinder:staff.classes.empty" />
       )}
 
       {canManage ? (
         <Form {...form}>
           <form
-            className="grid max-w-xl gap-4 rounded-lg border p-4 md:grid-cols-3"
+            className="kinder-form-panel max-w-xl md:grid-cols-3"
             onSubmit={form.handleSubmit(async (data) => {
               const promise = assignStaffClassAction(data);
               toast.promise(promise, {

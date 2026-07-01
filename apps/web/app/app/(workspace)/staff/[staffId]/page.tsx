@@ -1,8 +1,10 @@
 import { notFound } from 'next/navigation';
 
-import { PageBody, PageHeader } from '@kit/ui/page';
-import { Trans } from '@kit/ui/trans';
-
+import {
+  DetailPageHeader,
+  KinderPageBody,
+} from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
 import {
   loadActiveClassesForStaff,
   loadStaffClassAssignments,
@@ -83,12 +85,13 @@ async function StaffDetailPage({
 
   return (
     <>
-      <PageHeader
+      <DetailPageHeader
+        backHref={pathsConfig.app.staff}
         description={employee.employee_code}
         title={employee.full_name}
       />
 
-      <PageBody>
+      <KinderPageBody>
         <StaffDetailPanel
           availableClasses={availableClasses}
           campuses={campuses}
@@ -101,7 +104,7 @@ async function StaffDetailPage({
           positions={positions}
           schoolId={context.school.id}
         />
-      </PageBody>
+      </KinderPageBody>
     </>
   );
 }

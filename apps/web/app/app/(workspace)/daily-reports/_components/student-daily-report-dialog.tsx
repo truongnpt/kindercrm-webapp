@@ -37,6 +37,7 @@ import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { UpsertDailyReportSchema } from '~/lib/kinder/daily-reports/schemas/daily-report.schema';
+import type { UpsertDailyReportFormValues } from '~/lib/kinder/daily-reports/schemas/daily-report.schema';
 import {
   fetchDailyReportBundleAction,
   publishDailyReportAction,
@@ -96,7 +97,7 @@ export function StudentDailyReportDialog({
 
   const report = student.report;
 
-  const form = useForm({
+  const form = useForm<UpsertDailyReportFormValues>({
     resolver: zodResolver(UpsertDailyReportSchema),
     defaultValues: buildFormValues(schoolId, student.studentId, reportDate, report),
   });
@@ -308,7 +309,7 @@ export function StudentDailyReportDialog({
 
                 <TabsContent className="space-y-3" value="meals">
                   {MEAL_SLOTS.map((slot, index) => (
-                    <div className="grid gap-2 rounded-lg border p-3 sm:grid-cols-2" key={slot}>
+                    <div className="kinder-form-panel grid-cols-1 gap-2 p-3 sm:grid-cols-2" key={slot}>
                       <p className="font-medium sm:col-span-2">
                         <Trans i18nKey={`kinder:dailyReports.mealSlots.${slot}`} />
                       </p>
@@ -504,7 +505,7 @@ function buildFormValues(
   studentId: string,
   reportDate: string,
   report: StudentDailyReport | null,
-) {
+): UpsertDailyReportFormValues {
   const mealRecords = parseJsonArray<MealRecord>(report?.meal_records);
   const normalizedMeals: MealRecord[] = MEAL_SLOTS.map((slot) => {
     const existing = mealRecords.find((meal) => meal.slot === slot);
@@ -535,13 +536,25 @@ function buildFormValues(
       quality?: string;
       notes?: string;
     }>(report?.sleep_record) ?? { from: '', to: '', notes: '' },
-    toiletRecords: parseJsonArray(report?.toilet_records),
+    toiletRecords: parseJsonArray<{
+      type: 'wet' | 'dry' | 'bm';
+      time?: string;
+      notes?: string;
+    }>(report?.toilet_records),
     healthObservation: parseJsonObject<{
       temperature?: number;
       symptoms?: string;
       notes?: string;
     }>(report?.health_observation) ?? { symptoms: '' },
-    medicationRecords: parseJsonArray(report?.medication_records),
-    learningActivities: parseJsonArray(report?.learning_activities),
+    medicationRecords: parseJsonArray<{
+      name: string;
+      dosage?: string;
+      time?: string;
+      notes?: string;
+    }>(report?.medication_records),
+    learningActivities: parseJsonArray<{
+      title: string;
+      description?: string;
+    }>(report?.learning_activities),
   };
 }

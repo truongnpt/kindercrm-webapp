@@ -4,6 +4,8 @@ import { cache } from 'react';
 
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
+import type { Database } from '~/lib/database.types';
+
 import { loadClasses } from '~/lib/kinder/classes/load-classes';
 import { ensureDefaultSchoolYear } from '~/lib/kinder/classes/seed-school-year';
 
@@ -116,7 +118,10 @@ export const loadLeaveRequests = cache(async (schoolId: string, status?: string)
     .order('created_at', { ascending: false });
 
   if (status && status !== 'all') {
-    query = query.eq('status', status);
+    query = query.eq(
+      'status',
+      status as Database['public']['Enums']['leave_request_status'],
+    );
   }
 
   const { data, error } = await query;

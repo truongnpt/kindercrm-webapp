@@ -18,6 +18,7 @@ import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { UpsertHealthMedicationSchema } from '~/lib/kinder/health/schemas/health.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import { upsertHealthMedicationAction } from '~/lib/kinder/health/server-actions';
 import type { HealthMedication, StudentOption } from '~/lib/kinder/health/types';
 
@@ -57,11 +58,9 @@ export function MedicationsPanel({
       <HealthStudentFilter studentId={studentId} students={students} tab="medications" />
 
       {medications.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:health.emptyMedications" />
-        </p>
+        <PanelEmpty messageKey="kinder:health.emptyMedications" />
       ) : (
-        <ul className="divide-y rounded-lg border">
+        <ul className="kinder-list-panel">
           {medications.map((med) => (
             <li className="p-4 text-sm" key={med.id}>
               <p className="font-medium">
@@ -78,7 +77,7 @@ export function MedicationsPanel({
 
       <Form {...form}>
         <form
-          className="grid max-w-xl gap-3 rounded-lg border p-4"
+          className="kinder-form-panel max-w-xl grid-cols-1"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = upsertHealthMedicationAction(data);
             toast.promise(promise, {

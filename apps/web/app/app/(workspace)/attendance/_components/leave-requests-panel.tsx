@@ -36,6 +36,7 @@ import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { CreateLeaveRequestSchema } from '~/lib/kinder/attendance/schemas/attendance.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import {
   createLeaveRequestAction,
   reviewLeaveRequestAction,
@@ -195,13 +196,11 @@ export function LeaveRequestsPanel({
       </div>
 
       {leaveRequests.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:attendance.leave.empty" />
-        </p>
+        <PanelEmpty messageKey="kinder:attendance.leave.empty" />
       ) : (
         <div className="space-y-3">
           {leaveRequests.map((request) => (
-            <div className="rounded-lg border p-4" key={request.id}>
+            <div className="kinder-mobile-card" key={request.id}>
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <p className="font-medium">{request.student.full_name}</p>

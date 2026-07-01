@@ -2,8 +2,21 @@
 
 import Link from 'next/link';
 
+import {
+  CreditCard,
+  GraduationCap,
+  Users,
+  Wallet,
+} from 'lucide-react';
+
+import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
 
+import {
+  MiniStatCard,
+  SectionCard,
+  StatCard,
+} from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
 import type { DashboardSummary } from '~/lib/kinder/dashboard/load-dashboard';
@@ -23,32 +36,40 @@ export function DashboardOverview({
 }) {
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {features.students ? (
           <StatCard
             href={pathsConfig.app.students}
+            icon={GraduationCap}
             labelKey="kinder:dashboard.stats.totalStudents"
+            tone="info"
             value={String(summary.totalStudents)}
           />
         ) : null}
         {features.crm ? (
           <StatCard
             href={pathsConfig.app.crm}
+            icon={Users}
             labelKey="kinder:dashboard.stats.totalLeads"
+            tone="default"
             value={String(summary.totalLeads)}
           />
         ) : null}
         {features.finance ? (
           <StatCard
             href={pathsConfig.app.finance}
+            icon={Wallet}
             labelKey="kinder:dashboard.stats.revenueMonth"
+            tone="success"
             value={formatVnd(summary.revenueThisMonth)}
           />
         ) : null}
         {features.finance ? (
           <StatCard
             href={pathsConfig.app.finance}
+            icon={CreditCard}
             labelKey="kinder:dashboard.stats.outstandingDebt"
+            tone="warning"
             value={formatVnd(summary.outstandingDebt)}
           />
         ) : null}
@@ -56,94 +77,82 @@ export function DashboardOverview({
 
       <div className="grid gap-4 lg:grid-cols-2">
         {features.attendance ? (
-          <div className="rounded-lg border p-4">
-            <p className="font-medium">
-              <Trans i18nKey="kinder:dashboard.stats.attendanceToday" />
-            </p>
-            <p className="mt-2 text-2xl font-semibold">
-              {summary.attendanceToday.present}/{summary.attendanceToday.total}{' '}
-              <span className="text-muted-foreground text-base font-normal">
+          <SectionCard
+            action={
+              <Button asChild size="sm" variant="ghost">
+                <Link href={pathsConfig.app.attendance}>
+                  <Trans i18nKey="kinder:attendance.title" />
+                </Link>
+              </Button>
+            }
+            title={<Trans i18nKey="kinder:dashboard.stats.attendanceToday" />}
+          >
+            <div className="flex items-end gap-3">
+              <p className="text-foreground text-3xl font-semibold tracking-tight">
+                {summary.attendanceToday.present}/{summary.attendanceToday.total}
+              </p>
+              <p className="text-muted-foreground mb-1 text-sm">
                 ({summary.attendanceToday.rate}%)
-              </span>
-            </p>
-            <Link
-              className="text-primary mt-2 inline-block text-sm hover:underline"
-              href={pathsConfig.app.attendance}
-            >
-              <Trans i18nKey="kinder:attendance.title" />
-            </Link>
-          </div>
+              </p>
+            </div>
+            <div className="bg-muted mt-4 h-2 overflow-hidden rounded-full">
+              <div
+                className="bg-primary h-full rounded-full transition-all duration-300"
+                style={{ width: `${summary.attendanceToday.rate}%` }}
+              />
+            </div>
+          </SectionCard>
         ) : null}
 
         {features.crm ? (
-          <div className="rounded-lg border p-4">
-            <p className="mb-3 font-medium">
-              <Trans i18nKey="kinder:dashboard.stats.leadPipeline" />
-            </p>
-            <ul className="space-y-2 text-sm">
+          <SectionCard
+            title={<Trans i18nKey="kinder:dashboard.stats.leadPipeline" />}
+          >
+            <ul className="space-y-3">
               {Object.entries(summary.leadsByStage)
                 .filter(([, count]) => count > 0)
                 .map(([stage, count]) => (
-                  <li className="flex justify-between gap-2" key={stage}>
-                    <span>
-                      <Trans i18nKey={LEAD_STAGE_I18N_KEYS[stage as keyof typeof LEAD_STAGE_I18N_KEYS]} />
+                  <li
+                    className="flex items-center justify-between gap-3 text-sm"
+                    key={stage}
+                  >
+                    <span className="text-muted-foreground">
+                      <Trans
+                        i18nKey={
+                          LEAD_STAGE_I18N_KEYS[
+                            stage as keyof typeof LEAD_STAGE_I18N_KEYS
+                          ]
+                        }
+                      />
                     </span>
-                    <span className="font-medium">{count}</span>
+                    <span className="bg-primary/10 text-primary rounded-full px-2.5 py-0.5 text-xs font-semibold">
+                      {count}
+                    </span>
                   </li>
                 ))}
             </ul>
-          </div>
+          </SectionCard>
         ) : null}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {features.students ? (
-          <MiniStat
+          <MiniStatCard
             labelKey="kinder:dashboard.stats.activeStudents"
             value={String(summary.activeStudents)}
           />
         ) : null}
-        <MiniStat
+        <MiniStatCard
           labelKey="kinder:dashboard.stats.activeClasses"
           value={String(summary.activeClasses)}
         />
         {features.attendance ? (
-          <MiniStat
+          <MiniStatCard
             labelKey="kinder:dashboard.stats.pendingLeave"
             value={String(summary.pendingLeaveRequests)}
           />
         ) : null}
       </div>
-    </div>
-  );
-}
-
-function StatCard({
-  labelKey,
-  value,
-  href,
-}: {
-  labelKey: string;
-  value: string;
-  href: string;
-}) {
-  return (
-    <Link className="rounded-lg border p-4 transition-colors hover:bg-muted/30" href={href}>
-      <p className="text-muted-foreground text-sm">
-        <Trans i18nKey={labelKey} />
-      </p>
-      <p className="mt-2 text-2xl font-semibold">{value}</p>
-    </Link>
-  );
-}
-
-function MiniStat({ labelKey, value }: { labelKey: string; value: string }) {
-  return (
-    <div className="rounded-lg border p-4">
-      <p className="text-muted-foreground text-sm">
-        <Trans i18nKey={labelKey} />
-      </p>
-      <p className="mt-1 text-xl font-semibold">{value}</p>
     </div>
   );
 }

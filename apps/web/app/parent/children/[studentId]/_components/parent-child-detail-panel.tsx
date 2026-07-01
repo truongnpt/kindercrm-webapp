@@ -8,6 +8,7 @@ import { Button } from '@kit/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@kit/ui/tabs';
 import { Trans } from '@kit/ui/trans';
 
+import { PanelEmpty, DataTableShell } from '~/components/kinder-ui';
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
 import { acknowledgeDailyReportAction } from '~/lib/kinder/daily-reports/server-actions';
 import type { StudentDailyReport } from '~/lib/kinder/daily-reports/types';
@@ -77,7 +78,7 @@ export function ParentChildDetailPanel({
 }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border bg-white p-4 dark:bg-zinc-950">
+      <div className="kinder-surface p-4">
         <p className="font-mono text-xs">{student.student_code}</p>
         <p className="mt-1 text-lg font-semibold">{student.full_name}</p>
         <p className="text-muted-foreground text-sm">
@@ -87,29 +88,27 @@ export function ParentChildDetailPanel({
       </div>
 
       <Tabs defaultValue="reports">
-        <TabsList>
-          <TabsTrigger value="reports">
+        <TabsList className="kinder-tab-list">
+          <TabsTrigger className="kinder-tab-trigger" value="reports">
             <Trans i18nKey="kinder:parent.tabs.reports" />
           </TabsTrigger>
-          <TabsTrigger value="attendance">
+          <TabsTrigger className="kinder-tab-trigger" value="attendance">
             <Trans i18nKey="kinder:parent.tabs.attendance" />
           </TabsTrigger>
-          <TabsTrigger value="finance">
+          <TabsTrigger className="kinder-tab-trigger" value="finance">
             <Trans i18nKey="kinder:parent.tabs.finance" />
           </TabsTrigger>
-          <TabsTrigger value="health">
+          <TabsTrigger className="kinder-tab-trigger" value="health">
             <Trans i18nKey="kinder:parent.tabs.health" />
           </TabsTrigger>
         </TabsList>
 
         <TabsContent className="mt-4 space-y-3" value="reports">
           {dailyReports.length === 0 ? (
-            <p className="text-muted-foreground text-sm">
-              <Trans i18nKey="kinder:parent.reports.empty" />
-            </p>
+            <PanelEmpty messageKey="kinder:parent.reports.empty" />
           ) : (
             dailyReports.map(({ report, attachments }) => (
-              <div className="rounded-lg border p-4 text-sm" key={report.id}>
+              <div className="kinder-mobile-card text-sm" key={report.id}>
                 <div className="flex items-center justify-between gap-2">
                   <p className="font-medium">{report.report_date}</p>
                   {report.parent_acknowledged_at ? (
@@ -159,13 +158,11 @@ export function ParentChildDetailPanel({
 
         <TabsContent className="mt-4" value="attendance">
           {attendance.length === 0 ? (
-            <p className="text-muted-foreground text-sm">
-              <Trans i18nKey="kinder:parent.attendance.empty" />
-            </p>
+            <PanelEmpty messageKey="kinder:parent.attendance.empty" />
           ) : (
-            <div className="overflow-x-auto rounded-lg border">
+            <DataTableShell>
               <table className="w-full text-sm">
-                <thead className="bg-muted/50 border-b">
+                <thead>
                   <tr>
                     <th className="px-4 py-3 text-left">
                       <Trans i18nKey="kinder:attendance.date" />
@@ -175,7 +172,7 @@ export function ParentChildDetailPanel({
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y">
+                <tbody>
                   {attendance.map((row) => (
                     <tr key={row.attendance_date}>
                       <td className="px-4 py-3">{row.attendance_date}</td>
@@ -190,21 +187,19 @@ export function ParentChildDetailPanel({
                   ))}
                 </tbody>
               </table>
-            </div>
+            </DataTableShell>
           )}
         </TabsContent>
 
         <TabsContent className="mt-4 space-y-3" value="finance">
           {invoices.length === 0 ? (
-            <p className="text-muted-foreground text-sm">
-              <Trans i18nKey="kinder:parent.finance.empty" />
-            </p>
+            <PanelEmpty messageKey="kinder:parent.finance.empty" />
           ) : (
             invoices.map((invoice) => {
               const balance = invoice.total_amount - invoice.paid_amount;
 
               return (
-                <div className="rounded-lg border p-4 text-sm" key={invoice.id}>
+                <div className="kinder-mobile-card text-sm" key={invoice.id}>
                   <div className="flex items-center justify-between gap-2">
                     <p className="font-mono text-xs">{invoice.invoice_number}</p>
                     <Badge>

@@ -5,53 +5,14 @@ import { cache } from 'react';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { Database } from '~/lib/database.types';
-import type { Package, SchoolContext } from '~/lib/kinder/types';
+import type { Package } from '~/lib/kinder/types';
 
-export type PackageFeature =
-  | 'crm'
-  | 'students'
-  | 'classes'
-  | 'finance'
-  | 'finance_basic'
-  | 'attendance'
-  | 'staff'
-  | 'parent_portal'
-  | 'daily_reports'
-  | 'meal_menu'
-  | 'inventory'
-  | 'health_management'
-  | 'reports'
-  | 'ai_assistant';
-
-export function hasPackageFeature(
-  pkg: Package | null | undefined,
-  feature: PackageFeature,
-) {
-  if (!pkg) {
-    return false;
-  }
-
-  const features = pkg.features as Record<string, boolean>;
-
-  if (features.all) {
-    return true;
-  }
-
-  if (feature === 'finance' && features.finance_basic) {
-    return true;
-  }
-
-  return Boolean(features[feature]);
-}
-
-export function requirePackageFeature(
-  context: SchoolContext,
-  feature: PackageFeature,
-) {
-  if (!hasPackageFeature(context.package, feature)) {
-    throw new Error(`Feature "${feature}" is not available on your plan`);
-  }
-}
+export {
+  hasPackageFeature,
+  PACKAGE_FEATURE_KEYS,
+  requirePackageFeature,
+  type PackageFeature,
+} from '~/lib/kinder/subscription/package-features';
 
 export const loadPublicPackages = cache(async (client: SupabaseClient<Database>) => {
   const { data, error } = await client

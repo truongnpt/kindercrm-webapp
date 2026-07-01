@@ -4,8 +4,10 @@ import { revalidatePath } from 'next/cache';
 
 import { enhanceAction } from '@kit/next/actions';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 import pathsConfig from '~/config/paths.config';
+import type { Database } from '~/lib/database.types';
 
 import {
   ApplyMenuTemplateSchema,
@@ -80,7 +82,7 @@ export const upsertDishAction = enhanceAction(
 );
 
 export const createMenuAction = enhanceAction(
-  async (data, user) => {
+  async (data, _user) => {
     const client = getSupabaseServerClient();
 
     const { data: menu, error } = await client
@@ -182,7 +184,7 @@ export const publishMenuAction = enhanceAction(
 );
 
 async function seedDefaultMealCategories(
-  client: ReturnType<typeof getSupabaseServerClient>,
+  client: SupabaseClient<Database>,
   schoolId: string,
 ) {
   const defaults = [
@@ -306,7 +308,7 @@ export const applyMenuTemplateAction = enhanceAction(
           school_id: data.schoolId,
           menu_id: data.menuId,
           menu_date: item.menuDate,
-          meal_slot: item.mealSlot,
+          meal_slot: item.mealSlot as Database['public']['Enums']['meal_slot'],
           dish_id: item.dishId || null,
           custom_dish_name: item.customDishName || null,
           portion_notes: item.portionNotes || null,

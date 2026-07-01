@@ -34,6 +34,87 @@
       "pendingLeave": "Pending leave requests"
     }
   },
+  "workspace": {
+    "searchPlaceholder": "Search pages and modules…",
+    "searchEmpty": "No results found.",
+    "searchGroup": "Navigation"
+  },
+  "platform": {
+    "title": "Platform Console",
+    "description": "Manage schools, subscriptions, and platform operations.",
+    "backToWorkspace": "Back to workspace",
+    "nav": {
+      "short": "Platform",
+      "dashboard": "Dashboard",
+      "schools": "Schools",
+      "packages": "Packages",
+      "admins": "Admins",
+      "audit": "Audit"
+    },
+    "stats": {
+      "totalSchools": "Total schools",
+      "activeSchools": "Active schools",
+      "suspendedSchools": "Suspended schools",
+      "trialSchools": "Trial subscriptions"
+    },
+    "schoolStatus": {
+      "active": "Active",
+      "suspended": "Suspended",
+      "archived": "Archived"
+    },
+    "actions": {
+      "suspend": "Suspend",
+      "restore": "Restore",
+      "archive": "Archive"
+    },
+    "schools": {
+      "title": "Schools",
+      "description": "All tenants on the Kinder CRM platform.",
+      "empty": "No schools match your filters.",
+      "name": "School",
+      "slug": "Slug",
+      "status": "Status",
+      "package": "Package",
+      "usage": "Usage",
+      "actions": "Actions",
+      "detail": "View",
+      "filter": "Filter",
+      "back": "Back to schools",
+      "info": "School information",
+      "owner": "Owner",
+      "subscription": "Subscription"
+    },
+    "packages": {
+      "title": "Packages",
+      "description": "Manage subscription plans and feature flags.",
+      "create": "New package",
+      "createTitle": "Create package",
+      "editTitle": "Edit package",
+      "save": "Save package",
+      "active": "Active on catalog",
+      "empty": "No packages yet."
+    },
+    "subscription": {
+      "overrideTitle": "Override subscription",
+      "save": "Apply subscription"
+    },
+    "admins": {
+      "title": "Platform admins",
+      "description": "Grant or revoke platform-level access.",
+      "grant": "Grant access",
+      "grantTitle": "Grant platform admin",
+      "revoke": "Revoke"
+    },
+    "audit": {
+      "title": "Audit logs",
+      "description": "Platform operations history.",
+      "empty": "No audit entries yet."
+    }
+  },
+  "suspended": {
+    "title": "School suspended",
+    "description": "{{schoolName}} has been temporarily suspended. Please contact your administrator or Kinder CRM support."
+  },
   "subscription": {
     "title": "Subscription",
     "description": "View your plan, limits, and change history.",
@@ -121,6 +202,8 @@
     "save": "Save",
     "delete": "Delete lead",
     "addNote": "Add note",
+    "notesEmpty": "No notes yet.",
+    "activitiesEmpty": "No activity yet.",
     "timeline": "Activity",
     "detail": "Lead detail",
     "unassigned": "Unassigned",
@@ -207,6 +290,7 @@
     "roster": "Student roster",
     "enrollStudent": "Add student",
     "noStudents": "No students in this class.",
+    "noSchedule": "No schedule slots yet.",
     "setup": "Setup",
     "schoolYears": "School years",
     "semesters": "Semesters",
@@ -808,6 +892,19 @@
       "minor": "Minor",
       "moderate": "Moderate",
       "serious": "Serious"
+    }
+  },
+  "ui": {
+    "errorTitle": "Something went wrong",
+    "errorDescription": "We couldn't load this page. Please try again or return to the dashboard.",
+    "retry": "Try again",
+    "goHome": "Back to dashboard",
+    "back": "Back",
+    "emptyDefaultDescription": "No records yet. Create your first entry to get started.",
+    "toast": {
+      "saving": "Saving…",
+      "saved": "Saved successfully",
+      "error": "Something went wrong. Please try again."
     }
   }
 }

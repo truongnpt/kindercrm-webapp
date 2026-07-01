@@ -2,9 +2,12 @@
 
 import Link from 'next/link';
 
+import { Wallet } from 'lucide-react';
+
 import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
 
+import { DataTableShell, EmptyState } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
 import type { InvoiceWithStudent } from '~/lib/kinder/finance/types';
@@ -12,52 +15,51 @@ import type { InvoiceWithStudent } from '~/lib/kinder/finance/types';
 export function DebtsList({ debts }: { debts: InvoiceWithStudent[] }) {
   if (debts.length === 0) {
     return (
-      <p className="text-muted-foreground text-sm">
-        <Trans i18nKey="kinder:finance.debts.empty" />
-      </p>
+      <EmptyState
+        compact
+        descriptionKey="kinder:ui.emptyDefaultDescription"
+        icon={Wallet}
+        titleKey="kinder:finance.debts.empty"
+      />
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border">
+    <DataTableShell>
       <table className="w-full text-sm">
-        <thead className="bg-muted/50 border-b">
+        <thead>
           <tr>
-            <th className="px-4 py-3 text-left font-medium">
+            <th>
               <Trans i18nKey="kinder:finance.invoices.student" />
             </th>
-            <th className="px-4 py-3 text-left font-medium">
+            <th>
               <Trans i18nKey="kinder:finance.invoices.number" />
             </th>
-            <th className="px-4 py-3 text-left font-medium">
+            <th>
               <Trans i18nKey="kinder:finance.invoices.dueDate" />
             </th>
-            <th className="px-4 py-3 text-right font-medium">
+            <th className="text-right">
               <Trans i18nKey="kinder:finance.debts.balance" />
             </th>
-            <th className="px-4 py-3 text-right font-medium" />
+            <th className="text-right" />
           </tr>
         </thead>
-        <tbody className="divide-y">
+        <tbody>
           {debts.map((invoice) => {
             const balance = invoice.total_amount - invoice.paid_amount;
 
             return (
               <tr key={invoice.id}>
-                <td className="px-4 py-3">
+                <td>
                   <p>{invoice.student.full_name}</p>
                   <p className="text-muted-foreground text-xs">
                     {invoice.student.class_name ?? '—'}
                   </p>
                 </td>
-                <td className="px-4 py-3 font-mono text-xs">
-                  {invoice.invoice_number}
-                </td>
-                <td className="px-4 py-3">{invoice.due_date}</td>
-                <td className="px-4 py-3 text-right font-medium">
-                  {formatVnd(balance)}
-                </td>
-                <td className="px-4 py-3 text-right">
+                <td className="font-mono text-xs">{invoice.invoice_number}</td>
+                <td>{invoice.due_date}</td>
+                <td className="text-right font-medium">{formatVnd(balance)}</td>
+                <td className="text-right">
                   <Button asChild size="sm" variant="outline">
                     <Link
                       href={`${pathsConfig.app.financeInvoice}/${invoice.id}`}
@@ -71,6 +73,6 @@ export function DebtsList({ debts }: { debts: InvoiceWithStudent[] }) {
           })}
         </tbody>
       </table>
-    </div>
+    </DataTableShell>
   );
 }

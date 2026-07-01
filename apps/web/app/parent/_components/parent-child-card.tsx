@@ -11,7 +11,7 @@ import type { ParentChildSummary } from '~/lib/kinder/parent/types';
 
 export function ParentChildCard({ child }: { child: ParentChildSummary }) {
   return (
-    <div className="space-y-3 rounded-lg border bg-white p-4 dark:bg-zinc-950">
+    <div className="kinder-card-grid-item">
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="font-semibold">{child.fullName}</p>

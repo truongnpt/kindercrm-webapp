@@ -1,6 +1,6 @@
 # Kinder CRM Product Development Roadmap
 
-Version: 1.1
+Version: 1.2
 
 Status: In Progress
 
@@ -33,12 +33,15 @@ Kinder CRM là nền tảng SaaS quản lý trường mầm non toàn diện (Al
 | Nhóm | Tiến độ ước lượng | Ghi chú |
 |------|-------------------|---------|
 | Phase 1 MVP (EPIC 001–006) | ~80% | Lõi dùng được; thiếu import/export, QR, admin tenant |
+| **Platform Super Admin (EPIC-035)** | **~90%** | Sprint B done; optional: impersonate |
 | Phase 2 (EPIC 007–011) | ~65% | Attendance/staff/parent khá đủ; dashboard & notification yếu |
 | Phase 3–4 (CMS, Marketing, Reports, AI) | ~25% | Chỉ có AI + marketing site tĩnh |
 | Module mở rộng (Nhật ký, Thực đơn, Kho, Sức khỏe) | ~90% | MVP + phase 2–3 |
 | Future Roadmap (Calendar, Transport, Chat…) | 0% | Chưa bắt đầu |
 
 **Routes workspace hiện có:** `/app`, `/app/crm`, `/app/students`, `/app/classes`, `/app/finance`, `/app/attendance`, `/app/staff`, `/app/daily-reports`, `/app/menu`, `/app/inventory`, `/app/health`, `/app/ai`, `/parent`.
+
+**Routes platform (dự kiến):** `/platform`, `/platform/schools`, `/platform/packages`, `/platform/admins`, `/platform/audit-logs` — chưa triển khai.
 
 ---
 
@@ -81,8 +84,8 @@ Route: `/app/onboarding`, `/app/settings/school`, `/app/settings/campuses`
 |----|---------|--------|---------|
 | TENANT-001 | Create School | ✅ | Onboarding |
 | TENANT-002 | Update School | ✅ | Settings school |
-| TENANT-003 | Suspend School | 🟡 | `suspendSchoolAction` có, chưa có UI |
-| TENANT-004 | Delete School | 🟡 | `archiveSchoolAction` có, chưa có UI |
+| TENANT-003 | Suspend School | 🟡 | `suspendSchoolAction` có; UI sẽ nằm ở **EPIC-035** Platform |
+| TENANT-004 | Delete School | 🟡 | `archiveSchoolAction` có; UI sẽ nằm ở **EPIC-035** Platform |
 | TENANT-005 | School Information | ✅ | |
 | TENANT-006 | Logo | 🟡 | Nhập URL; chưa upload file |
 | TENANT-007 | Theme | 🟡 | Lưu `theme_primary_color`; chưa áp dụng UI |
@@ -588,6 +591,224 @@ Status: Planning — chưa bắt đầu triển khai.
 | EPIC-032 | Support Center | P3 | Ticket hỗ trợ |
 | EPIC-033 | Reports & BI | P2 | Dashboard BI, export PDF/Excel |
 | EPIC-034 | AI Assistant (mở rộng) | P3 | Trùng một phần EPIC-015 |
+| EPIC-035 | Platform Super Admin | P0 | Console SaaS — schools, packages, audit |
+
+---
+
+# EPIC-035 Platform Super Admin
+
+Status: **In Progress (~90%) — Sprint A + B**
+
+Priority: **P0** — nền tảng SaaS, chặn trước khi scale multi-tenant production
+
+Description: Console quản trị **cấp nền tảng** (khác `school_members.role = admin` — admin **trong một trường**). Super Admin quản lý toàn bộ tenant (schools), gói đăng ký, subscription, audit và vận hành hệ thống.
+
+Route: `/platform` (layout riêng, không dùng sidebar workspace trường)
+
+## Phân biệt vai trò
+
+| Khái niệm | Phạm vi | Hiện trạng |
+|-----------|---------|------------|
+| **Super Admin** (platform) | Toàn hệ thống — mọi trường | ❌ Chưa có |
+| **School Owner** (`owner`) | Một trường — tạo lúc onboarding | ✅ |
+| **School Admin** (`admin` trong `school_members`) | Một trường — quản trị nội bộ | ✅ |
+| **Staff access admin** (`staff_access_role: admin`) | Login nhân viên → sync `school_members` | ✅ |
+
+## Business Goal
+
+- Vận hành SaaS: suspend/khôi phục trường, xem usage, can thiệp subscription
+- Quản lý catalog gói (`packages`) mà không cần seed SQL thủ công
+- Audit mọi thao tác nhạy cảm cấp platform
+- Tách biệt hoàn toàn RLS tenant vs quyền cross-tenant
+
+## User Stories (tóm tắt)
+
+| ID | Story | Acceptance Criteria |
+|----|-------|---------------------|
+| PA-001 | Là Super Admin, tôi đăng nhập và vào `/platform` | Chỉ user trong `platform_admins` truy cập được; user thường → 403/redirect |
+| PA-002 | Là Super Admin, tôi xem danh sách tất cả trường | Bảng: tên, slug, status, gói, số HS/cơ sở, ngày tạo; search + filter status |
+| PA-003 | Là Super Admin, tôi suspend/archive trường | Gọi logic TENANT-003/004; ghi audit log; member trường bị chặn workspace |
+| PA-004 | Là Super Admin, tôi CRUD gói `packages` | PACKAGE-001 admin; không ảnh hưởng school tự đổi gói trong app |
+| PA-005 | Là Super Admin, tôi gán subscription thủ công | Override trial/gói cho trường cụ thể (support) |
+| PA-006 | Là Super Admin, tôi quản lý admin platform khác | Thêm/thu hồi `platform_admins`; không tự xóa chính mình |
+| PA-007 | Là Super Admin, tôi xem audit log | Mọi action platform có bản ghi actor + target + metadata |
+
+## Features
+
+| ID | Feature | Status | Ghi chú |
+|----|---------|--------|---------|
+| PLATFORM-001 | Platform admin identity | ✅ | Migration `20260720000000` |
+| PLATFORM-002 | Auth guard `/platform` | ✅ | Middleware + `requirePlatformAdminPage` |
+| PLATFORM-003 | Platform dashboard | ✅ | KPI schools |
+| PLATFORM-004 | School list & detail | ✅ | `/platform/schools` |
+| PLATFORM-005 | Suspend / restore school | ✅ | + audit log |
+| PLATFORM-006 | Archive school | ✅ | super_admin only |
+| PLATFORM-007 | Package CRUD | ✅ | `/platform/packages` |
+| PLATFORM-008 | Manual subscription override | ✅ | School detail panel |
+| PLATFORM-009 | Platform admin management | ✅ | `/platform/admins` |
+| PLATFORM-010 | Platform audit log | ✅ | `/platform/audit-logs` |
+| PLATFORM-011 | Impersonate school owner | ❌ | P2 — optional; session có flag audit |
+| PLATFORM-012 | Platform UI shell | ❌ | Layout riêng, design system Kinder |
+
+## Database Design
+
+Migration đề xuất: `20260720000000_kinder_platform_admin.sql`
+
+```sql
+-- Enums
+create type public.platform_admin_role as enum (
+  'super_admin',  -- full platform
+  'support',      -- schools read + suspend; no package delete
+  'billing'       -- packages + subscriptions only
+);
+
+-- Platform administrators (NOT school_members)
+create table public.platform_admins (
+  id uuid primary key default extensions.uuid_generate_v4(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  role public.platform_admin_role not null default 'super_admin',
+  is_active boolean not null default true,
+  granted_by uuid references auth.users (id) on delete set null,
+  granted_at timestamptz not null default now(),
+  revoked_at timestamptz,
+  notes text,
+  constraint platform_admins_user_unique unique (user_id)
+);
+
+create index idx_platform_admins_user_active
+  on public.platform_admins (user_id)
+  where is_active = true and revoked_at is null;
+
+-- Audit trail (platform-level only)
+create table public.platform_audit_logs (
+  id uuid primary key default extensions.uuid_generate_v4(),
+  actor_user_id uuid not null references auth.users (id) on delete restrict,
+  action varchar(100) not null,
+  target_type varchar(50) not null,
+  target_id uuid,
+  metadata jsonb not null default '{}'::jsonb,
+  ip_address inet,
+  created_at timestamptz not null default now()
+);
+
+create index idx_platform_audit_logs_created
+  on public.platform_audit_logs (created_at desc);
+
+create index idx_platform_audit_logs_target
+  on public.platform_audit_logs (target_type, target_id);
+
+-- Helpers (security definer)
+create or replace function public.is_platform_admin(
+  allowed_roles public.platform_admin_role[] default array['super_admin']::public.platform_admin_role[]
+)
+returns boolean
+language sql
+security definer
+set search_path = ''
+stable
+as $$
+  select exists (
+    select 1
+    from public.platform_admins pa
+    where pa.user_id = auth.uid()
+      and pa.is_active = true
+      and pa.revoked_at is null
+      and pa.role = any (allowed_roles)
+  );
+$$;
+
+grant execute on function public.is_platform_admin(public.platform_admin_role[])
+  to authenticated, service_role;
+
+-- RLS: platform_admins
+alter table public.platform_admins enable row level security;
+
+create policy platform_admins_select on public.platform_admins
+  for select to authenticated
+  using (public.is_platform_admin());
+
+create policy platform_admins_insert on public.platform_admins
+  for insert to authenticated
+  with check (public.is_platform_admin(array['super_admin']::public.platform_admin_role[]));
+
+create policy platform_admins_update on public.platform_admins
+  for update to authenticated
+  using (public.is_platform_admin(array['super_admin']::public.platform_admin_role[]));
+
+-- RLS: platform_audit_logs
+alter table public.platform_audit_logs enable row level security;
+
+create policy platform_audit_logs_select on public.platform_audit_logs
+  for select to authenticated
+  using (public.is_platform_admin());
+```
+
+**Khuyến nghị:** Cross-tenant **write** (suspend, đổi gói) đi qua `getSupabaseServerAdminClient()` + `requirePlatformAdmin()` — tránh mở RLS tenant quá rộng.
+
+**Seed dev:** Insert `platform_admins` cho email dev sau khi user đăng ký — không hardcode trong migration production.
+
+## API / Code Structure
+
+```
+apps/web/app/platform/
+  layout.tsx              # requirePlatformAdmin + PlatformShell
+  page.tsx                # Dashboard
+  schools/page.tsx
+  schools/[schoolId]/page.tsx
+  packages/page.tsx
+  admins/page.tsx
+  audit-logs/page.tsx
+
+apps/web/lib/kinder/platform/
+  require-platform-admin.ts
+  load-platform-schools.ts
+  load-platform-dashboard.ts
+  server-actions.ts
+  audit.ts
+```
+
+## Permission Matrix (Platform)
+
+| Action | super_admin | support | billing |
+|--------|:-----------:|:-------:|:-------:|
+| Xem dashboard platform | ✅ | ✅ | ✅ |
+| List schools | ✅ | ✅ | ❌ |
+| Suspend / restore school | ✅ | ✅ | ❌ |
+| Archive school | ✅ | ❌ | ❌ |
+| CRUD packages | ✅ | ❌ | ✅ |
+| Override subscription | ✅ | ✅ | ✅ |
+| Grant platform admin | ✅ | ❌ | ❌ |
+| Xem audit logs | ✅ | ✅ | ✅ |
+
+## Auth & Routing Flow
+
+```
+Đăng nhập
+  ├─ Chỉ platform_admins → /platform
+  ├─ Platform + school member → /app (link Platform trong menu)
+  ├─ Chỉ school member → /app
+  └─ School suspended → chặn /app, hiển thị trang tạm ngưng
+```
+
+## Tái sử dụng code hiện có
+
+| Thành phần | File |
+|------------|------|
+| Suspend / archive | `lib/kinder/tenant/server-actions.ts` |
+| Package data | `supabase/seed.sql` + CRUD mới |
+| Subscription | `lib/kinder/subscription/*` |
+
+## Sprint Breakdown
+
+**Sprint A — Foundation:** migration, guard, layout, schools list, suspend/archive + audit
+
+**Sprint B — Operations:** package CRUD, subscription override, admin management, audit viewer, chặn workspace khi suspended
+
+## Liên kết EPIC
+
+- **EPIC-001** TENANT-003/004 — UI chuyển sang platform
+- **EPIC-002** PACKAGE-001 — CRUD gói qua platform
+- **EPIC-032** Support Center — ticket sau
 
 ## Future Mobile Applications
 
@@ -603,7 +824,7 @@ Status: Planning — chưa bắt đầu triển khai.
 
 ## Version 1.0 — MVP (đang hoàn thiện ~80%)
 
-- ✅ Tenant (thiếu suspend/delete UI, logo upload)
+- ✅ Tenant (thiếu suspend/delete UI → **EPIC-035**)
 - ✅ Package (thiếu SaaS billing, storage enforce)
 - ✅ CRM (thiếu import/export, dashboard, tags)
 - ✅ Student (thiếu import/export, documents, transfer UI)
@@ -651,8 +872,9 @@ Status: Planning — chưa bắt đầu triển khai.
 
 Ưu tiên P1 roadmap (tiếp theo):
 
-7. EPIC-022 Academic Calendar
-8. EPIC-023 Communication Center
+7. **EPIC-035 Platform Super Admin** (P0 — nên làm trước scale production)
+8. EPIC-022 Academic Calendar
+9. EPIC-023 Communication Center
 
 ---
 

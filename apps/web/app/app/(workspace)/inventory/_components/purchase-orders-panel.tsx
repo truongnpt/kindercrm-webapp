@@ -26,6 +26,7 @@ import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { CreatePurchaseOrderSchema } from '~/lib/kinder/inventory/schemas/purchase-order.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import {
   cancelPurchaseOrderAction,
   createPurchaseOrderAction,
@@ -76,11 +77,9 @@ export function PurchaseOrdersPanel({
   return (
     <div className="space-y-6">
       {orders.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:inventory.emptyPurchaseOrders" />
-        </p>
+        <PanelEmpty messageKey="kinder:inventory.emptyPurchaseOrders" />
       ) : (
-        <ul className="divide-y rounded-lg border">
+        <ul className="kinder-list-panel">
           {orders.map((order) => (
             <li
               className="flex items-center justify-between gap-3 p-4 text-sm"
@@ -140,7 +139,7 @@ export function PurchaseOrdersPanel({
       {products.length > 0 ? (
         <Form {...form}>
           <form
-            className="grid max-w-2xl gap-3 rounded-lg border p-4"
+            className="kinder-form-panel max-w-2xl gap-3"
             onSubmit={form.handleSubmit(async (data) => {
               const promise = createPurchaseOrderAction(data);
               toast.promise(promise, {

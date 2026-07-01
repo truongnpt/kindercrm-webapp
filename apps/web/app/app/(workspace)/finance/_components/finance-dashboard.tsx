@@ -27,7 +27,7 @@ export function FinanceDashboard({ summary }: { summary: FinanceSummary }) {
   return (
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       {cards.map((card) => (
-        <div className="rounded-lg border p-4" key={card.key}>
+        <div className="kinder-mobile-card" key={card.key}>
           <p className="text-muted-foreground text-sm">
             <Trans i18nKey={`kinder:finance.summary.${card.key}`} />
           </p>

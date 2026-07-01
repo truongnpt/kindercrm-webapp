@@ -8,6 +8,7 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import pathsConfig from '~/config/paths.config';
 import { upsertDailyReportAction } from '~/lib/kinder/daily-reports/server-actions';
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
+import { findAccountByEmailForSchool } from '~/lib/kinder/tenant/account-lookup';
 
 import {
   LinkParentAccountSchema,
@@ -53,15 +54,7 @@ export const linkParentAccountAction = enhanceAction(
 
     const client = getSupabaseServerClient();
 
-    const { data: account, error: accountError } = await client
-      .from('accounts')
-      .select('id, email, name')
-      .ilike('email', data.email)
-      .maybeSingle();
-
-    if (accountError) {
-      throw accountError;
-    }
+    const account = await findAccountByEmailForSchool(data.schoolId, data.email);
 
     if (!account) {
       throw new KinderError(

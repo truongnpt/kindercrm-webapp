@@ -4,8 +4,10 @@ import { revalidatePath } from 'next/cache';
 
 import { enhanceAction } from '@kit/next/actions';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 import pathsConfig from '~/config/paths.config';
+import type { Database } from '~/lib/database.types';
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
 
 import {
@@ -271,7 +273,7 @@ export const addTimelineEntryAction = enhanceAction(
 );
 
 async function assertReportSchoolAccess(
-  client: ReturnType<typeof getSupabaseServerClient>,
+  client: SupabaseClient<Database>,
   schoolId: string,
   reportId: string,
 ) {

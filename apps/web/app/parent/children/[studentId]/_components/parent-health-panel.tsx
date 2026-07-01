@@ -1,5 +1,6 @@
 import { Trans } from '@kit/ui/trans';
 
+import { PanelEmpty } from '~/components/kinder-ui';
 import type {
   HealthGrowthRecord,
   HealthIncident,
@@ -28,10 +29,22 @@ export function ParentHealthPanel({
   medications: HealthMedication[];
   incidents: HealthIncident[];
 }) {
+  const isEmpty =
+    allergies.length === 0 &&
+    !medical &&
+    growth.length === 0 &&
+    vaccinations.length === 0 &&
+    medications.length === 0 &&
+    incidents.length === 0;
+
+  if (isEmpty) {
+    return <PanelEmpty messageKey="kinder:parent.health.empty" />;
+  }
+
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-3">
       {medical ? (
-        <div className="rounded-lg border p-4 text-sm">
+        <div className="kinder-mobile-card text-sm">
           <p className="font-medium">
             <Trans i18nKey="kinder:health.profile" />
           </p>
@@ -55,7 +68,7 @@ export function ParentHealthPanel({
       ) : null}
 
       {allergies.length > 0 ? (
-        <div className="rounded-lg border p-4 text-sm">
+        <div className="kinder-mobile-card text-sm">
           <p className="mb-2 font-medium">
             <Trans i18nKey="kinder:health.allergies" />
           </p>
@@ -71,7 +84,7 @@ export function ParentHealthPanel({
       ) : null}
 
       {growth.length > 0 ? (
-        <div className="rounded-lg border p-4 text-sm">
+        <div className="kinder-mobile-card text-sm">
           <p className="mb-2 font-medium">
             <Trans i18nKey="kinder:health.tabs.growth" />
           </p>
@@ -87,7 +100,7 @@ export function ParentHealthPanel({
       ) : null}
 
       {vaccinations.length > 0 ? (
-        <div className="rounded-lg border p-4 text-sm">
+        <div className="kinder-mobile-card text-sm">
           <p className="mb-2 font-medium">
             <Trans i18nKey="kinder:health.tabs.vaccinations" />
           </p>
@@ -102,7 +115,7 @@ export function ParentHealthPanel({
       ) : null}
 
       {medications.length > 0 ? (
-        <div className="rounded-lg border p-4 text-sm">
+        <div className="kinder-mobile-card text-sm">
           <p className="mb-2 font-medium">
             <Trans i18nKey="kinder:health.tabs.medications" />
           </p>
@@ -117,7 +130,7 @@ export function ParentHealthPanel({
       ) : null}
 
       {incidents.length > 0 ? (
-        <div className="rounded-lg border p-4 text-sm">
+        <div className="kinder-mobile-card text-sm">
           <p className="mb-2 font-medium">
             <Trans i18nKey="kinder:health.tabs.incidents" />
           </p>
@@ -130,17 +143,6 @@ export function ParentHealthPanel({
             ))}
           </ul>
         </div>
-      ) : null}
-
-      {allergies.length === 0 &&
-      !medical &&
-      growth.length === 0 &&
-      vaccinations.length === 0 &&
-      medications.length === 0 &&
-      incidents.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:parent.health.empty" />
-        </p>
       ) : null}
     </div>
   );

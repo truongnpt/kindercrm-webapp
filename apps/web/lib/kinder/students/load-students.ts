@@ -4,6 +4,8 @@ import { cache } from 'react';
 
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
+import type { Database } from '~/lib/database.types';
+
 import type {
   Student,
   StudentAllergy,
@@ -24,7 +26,10 @@ export const loadStudents = cache(async (schoolId: string, status?: string) => {
     .order('full_name');
 
   if (status && status !== 'all') {
-    query = query.eq('status', status);
+    query = query.eq(
+      'status',
+      status as Database['public']['Enums']['student_status'],
+    );
   }
 
   const { data, error } = await query;

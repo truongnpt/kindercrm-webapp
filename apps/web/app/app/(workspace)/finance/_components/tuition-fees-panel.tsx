@@ -33,6 +33,7 @@ import {
 import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
+import { PanelEmpty, DataTableShell } from '~/components/kinder-ui';
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
 import { CreateTuitionFeeItemSchema } from '~/lib/kinder/finance/schemas/finance.schema';
 import { createTuitionFeeItemAction } from '~/lib/kinder/finance/server-actions';
@@ -180,13 +181,11 @@ export function TuitionFeesPanel({
       </div>
 
       {feeItems.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:finance.tuition.empty" />
-        </p>
+        <PanelEmpty messageKey="kinder:finance.tuition.empty" />
       ) : (
-        <div className="overflow-x-auto rounded-lg border">
+        <DataTableShell>
           <table className="w-full text-sm">
-            <thead className="bg-muted/50 border-b">
+            <thead>
               <tr>
                 <th className="px-4 py-3 text-left font-medium">
                   <Trans i18nKey="kinder:finance.tuition.name" />
@@ -202,7 +201,7 @@ export function TuitionFeesPanel({
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody>
               {feeItems.map((item) => (
                 <tr key={item.id}>
                   <td className="px-4 py-3">{item.name}</td>
@@ -227,7 +226,7 @@ export function TuitionFeesPanel({
               ))}
             </tbody>
           </table>
-        </div>
+        </DataTableShell>
       )}
     </div>
   );

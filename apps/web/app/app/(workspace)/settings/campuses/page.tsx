@@ -1,7 +1,14 @@
+import { Building2 } from 'lucide-react';
+
 import { Badge } from '@kit/ui/badge';
-import { PageBody, PageHeader } from '@kit/ui/page';
 import { Trans } from '@kit/ui/trans';
 
+import {
+  EmptyState,
+  KinderPageBody,
+  KinderPageHeader,
+  SectionCard,
+} from '~/components/kinder-ui';
 import {
   getSchoolContext,
   loadCampuses,
@@ -32,62 +39,66 @@ async function CampusesPage() {
 
   return (
     <>
-      <PageHeader
+      <KinderPageHeader
         description={<Trans i18nKey="kinder:campuses.description" />}
         title={<Trans i18nKey="kinder:campuses.title" />}
       />
 
-      <PageBody>
-        <div className="grid gap-8 lg:grid-cols-2">
-          <div className="space-y-4">
+      <KinderPageBody>
+        <div className="grid gap-6 lg:grid-cols-2">
+          <SectionCard title={<Trans i18nKey="kinder:campuses.title" />}>
             {campuses.length === 0 ? (
-              <p className="text-muted-foreground text-sm">
-                <Trans i18nKey="kinder:campuses.empty" />
-              </p>
+              <EmptyState
+                compact
+                descriptionKey="kinder:ui.emptyDefaultDescription"
+                icon={Building2}
+                titleKey="kinder:campuses.empty"
+              />
             ) : (
-              <ul className="divide-y rounded-lg border">
+              <ul className="flex flex-col gap-3">
                 {campuses.map((campus) => (
-                  <li
-                    className="flex flex-col gap-1 p-4 sm:flex-row sm:items-center sm:justify-between"
-                    key={campus.id}
-                  >
-                    <div>
-                      <p className="font-medium">{campus.name}</p>
-                      {campus.address ? (
-                        <p className="text-muted-foreground text-sm">
-                          {campus.address}
-                        </p>
-                      ) : null}
-                    </div>
+                  <li className="kinder-mobile-card" key={campus.id}>
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="font-medium">{campus.name}</p>
+                        {campus.address ? (
+                          <p className="text-muted-foreground text-sm">
+                            {campus.address}
+                          </p>
+                        ) : null}
+                      </div>
 
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline">
-                        <Trans
-                          i18nKey={
-                            campus.campus_type === 'branch'
-                              ? 'kinder:campuses.typeBranch'
-                              : 'kinder:campuses.typeCampus'
-                          }
-                        />
-                      </Badge>
-                      {campus.is_main ? (
-                        <Badge>
-                          <Trans i18nKey="kinder:campuses.main" />
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline">
+                          <Trans
+                            i18nKey={
+                              campus.campus_type === 'branch'
+                                ? 'kinder:campuses.typeBranch'
+                                : 'kinder:campuses.typeCampus'
+                            }
+                          />
                         </Badge>
-                      ) : null}
+                        {campus.is_main ? (
+                          <Badge>
+                            <Trans i18nKey="kinder:campuses.main" />
+                          </Badge>
+                        ) : null}
+                      </div>
                     </div>
                   </li>
                 ))}
               </ul>
             )}
-          </div>
+          </SectionCard>
 
-          <CreateCampusForm
-            campuses={campuses}
-            schoolId={context.school.id}
-          />
+          <SectionCard title={<Trans i18nKey="kinder:campuses.addCampus" />}>
+            <CreateCampusForm
+              campuses={campuses}
+              schoolId={context.school.id}
+            />
+          </SectionCard>
         </div>
-      </PageBody>
+      </KinderPageBody>
     </>
   );
 }

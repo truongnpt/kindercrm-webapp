@@ -18,6 +18,7 @@ import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { UpsertAiKnowledgeSchema } from '~/lib/kinder/ai/schemas/ai.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import {
   deleteAiKnowledgeAction,
   upsertAiKnowledgeAction,
@@ -46,11 +47,9 @@ export function AiKnowledgePanel({
   return (
     <div className="space-y-6">
       {articles.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:ai.emptyKnowledge" />
-        </p>
+        <PanelEmpty messageKey="kinder:ai.emptyKnowledge" />
       ) : (
-        <ul className="divide-y rounded-lg border">
+        <ul className="kinder-list-panel">
           {articles.map((article) => (
             <li className="flex items-start justify-between gap-3 p-4 text-sm" key={article.id}>
               <div>
@@ -88,7 +87,7 @@ export function AiKnowledgePanel({
 
       <Form {...form}>
         <form
-          className="grid max-w-xl gap-3 rounded-lg border p-4"
+          className="kinder-form-panel max-w-xl grid-cols-1"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = upsertAiKnowledgeAction(data);
             toast.promise(promise, {

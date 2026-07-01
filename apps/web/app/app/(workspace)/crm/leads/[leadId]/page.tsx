@@ -1,8 +1,13 @@
 import { notFound } from 'next/navigation';
 
-import { PageBody, PageHeader } from '@kit/ui/page';
 import { Trans } from '@kit/ui/trans';
 
+import {
+  DetailPageHeader,
+  KinderPageBody,
+  SectionCard,
+} from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
 import {
   loadLeadActivities,
   loadLeadById,
@@ -58,20 +63,21 @@ async function LeadDetailPage({
 
   return (
     <>
-      <PageHeader
-        description={
-          <Trans i18nKey={LEAD_STAGE_I18N_KEYS[lead.stage]} />
-        }
+      <DetailPageHeader
+        backHref={pathsConfig.app.crm}
+        description={<Trans i18nKey={LEAD_STAGE_I18N_KEYS[lead.stage]} />}
         title={lead.parent_name}
       />
 
-      <PageBody className="space-y-8">
-        <LeadDetailForm
-          lead={lead}
-          members={members}
-          schoolId={context.school.id}
-          sources={sources}
-        />
+      <KinderPageBody>
+        <SectionCard>
+          <LeadDetailForm
+            lead={lead}
+            members={members}
+            schoolId={context.school.id}
+            sources={sources}
+          />
+        </SectionCard>
 
         <LeadNotesPanel
           activities={activities}
@@ -79,7 +85,7 @@ async function LeadDetailPage({
           notes={notes}
           schoolId={context.school.id}
         />
-      </PageBody>
+      </KinderPageBody>
     </>
   );
 }

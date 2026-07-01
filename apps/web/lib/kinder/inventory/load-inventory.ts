@@ -99,7 +99,7 @@ export const loadInventoryTransactions = cache(
       .select(
         `
         *,
-        product:inventory_products (name, unit, sku)
+        product:inventory_products!inventory_transactions_product_id_fkey (name, unit, sku)
       `,
       )
       .eq('school_id', schoolId)

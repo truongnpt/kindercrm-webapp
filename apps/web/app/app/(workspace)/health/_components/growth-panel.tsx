@@ -18,6 +18,7 @@ import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { UpsertGrowthRecordSchema } from '~/lib/kinder/health/schemas/health.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import { upsertGrowthRecordAction } from '~/lib/kinder/health/server-actions';
 import type { HealthGrowthRecord, StudentOption } from '~/lib/kinder/health/types';
 
@@ -54,11 +55,9 @@ export function GrowthPanel({
       <HealthStudentFilter studentId={studentId} students={students} tab="growth" />
 
       {records.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:health.emptyGrowth" />
-        </p>
+        <PanelEmpty messageKey="kinder:health.emptyGrowth" />
       ) : (
-        <ul className="divide-y rounded-lg border">
+        <ul className="kinder-list-panel">
           {records.map((record) => (
             <li className="p-4 text-sm" key={record.id}>
               <p className="font-medium">
@@ -77,7 +76,7 @@ export function GrowthPanel({
 
       <Form {...form}>
         <form
-          className="grid max-w-xl gap-3 rounded-lg border p-4"
+          className="kinder-form-panel max-w-xl grid-cols-1"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = upsertGrowthRecordAction(data);
             toast.promise(promise, {

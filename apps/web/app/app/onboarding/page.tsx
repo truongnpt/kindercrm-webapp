@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation';
 
-import { Heading } from '@kit/ui/heading';
 import { Trans } from '@kit/ui/trans';
 
 import pathsConfig from '~/config/paths.config';
@@ -30,11 +29,11 @@ async function OnboardingPage() {
 
   return (
     <OnboardingShell>
-      <Heading level={4}>
+      <h1 className="kinder-page-title text-2xl">
         <Trans i18nKey="kinder:onboarding.title" />
-      </Heading>
+      </h1>
 
-      <p className="text-muted-foreground mb-6 text-sm">
+      <p className="kinder-page-description mb-6">
         <Trans i18nKey="kinder:onboarding.description" />
       </p>
 

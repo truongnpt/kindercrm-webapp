@@ -69,7 +69,7 @@ function SchoolYearForm({
       <h3 className="font-semibold">
         <Trans i18nKey="kinder:classes.schoolYears" />
       </h3>
-      <ul className="divide-y rounded-lg border text-sm">
+      <ul className="kinder-list-panel text-sm">
         {schoolYears.map((y) => (
           <li className="p-3" key={y.id}>
             <p className="font-medium">{y.name}</p>
@@ -81,7 +81,7 @@ function SchoolYearForm({
       </ul>
       <Form {...form}>
         <form
-          className="grid gap-3 rounded-lg border p-4"
+          className="kinder-form-panel grid-cols-1"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = createSchoolYearAction(data);
             toast.promise(promise, {
@@ -170,7 +170,7 @@ function ClassroomForm({
       <h3 className="font-semibold">
         <Trans i18nKey="kinder:classes.classrooms" />
       </h3>
-      <ul className="divide-y rounded-lg border text-sm">
+      <ul className="kinder-list-panel text-sm">
         {classrooms.map((room) => (
           <li className="flex justify-between p-3" key={room.id}>
             <span className="font-medium">{room.name}</span>
@@ -180,7 +180,7 @@ function ClassroomForm({
       </ul>
       <Form {...form}>
         <form
-          className="grid gap-3 rounded-lg border p-4"
+          className="kinder-form-panel grid-cols-1"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = createClassroomAction(data);
             toast.promise(promise, {

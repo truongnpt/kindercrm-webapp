@@ -1,10 +1,9 @@
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { PageBody, PageHeader } from '@kit/ui/page';
-import { Button } from '@kit/ui/button';
-import { Trans } from '@kit/ui/trans';
-
+import {
+  DetailPageHeader,
+  KinderPageBody,
+} from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import {
   loadDishes,
@@ -59,19 +58,14 @@ async function MenuDetailPage({
 
   return (
     <>
-      <PageHeader
+      <DetailPageHeader
+        backHref={pathsConfig.app.menu}
         description={`${menu.start_date} → ${menu.end_date}`}
         title={menu.title}
-      >
-        <Button asChild size="sm" variant="outline">
-          <Link href={pathsConfig.app.menu}>
-            <Trans i18nKey="common:back" />
-          </Link>
-        </Button>
-      </PageHeader>
+      />
 
-      <PageBody>
-        <div className="space-y-6">
+      <KinderPageBody>
+        <div className="flex flex-col gap-6">
           <MenuNutritionReport summary={nutritionSummary} />
           <MenuWeekPlanner
             dishes={dishes}
@@ -79,7 +73,7 @@ async function MenuDetailPage({
             schoolId={context.school.id}
           />
         </div>
-      </PageBody>
+      </KinderPageBody>
     </>
   );
 }

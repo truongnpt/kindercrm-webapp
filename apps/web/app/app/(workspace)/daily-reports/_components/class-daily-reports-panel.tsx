@@ -19,6 +19,7 @@ import { Input } from '@kit/ui/input';
 import { Trans } from '@kit/ui/trans';
 
 import { BulkUpsertClassDailyReportsSchema } from '~/lib/kinder/daily-reports/schemas/daily-report.schema';
+import { DataTableShell } from '~/components/kinder-ui';
 import { bulkUpsertClassDailyReportsAction } from '~/lib/kinder/daily-reports/server-actions';
 import type { ClassDailyReportStudent } from '~/lib/kinder/daily-reports/types';
 
@@ -75,9 +76,9 @@ export function ClassDailyReportsPanel({
             await promise;
           })}
         >
-          <div className="overflow-x-auto rounded-lg border">
+          <DataTableShell>
             <table className="w-full text-sm">
-              <thead className="bg-muted/50 border-b">
+              <thead>
                 <tr>
                   <th className="px-4 py-3 text-left">
                     <Trans i18nKey="kinder:dailyReports.student" />
@@ -94,7 +95,7 @@ export function ClassDailyReportsPanel({
                   <th className="px-4 py-3 text-right" />
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody>
                 {roster.map((student, index) => (
                   <tr key={student.studentId}>
                     <td className="px-4 py-3">
@@ -163,7 +164,7 @@ export function ClassDailyReportsPanel({
                 ))}
               </tbody>
             </table>
-          </div>
+        </DataTableShell>
 
           <Button type="submit">
             <Trans i18nKey="kinder:dailyReports.save" />

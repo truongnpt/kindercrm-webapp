@@ -77,7 +77,7 @@ export function CreateCampusForm({
 
   return (
     <Form {...form}>
-      <form className="flex flex-col gap-4 rounded-lg border p-4" onSubmit={onSubmit}>
+      <form className="kinder-form-panel" onSubmit={onSubmit}>
         <FormField
           control={form.control}
           name="campusType"

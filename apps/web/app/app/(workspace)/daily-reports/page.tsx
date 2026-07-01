@@ -1,7 +1,14 @@
 import { Suspense } from 'react';
 
-import { PageBody, PageHeader } from '@kit/ui/page';
+import { BookOpen } from 'lucide-react';
+
 import { Trans } from '@kit/ui/trans';
+
+import {
+  EmptyState,
+  KinderPageBody,
+  KinderPageHeader,
+} from '~/components/kinder-ui';
 
 import {
   loadActiveClasses,
@@ -57,18 +64,20 @@ async function DailyReportsPage({
 
   return (
     <>
-      <PageHeader
+      <KinderPageHeader
         description={<Trans i18nKey="kinder:dailyReports.description" />}
         title={<Trans i18nKey="kinder:dailyReports.title" />}
       />
 
-      <PageBody>
+      <KinderPageBody>
         {classes.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
-            <Trans i18nKey="kinder:dailyReports.noClasses" />
-          </p>
+          <EmptyState
+            descriptionKey="kinder:ui.emptyDefaultDescription"
+            icon={BookOpen}
+            titleKey="kinder:dailyReports.noClasses"
+          />
         ) : (
-          <div className="space-y-4">
+          <div className="flex flex-col gap-4">
             <Suspense>
               <DailyReportFilters classes={classes} />
             </Suspense>
@@ -85,7 +94,7 @@ async function DailyReportsPage({
             ) : null}
           </div>
         )}
-      </PageBody>
+      </KinderPageBody>
     </>
   );
 }

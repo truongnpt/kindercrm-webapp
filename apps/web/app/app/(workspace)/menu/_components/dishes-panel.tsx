@@ -18,6 +18,7 @@ import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { UpsertDishSchema } from '~/lib/kinder/meal-menu/schemas/meal-menu.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import { upsertDishAction } from '~/lib/kinder/meal-menu/server-actions';
 import type { Dish } from '~/lib/kinder/meal-menu/types';
 
@@ -43,11 +44,9 @@ export function DishesPanel({
   return (
     <div className="space-y-6">
       {dishes.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:mealMenu.emptyDishes" />
-        </p>
+        <PanelEmpty messageKey="kinder:mealMenu.emptyDishes" />
       ) : (
-        <ul className="divide-y rounded-lg border">
+        <ul className="kinder-list-panel">
           {dishes.map((dish) => (
             <li className="p-4 text-sm" key={dish.id}>
               <p className="font-medium">{dish.name}</p>
@@ -67,7 +66,7 @@ export function DishesPanel({
 
       <Form {...form}>
         <form
-          className="grid max-w-xl gap-3 rounded-lg border p-4"
+          className="kinder-form-panel max-w-xl grid-cols-1"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = upsertDishAction(data);
             toast.promise(promise, {

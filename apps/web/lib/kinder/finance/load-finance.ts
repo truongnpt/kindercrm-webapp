@@ -4,9 +4,10 @@ import { cache } from 'react';
 
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
+import type { Database } from '~/lib/database.types';
+
 import type {
   FinanceSummary,
-  Invoice,
   InvoiceAdjustment,
   InvoiceLineItem,
   InvoicePayment,
@@ -59,7 +60,10 @@ export const loadInvoices = cache(
       .order('created_at', { ascending: false });
 
     if (status && status !== 'all') {
-      query = query.eq('status', status);
+      query = query.eq(
+        'status',
+        status as Database['public']['Enums']['invoice_status'],
+      );
     }
 
     if (billingPeriod) {

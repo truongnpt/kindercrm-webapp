@@ -199,7 +199,7 @@ export function CreateInvoiceDialog({
               <FormLabel>
                 <Trans i18nKey="kinder:finance.tuition.title" />
               </FormLabel>
-              <div className="space-y-2 rounded-lg border p-3">
+              <div className="kinder-mobile-card gap-2 p-3">
                 {feeItems.map((item) => (
                   <label
                     className="flex cursor-pointer items-center justify-between gap-2"

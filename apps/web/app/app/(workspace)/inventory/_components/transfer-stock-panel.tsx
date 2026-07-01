@@ -25,6 +25,7 @@ import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { TransferStockSchema } from '~/lib/kinder/inventory/schemas/inventory-phase3.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import { transferStockAction } from '~/lib/kinder/inventory/stock-count-server-actions';
 import type { InventoryProductWithStock } from '~/lib/kinder/inventory/types';
 
@@ -51,16 +52,14 @@ export function TransferStockPanel({
 
   if (products.length < 2) {
     return (
-      <p className="text-muted-foreground text-sm">
-        <Trans i18nKey="kinder:inventory.needTwoProducts" />
-      </p>
+      <PanelEmpty messageKey="kinder:inventory.needTwoProducts" />
     );
   }
 
   return (
     <Form {...form}>
       <form
-        className="grid max-w-xl gap-3 rounded-lg border p-4"
+        className="kinder-form-panel max-w-xl grid-cols-1"
         onSubmit={form.handleSubmit(async (data) => {
           const promise = transferStockAction(data);
           toast.promise(promise, {

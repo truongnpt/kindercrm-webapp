@@ -1,8 +1,14 @@
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
-import { PageBody, PageHeader, PageHeaderActions } from '@kit/ui/page';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@kit/ui/tabs';
 import { Trans } from '@kit/ui/trans';
 
+import {
+  KinderPageBody,
+  KinderPageHeader,
+  TabbedModule,
+  TabbedModuleContent,
+  TabbedModuleList,
+  TabbedModuleTrigger,
+} from '~/components/kinder-ui';
 import { ensureDefaultSchoolYear } from '~/lib/kinder/classes/seed-school-year';
 import {
   loadClassrooms,
@@ -55,11 +61,8 @@ async function ClassesPage() {
 
   return (
     <>
-      <PageHeader
-        description={<Trans i18nKey="kinder:classes.description" />}
-        title={<Trans i18nKey="kinder:classes.title" />}
-      >
-        <PageHeaderActions>
+      <KinderPageHeader
+        actions={
           <CreateClassDialog
             classrooms={classrooms}
             defaultSchoolYearId={currentYear.id}
@@ -68,33 +71,35 @@ async function ClassesPage() {
             semesters={semesters}
             teachers={teachers}
           />
-        </PageHeaderActions>
-      </PageHeader>
+        }
+        description={<Trans i18nKey="kinder:classes.description" />}
+        title={<Trans i18nKey="kinder:classes.title" />}
+      />
 
-      <PageBody>
-        <Tabs defaultValue="classes">
-          <TabsList>
-            <TabsTrigger value="classes">
+      <KinderPageBody>
+        <TabbedModule defaultValue="classes">
+          <TabbedModuleList>
+            <TabbedModuleTrigger value="classes">
               <Trans i18nKey="common:routes.classes" />
-            </TabsTrigger>
-            <TabsTrigger value="setup">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="setup">
               <Trans i18nKey="kinder:classes.setup" />
-            </TabsTrigger>
-          </TabsList>
+            </TabbedModuleTrigger>
+          </TabbedModuleList>
 
-          <TabsContent className="mt-4" value="classes">
+          <TabbedModuleContent value="classes">
             <ClassesList classes={classes} />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="setup">
+          <TabbedModuleContent value="setup">
             <ClassesSetupPanel
               classrooms={classrooms}
               schoolId={context.school.id}
               schoolYears={schoolYears}
             />
-          </TabsContent>
-        </Tabs>
-      </PageBody>
+          </TabbedModuleContent>
+        </TabbedModule>
+      </KinderPageBody>
     </>
   );
 }

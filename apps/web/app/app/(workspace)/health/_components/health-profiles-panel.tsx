@@ -1,6 +1,7 @@
 import { Trans } from '@kit/ui/trans';
 
 import type { StudentHealthSummary } from '~/lib/kinder/health/types';
+import { PanelEmpty, DataTableShell } from '~/components/kinder-ui';
 
 export function HealthProfilesPanel({
   summaries,
@@ -9,16 +10,14 @@ export function HealthProfilesPanel({
 }) {
   if (summaries.length === 0) {
     return (
-      <p className="text-muted-foreground text-sm">
-        <Trans i18nKey="kinder:health.emptyStudents" />
-      </p>
+      <PanelEmpty messageKey="kinder:health.emptyStudents" />
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border">
+    <DataTableShell>
       <table className="w-full text-sm">
-        <thead className="bg-muted/50 border-b">
+        <thead>
           <tr>
             <th className="px-4 py-3 text-left">
               <Trans i18nKey="kinder:students.student" />
@@ -54,6 +53,6 @@ export function HealthProfilesPanel({
           ))}
         </tbody>
       </table>
-    </div>
+        </DataTableShell>
   );
 }

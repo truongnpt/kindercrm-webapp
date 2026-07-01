@@ -1,9 +1,7 @@
-import { AuthLayoutShell } from '@kit/auth/shared';
-
-import { AppLogo } from '~/components/app-logo';
+import { AuthShell } from './_components/auth-shell';
 
 function AuthLayout({ children }: React.PropsWithChildren) {
-  return <AuthLayoutShell Logo={AppLogo}>{children}</AuthLayoutShell>;
+  return <AuthShell>{children}</AuthShell>;
 }
 
 export default AuthLayout;

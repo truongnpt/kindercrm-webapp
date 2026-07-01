@@ -4,6 +4,8 @@ import { cache } from 'react';
 
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
+import { getSchoolMemberAccounts } from '~/lib/kinder/tenant/account-lookup';
+
 import type { LeadStage } from './pipeline-stages';
 
 export interface LeadRow {
@@ -142,14 +144,5 @@ export const loadSchoolMembersForAssign = cache(async (schoolId: string) => {
     return [];
   }
 
-  const { data: accounts, error: accountsError } = await client
-    .from('accounts')
-    .select('id, name, email')
-    .in('id', userIds);
-
-  if (accountsError) {
-    throw accountsError;
-  }
-
-  return accounts ?? [];
+  return getSchoolMemberAccounts(schoolId, userIds);
 });

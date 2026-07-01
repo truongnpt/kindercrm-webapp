@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation';
 
-import { PageBody, PageHeader } from '@kit/ui/page';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@kit/ui/tabs';
 import { Trans } from '@kit/ui/trans';
+
+import { DetailPageHeader, KinderPageBody, SectionCard, TabbedModule, TabbedModuleContent, TabbedModuleList, TabbedModuleTrigger, PanelEmpty } from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
 
 import {
   loadParentLinksForStudent,
@@ -91,43 +92,44 @@ async function StudentDetailPage({
 
   return (
     <>
-      <PageHeader
+      <DetailPageHeader
+        backHref={pathsConfig.app.students}
         description={student.student_code}
         title={student.full_name}
       />
 
-      <PageBody>
-        <Tabs defaultValue="profile">
-          <TabsList>
-            <TabsTrigger value="profile">
+      <KinderPageBody>
+        <TabbedModule defaultValue="profile">
+          <TabbedModuleList className="flex-wrap">
+            <TabbedModuleTrigger value="profile">
               <Trans i18nKey="kinder:students.profile" />
-            </TabsTrigger>
-            <TabsTrigger value="contacts">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="contacts">
               <Trans i18nKey="kinder:students.parents" />
-            </TabsTrigger>
+            </TabbedModuleTrigger>
             {hasParentPortal ? (
-              <TabsTrigger value="parent">
+              <TabbedModuleTrigger value="parent">
                 <Trans i18nKey="kinder:parent.title" />
-              </TabsTrigger>
+              </TabbedModuleTrigger>
             ) : null}
             {hasDailyReports ? (
-              <TabsTrigger value="reports">
+              <TabbedModuleTrigger value="reports">
                 <Trans i18nKey="kinder:parent.tabs.reports" />
-              </TabsTrigger>
+              </TabbedModuleTrigger>
             ) : null}
-            <TabsTrigger value="timeline">
+            <TabbedModuleTrigger value="timeline">
               <Trans i18nKey="kinder:students.timeline" />
-            </TabsTrigger>
-          </TabsList>
+            </TabbedModuleTrigger>
+          </TabbedModuleList>
 
-          <TabsContent className="mt-4" value="profile">
+          <TabbedModuleContent value="profile">
             <StudentProfileForm
               schoolId={context.school.id}
               student={student}
             />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="contacts">
+          <TabbedModuleContent value="contacts">
             <StudentContactsPanels
               allergies={allergies}
               emergencyContacts={emergencyContacts}
@@ -137,43 +139,49 @@ async function StudentDetailPage({
               schoolId={context.school.id}
               studentId={studentId}
             />
-          </TabsContent>
+          </TabbedModuleContent>
 
           {hasParentPortal ? (
-            <TabsContent className="mt-4" value="parent">
+            <TabbedModuleContent value="parent">
               <ParentLinkPanel
                 parentLinks={parentLinks}
                 schoolId={context.school.id}
                 studentId={studentId}
               />
-            </TabsContent>
+            </TabbedModuleContent>
           ) : null}
 
           {hasDailyReports ? (
-            <TabsContent className="mt-4" value="reports">
+            <TabbedModuleContent value="reports">
               <DailyReportsPanel
                 reports={dailyReports}
                 schoolId={context.school.id}
                 studentId={studentId}
               />
-            </TabsContent>
+            </TabbedModuleContent>
           ) : null}
 
-          <TabsContent className="mt-4" value="timeline">
-            <ul className="divide-y rounded-lg border">
-              {timeline.map((item) => (
-                <li className="space-y-1 p-3 text-sm" key={item.id}>
-                  <p className="font-medium">{item.event_type}</p>
-                  {item.description ? <p>{item.description}</p> : null}
-                  <p className="text-muted-foreground text-xs">
-                    {new Date(item.created_at).toLocaleString('vi-VN')}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </TabsContent>
-        </Tabs>
-      </PageBody>
+          <TabbedModuleContent value="timeline">
+            <SectionCard>
+              {timeline.length === 0 ? (
+                <PanelEmpty messageKey="kinder:ui.emptyDefaultDescription" />
+              ) : (
+                <ul className="flex flex-col gap-3">
+                  {timeline.map((item) => (
+                    <li className="kinder-mobile-card text-sm" key={item.id}>
+                      <p className="font-medium">{item.event_type}</p>
+                      {item.description ? <p>{item.description}</p> : null}
+                      <p className="text-muted-foreground text-xs">
+                        {new Date(item.created_at).toLocaleString('vi-VN')}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </SectionCard>
+          </TabbedModuleContent>
+        </TabbedModule>
+      </KinderPageBody>
     </>
   );
 }

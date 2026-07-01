@@ -23,7 +23,6 @@ import {
   FormLabel,
 } from '@kit/ui/form';
 import { Input } from '@kit/ui/input';
-import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import {
@@ -115,7 +114,7 @@ export function StaffSetupPanel({
             </DialogContent>
           </Dialog>
         </div>
-        <ul className="divide-y rounded-lg border">
+        <ul className="kinder-list-panel">
           {departments.map((department) => (
             <li className="px-4 py-3 text-sm" key={department.id}>
               {department.name}
@@ -183,7 +182,7 @@ export function StaffSetupPanel({
             </DialogContent>
           </Dialog>
         </div>
-        <ul className="divide-y rounded-lg border">
+        <ul className="kinder-list-panel">
           {positions.map((position) => (
             <li className="px-4 py-3 text-sm" key={position.id}>
               {position.name}

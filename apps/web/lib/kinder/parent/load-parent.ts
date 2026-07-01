@@ -4,9 +4,11 @@ import { cache } from 'react';
 
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
+import { getSchoolMemberAccounts } from '~/lib/kinder/tenant/account-lookup';
+
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
 
-import type { ParentChildSummary, ParentStudentLink } from './types';
+import type { ParentChildSummary } from './types';
 
 export type { StudentDailyReport } from '~/lib/kinder/daily-reports/types';
 
@@ -91,11 +93,7 @@ export const loadParentLinksForStudent = cache(
     }
 
     const userIds = links.map((link) => link.user_id);
-
-    const { data: accounts } = await client
-      .from('accounts')
-      .select('id, name, email')
-      .in('id', userIds);
+    const accounts = await getSchoolMemberAccounts(schoolId, userIds);
 
     const accountById = new Map((accounts ?? []).map((a) => [a.id, a]));
 

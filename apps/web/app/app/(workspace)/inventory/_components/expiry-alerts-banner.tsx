@@ -14,7 +14,7 @@ export function ExpiryAlertsBanner({
   }
 
   return (
-    <div className="border-destructive/30 bg-destructive/5 mb-6 rounded-lg border p-4">
+    <div className="mb-6 rounded-2xl border-0 bg-destructive/8 p-4">
       <div className="mb-2 flex items-center gap-2">
         <AlertTriangle className="text-destructive h-4 w-4" />
         <p className="text-sm font-medium">

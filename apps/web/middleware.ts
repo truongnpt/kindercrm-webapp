@@ -98,11 +98,21 @@ function getPatterns() {
           const client = createMiddlewareClient(req, res);
           const userId = data.claims.sub as string;
 
-          const { data: memberships } = await client
-            .from('school_members')
-            .select('role')
-            .eq('user_id', userId)
-            .is('deleted_at', null);
+          const [{ data: memberships }, { data: platformAdmin }] =
+            await Promise.all([
+              client
+                .from('school_members')
+                .select('role')
+                .eq('user_id', userId)
+                .is('deleted_at', null),
+              client
+                .from('platform_admins')
+                .select('id')
+                .eq('user_id', userId)
+                .eq('is_active', true)
+                .is('revoked_at', null)
+                .maybeSingle(),
+            ]);
 
           const hasStaffMembership = (memberships ?? []).some(
             (membership) => membership.role !== 'parent',
@@ -118,6 +128,10 @@ function getPatterns() {
 
             if ((parentCount ?? 0) > 0) {
               redirectPath = pathsConfig.parent.home;
+            } else if (platformAdmin) {
+              redirectPath = pathsConfig.platform.home;
+            } else {
+              redirectPath = pathsConfig.app.onboarding;
             }
           }
 
@@ -151,6 +165,46 @@ function getPatterns() {
           return NextResponse.redirect(
             new URL(pathsConfig.auth.verifyMfa, origin).href,
           );
+        }
+      },
+    },
+    {
+      pattern: new URLPattern({ pathname: '/platform/*?' }),
+      handler: async (req: NextRequest, res: NextResponse) => {
+        const { data } = await getUser(req, res);
+
+        const origin = req.nextUrl.origin;
+        const next = req.nextUrl.pathname;
+
+        if (!data?.claims) {
+          const signIn = pathsConfig.auth.signIn;
+          const redirectPath = `${signIn}?next=${next}`;
+
+          return NextResponse.redirect(new URL(redirectPath, origin).href);
+        }
+
+        const supabase = createMiddlewareClient(req, res);
+        const userId = data.claims.sub as string;
+
+        const requiresMultiFactorAuthentication =
+          await checkRequiresMultiFactorAuthentication(supabase);
+
+        if (requiresMultiFactorAuthentication) {
+          return NextResponse.redirect(
+            new URL(pathsConfig.auth.verifyMfa, origin).href,
+          );
+        }
+
+        const { data: platformAdmin } = await supabase
+          .from('platform_admins')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('is_active', true)
+          .is('revoked_at', null)
+          .maybeSingle();
+
+        if (!platformAdmin) {
+          return NextResponse.redirect(new URL(pathsConfig.app.home, origin).href);
         }
       },
     },

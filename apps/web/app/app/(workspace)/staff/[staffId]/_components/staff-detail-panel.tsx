@@ -337,7 +337,7 @@ export function StaffDetailPanel({
               control={form.control}
               name="isTeacher"
               render={({ field }) => (
-                <FormItem className="flex items-start gap-3 rounded-lg border p-3">
+                <FormItem className="kinder-mobile-card flex-row items-start gap-3 p-3">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
@@ -360,7 +360,7 @@ export function StaffDetailPanel({
               control={form.control}
               name="grantSystemAccess"
               render={({ field }) => (
-                <FormItem className="flex items-start gap-3 rounded-lg border p-3">
+                <FormItem className="kinder-mobile-card flex-row items-start gap-3 p-3">
                   <FormControl>
                     <Checkbox
                       checked={field.value}

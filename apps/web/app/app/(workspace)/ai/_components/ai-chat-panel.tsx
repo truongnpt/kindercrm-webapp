@@ -11,6 +11,7 @@ import { Input } from '@kit/ui/input';
 import { Trans } from '@kit/ui/trans';
 
 import { sendAiChatMessageAction } from '~/lib/kinder/ai/server-actions';
+import { PanelEmpty } from '~/components/kinder-ui';
 import type { AiChatMessage, AiChatSession } from '~/lib/kinder/ai/types';
 
 export function AiChatPanel({
@@ -84,7 +85,7 @@ export function AiChatPanel({
   };
 
   return (
-    <div className="flex h-[32rem] flex-col rounded-lg border">
+    <div className="kinder-surface flex h-[32rem] flex-col overflow-hidden">
       <div className="text-muted-foreground border-b px-4 py-2 text-xs">
         <Trans
           i18nKey="kinder:ai.creditsRemaining"
@@ -93,9 +94,7 @@ export function AiChatPanel({
       </div>
       <div className="flex-1 space-y-3 overflow-y-auto p-4">
         {messages.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
-            <Trans i18nKey="kinder:ai.chatEmpty" />
-          </p>
+          <PanelEmpty messageKey="kinder:ai.chatEmpty" />
         ) : (
           messages.map((message) => (
             <div

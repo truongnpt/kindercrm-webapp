@@ -8,7 +8,12 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import pathsConfig from '~/config/paths.config';
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
-import { getPackageLimits, getSchoolUsage } from '~/lib/kinder/subscription/quotas';
+import {
+  assertStudentQuota,
+  getPackageLimits,
+  getSchoolUsage,
+} from '~/lib/kinder/subscription/quotas';
+import type { Json } from '~/lib/database.types';
 import type { Package } from '~/lib/kinder/types';
 
 import { generateStudentCode } from './generate-student-code';
@@ -63,7 +68,7 @@ async function logStudentTimeline(
     school_id: params.schoolId,
     event_type: params.eventType,
     description: params.description ?? null,
-    metadata: params.metadata ?? {},
+    metadata: (params.metadata ?? {}) as Json,
     created_by: params.userId,
   });
 }

@@ -13,7 +13,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from '@kit/ui/form';
 import { Input } from '@kit/ui/input';
 import { Textarea } from '@kit/ui/textarea';
@@ -118,7 +117,7 @@ function ParentsSection({
       <h3 className="font-semibold">
         <Trans i18nKey="kinder:students.parents" />
       </h3>
-      <ul className="divide-y rounded-lg border">
+      <ul className="kinder-list-panel">
         {parents.map((p) => (
           <li className="space-y-1 p-3 text-sm" key={p.id}>
             <div className="flex items-center gap-2">
@@ -133,7 +132,7 @@ function ParentsSection({
       </ul>
       <Form {...form}>
         <form
-          className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2"
+          className="kinder-form-panel sm:grid-cols-2"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = createParentAction(data);
             toast.promise(promise, {
@@ -213,7 +212,7 @@ function EmergencySection({
       <h3 className="font-semibold">
         <Trans i18nKey="kinder:students.emergency" />
       </h3>
-      <ul className="divide-y rounded-lg border">
+      <ul className="kinder-list-panel">
         {contacts.map((c) => (
           <li className="p-3 text-sm" key={c.id}>
             <p className="font-medium">{c.full_name}</p>
@@ -223,7 +222,7 @@ function EmergencySection({
       </ul>
       <Form {...form}>
         <form
-          className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2"
+          className="kinder-form-panel sm:grid-cols-2"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = createEmergencyContactAction(data);
             toast.promise(promise, {
@@ -305,7 +304,7 @@ function MedicalSection({
       </h3>
       <Form {...form}>
         <form
-          className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2"
+          className="kinder-form-panel sm:grid-cols-2"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = upsertMedicalRecordAction(data);
             toast.promise(promise, {
@@ -389,7 +388,7 @@ function AllergiesSection({
       <h3 className="font-semibold">
         <Trans i18nKey="kinder:students.allergies" />
       </h3>
-      <ul className="divide-y rounded-lg border">
+      <ul className="kinder-list-panel">
         {allergies.map((a) => (
           <li className="p-3 text-sm" key={a.id}>
             <p className="font-medium">{a.allergen}</p>
@@ -401,7 +400,7 @@ function AllergiesSection({
       </ul>
       <Form {...form}>
         <form
-          className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2"
+          className="kinder-form-panel sm:grid-cols-2"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = createAllergyAction(data);
             toast.promise(promise, {
@@ -479,7 +478,7 @@ function PickupSection({
       <h3 className="font-semibold">
         <Trans i18nKey="kinder:students.pickup" />
       </h3>
-      <ul className="divide-y rounded-lg border">
+      <ul className="kinder-list-panel">
         {persons.map((p) => (
           <li className="p-3 text-sm" key={p.id}>
             <p className="font-medium">{p.full_name}</p>
@@ -491,7 +490,7 @@ function PickupSection({
       </ul>
       <Form {...form}>
         <form
-          className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2"
+          className="kinder-form-panel sm:grid-cols-2"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = createPickupPersonAction(data);
             toast.promise(promise, {

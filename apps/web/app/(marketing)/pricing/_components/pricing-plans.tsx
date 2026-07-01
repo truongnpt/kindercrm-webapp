@@ -5,7 +5,6 @@ import { Check } from 'lucide-react';
 import { Badge } from '@kit/ui/badge';
 import { Button } from '@kit/ui/button';
 import {
-  Card,
   CardContent,
   CardDescription,
   CardFooter,
@@ -140,11 +139,11 @@ function PlanCard({
   const features = planFeatures[plan.slug];
 
   return (
-    <Card
+    <div
       className={
         popular ?
-          'border-primary relative flex flex-col shadow-md'
-        : 'relative flex flex-col'
+          'marketing-card relative flex flex-col border-[var(--marketing-primary)] ring-2 ring-[var(--marketing-primary)]/20'
+        : 'marketing-card relative flex flex-col'
       }
     >
       {popular && (
@@ -187,7 +186,7 @@ function PlanCard({
           </Link>
         </Button>
       </CardFooter>
-    </Card>
+    </div>
   );
 }
 
@@ -206,7 +205,7 @@ export function PricingPlans({ isLoggedIn, locale }: PricingPlansProps) {
         ))}
       </div>
 
-      <div className="bg-muted/30 mx-auto flex max-w-3xl flex-col gap-3 rounded-xl border p-6 text-center">
+      <div className="marketing-card mx-auto flex max-w-3xl flex-col gap-3 rounded-2xl p-6 text-center">
         <p className="text-muted-foreground text-sm leading-relaxed">
           <Trans i18nKey="marketing:pricingPage.paymentNoteContact" />
         </p>

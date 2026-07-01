@@ -34,6 +34,87 @@
       "pendingLeave": "Đơn nghỉ chờ duyệt"
     }
   },
+  "workspace": {
+    "searchPlaceholder": "Tìm trang và module…",
+    "searchEmpty": "Không tìm thấy kết quả.",
+    "searchGroup": "Điều hướng"
+  },
+  "platform": {
+    "title": "Bảng điều khiển nền tảng",
+    "description": "Quản lý trường, gói đăng ký và vận hành hệ thống.",
+    "backToWorkspace": "Về workspace",
+    "nav": {
+      "short": "Nền tảng",
+      "dashboard": "Tổng quan",
+      "schools": "Trường học",
+      "packages": "Gói",
+      "admins": "Quản trị",
+      "audit": "Nhật ký"
+    },
+    "stats": {
+      "totalSchools": "Tổng trường",
+      "activeSchools": "Trường hoạt động",
+      "suspendedSchools": "Trường tạm ngưng",
+      "trialSchools": "Gói dùng thử"
+    },
+    "schoolStatus": {
+      "active": "Hoạt động",
+      "suspended": "Tạm ngưng",
+      "archived": "Đã lưu trữ"
+    },
+    "actions": {
+      "suspend": "Tạm ngưng",
+      "restore": "Khôi phục",
+      "archive": "Lưu trữ"
+    },
+    "schools": {
+      "title": "Danh sách trường",
+      "description": "Tất cả tenant trên nền tảng Kinder CRM.",
+      "empty": "Không có trường phù hợp bộ lọc.",
+      "name": "Trường",
+      "slug": "Slug",
+      "status": "Trạng thái",
+      "package": "Gói",
+      "usage": "Sử dụng",
+      "actions": "Thao tác",
+      "detail": "Chi tiết",
+      "filter": "Lọc",
+      "back": "Về danh sách",
+      "info": "Thông tin trường",
+      "owner": "Chủ sở hữu",
+      "subscription": "Đăng ký"
+    },
+    "packages": {
+      "title": "Gói đăng ký",
+      "description": "Quản lý gói và feature flags.",
+      "create": "Tạo gói",
+      "createTitle": "Tạo gói mới",
+      "editTitle": "Sửa gói",
+      "save": "Lưu gói",
+      "active": "Hiển thị trên catalog",
+      "empty": "Chưa có gói nào."
+    },
+    "subscription": {
+      "overrideTitle": "Ghi đè đăng ký",
+      "save": "Áp dụng"
+    },
+    "admins": {
+      "title": "Quản trị nền tảng",
+      "description": "Cấp hoặc thu hồi quyền platform admin.",
+      "grant": "Cấp quyền",
+      "grantTitle": "Cấp platform admin",
+      "revoke": "Thu hồi"
+    },
+    "audit": {
+      "title": "Nhật ký audit",
+      "description": "Lịch sử thao tác platform.",
+      "empty": "Chưa có bản ghi audit."
+    }
+  },
+  "suspended": {
+    "title": "Trường đã tạm ngưng",
+    "description": "{{schoolName}} đã bị tạm ngưng. Vui lòng liên hệ quản trị viên hoặc bộ phận hỗ trợ Kinder CRM."
+  },
   "subscription": {
     "title": "Gói đăng ký",
     "description": "Xem gói hiện tại, hạn mức và lịch sử thay đổi.",
@@ -121,6 +202,8 @@
     "save": "Lưu",
     "delete": "Xóa lead",
     "addNote": "Thêm ghi chú",
+    "notesEmpty": "Chưa có ghi chú nào.",
+    "activitiesEmpty": "Chưa có hoạt động nào.",
     "timeline": "Hoạt động",
     "detail": "Chi tiết lead",
     "unassigned": "Chưa gán",
@@ -207,6 +290,7 @@
     "roster": "Danh sách học sinh",
     "enrollStudent": "Thêm học sinh",
     "noStudents": "Chưa có học sinh trong lớp.",
+    "noSchedule": "Chưa có tiết học nào.",
     "setup": "Thiết lập",
     "schoolYears": "Năm học",
     "semesters": "Học kỳ",
@@ -808,6 +892,19 @@
       "minor": "Nhẹ",
       "moderate": "Trung bình",
       "serious": "Nghiêm trọng"
+    }
+  },
+  "ui": {
+    "errorTitle": "Đã xảy ra lỗi",
+    "errorDescription": "Không thể tải trang này. Vui lòng thử lại hoặc quay về bảng điều khiển.",
+    "retry": "Thử lại",
+    "goHome": "Về bảng điều khiển",
+    "back": "Quay lại",
+    "emptyDefaultDescription": "Chưa có dữ liệu. Hãy tạo bản ghi đầu tiên để bắt đầu.",
+    "toast": {
+      "saving": "Đang lưu…",
+      "saved": "Đã lưu thành công",
+      "error": "Có lỗi xảy ra. Vui lòng thử lại."
     }
   }
 }

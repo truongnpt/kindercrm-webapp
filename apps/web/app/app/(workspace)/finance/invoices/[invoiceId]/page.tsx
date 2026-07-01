@@ -1,9 +1,13 @@
 import { notFound } from 'next/navigation';
 
-import { PageBody, PageHeader } from '@kit/ui/page';
 import { Badge } from '@kit/ui/badge';
 import { Trans } from '@kit/ui/trans';
 
+import {
+  DetailPageHeader,
+  KinderPageBody,
+} from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
 import { getVietQrConfig } from '~/lib/kinder/finance/vietqr';
 import {
   loadInvoiceAdjustments,
@@ -71,7 +75,8 @@ async function InvoiceDetailPage({
 
   return (
     <>
-      <PageHeader
+      <DetailPageHeader
+        backHref={pathsConfig.app.finance}
         description={
           <span className="flex flex-wrap items-center gap-2">
             <span className="font-mono text-xs">{invoice.invoice_number}</span>
@@ -85,7 +90,7 @@ async function InvoiceDetailPage({
         title={invoice.title}
       />
 
-      <PageBody className="space-y-4">
+      <KinderPageBody>
         {showQr && vietQrConfig ? (
           <InvoiceVietQrPanel
             amount={balance}
@@ -102,7 +107,7 @@ async function InvoiceDetailPage({
           refunds={refunds}
           schoolId={context.school.id}
         />
-      </PageBody>
+      </KinderPageBody>
     </>
   );
 }

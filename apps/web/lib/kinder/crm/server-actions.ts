@@ -6,6 +6,8 @@ import { redirect } from 'next/navigation';
 import { enhanceAction } from '@kit/next/actions';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
+import type { Json } from '~/lib/database.types';
+
 import pathsConfig from '~/config/paths.config';
 
 import {
@@ -54,7 +56,7 @@ async function logLeadActivity(
     school_id: params.schoolId,
     activity_type: params.activityType,
     description: params.description ?? null,
-    metadata: params.metadata ?? {},
+    metadata: (params.metadata ?? {}) as Json,
     created_by: params.userId,
   });
 }

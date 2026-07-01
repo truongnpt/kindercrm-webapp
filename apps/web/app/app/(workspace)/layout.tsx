@@ -20,43 +20,64 @@ import {
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
+import { getPlatformAdminContext } from '~/lib/kinder/platform/require-platform-admin';
+
+import { WorkspaceHeader } from '~/components/kinder-ui';
+
 import { AppMobileNavigation } from '../_components/app-mobile-navigation';
 import { AppSidebar } from '../_components/app-sidebar';
 
 function WorkspaceLayout({ children }: React.PropsWithChildren) {
-  const { user, context, schools, navigation, notifications, unreadCount } =
+  const { user, context, schools, navigation, notifications, unreadCount, showPlatformLink } =
     use(loadWorkspaceData());
 
   if (!context) {
     redirect(pathsConfig.app.onboarding);
   }
 
+  if (context.school.status === 'suspended') {
+    redirect(pathsConfig.app.suspended);
+  }
+
   const sidebarDefaultOpen = !navigationConfig.sidebarCollapsed;
 
   return (
     <SidebarProvider defaultOpen={sidebarDefaultOpen}>
-      <Page style={'sidebar'}>
+      <Page className="kinder-workspace" style={'sidebar'}>
         <PageNavigation>
           <AppSidebar
             activeSchoolId={context.school.id}
             navigation={navigation}
-            notifications={notifications}
             schools={schools}
-            unreadCount={unreadCount}
             user={user}
           />
         </PageNavigation>
 
-        <PageMobileNavigation className={'flex items-center justify-between gap-2'}>
+        <PageMobileNavigation className="kinder-sticky-header flex items-center justify-between gap-3 px-4 py-3">
           <AppLogo href={pathsConfig.app.home} />
           <AppMobileNavigation
             navigation={navigation}
             notifications={notifications}
             unreadCount={unreadCount}
+            schools={schools}
+            activeSchoolId={context.school.id}
+            user={user}
           />
         </PageMobileNavigation>
 
-        {children}
+        <div className="flex min-h-0 flex-1 flex-col">
+          <WorkspaceHeader
+            activeSchoolId={context.school.id}
+            navigation={navigation}
+            notifications={notifications}
+            schools={schools}
+            showPlatformLink={showPlatformLink}
+            unreadCount={unreadCount}
+            user={user}
+          />
+
+          <div className="kinder-workspace-content">{children}</div>
+        </div>
       </Page>
     </SidebarProvider>
   );
@@ -95,12 +116,13 @@ async function loadWorkspaceData() {
     }
   }
 
-  const [notifications, unreadCount] = context
+  const [notifications, unreadCount, platformAdmin] = context
     ? await Promise.all([
         loadUserNotifications(user.id),
         loadUnreadNotificationCount(user.id),
+        getPlatformAdminContext(user.id),
       ])
-    : [[], 0];
+    : [[], 0, null];
 
   const navigation = context
     ? getKinderNavigationConfig(context.package)
@@ -117,6 +139,7 @@ async function loadWorkspaceData() {
     navigation,
     notifications,
     unreadCount,
+    showPlatformLink: Boolean(platformAdmin),
   };
 }
 

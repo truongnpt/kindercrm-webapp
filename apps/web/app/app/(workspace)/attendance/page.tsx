@@ -1,8 +1,18 @@
 import { Suspense } from 'react';
 
-import { PageBody, PageHeader } from '@kit/ui/page';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@kit/ui/tabs';
+import { School } from 'lucide-react';
+
 import { Trans } from '@kit/ui/trans';
+
+import {
+  EmptyState,
+  KinderPageBody,
+  KinderPageHeader,
+  TabbedModule,
+  TabbedModuleContent,
+  TabbedModuleList,
+  TabbedModuleTrigger,
+} from '~/components/kinder-ui';
 
 import {
   loadActiveClasses,
@@ -86,30 +96,33 @@ async function AttendancePage({
 
   return (
     <>
-      <PageHeader
+      <KinderPageHeader
         description={<Trans i18nKey="kinder:attendance.description" />}
         title={<Trans i18nKey="kinder:attendance.title" />}
       />
 
-      <PageBody>
-        <Tabs defaultValue={defaultTab}>
-          <TabsList>
-            <TabsTrigger value="daily">
+      <KinderPageBody>
+        <TabbedModule defaultValue={defaultTab}>
+          <TabbedModuleList>
+            <TabbedModuleTrigger value="daily">
               <Trans i18nKey="kinder:attendance.tabs.daily" />
-            </TabsTrigger>
-            <TabsTrigger value="leave">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="leave">
               <Trans i18nKey="kinder:attendance.tabs.leave" />
-            </TabsTrigger>
-            <TabsTrigger value="report">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="report">
               <Trans i18nKey="kinder:attendance.tabs.report" />
-            </TabsTrigger>
-          </TabsList>
+            </TabbedModuleTrigger>
+          </TabbedModuleList>
 
-          <TabsContent className="mt-4 space-y-4" value="daily">
+          <TabbedModuleContent className="flex flex-col gap-4" value="daily">
             {classes.length === 0 ? (
-              <p className="text-muted-foreground text-sm">
-                <Trans i18nKey="kinder:attendance.noClasses" />
-              </p>
+              <EmptyState
+                compact
+                descriptionKey="kinder:ui.emptyDefaultDescription"
+                icon={School}
+                titleKey="kinder:attendance.noClasses"
+              />
             ) : (
               <>
                 <Suspense>
@@ -127,23 +140,23 @@ async function AttendancePage({
                 ) : null}
               </>
             )}
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="leave">
+          <TabbedModuleContent value="leave">
             <LeaveRequestsPanel
               leaveRequests={leaveRequests}
               schoolId={context.school.id}
               students={students}
             />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="report">
+          <TabbedModuleContent value="report">
             <Suspense>
               <MonthlyReportPanel classes={classes} summary={monthlySummary} />
             </Suspense>
-          </TabsContent>
-        </Tabs>
-      </PageBody>
+          </TabbedModuleContent>
+        </TabbedModule>
+      </KinderPageBody>
     </>
   );
 }

@@ -1,16 +1,21 @@
 import Link from 'next/link';
 
-import { PageBody, PageHeader } from '@kit/ui/page';
+import { Sparkles } from 'lucide-react';
+
+import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
+import {
+  KinderPageBody,
+  KinderPageHeader,
+  SectionCard,
+} from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import { getAiCreditStatus } from '~/lib/kinder/ai/credits';
 import { getAiConfig } from '~/lib/kinder/ai/config';
 import { loadDashboardSummary } from '~/lib/kinder/dashboard/load-dashboard';
-import {
-  hasPackageFeature,
-} from '~/lib/kinder/subscription/features';
+import { hasPackageFeature } from '~/lib/kinder/subscription/features';
 import { loadSchoolUsageSummary } from '~/lib/kinder/subscription/quotas';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
@@ -63,7 +68,7 @@ async function DashboardPage() {
 
   return (
     <>
-      <PageHeader
+      <KinderPageHeader
         description={
           <Trans
             i18nKey="kinder:dashboard.description"
@@ -73,18 +78,24 @@ async function DashboardPage() {
         title={<Trans i18nKey="kinder:dashboard.title" />}
       />
 
-      <PageBody className="space-y-4">
+      <KinderPageBody>
         <QuotaUsageBanner
           package={context.package}
           usage={usageSummary.usage}
         />
 
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-lg border p-6">
-            <p className="text-muted-foreground text-sm">
-              <Trans i18nKey="kinder:dashboard.packageLabel" />
-            </p>
-            <p className="mt-1 text-2xl font-semibold">
+          <SectionCard
+            action={
+              <Button asChild size="sm" variant="outline">
+                <Link href={pathsConfig.app.settingsSubscription}>
+                  <Trans i18nKey="kinder:subscription.title" />
+                </Link>
+              </Button>
+            }
+            title={<Trans i18nKey="kinder:dashboard.packageLabel" />}
+          >
+            <p className="text-foreground text-2xl font-semibold tracking-tight">
               {context.package?.name ?? '—'}
             </p>
             {trialEnds ? (
@@ -95,20 +106,25 @@ async function DashboardPage() {
                 />
               </p>
             ) : null}
-            <Link
-              className="text-primary mt-3 inline-block text-sm hover:underline"
-              href={pathsConfig.app.settingsSubscription}
-            >
-              <Trans i18nKey="kinder:subscription.title" />
-            </Link>
-          </div>
+          </SectionCard>
 
           {hasAi && aiCredits ? (
-            <div className="rounded-lg border p-6">
-              <p className="text-muted-foreground text-sm">
-                <Trans i18nKey="kinder:ai.creditsLabel" />
-              </p>
-              <p className="mt-1 text-2xl font-semibold">
+            <SectionCard
+              action={
+                <Button asChild size="sm" variant="outline">
+                  <Link href={pathsConfig.app.ai}>
+                    <Trans i18nKey="kinder:ai.title" />
+                  </Link>
+                </Button>
+              }
+              title={
+                <span className="inline-flex items-center gap-2">
+                  <Sparkles className="text-primary size-5" />
+                  <Trans i18nKey="kinder:ai.creditsLabel" />
+                </span>
+              }
+            >
+              <p className="text-foreground text-2xl font-semibold tracking-tight">
                 {aiCredits.creditsRemaining} / {aiCredits.creditsLimit}
               </p>
               <p className="text-muted-foreground mt-2 text-sm">
@@ -118,18 +134,12 @@ async function DashboardPage() {
                   <Trans i18nKey="kinder:ai.providerFallback" />
                 )}
               </p>
-              <Link
-                className="text-primary mt-3 inline-block text-sm hover:underline"
-                href={pathsConfig.app.ai}
-              >
-                <Trans i18nKey="kinder:ai.title" />
-              </Link>
-            </div>
+            </SectionCard>
           ) : null}
         </div>
 
         <DashboardOverview features={features} summary={summary} />
-      </PageBody>
+      </KinderPageBody>
     </>
   );
 }

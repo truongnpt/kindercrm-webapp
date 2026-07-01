@@ -18,8 +18,8 @@ import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { UpsertDailyReportSchema } from '~/lib/kinder/daily-reports/schemas/daily-report.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import {
-  publishDailyReportAction,
   upsertDailyReportAction,
 } from '~/lib/kinder/daily-reports/server-actions';
 import type { StudentDailyReport } from '~/lib/kinder/daily-reports/types';
@@ -54,7 +54,7 @@ export function DailyReportsPanel({
       {reports.length > 0 ? (
         <div className="space-y-2">
           {reports.map((report) => (
-            <div className="rounded-lg border p-4 text-sm" key={report.id}>
+            <div className="kinder-mobile-card text-sm" key={report.id}>
               <p className="font-medium">{report.report_date}</p>
               {report.teacher_note ? (
                 <p className="text-muted-foreground mt-1">{report.teacher_note}</p>
@@ -63,14 +63,12 @@ export function DailyReportsPanel({
           ))}
         </div>
       ) : (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:parent.reports.empty" />
-        </p>
+        <PanelEmpty messageKey="kinder:parent.reports.empty" />
       )}
 
       <Form {...form}>
         <form
-          className="grid max-w-2xl gap-4 rounded-lg border p-4"
+          className="kinder-form-panel max-w-2xl"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = upsertDailyReportAction(data);
             toast.promise(promise, {

@@ -7,7 +7,7 @@ import pathsConfig from '~/config/paths.config';
 import {
   hasPackageFeature,
   type PackageFeature,
-} from '~/lib/kinder/subscription/features';
+} from '~/lib/kinder/subscription/package-features';
 import type { Package } from '~/lib/kinder/types';
 
 const PATH_FEATURES: Array<{ path: string; feature: PackageFeature }> = [

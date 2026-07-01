@@ -24,6 +24,7 @@ import {
 import { Trans } from '@kit/ui/trans';
 
 import { UpsertIngredientSchema } from '~/lib/kinder/meal-menu/schemas/meal-menu.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import { upsertIngredientAction } from '~/lib/kinder/meal-menu/server-actions';
 import type { Ingredient } from '~/lib/kinder/meal-menu/types';
 import type { InventoryProductWithStock } from '~/lib/kinder/inventory/types';
@@ -54,11 +55,9 @@ export function IngredientsPanel({
   return (
     <div className="space-y-6">
       {ingredients.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:mealMenu.emptyIngredients" />
-        </p>
+        <PanelEmpty messageKey="kinder:mealMenu.emptyIngredients" />
       ) : (
-        <ul className="divide-y rounded-lg border">
+        <ul className="kinder-list-panel">
           {ingredients.map((ingredient) => {
             const linkedProduct = inventoryProducts.find(
               (product) => product.id === ingredient.inventory_product_id,
@@ -84,7 +83,7 @@ export function IngredientsPanel({
 
       <Form {...form}>
         <form
-          className="grid max-w-xl gap-3 rounded-lg border p-4"
+          className="kinder-form-panel max-w-xl grid-cols-1"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = upsertIngredientAction({
               ...data,

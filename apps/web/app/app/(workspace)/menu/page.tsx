@@ -1,6 +1,13 @@
-import { PageBody, PageHeader } from '@kit/ui/page';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@kit/ui/tabs';
 import { Trans } from '@kit/ui/trans';
+
+import {
+  KinderPageBody,
+  KinderPageHeader,
+  TabbedModule,
+  TabbedModuleContent,
+  TabbedModuleList,
+  TabbedModuleTrigger,
+} from '~/components/kinder-ui';
 
 import {
   loadDishes,
@@ -56,53 +63,53 @@ async function MenuPage({
 
   return (
     <>
-      <PageHeader
+      <KinderPageHeader
         description={<Trans i18nKey="kinder:mealMenu.description" />}
         title={<Trans i18nKey="kinder:mealMenu.title" />}
       />
 
-      <PageBody>
-        <Tabs defaultValue={tab ?? 'menus'}>
-          <TabsList>
-            <TabsTrigger value="menus">
+      <KinderPageBody>
+        <TabbedModule defaultValue={tab ?? 'menus'}>
+          <TabbedModuleList>
+            <TabbedModuleTrigger value="menus">
               <Trans i18nKey="kinder:mealMenu.tabs.menus" />
-            </TabsTrigger>
-            <TabsTrigger value="dishes">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="dishes">
               <Trans i18nKey="kinder:mealMenu.tabs.dishes" />
-            </TabsTrigger>
-            <TabsTrigger value="ingredients">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="ingredients">
               <Trans i18nKey="kinder:mealMenu.tabs.ingredients" />
-            </TabsTrigger>
-            <TabsTrigger value="templates">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="templates">
               <Trans i18nKey="kinder:mealMenu.tabs.templates" />
-            </TabsTrigger>
-          </TabsList>
+            </TabbedModuleTrigger>
+          </TabbedModuleList>
 
-          <TabsContent className="mt-4" value="menus">
+          <TabbedModuleContent value="menus">
             <MenusPanel menus={menus} schoolId={context.school.id} />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="dishes">
+          <TabbedModuleContent value="dishes">
             <DishesPanel dishes={dishes} schoolId={context.school.id} />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="ingredients">
+          <TabbedModuleContent value="ingredients">
             <IngredientsPanel
               ingredients={ingredients}
               inventoryProducts={inventoryProducts}
               schoolId={context.school.id}
             />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="templates">
+          <TabbedModuleContent value="templates">
             <MenuTemplatesPanel
               menus={menus}
               schoolId={context.school.id}
               templates={templates}
             />
-          </TabsContent>
-        </Tabs>
-      </PageBody>
+          </TabbedModuleContent>
+        </TabbedModule>
+      </KinderPageBody>
     </>
   );
 }

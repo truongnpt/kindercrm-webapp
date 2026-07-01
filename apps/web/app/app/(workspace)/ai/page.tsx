@@ -1,6 +1,13 @@
-import { PageBody, PageHeader } from '@kit/ui/page';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@kit/ui/tabs';
 import { Trans } from '@kit/ui/trans';
+
+import {
+  KinderPageBody,
+  KinderPageHeader,
+  TabbedModule,
+  TabbedModuleContent,
+  TabbedModuleList,
+  TabbedModuleTrigger,
+} from '~/components/kinder-ui';
 
 import { getAiConfig } from '~/lib/kinder/ai/config';
 import { getAiCreditStatus } from '~/lib/kinder/ai/credits';
@@ -63,7 +70,7 @@ async function AiAssistantPage({
 
   return (
     <>
-      <PageHeader
+      <KinderPageHeader
         description={
           aiConfig.isConfigured ? (
             <Trans i18nKey="kinder:ai.description" />
@@ -74,21 +81,21 @@ async function AiAssistantPage({
         title={<Trans i18nKey="kinder:ai.title" />}
       />
 
-      <PageBody>
-        <Tabs defaultValue={tab ?? 'chat'}>
-          <TabsList>
-            <TabsTrigger value="chat">
+      <KinderPageBody>
+        <TabbedModule defaultValue={tab ?? 'chat'}>
+          <TabbedModuleList>
+            <TabbedModuleTrigger value="chat">
               <Trans i18nKey="kinder:ai.tabs.chat" />
-            </TabsTrigger>
-            <TabsTrigger value="insights">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="insights">
               <Trans i18nKey="kinder:ai.tabs.insights" />
-            </TabsTrigger>
-            <TabsTrigger value="knowledge">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="knowledge">
               <Trans i18nKey="kinder:ai.tabs.knowledge" />
-            </TabsTrigger>
-          </TabsList>
+            </TabbedModuleTrigger>
+          </TabbedModuleList>
 
-          <TabsContent className="mt-4" value="chat">
+          <TabbedModuleContent value="chat">
             <AiChatPanel
               creditsRemaining={creditStatus.creditsRemaining}
               initialMessages={messages}
@@ -96,23 +103,23 @@ async function AiAssistantPage({
               schoolId={context.school.id}
               sessions={sessions}
             />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="insights">
+          <TabbedModuleContent value="insights">
             <AiInsightsPanel
               initialInsights={initialInsights}
               schoolId={context.school.id}
             />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="knowledge">
+          <TabbedModuleContent value="knowledge">
             <AiKnowledgePanel
               articles={articles}
               schoolId={context.school.id}
             />
-          </TabsContent>
-        </Tabs>
-      </PageBody>
+          </TabbedModuleContent>
+        </TabbedModule>
+      </KinderPageBody>
     </>
   );
 }

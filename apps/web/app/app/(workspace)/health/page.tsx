@@ -1,8 +1,15 @@
 import { Suspense } from 'react';
 
-import { PageBody, PageHeader } from '@kit/ui/page';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@kit/ui/tabs';
 import { Trans } from '@kit/ui/trans';
+
+import {
+  KinderPageBody,
+  KinderPageHeader,
+  TabbedModule,
+  TabbedModuleContent,
+  TabbedModuleList,
+  TabbedModuleTrigger,
+} from '~/components/kinder-ui';
 
 import {
   loadGrowthRecords,
@@ -78,46 +85,46 @@ async function HealthPage({
 
   return (
     <>
-      <PageHeader
+      <KinderPageHeader
         description={<Trans i18nKey="kinder:health.description" />}
         title={<Trans i18nKey="kinder:health.title" />}
       />
 
-      <PageBody>
-        <Tabs defaultValue={defaultTab}>
-          <TabsList className="flex h-auto flex-wrap">
-            <TabsTrigger value="dashboard">
+      <KinderPageBody>
+        <TabbedModule defaultValue={defaultTab}>
+          <TabbedModuleList className="flex-wrap">
+            <TabbedModuleTrigger value="dashboard">
               <Trans i18nKey="kinder:health.tabs.dashboard" />
-            </TabsTrigger>
-            <TabsTrigger value="profiles">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="profiles">
               <Trans i18nKey="kinder:health.tabs.profiles" />
-            </TabsTrigger>
-            <TabsTrigger value="growth">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="growth">
               <Trans i18nKey="kinder:health.tabs.growth" />
-            </TabsTrigger>
-            <TabsTrigger value="vaccinations">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="vaccinations">
               <Trans i18nKey="kinder:health.tabs.vaccinations" />
-            </TabsTrigger>
-            <TabsTrigger value="checkups">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="checkups">
               <Trans i18nKey="kinder:health.tabs.checkups" />
-            </TabsTrigger>
-            <TabsTrigger value="medications">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="medications">
               <Trans i18nKey="kinder:health.tabs.medications" />
-            </TabsTrigger>
-            <TabsTrigger value="incidents">
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="incidents">
               <Trans i18nKey="kinder:health.tabs.incidents" />
-            </TabsTrigger>
-          </TabsList>
+            </TabbedModuleTrigger>
+          </TabbedModuleList>
 
-          <TabsContent className="mt-4" value="dashboard">
+          <TabbedModuleContent value="dashboard">
             <HealthDashboardPanel summary={summary} />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="profiles">
+          <TabbedModuleContent value="profiles">
             <HealthProfilesPanel summaries={summaries} />
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="growth">
+          <TabbedModuleContent value="growth">
             <Suspense>
               <GrowthPanel
                 records={growth}
@@ -126,9 +133,9 @@ async function HealthPage({
                 students={students}
               />
             </Suspense>
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="vaccinations">
+          <TabbedModuleContent value="vaccinations">
             <Suspense>
               <VaccinationsPanel
                 schoolId={schoolId}
@@ -137,9 +144,9 @@ async function HealthPage({
                 vaccinations={vaccinations}
               />
             </Suspense>
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="checkups">
+          <TabbedModuleContent value="checkups">
             <Suspense>
               <CheckupsPanel
                 checkups={checkups}
@@ -148,9 +155,9 @@ async function HealthPage({
                 students={students}
               />
             </Suspense>
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="medications">
+          <TabbedModuleContent value="medications">
             <Suspense>
               <MedicationsPanel
                 medications={medications}
@@ -159,9 +166,9 @@ async function HealthPage({
                 students={students}
               />
             </Suspense>
-          </TabsContent>
+          </TabbedModuleContent>
 
-          <TabsContent className="mt-4" value="incidents">
+          <TabbedModuleContent value="incidents">
             <Suspense>
               <IncidentsPanel
                 incidents={incidents}
@@ -170,9 +177,9 @@ async function HealthPage({
                 students={students}
               />
             </Suspense>
-          </TabsContent>
-        </Tabs>
-      </PageBody>
+          </TabbedModuleContent>
+        </TabbedModule>
+      </KinderPageBody>
     </>
   );
 }

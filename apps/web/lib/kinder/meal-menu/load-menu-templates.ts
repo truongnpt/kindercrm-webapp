@@ -77,7 +77,7 @@ export const loadMenuNutritionSummary = cache(
 
     const dishes = (dishesResult.data ?? []) as Dish[];
     const ingredients = (ingredientsResult.data ?? []) as Ingredient[];
-    const products = productsResult.data ?? [];
+    const _products = productsResult.data ?? [];
 
     const productIds = ingredients
       .map((ingredient) => ingredient.inventory_product_id)

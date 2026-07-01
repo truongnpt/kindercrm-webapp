@@ -1,9 +1,15 @@
 import { Suspense } from 'react';
 
-import { PageBody, PageHeader, PageHeaderActions } from '@kit/ui/page';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@kit/ui/tabs';
 import { Trans } from '@kit/ui/trans';
 
+import {
+  KinderPageBody,
+  KinderPageHeader,
+  TabbedModule,
+  TabbedModuleContent,
+  TabbedModuleList,
+  TabbedModuleTrigger,
+} from '~/components/kinder-ui';
 import {
   loadStaffDepartments,
   loadStaffEmployees,
@@ -69,53 +75,54 @@ async function StaffPage({
 
   return (
     <>
-      <PageHeader
+      <KinderPageHeader
+        actions={
+          canManage ? (
+            <>
+              <Suspense>
+                <StaffFilters departments={departments} />
+              </Suspense>
+              <CreateStaffDialog
+                campuses={campuses}
+                departments={departments}
+                positions={positions}
+                schoolId={context.school.id}
+              />
+            </>
+          ) : undefined
+        }
         description={<Trans i18nKey="kinder:staff.description" />}
         title={<Trans i18nKey="kinder:staff.title" />}
-      >
-        {canManage ? (
-          <PageHeaderActions>
-            <Suspense>
-              <StaffFilters departments={departments} />
-            </Suspense>
-            <CreateStaffDialog
-              campuses={campuses}
-              departments={departments}
-              positions={positions}
-              schoolId={context.school.id}
-            />
-          </PageHeaderActions>
-        ) : null}
-      </PageHeader>
+      />
 
-      <PageBody>
-        <Tabs defaultValue={defaultTab}>
-          <TabsList>
-            <TabsTrigger value="employees">
+      <KinderPageBody>
+        <TabbedModule defaultValue={defaultTab}>
+          <TabbedModuleList>
+            <TabbedModuleTrigger value="employees">
               <Trans i18nKey="kinder:staff.tabs.employees" />
-            </TabsTrigger>
+            </TabbedModuleTrigger>
             {canManage ? (
-              <TabsTrigger value="setup">
+              <TabbedModuleTrigger value="setup">
                 <Trans i18nKey="kinder:staff.tabs.setup" />
-              </TabsTrigger>
+              </TabbedModuleTrigger>
             ) : null}
-          </TabsList>
+          </TabbedModuleList>
 
-          <TabsContent className="mt-4" value="employees">
+          <TabbedModuleContent value="employees">
             <StaffList employees={employees} />
-          </TabsContent>
+          </TabbedModuleContent>
 
           {canManage ? (
-            <TabsContent className="mt-4" value="setup">
+            <TabbedModuleContent value="setup">
               <StaffSetupPanel
                 departments={departments}
                 positions={positions}
                 schoolId={context.school.id}
               />
-            </TabsContent>
+            </TabbedModuleContent>
           ) : null}
-        </Tabs>
-      </PageBody>
+        </TabbedModule>
+      </KinderPageBody>
     </>
   );
 }

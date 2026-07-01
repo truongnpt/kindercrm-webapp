@@ -9,8 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@kit/ui/select';
-import { Trans } from '@kit/ui/trans';
-
 import pathsConfig from '~/config/paths.config';
 
 export function DailyReportFilters({

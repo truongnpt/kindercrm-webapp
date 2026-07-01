@@ -1,5 +1,5 @@
 import { FaqContent, getFaqStructuredData } from '~/(marketing)/_components/faq-content';
-import { SitePageHeader } from '~/(marketing)/_components/site-page-header';
+import { MarketingPageHeader } from '~/(marketing)/_components/marketing-page-header';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 
@@ -37,13 +37,13 @@ async function FAQPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      <div className="flex flex-col gap-4 xl:gap-8">
-        <SitePageHeader
+      <div className="flex flex-col">
+        <MarketingPageHeader
           title={t('marketing:faq')}
           subtitle={t('marketing:faqSubtitle')}
         />
 
-        <div className="container mx-auto py-8">
+        <div className="container mx-auto px-4 py-12 sm:px-6 md:py-16">
           <FaqContent />
         </div>
       </div>

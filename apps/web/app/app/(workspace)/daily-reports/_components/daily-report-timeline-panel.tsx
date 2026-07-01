@@ -18,6 +18,7 @@ import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { AddTimelineEntrySchema } from '~/lib/kinder/daily-reports/schemas/daily-report.schema';
+import { PanelEmpty } from '~/components/kinder-ui';
 import {
   addTimelineEntryAction,
   deleteTimelineEntryAction,
@@ -62,13 +63,11 @@ export function DailyReportTimelinePanel({
   return (
     <div className="space-y-4">
       {entries.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:dailyReports.timelineEmpty" />
-        </p>
+        <PanelEmpty messageKey="kinder:dailyReports.timelineEmpty" />
       ) : (
         <ul className="space-y-2">
           {entries.map((entry) => (
-            <li className="rounded-lg border p-3 text-sm" key={entry.id}>
+            <li className="kinder-mobile-card text-sm" key={entry.id}>
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <p className="font-medium">{entry.title}</p>
@@ -113,7 +112,7 @@ export function DailyReportTimelinePanel({
       {!readOnly && reportId ? (
         <Form {...form}>
           <form
-            className="grid gap-3 rounded-lg border p-4"
+            className="kinder-form-panel grid-cols-1"
             onSubmit={form.handleSubmit(async (data) => {
               const promise = addTimelineEntryAction({
                 ...data,

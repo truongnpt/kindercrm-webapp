@@ -44,7 +44,7 @@ export const loadUserSchools = cache(async (userId: string) => {
   }
 
   return (data ?? [])
-    .filter((row) => row.school && row.school.status === 'active')
+    .filter((row) => row.school && row.school.status !== 'archived')
     .map((row) => ({
       role: row.role as SchoolMemberRole,
       school: row.school as Pick<

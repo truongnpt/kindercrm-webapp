@@ -8,7 +8,6 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import pathsConfig from '~/config/paths.config';
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
-import { seedDefaultLeadSources } from '~/lib/kinder/crm/seed-lead-sources';
 import { assertCampusQuota } from '~/lib/kinder/subscription/quotas';
 import type { Package } from '~/lib/kinder/types';
 
@@ -31,90 +30,36 @@ function revalidateSchoolPaths() {
 
 /** TENANT-001: Create School */
 export const createSchoolAction = enhanceAction(
-  async (data, user) => {
+  async (data, _user) => {
     const client = getSupabaseServerClient();
 
-    const { data: existing } = await client
-      .from('schools')
-      .select('id')
-      .eq('slug', data.slug)
-      .maybeSingle();
-
-    if (existing) {
-      throw new KinderError(
-        KINDER_ERROR_CODES.SCHOOL_SLUG_TAKEN,
-        'School slug already exists',
-      );
-    }
-
-    const { data: school, error: schoolError } = await client
-      .from('schools')
-      .insert({
-        name: data.name,
-        slug: data.slug,
-        phone: data.phone || null,
-        email: data.email || null,
-        address: data.address || null,
-      })
-      .select('id')
-      .single();
-
-    if (schoolError || !school) {
-      throw schoolError ?? new Error('Failed to create school');
-    }
-
-    const { error: memberError } = await client.from('school_members').insert({
-      school_id: school.id,
-      user_id: user.id,
-      role: 'owner',
+    const { data: schoolId, error } = await client.rpc('create_school_for_owner', {
+      p_name: data.name,
+      p_slug: data.slug,
+      p_phone: data.phone || null,
+      p_email: data.email || null,
+      p_address: data.address || null,
+      p_campus_name: data.campusName,
     });
 
-    if (memberError) {
-      throw memberError;
+    if (error) {
+      const message = error.message ?? '';
+
+      if (message.includes('SCHOOL_SLUG_TAKEN')) {
+        throw new KinderError(
+          KINDER_ERROR_CODES.SCHOOL_SLUG_TAKEN,
+          'School slug already exists',
+        );
+      }
+
+      throw error;
     }
 
-    const { error: campusError } = await client.from('campuses').insert({
-      school_id: school.id,
-      name: data.campusName,
-      is_main: true,
-      campus_type: 'campus',
-    });
-
-    if (campusError) {
-      throw campusError;
+    if (!schoolId) {
+      throw new Error('Failed to create school');
     }
 
-    const { data: freePackage } = await client
-      .from('packages')
-      .select('id')
-      .eq('code', 'free')
-      .single();
-
-    if (freePackage) {
-      const trialEnds = new Date();
-      trialEnds.setDate(trialEnds.getDate() + 14);
-
-      await client.from('school_subscriptions').insert({
-        school_id: school.id,
-        package_id: freePackage.id,
-        status: 'trial',
-        trial_ends_at: trialEnds.toISOString(),
-        current_period_start: new Date().toISOString(),
-        current_period_end: trialEnds.toISOString(),
-      });
-
-      await client.from('school_subscription_history').insert({
-        school_id: school.id,
-        package_id: freePackage.id,
-        status: 'trial',
-        changed_by: user.id,
-        note: 'Initial trial subscription',
-      });
-    }
-
-    await seedDefaultLeadSources(client, school.id);
-
-    await setActiveSchoolIdCookie(school.id);
+    await setActiveSchoolIdCookie(schoolId);
     revalidateSchoolPaths();
 
     redirect(APP_PATH);

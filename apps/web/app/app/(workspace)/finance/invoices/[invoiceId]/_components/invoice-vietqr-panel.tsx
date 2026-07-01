@@ -28,7 +28,7 @@ export function InvoiceVietQrPanel({
   });
 
   return (
-    <div className="rounded-lg border p-4">
+    <div className="kinder-mobile-card">
       <p className="font-medium">
         <Trans i18nKey="kinder:finance.qr.title" />
       </p>
