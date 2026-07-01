@@ -29,7 +29,7 @@ test.describe('Auth flow', () => {
 
     await auth.visitConfirmEmailLink(email);
 
-    await page.waitForURL('**/home');
+    await page.waitForURL(/\/app(\/onboarding)?$/);
   });
 
   test('will sign-in with the correct credentials', async ({ page }) => {
@@ -43,9 +43,9 @@ test.describe('Auth flow', () => {
       password: 'password',
     });
 
-    await page.waitForURL('**/home');
+    await page.waitForURL(/\/app(\/onboarding)?$/);
 
-    expect(page.url()).toContain('/home');
+    expect(page.url()).toMatch(/\/app(\/onboarding)?$/);
 
     await auth.signOut();
 
@@ -53,12 +53,26 @@ test.describe('Auth flow', () => {
   });
 });
 
-test.describe('Protected routes', () => {
-  test('will redirect to the sign-in page if not authenticated', async ({
+test.describe('Auth routes', () => {
+  test('will redirect authenticated users away from sign-in', async ({
     page,
   }) => {
-    await page.goto('/home/settings');
+    const auth = new AuthPageObject(page);
+    await auth.goToSignUp();
 
-    expect(page.url()).toContain('/auth/sign-in?next=/home/settings');
+    const email = auth.createRandomEmail();
+
+    await auth.signUp({
+      email,
+      password: 'password',
+      repeatPassword: 'password',
+    });
+
+    await auth.visitConfirmEmailLink(email);
+    await page.waitForURL(/\/app(\/onboarding)?$/);
+
+    await page.goto('/auth/sign-in');
+
+    await page.waitForURL(/\/app(\/onboarding)?$/);
   });
 });

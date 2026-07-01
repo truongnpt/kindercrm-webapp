@@ -37,12 +37,10 @@ const config = {
       resolveExtensions: ['.ts', '.tsx', '.js', '.jsx'],
     },
     optimizePackageImports: [
-      'recharts',
       'lucide-react',
       '@radix-ui/react-icons',
       '@radix-ui/react-avatar',
       '@radix-ui/react-select',
-      'date-fns',
       ...INTERNAL_PACKAGES,
     ],
   },

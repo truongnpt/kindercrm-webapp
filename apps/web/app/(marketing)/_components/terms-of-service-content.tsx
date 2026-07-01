@@ -40,20 +40,28 @@ export function TermsOfServiceContent() {
         <LegalList
           items={[
             <Trans
-              key="questions"
-              i18nKey="marketing:termsOfServicePage.serviceQuestions"
+              key="crm"
+              i18nKey="marketing:termsOfServicePage.serviceCrm"
             />,
             <Trans
-              key="exams"
-              i18nKey="marketing:termsOfServicePage.serviceExams"
+              key="students"
+              i18nKey="marketing:termsOfServicePage.serviceStudents"
             />,
             <Trans
-              key="assign"
-              i18nKey="marketing:termsOfServicePage.serviceAssign"
+              key="classes"
+              i18nKey="marketing:termsOfServicePage.serviceClasses"
             />,
             <Trans
-              key="grade"
-              i18nKey="marketing:termsOfServicePage.serviceGrade"
+              key="attendance"
+              i18nKey="marketing:termsOfServicePage.serviceAttendance"
+            />,
+            <Trans
+              key="fees"
+              i18nKey="marketing:termsOfServicePage.serviceFees"
+            />,
+            <Trans
+              key="parents"
+              i18nKey="marketing:termsOfServicePage.serviceParents"
             />,
             <Trans
               key="reports"

@@ -28,40 +28,40 @@ export const FAQ_SECTIONS = [
     ],
   },
   {
-    titleKey: 'marketing:faqPage.sections.exams.title',
+    titleKey: 'marketing:faqPage.sections.modules.title',
     items: [
       {
-        questionKey: 'marketing:faqPage.sections.exams.q1',
-        answerKey: 'marketing:faqPage.sections.exams.a1',
+        questionKey: 'marketing:faqPage.sections.modules.q1',
+        answerKey: 'marketing:faqPage.sections.modules.a1',
       },
       {
-        questionKey: 'marketing:faqPage.sections.exams.q2',
-        answerKey: 'marketing:faqPage.sections.exams.a2',
+        questionKey: 'marketing:faqPage.sections.modules.q2',
+        answerKey: 'marketing:faqPage.sections.modules.a2',
       },
       {
-        questionKey: 'marketing:faqPage.sections.exams.q3',
-        answerKey: 'marketing:faqPage.sections.exams.a3',
+        questionKey: 'marketing:faqPage.sections.modules.q3',
+        answerKey: 'marketing:faqPage.sections.modules.a3',
       },
       {
-        questionKey: 'marketing:faqPage.sections.exams.q4',
-        answerKey: 'marketing:faqPage.sections.exams.a4',
+        questionKey: 'marketing:faqPage.sections.modules.q4',
+        answerKey: 'marketing:faqPage.sections.modules.a4',
       },
     ],
   },
   {
-    titleKey: 'marketing:faqPage.sections.students.title',
+    titleKey: 'marketing:faqPage.sections.parents.title',
     items: [
       {
-        questionKey: 'marketing:faqPage.sections.students.q1',
-        answerKey: 'marketing:faqPage.sections.students.a1',
+        questionKey: 'marketing:faqPage.sections.parents.q1',
+        answerKey: 'marketing:faqPage.sections.parents.a1',
       },
       {
-        questionKey: 'marketing:faqPage.sections.students.q2',
-        answerKey: 'marketing:faqPage.sections.students.a2',
+        questionKey: 'marketing:faqPage.sections.parents.q2',
+        answerKey: 'marketing:faqPage.sections.parents.a2',
       },
       {
-        questionKey: 'marketing:faqPage.sections.students.q3',
-        answerKey: 'marketing:faqPage.sections.students.a3',
+        questionKey: 'marketing:faqPage.sections.parents.q3',
+        answerKey: 'marketing:faqPage.sections.parents.a3',
       },
     ],
   },

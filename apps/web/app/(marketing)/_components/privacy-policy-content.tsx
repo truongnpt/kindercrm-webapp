@@ -41,9 +41,24 @@ const dataRows = [
     purposeKey: 'marketing:privacyPolicyPage.data.students.purpose',
   },
   {
-    categoryKey: 'marketing:privacyPolicyPage.data.exam.category',
-    examplesKey: 'marketing:privacyPolicyPage.data.exam.examples',
-    purposeKey: 'marketing:privacyPolicyPage.data.exam.purpose',
+    categoryKey: 'marketing:privacyPolicyPage.data.classes.category',
+    examplesKey: 'marketing:privacyPolicyPage.data.classes.examples',
+    purposeKey: 'marketing:privacyPolicyPage.data.classes.purpose',
+  },
+  {
+    categoryKey: 'marketing:privacyPolicyPage.data.attendance.category',
+    examplesKey: 'marketing:privacyPolicyPage.data.attendance.examples',
+    purposeKey: 'marketing:privacyPolicyPage.data.attendance.purpose',
+  },
+  {
+    categoryKey: 'marketing:privacyPolicyPage.data.fees.category',
+    examplesKey: 'marketing:privacyPolicyPage.data.fees.examples',
+    purposeKey: 'marketing:privacyPolicyPage.data.fees.purpose',
+  },
+  {
+    categoryKey: 'marketing:privacyPolicyPage.data.parents.category',
+    examplesKey: 'marketing:privacyPolicyPage.data.parents.examples',
+    purposeKey: 'marketing:privacyPolicyPage.data.parents.purpose',
   },
   {
     categoryKey: 'marketing:privacyPolicyPage.data.logs.category',

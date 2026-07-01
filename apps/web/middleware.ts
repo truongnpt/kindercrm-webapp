@@ -25,34 +25,24 @@ const getUser = (request: NextRequest, response: NextResponse) => {
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
-  // set a unique request ID for each request
-  // this helps us log and trace requests
   setRequestId(request);
 
-  // apply CSRF protection for mutating requests
   const csrfResponse = await withCsrfMiddleware(request, response);
 
-  // handle patterns for specific routes
   const handlePattern = matchUrlPattern(request.url);
 
-  // if a pattern handler exists, call it
   if (handlePattern) {
     const patternHandlerResponse = await handlePattern(request, csrfResponse);
 
-    // if a pattern handler returns a response, return it
     if (patternHandlerResponse) {
       return patternHandlerResponse;
     }
   }
 
-  // append the action path to the request headers
-  // which is useful for knowing the action path in server actions
   if (isServerAction(request)) {
     csrfResponse.headers.set('x-action-path', request.nextUrl.pathname);
   }
 
-  // if no pattern handler returned a response,
-  // return the session response
   return csrfResponse;
 }
 
@@ -60,17 +50,14 @@ async function withCsrfMiddleware(
   request: NextRequest,
   response = new NextResponse(),
 ) {
-  // set up CSRF protection
   const csrfProtect = createCsrfProtect({
     cookie: {
       secure: appConfig.production,
       name: CSRF_SECRET_COOKIE,
     },
-    // ignore CSRF errors for server actions since protection is built-in
     ignoreMethods: isServerAction(request)
       ? ['POST']
-      : // always ignore GET, HEAD, and OPTIONS requests
-        ['GET', 'HEAD', 'OPTIONS'],
+      : ['GET', 'HEAD', 'OPTIONS'],
   });
 
   try {
@@ -78,7 +65,6 @@ async function withCsrfMiddleware(
 
     return response;
   } catch (error) {
-    // if there is a CSRF error, return a 403 response
     if (error instanceof CsrfError) {
       return NextResponse.json('Invalid CSRF token', {
         status: 401,
@@ -94,9 +80,7 @@ function isServerAction(request: NextRequest) {
 
   return headers.has(NEXT_ACTION_HEADER);
 }
-/**
- * Define URL patterns and their corresponding handlers.
- */
+
 function getPatterns() {
   return [
     {
@@ -104,46 +88,53 @@ function getPatterns() {
       handler: async (req: NextRequest, res: NextResponse) => {
         const { data } = await getUser(req, res);
 
-        // the user is logged out, so we don't need to do anything
         if (!data?.claims) {
           return;
         }
 
-        // check if we need to verify MFA (user is authenticated but needs to verify MFA)
         const isVerifyMfa = req.nextUrl.pathname === pathsConfig.auth.verifyMfa;
 
-        // If user is logged in and does not need to verify MFA,
-        // redirect to home page.
         if (!isVerifyMfa) {
-          return NextResponse.redirect(
-            new URL(pathsConfig.app.home, req.nextUrl.origin).href,
-          );
-        }
-      },
-    },
-    {
-      pattern: new URLPattern({ pathname: '/exam/*?' }),
-      handler: async (req: NextRequest, res: NextResponse) => {
-        const { data } = await getUser(req, res);
+          const client = createMiddlewareClient(req, res);
+          const userId = data.claims.sub as string;
 
-        if (!data?.claims) {
-          const signIn = pathsConfig.auth.signIn;
-          const next = req.nextUrl.pathname;
+          const { data: memberships } = await client
+            .from('school_members')
+            .select('role')
+            .eq('user_id', userId)
+            .is('deleted_at', null);
+
+          const hasStaffMembership = (memberships ?? []).some(
+            (membership) => membership.role !== 'parent',
+          );
+
+          let redirectPath = pathsConfig.app.home;
+
+          if (!hasStaffMembership) {
+            const { count: parentCount } = await client
+              .from('parent_student_links')
+              .select('id', { count: 'exact', head: true })
+              .eq('user_id', userId);
+
+            if ((parentCount ?? 0) > 0) {
+              redirectPath = pathsConfig.parent.home;
+            }
+          }
+
           return NextResponse.redirect(
-            new URL(`${signIn}?next=${next}`, req.nextUrl.origin).href,
+            new URL(redirectPath, req.nextUrl.origin).href,
           );
         }
       },
     },
     {
-      pattern: new URLPattern({ pathname: '/home/*?' }),
+      pattern: new URLPattern({ pathname: '/app/*?' }),
       handler: async (req: NextRequest, res: NextResponse) => {
         const { data } = await getUser(req, res);
 
         const origin = req.nextUrl.origin;
         const next = req.nextUrl.pathname;
 
-        // If user is not logged in, redirect to sign in page.
         if (!data?.claims) {
           const signIn = pathsConfig.auth.signIn;
           const redirectPath = `${signIn}?next=${next}`;
@@ -156,7 +147,33 @@ function getPatterns() {
         const requiresMultiFactorAuthentication =
           await checkRequiresMultiFactorAuthentication(supabase);
 
-        // If user requires multi-factor authentication, redirect to MFA page.
+        if (requiresMultiFactorAuthentication) {
+          return NextResponse.redirect(
+            new URL(pathsConfig.auth.verifyMfa, origin).href,
+          );
+        }
+      },
+    },
+    {
+      pattern: new URLPattern({ pathname: '/parent/*?' }),
+      handler: async (req: NextRequest, res: NextResponse) => {
+        const { data } = await getUser(req, res);
+
+        const origin = req.nextUrl.origin;
+        const next = req.nextUrl.pathname;
+
+        if (!data?.claims) {
+          const signIn = pathsConfig.auth.signIn;
+          const redirectPath = `${signIn}?next=${next}`;
+
+          return NextResponse.redirect(new URL(redirectPath, origin).href);
+        }
+
+        const supabase = createMiddlewareClient(req, res);
+
+        const requiresMultiFactorAuthentication =
+          await checkRequiresMultiFactorAuthentication(supabase);
+
         if (requiresMultiFactorAuthentication) {
           return NextResponse.redirect(
             new URL(pathsConfig.auth.verifyMfa, origin).href,
@@ -167,10 +184,6 @@ function getPatterns() {
   ];
 }
 
-/**
- * Match URL patterns to specific handlers.
- * @param url
- */
 function matchUrlPattern(url: string) {
   const patterns = getPatterns();
   const input = url.split('?')[0];
@@ -184,10 +197,6 @@ function matchUrlPattern(url: string) {
   }
 }
 
-/**
- * Set a unique request ID for each request.
- * @param request
- */
 function setRequestId(request: Request) {
   request.headers.set('x-correlation-id', crypto.randomUUID());
 }

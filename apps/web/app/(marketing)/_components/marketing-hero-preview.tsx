@@ -1,8 +1,9 @@
 import {
-  BookOpen,
-  ClipboardList,
+  ClipboardCheck,
   GraduationCap,
+  LayoutGrid,
   TrendingUp,
+  Wallet,
 } from 'lucide-react';
 
 import { Badge } from '@kit/ui/badge';
@@ -67,21 +68,21 @@ export function MarketingHeroPreview() {
             }
           />
           <PreviewStat
-            label={<Trans i18nKey="marketing:heroPreviewExams" />}
-            value="24"
+            label={<Trans i18nKey="marketing:heroPreviewClasses" />}
+            value="8"
+            icon={<LayoutGrid className="text-muted-foreground size-4" />}
+          />
+          <PreviewStat
+            label={<Trans i18nKey="marketing:heroPreviewAttendance" />}
+            value="96%"
             icon={
-              <ClipboardList className="text-muted-foreground size-4" />
+              <ClipboardCheck className="text-muted-foreground size-4" />
             }
           />
           <PreviewStat
-            label={<Trans i18nKey="marketing:heroPreviewQuestions" />}
-            value="1.2k"
-            icon={<BookOpen className="text-muted-foreground size-4" />}
-          />
-          <PreviewStat
-            label={<Trans i18nKey="marketing:heroPreviewPassRate" />}
-            value="87%"
-            icon={<TrendingUp className="text-muted-foreground size-4" />}
+            label={<Trans i18nKey="marketing:heroPreviewFees" />}
+            value="92%"
+            icon={<Wallet className="text-muted-foreground size-4" />}
           />
         </div>
 
@@ -99,13 +100,23 @@ export function MarketingHeroPreview() {
               <span>
                 <Trans i18nKey="marketing:heroPreviewRecentItem1" />
               </span>
-              <Badge>9.5/10</Badge>
+              <Badge>
+                <Trans i18nKey="marketing:heroPreviewRecentBadge1" />
+              </Badge>
             </div>
             <div className="bg-muted/50 flex items-center justify-between rounded-lg px-3 py-2 text-sm">
               <span>
                 <Trans i18nKey="marketing:heroPreviewRecentItem2" />
               </span>
-              <Badge variant="outline">8/10</Badge>
+              <Badge variant="outline">
+                <Trans i18nKey="marketing:heroPreviewRecentBadge2" />
+              </Badge>
+            </div>
+            <div className="bg-muted/50 flex items-center justify-between rounded-lg px-3 py-2 text-sm">
+              <span>
+                <Trans i18nKey="marketing:heroPreviewRecentItem3" />
+              </span>
+              <TrendingUp className="text-primary size-4" />
             </div>
           </CardContent>
         </Card>

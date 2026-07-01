@@ -14,44 +14,103 @@ import {
 } from '@kit/ui/card';
 import { Trans } from '@kit/ui/trans';
 
-import { formatBillingAmountPerMonth } from '~/lib/lms/billing/format-currency';
-import {
-  isUnlimitedQuota,
-  type PublicPlan,
-} from '~/lib/lms/billing/load-public-plans';
-
 interface PricingPlansProps {
-  plans: PublicPlan[];
   isLoggedIn: boolean;
-  stripeEnabled: boolean;
   locale: string;
 }
 
-function formatQuota(value: number) {
-  if (isUnlimitedQuota(value)) {
-    return null;
-  }
+type PlanSlug = 'free' | 'pro' | 'enterprise';
 
-  return value.toLocaleString();
+interface StaticPlan {
+  slug: PlanSlug;
+  name: string;
+  priceMonthly: number | null;
+  maxStudents: number | null;
+}
+
+const STATIC_PLANS: StaticPlan[] = [
+  {
+    slug: 'free',
+    name: 'Free',
+    priceMonthly: null,
+    maxStudents: 50,
+  },
+  {
+    slug: 'pro',
+    name: 'Pro',
+    priceMonthly: 990_000,
+    maxStudents: 200,
+  },
+  {
+    slug: 'enterprise',
+    name: 'Enterprise',
+    priceMonthly: 2_490_000,
+    maxStudents: null,
+  },
+];
+
+const planFeatures: Record<PlanSlug, string[]> = {
+  free: [
+    'marketing:pricingPage.plans.free.featureCrm',
+    'marketing:pricingPage.plans.free.featureAttendance',
+    'marketing:pricingPage.plans.free.featureParents',
+  ],
+  pro: [
+    'marketing:pricingPage.plans.pro.featureAllModules',
+    'marketing:pricingPage.plans.pro.featureReports',
+    'marketing:pricingPage.plans.pro.featureMultiBranch',
+  ],
+  enterprise: [
+    'marketing:pricingPage.plans.enterprise.featureAllModules',
+    'marketing:pricingPage.plans.enterprise.featurePriority',
+    'marketing:pricingPage.plans.enterprise.featureSupport',
+  ],
+};
+
+function formatBillingAmountPerMonth(amount: number, locale: string) {
+  const formatted = new Intl.NumberFormat(locale === 'vi' ? 'vi-VN' : 'en-US', {
+    style: 'currency',
+    currency: 'VND',
+    maximumFractionDigits: 0,
+  }).format(amount);
+
+  return (
+    <>
+      {formatted}
+      <span className="text-muted-foreground text-base font-normal">
+        <Trans i18nKey="marketing:pricingPage.perMonth" />
+      </span>
+    </>
+  );
 }
 
 function PlanQuotaItem({
-  quotaType,
-  value,
+  maxStudents,
 }: {
-  quotaType: 'students' | 'exams' | 'questions';
-  value: number;
+  maxStudents: number | null;
 }) {
-  const formatted = formatQuota(value);
-  const countKey = `marketing:pricingPage.quota${quotaType.charAt(0).toUpperCase()}${quotaType.slice(1)}`;
-  const unlimitedKey = `${countKey}Unlimited`;
+  const countKey = 'marketing:pricingPage.quotaStudents';
+  const unlimitedKey = 'marketing:pricingPage.quotaStudentsUnlimited';
 
   return (
     <li className="flex items-start gap-2 text-sm">
       <Check className="text-primary mt-0.5 size-4 shrink-0" />
-      {formatted === null ?
+      {maxStudents === null ?
         <Trans i18nKey={unlimitedKey} />
-      : <Trans i18nKey={countKey} values={{ count: formatted }} />}
+      : <Trans
+          i18nKey={countKey}
+          values={{ count: maxStudents.toLocaleString() }}
+        />
+      }
+    </li>
+  );
+}
+
+function PlanFeatureItem({ i18nKey }: { i18nKey: string }) {
+  return (
+    <li className="flex items-start gap-2 text-sm">
+      <Check className="text-primary mt-0.5 size-4 shrink-0" />
+      <Trans i18nKey={i18nKey} />
     </li>
   );
 }
@@ -62,28 +121,23 @@ function PlanCard({
   popular,
   locale,
 }: {
-  plan: PublicPlan;
+  plan: StaticPlan;
   isLoggedIn: boolean;
   popular?: boolean;
   locale: string;
 }) {
   const isFree = plan.slug === 'free';
-  const ctaHref =
-    isLoggedIn ?
-      isFree ?
-        '/home'
-      : '/home/billing'
-    : '/auth/sign-up';
+  const ctaHref = isLoggedIn ? '/' : '/auth/sign-up';
 
   const descriptionKey = `marketing:pricingPage.plans.${plan.slug}.description`;
   const ctaKey =
     isLoggedIn ?
-      isFree ?
-        'marketing:pricingPage.ctaDashboard'
-      : 'marketing:pricingPage.ctaUpgrade'
+      'marketing:pricingPage.ctaDashboard'
     : isFree ?
       'marketing:pricingPage.ctaFree'
     : 'marketing:pricingPage.ctaSignUp';
+
+  const features = planFeatures[plan.slug];
 
   return (
     <Card
@@ -109,36 +163,20 @@ function PlanCard({
             <p className="text-3xl font-bold tracking-tight">
               <Trans i18nKey="marketing:pricingPage.freePrice" />
             </p>
-          : <p className="text-3xl font-bold tracking-tight">
-              {formatBillingAmountPerMonth(plan.price_monthly, locale)}
+          : plan.priceMonthly !== null ?
+            <p className="text-3xl font-bold tracking-tight">
+              {formatBillingAmountPerMonth(plan.priceMonthly, locale)}
             </p>
-          }
+          : null}
         </div>
       </CardHeader>
 
       <CardContent className="flex-1">
         <ul className="flex flex-col gap-3">
-          <PlanQuotaItem quotaType="students" value={plan.max_students} />
-          <PlanQuotaItem quotaType="exams" value={plan.max_exams} />
-          <PlanQuotaItem quotaType="questions" value={plan.max_questions} />
-          {plan.slug === 'pro' && (
-            <li className="flex items-start gap-2 text-sm">
-              <Check className="text-primary mt-0.5 size-4 shrink-0" />
-              <Trans i18nKey="marketing:pricingPage.plans.pro.featureReports" />
-            </li>
-          )}
-          {plan.slug === 'enterprise' && (
-            <>
-              <li className="flex items-start gap-2 text-sm">
-                <Check className="text-primary mt-0.5 size-4 shrink-0" />
-                <Trans i18nKey="marketing:pricingPage.plans.enterprise.featurePriority" />
-              </li>
-              <li className="flex items-start gap-2 text-sm">
-                <Check className="text-primary mt-0.5 size-4 shrink-0" />
-                <Trans i18nKey="marketing:pricingPage.plans.enterprise.featureSupport" />
-              </li>
-            </>
-          )}
+          <PlanQuotaItem maxStudents={plan.maxStudents} />
+          {features.map((featureKey) => (
+            <PlanFeatureItem key={featureKey} i18nKey={featureKey} />
+          ))}
         </ul>
       </CardContent>
 
@@ -153,18 +191,13 @@ function PlanCard({
   );
 }
 
-export function PricingPlans({
-  plans,
-  isLoggedIn,
-  stripeEnabled,
-  locale,
-}: PricingPlansProps) {
+export function PricingPlans({ isLoggedIn, locale }: PricingPlansProps) {
   return (
     <div className="flex flex-col gap-10 pb-16">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {plans.map((plan) => (
+        {STATIC_PLANS.map((plan) => (
           <PlanCard
-            key={plan.id}
+            key={plan.slug}
             plan={plan}
             isLoggedIn={isLoggedIn}
             locale={locale}
@@ -175,9 +208,7 @@ export function PricingPlans({
 
       <div className="bg-muted/30 mx-auto flex max-w-3xl flex-col gap-3 rounded-xl border p-6 text-center">
         <p className="text-muted-foreground text-sm leading-relaxed">
-          {stripeEnabled ?
-            <Trans i18nKey="marketing:pricingPage.paymentNoteStripe" />
-          : <Trans i18nKey="marketing:pricingPage.paymentNoteBank" />}
+          <Trans i18nKey="marketing:pricingPage.paymentNoteContact" />
         </p>
         <p className="text-muted-foreground text-sm">
           <Trans

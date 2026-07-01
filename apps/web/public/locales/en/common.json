@@ -77,7 +77,20 @@
     "admin": "Admin",
     "adminPayments": "Pending Payments",
     "auditLogs": "Audit Logs",
-    "application": "Application"
+    "application": "Application",
+    "crm": "Enrollment CRM",
+    "classes": "Classes",
+    "finance": "Finance",
+    "attendance": "Attendance",
+    "staff": "Staff",
+    "dailyReports": "Daily reports",
+    "menu": "Meal menu",
+    "inventory": "Inventory",
+    "health": "Health",
+    "ai": "AI Assistant",
+    "school": "School",
+    "campuses": "Campuses",
+    "subscription": "Subscription"
   },
   "roles": {
     "owner": {

@@ -2,10 +2,20 @@ import Link from 'next/link';
 
 import {
   ArrowRightIcon,
+  BarChart3,
   BookOpen,
+  Check,
   ClipboardCheck,
+  Globe,
   GraduationCap,
+  LayoutGrid,
+  MessageCircle,
+  School,
   Sparkles,
+  Target,
+  Users,
+  Utensils,
+  Wallet,
 } from 'lucide-react';
 
 import {
@@ -23,6 +33,98 @@ import { MarketingHeroPreview } from '~/(marketing)/_components/marketing-hero-p
 import appConfig from '~/config/app.config';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
+
+const primaryModules = [
+  {
+    icon: Target,
+    labelKey: 'marketing:heroFeatureCrm',
+    descKey: 'marketing:heroFeatureCrmDesc',
+  },
+  {
+    icon: GraduationCap,
+    labelKey: 'marketing:heroFeatureStudents',
+    descKey: 'marketing:heroFeatureStudentsDesc',
+  },
+  {
+    icon: LayoutGrid,
+    labelKey: 'marketing:heroFeatureClasses',
+    descKey: 'marketing:heroFeatureClassesDesc',
+  },
+  {
+    icon: Users,
+    labelKey: 'marketing:heroFeatureStaff',
+    descKey: 'marketing:heroFeatureStaffDesc',
+  },
+  {
+    icon: ClipboardCheck,
+    labelKey: 'marketing:heroFeatureAttendance',
+    descKey: 'marketing:heroFeatureAttendanceDesc',
+  },
+  {
+    icon: Wallet,
+    labelKey: 'marketing:heroFeatureFees',
+    descKey: 'marketing:heroFeatureFeesDesc',
+  },
+] as const;
+
+const extendedModules = [
+  {
+    icon: Utensils,
+    labelKey: 'marketing:heroFeatureMenu',
+    descKey: 'marketing:heroFeatureMenuDesc',
+  },
+  {
+    icon: BookOpen,
+    labelKey: 'marketing:heroFeatureDiary',
+    descKey: 'marketing:heroFeatureDiaryDesc',
+  },
+  {
+    icon: MessageCircle,
+    labelKey: 'marketing:heroFeatureParents',
+    descKey: 'marketing:heroFeatureParentsDesc',
+  },
+  {
+    icon: Globe,
+    labelKey: 'marketing:heroFeatureCms',
+    descKey: 'marketing:heroFeatureCmsDesc',
+  },
+  {
+    icon: BarChart3,
+    labelKey: 'marketing:heroFeatureReports',
+    descKey: 'marketing:heroFeatureReportsDesc',
+  },
+  {
+    icon: Sparkles,
+    labelKey: 'marketing:heroFeatureAi',
+    descKey: 'marketing:heroFeatureAiDesc',
+  },
+] as const;
+
+const valueItems = [
+  'marketing:heroValueCentralized',
+  'marketing:heroValueAutomation',
+  'marketing:heroValueEfficiency',
+  'marketing:heroValueExperience',
+  'marketing:heroValueScale',
+] as const;
+
+const steps = [
+  {
+    icon: School,
+    titleKey: 'marketing:heroStep1Title',
+    descKey: 'marketing:heroStep1Desc',
+  },
+  {
+    icon: Users,
+    titleKey: 'marketing:heroStep2Title',
+    descKey: 'marketing:heroStep2Desc',
+  },
+  {
+    icon: MessageCircle,
+    titleKey: 'marketing:heroStep3Title',
+    descKey: 'marketing:heroStep3Desc',
+  },
+] as const;
 
 async function Home() {
   const { t } = await createI18nServerInstance();
@@ -49,6 +151,10 @@ async function Home() {
       </div>
 
       <div className="container mx-auto">
+        <VisionSection />
+      </div>
+
+      <div className="container mx-auto">
         <div className="flex flex-col gap-16 xl:gap-32 2xl:gap-36">
           <FeatureShowcase
             heading={
@@ -67,7 +173,7 @@ async function Home() {
             }
             icon={
               <FeatureShowcaseIconContainer>
-                <GraduationCap className="h-5" />
+                <School className="h-5" />
                 <span>
                   <Trans i18nKey="marketing:heroFeatureAllInOne" />
                 </span>
@@ -75,44 +181,25 @@ async function Home() {
             }
           >
             <FeatureGrid>
-              <FeatureCard
-                className="relative col-span-1 overflow-hidden lg:col-span-1"
-                label={t('marketing:heroFeatureQuestionBank')}
-                description={t('marketing:heroFeatureQuestionBankDesc')}
-              />
-
-              <FeatureCard
-                className="relative col-span-1 overflow-hidden lg:col-span-1"
-                label={t('marketing:heroFeatureExams')}
-                description={t('marketing:heroFeatureExamsDesc')}
-              />
-
-              <FeatureCard
-                className="relative col-span-1 overflow-hidden lg:col-span-1"
-                label={t('marketing:heroFeatureStudents')}
-                description={t('marketing:heroFeatureStudentsDesc')}
-              />
-
-              <FeatureCard
-                className="relative col-span-1 overflow-hidden lg:col-span-1"
-                label={t('marketing:heroFeatureGrading')}
-                description={t('marketing:heroFeatureGradingDesc')}
-              />
-
-              <FeatureCard
-                className="relative col-span-1 overflow-hidden lg:col-span-1"
-                label={t('marketing:heroFeatureOrganization')}
-                description={t('marketing:heroFeatureOrganizationDesc')}
-              />
-
-              <FeatureCard
-                className="relative col-span-1 overflow-hidden lg:col-span-1"
-                label={t('marketing:heroFeatureBilling')}
-                description={t('marketing:heroFeatureBillingDesc')}
-              />
+              {primaryModules.map(({ labelKey, descKey }) => (
+                <FeatureCard
+                  key={labelKey}
+                  className="relative col-span-1 overflow-hidden lg:col-span-1"
+                  label={t(labelKey)}
+                  description={t(descKey)}
+                />
+              ))}
             </FeatureGrid>
           </FeatureShowcase>
         </div>
+      </div>
+
+      <div className="container mx-auto">
+        <ExtendedModulesSection />
+      </div>
+
+      <div className="container mx-auto">
+        <ValuesSection />
       </div>
 
       <div className="container mx-auto">
@@ -154,23 +241,83 @@ function MainCallToActionButton() {
   );
 }
 
-const steps = [
-  {
-    icon: Sparkles,
-    titleKey: 'marketing:heroStep1Title',
-    descKey: 'marketing:heroStep1Desc',
-  },
-  {
-    icon: BookOpen,
-    titleKey: 'marketing:heroStep2Title',
-    descKey: 'marketing:heroStep2Desc',
-  },
-  {
-    icon: ClipboardCheck,
-    titleKey: 'marketing:heroStep3Title',
-    descKey: 'marketing:heroStep3Desc',
-  },
-] as const;
+function VisionSection() {
+  return (
+    <section className="bg-muted/30 flex flex-col gap-4 rounded-2xl border px-6 py-10 text-center md:px-12">
+      <p className="text-primary text-sm font-medium tracking-wide uppercase">
+        <Trans i18nKey="marketing:heroVisionLabel" />
+      </p>
+      <p className="text-muted-foreground mx-auto max-w-3xl text-lg leading-relaxed">
+        <Trans i18nKey="marketing:heroVisionText" />
+      </p>
+    </section>
+  );
+}
+
+function ExtendedModulesSection() {
+  return (
+    <section className="flex flex-col gap-10">
+      <div className="mx-auto flex max-w-3xl flex-col gap-3 text-center">
+        <h2 className="text-3xl font-normal tracking-tight xl:text-4xl">
+          <Trans i18nKey="marketing:heroExtendedModulesTitle" />
+        </h2>
+        <p className="text-muted-foreground text-lg">
+          <Trans i18nKey="marketing:heroExtendedModulesSubtitle" />
+        </p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {extendedModules.map(({ icon: Icon, labelKey, descKey }) => (
+          <div
+            key={labelKey}
+            className="bg-card flex flex-col gap-3 rounded-xl border p-5"
+          >
+            <div className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
+              <Icon className="size-5" />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <h3 className="font-medium">
+                <Trans i18nKey={labelKey} />
+              </h3>
+              <p className="text-muted-foreground text-sm">
+                <Trans i18nKey={descKey} />
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ValuesSection() {
+  return (
+    <section className="flex flex-col gap-10">
+      <div className="mx-auto flex max-w-3xl flex-col gap-3 text-center">
+        <h2 className="text-3xl font-normal tracking-tight xl:text-4xl">
+          <Trans i18nKey="marketing:heroValuesTitle" />
+        </h2>
+        <p className="text-muted-foreground text-lg">
+          <Trans i18nKey="marketing:heroValuesSubtitle" />
+        </p>
+      </div>
+
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {valueItems.map((key) => (
+          <li
+            key={key}
+            className="bg-card flex items-start gap-3 rounded-xl border p-5"
+          >
+            <Check className="text-primary mt-0.5 size-5 shrink-0" />
+            <span className="text-sm leading-relaxed">
+              <Trans i18nKey={key} />
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 function HowItWorksSection() {
   return (

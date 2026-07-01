@@ -30,10 +30,8 @@ export const defaultI18nNamespaces = [
   'common',
   'auth',
   'account',
-  'teams',
-  'billing',
   'marketing',
-  'lms',
+  'kinder',
 ];
 
 /**

@@ -28,13 +28,9 @@
     "supabase:typegen": "pnpm run supabase:typegen:packages && pnpm run supabase:typegen:app",
     "supabase:typegen:packages": "supabase gen types typescript --local > ../../packages/supabase/src/database.types.ts",
     "supabase:typegen:app": "supabase gen types typescript --local > ./lib/database.types.ts",
-    "supabase:db:dump:local": "supabase db dump --local --data-only",
-    "stripe:listen": "stripe listen --forward-to localhost:3000/api/billing/stripe/webhook"
+    "supabase:db:dump:local": "supabase db dump --local --data-only"
   },
   "dependencies": {
-    "@dnd-kit/core": "^6.3.1",
-    "@dnd-kit/sortable": "^10.0.0",
-    "@dnd-kit/utilities": "^3.2.2",
     "@edge-csrf/nextjs": "2.5.3-cloudflare-rc1",
     "@hookform/resolvers": "^5.2.2",
     "@kit/accounts": "workspace:*",
@@ -43,14 +39,10 @@
     "@kit/next": "workspace:*",
     "@kit/supabase": "workspace:*",
     "@kit/ui": "workspace:*",
-    "@makerkit/data-loader-supabase-core": "^0.0.10",
-    "@makerkit/data-loader-supabase-nextjs": "^1.2.5",
     "@marsidev/react-turnstile": "^1.3.1",
     "@radix-ui/react-icons": "^1.3.2",
     "@supabase/supabase-js": "2.75.0",
     "@tanstack/react-query": "5.90.2",
-    "@tanstack/react-table": "^8.21.3",
-    "date-fns": "^4.1.0",
     "lucide-react": "^0.545.0",
     "next": "15.5.9",
     "next-sitemap": "^4.2.3",
@@ -59,11 +51,8 @@
     "react-dom": "19.2.1",
     "react-hook-form": "^7.65.0",
     "react-i18next": "^16.0.0",
-    "recharts": "2.15.3",
     "sonner": "^2.0.7",
-    "stripe": "^22.2.0",
     "tailwind-merge": "^3.3.1",
-    "xlsx": "^0.18.5",
     "zod": "^3.25.32"
   },
   "devDependencies": {
