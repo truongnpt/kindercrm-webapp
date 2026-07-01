@@ -37,63 +37,90 @@ export function InvoicesList({ invoices }: { invoices: InvoiceWithStudent[] }) {
   }
 
   return (
-    <DataTableCard
-      description={<Trans i18nKey="kinder:finance.invoices.listDescription" />}
-      title={<Trans i18nKey="kinder:finance.invoices.recent" />}
-    >
-      <table className="w-full text-sm">
-        <thead>
-          <tr>
-            <th>
-              <Trans i18nKey="kinder:finance.invoices.number" />
-            </th>
-            <th>
-              <Trans i18nKey="kinder:finance.invoices.student" />
-            </th>
-            <th className="hidden md:table-cell">
-              <Trans i18nKey="kinder:finance.invoices.total" />
-            </th>
-            <th>
-              <Trans i18nKey="kinder:finance.invoices.status" />
-            </th>
-            <th className="text-right" />
-          </tr>
-        </thead>
-        <tbody>
-          {invoices.map((invoice) => (
-            <tr key={invoice.id}>
-              <td className="font-mono text-xs">{invoice.invoice_number}</td>
-              <td>
-                <p className="font-medium">
+    <>
+      <div className="hidden md:block">
+        <DataTableCard
+          description={<Trans i18nKey="kinder:finance.invoices.listDescription" />}
+          title={<Trans i18nKey="kinder:finance.invoices.recent" />}
+        >
+          <table className="w-full text-sm">
+            <thead>
+              <tr>
+                <th>
+                  <Trans i18nKey="kinder:finance.invoices.number" />
+                </th>
+                <th>
+                  <Trans i18nKey="kinder:finance.invoices.student" />
+                </th>
+                <th>
+                  <Trans i18nKey="kinder:finance.invoices.total" />
+                </th>
+                <th>
+                  <Trans i18nKey="kinder:finance.invoices.status" />
+                </th>
+                <th className="text-right" />
+              </tr>
+            </thead>
+            <tbody>
+              {invoices.map((invoice) => (
+                <tr key={invoice.id}>
+                  <td className="font-mono text-xs">{invoice.invoice_number}</td>
+                  <td>
+                    <p className="font-medium">
+                      {invoice.student?.full_name ?? '—'}
+                    </p>
+                  </td>
+                  <td>{formatVnd(invoice.total_amount)}</td>
+                  <td>
+                    <StatusBadge tone={STATUS_TONE[invoice.status]}>
+                      <Trans
+                        i18nKey={`kinder:finance.invoices.statuses.${invoice.status}`}
+                      />
+                    </StatusBadge>
+                  </td>
+                  <td className="text-right">
+                    <Button asChild className="rounded-lg" size="sm" variant="outline">
+                      <Link
+                        href={`${pathsConfig.app.financeInvoice}/${invoice.id}`}
+                      >
+                        <Trans i18nKey="kinder:finance.invoices.detail" />
+                      </Link>
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </DataTableCard>
+      </div>
+
+      <div className="space-y-3 md:hidden">
+        {invoices.map((invoice) => (
+          <article className="kinder-mobile-card" key={invoice.id}>
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="font-mono text-xs">{invoice.invoice_number}</p>
+                <p className="mt-1 font-medium">
                   {invoice.student?.full_name ?? '—'}
                 </p>
-                <p className="text-muted-foreground mt-0.5 text-xs md:hidden">
+                <p className="text-muted-foreground mt-1 text-sm">
                   {formatVnd(invoice.total_amount)}
                 </p>
-              </td>
-              <td className="hidden md:table-cell">
-                {formatVnd(invoice.total_amount)}
-              </td>
-              <td>
-                <StatusBadge tone={STATUS_TONE[invoice.status]}>
-                  <Trans
-                    i18nKey={`kinder:finance.invoices.statuses.${invoice.status}`}
-                  />
-                </StatusBadge>
-              </td>
-              <td className="text-right">
-                <Button asChild className="rounded-lg" size="sm" variant="outline">
-                  <Link
-                    href={`${pathsConfig.app.financeInvoice}/${invoice.id}`}
-                  >
-                    <Trans i18nKey="kinder:finance.invoices.detail" />
-                  </Link>
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </DataTableCard>
+              </div>
+              <StatusBadge tone={STATUS_TONE[invoice.status]}>
+                <Trans
+                  i18nKey={`kinder:finance.invoices.statuses.${invoice.status}`}
+                />
+              </StatusBadge>
+            </div>
+            <Button asChild className="w-full" size="sm" variant="outline">
+              <Link href={`${pathsConfig.app.financeInvoice}/${invoice.id}`}>
+                <Trans i18nKey="kinder:finance.invoices.detail" />
+              </Link>
+            </Button>
+          </article>
+        ))}
+      </div>
+    </>
   );
 }

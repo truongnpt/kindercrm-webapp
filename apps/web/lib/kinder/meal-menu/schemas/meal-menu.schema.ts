@@ -66,3 +66,13 @@ export const DeleteMenuTemplateSchema = z.object({
   schoolId: z.string().uuid(),
   templateId: z.string().uuid(),
 });
+
+export const DeleteDishSchema = z.object({
+  schoolId: z.string().uuid(),
+  dishId: z.string().uuid(),
+});
+
+export const DeleteIngredientSchema = z.object({
+  schoolId: z.string().uuid(),
+  ingredientId: z.string().uuid(),
+});

@@ -1,26 +1,13 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
+import { Syringe } from 'lucide-react';
 
-import { Button } from '@kit/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from '@kit/ui/form';
-import { Input } from '@kit/ui/input';
 import { Trans } from '@kit/ui/trans';
 
-import { UpsertVaccinationSchema } from '~/lib/kinder/health/schemas/health.schema';
-import { PanelEmpty } from '~/components/kinder-ui';
-import { upsertVaccinationAction } from '~/lib/kinder/health/server-actions';
+import { DataTableCard, EmptyState } from '~/components/kinder-ui';
 import type { HealthVaccination, StudentOption } from '~/lib/kinder/health/types';
 
+import { AddVaccinationDialog } from './add-vaccination-dialog';
 import { HealthStudentFilter } from './health-student-filter';
 
 export function VaccinationsPanel({
@@ -34,157 +21,94 @@ export function VaccinationsPanel({
   vaccinations: HealthVaccination[];
   studentId?: string;
 }) {
-  const { t } = useTranslation('kinder');
   const studentMap = new Map(students.map((s) => [s.id, s]));
-
-  const form = useForm({
-    resolver: zodResolver(UpsertVaccinationSchema),
-    defaultValues: {
-      schoolId,
-      studentId: studentId ?? students[0]?.id ?? '',
-      vaccineName: '',
-      doseNumber: 1,
-      administeredOn: new Date().toISOString().slice(0, 10),
-      nextDueOn: '',
-      provider: '',
-      notes: '',
-    },
-  });
 
   return (
     <div className="space-y-6">
-      <HealthStudentFilter studentId={studentId} students={students} tab="vaccinations" />
+      <HealthStudentFilter
+        studentId={studentId}
+        students={students}
+        tab="vaccinations"
+      />
+
+      <div className="flex justify-end">
+        <AddVaccinationDialog
+          schoolId={schoolId}
+          studentId={studentId}
+          students={students}
+        />
+      </div>
 
       {vaccinations.length === 0 ? (
-        <PanelEmpty messageKey="kinder:health.emptyVaccinations" />
+        <EmptyState
+          compact
+          descriptionKey="kinder:ui.emptyDefaultDescription"
+          icon={Syringe}
+          titleKey="kinder:health.emptyVaccinations"
+        />
       ) : (
-        <ul className="kinder-list-panel">
-          {vaccinations.map((row) => (
-            <li className="p-4 text-sm" key={row.id}>
-              <p className="font-medium">
-                {studentMap.get(row.student_id)?.full_name ?? '—'} · {row.vaccine_name}
-              </p>
-              <p className="text-muted-foreground text-xs">
-                {row.administered_on} · liều {row.dose_number}
-                {row.next_due_on ? ` · tiêm nhắc: ${row.next_due_on}` : ''}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <Form {...form}>
-        <form
-          className="kinder-form-panel max-w-xl grid-cols-1"
-          onSubmit={form.handleSubmit(async (data) => {
-            const promise = upsertVaccinationAction(data);
-            toast.promise(promise, {
-              loading: t('schoolSettings.saving'),
-              success: t('health.vaccinationSaved'),
-              error: t('common:genericServerError', { ns: 'common' }),
-            });
-            await promise;
-            form.reset({
-              schoolId,
-              studentId: data.studentId,
-              vaccineName: '',
-              doseNumber: 1,
-              administeredOn: new Date().toISOString().slice(0, 10),
-              nextDueOn: '',
-              provider: '',
-              notes: '',
-            });
-          })}
-        >
-          <p className="font-medium">
-            <Trans i18nKey="kinder:health.addVaccination" />
-          </p>
-          <FormField
-            control={form.control}
-            name="studentId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  <Trans i18nKey="kinder:students.student" />
-                </FormLabel>
-                <FormControl>
-                  <select
-                    className="border-input bg-background flex h-9 w-full rounded-md border px-3 text-sm"
-                    {...field}
-                  >
-                    {students.map((student) => (
-                      <option key={student.id} value={student.id}>
-                        {student.full_name}
-                      </option>
-                    ))}
-                  </select>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="vaccineName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  <Trans i18nKey="kinder:health.vaccineName" />
-                </FormLabel>
-                <FormControl>
-                  <Input {...field} required />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <div className="grid gap-3 sm:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="doseNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:health.doseNumber" />
-                  </FormLabel>
-                  <FormControl>
-                    <Input min={1} type="number" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="administeredOn"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:health.administeredOn" />
-                  </FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} required />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+        <>
+          <div className="hidden md:block">
+            <DataTableCard
+              description={<Trans i18nKey="kinder:health.tabs.vaccinations" />}
+              title={<Trans i18nKey="kinder:health.tabs.vaccinations" />}
+            >
+              <table className="w-full text-sm">
+                <thead>
+                  <tr>
+                    <th>
+                      <Trans i18nKey="kinder:students.student" />
+                    </th>
+                    <th>
+                      <Trans i18nKey="kinder:health.vaccineName" />
+                    </th>
+                    <th>
+                      <Trans i18nKey="kinder:health.doseNumber" />
+                    </th>
+                    <th>
+                      <Trans i18nKey="kinder:health.administeredOn" />
+                    </th>
+                    <th>
+                      <Trans i18nKey="kinder:health.nextDueOn" />
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {vaccinations.map((row) => (
+                    <tr key={row.id}>
+                      <td className="font-medium">
+                        {studentMap.get(row.student_id)?.full_name ?? '—'}
+                      </td>
+                      <td>{row.vaccine_name}</td>
+                      <td>{row.dose_number}</td>
+                      <td>{row.administered_on}</td>
+                      <td>{row.next_due_on ?? '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </DataTableCard>
           </div>
-          <FormField
-            control={form.control}
-            name="nextDueOn"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  <Trans i18nKey="kinder:health.nextDueOn" />
-                </FormLabel>
-                <FormControl>
-                  <Input type="date" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <Button disabled={students.length === 0} type="submit">
-            <Trans i18nKey="kinder:health.addVaccination" />
-          </Button>
-        </form>
-      </Form>
+
+          <div className="space-y-3 md:hidden">
+            {vaccinations.map((row) => (
+              <article className="kinder-mobile-card" key={row.id}>
+                <p className="font-medium">
+                  {studentMap.get(row.student_id)?.full_name ?? '—'}
+                </p>
+                <p className="mt-1 font-medium">{row.vaccine_name}</p>
+                <p className="text-muted-foreground mt-2 text-xs">
+                  <Trans i18nKey="kinder:health.doseNumber" />: {row.dose_number}{' '}
+                  · {row.administered_on}
+                  {row.next_due_on ?
+                    ` · ${row.next_due_on}`
+                  : ''}
+                </p>
+              </article>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

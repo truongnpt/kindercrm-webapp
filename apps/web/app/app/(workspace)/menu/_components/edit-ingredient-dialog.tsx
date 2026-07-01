@@ -1,11 +1,11 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
 
-import { Button } from '@kit/ui/button';
 import {
   Form,
   FormControl,
@@ -23,94 +23,94 @@ import {
 } from '@kit/ui/select';
 import { Trans } from '@kit/ui/trans';
 
+import {
+  KinderFormDialog,
+  KinderSubmitButton,
+  kinderQueryKeys,
+  useKinderMutation,
+} from '~/components/kinder-ui';
+import type { InventoryProductWithStock } from '~/lib/kinder/inventory/types';
 import { UpsertIngredientSchema } from '~/lib/kinder/meal-menu/schemas/meal-menu.schema';
-import { PanelEmpty } from '~/components/kinder-ui';
 import { upsertIngredientAction } from '~/lib/kinder/meal-menu/server-actions';
 import type { Ingredient } from '~/lib/kinder/meal-menu/types';
-import type { InventoryProductWithStock } from '~/lib/kinder/inventory/types';
 
-export function IngredientsPanel({
+export function EditIngredientDialog({
+  ingredient,
   schoolId,
-  ingredients,
   inventoryProducts = [],
+  open: controlledOpen,
+  onOpenChange,
 }: {
+  ingredient: Ingredient;
   schoolId: string;
-  ingredients: Ingredient[];
   inventoryProducts?: InventoryProductWithStock[];
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }) {
   const { t } = useTranslation('kinder');
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
 
   const form = useForm({
     resolver: zodResolver(UpsertIngredientSchema),
     defaultValues: {
+      id: ingredient.id,
       schoolId,
-      name: '',
-      unit: 'g',
-      allergenTags: [] as string[],
-      notes: '',
-      inventoryProductId: '',
+      name: ingredient.name,
+      unit: ingredient.unit,
+      allergenTags: ingredient.allergen_tags,
+      notes: ingredient.notes ?? '',
+      inventoryProductId: ingredient.inventory_product_id ?? '',
     },
   });
 
+  useEffect(() => {
+    form.reset({
+      id: ingredient.id,
+      schoolId,
+      name: ingredient.name,
+      unit: ingredient.unit,
+      allergenTags: ingredient.allergen_tags,
+      notes: ingredient.notes ?? '',
+      inventoryProductId: ingredient.inventory_product_id ?? '',
+    });
+  }, [form, ingredient, schoolId]);
+
+  const updateIngredient = useKinderMutation({
+    mutationFn: upsertIngredientAction,
+    invalidateKeys: [kinderQueryKeys.menu(schoolId)],
+    onSuccess: () => setOpen(false),
+  });
+
   return (
-    <div className="space-y-6">
-      {ingredients.length === 0 ? (
-        <PanelEmpty messageKey="kinder:mealMenu.emptyIngredients" />
-      ) : (
-        <ul className="kinder-list-panel">
-          {ingredients.map((ingredient) => {
-            const linkedProduct = inventoryProducts.find(
-              (product) => product.id === ingredient.inventory_product_id,
-            );
-
-            return (
-              <li className="p-4 text-sm" key={ingredient.id}>
-                <p className="font-medium">{ingredient.name}</p>
-                <p className="text-muted-foreground text-xs">
-                  {ingredient.unit}
-                  {ingredient.allergen_tags.length > 0
-                    ? ` · ${ingredient.allergen_tags.join(', ')}`
-                    : ''}
-                  {linkedProduct
-                    ? ` · Kho: ${linkedProduct.name} (${linkedProduct.quantity} ${linkedProduct.unit})`
-                    : ''}
-                </p>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-
-      <Form {...form}>
-        <form
-          className="kinder-form-panel max-w-xl grid-cols-1"
-          onSubmit={form.handleSubmit(async (data) => {
-            const promise = upsertIngredientAction({
+    <KinderFormDialog
+      description={
+        <Trans i18nKey="kinder:mealMenu.editIngredientDescription" />
+      }
+      footer={
+        <KinderSubmitButton
+          loading={updateIngredient.isPending}
+          onClick={form.handleSubmit((data) =>
+            updateIngredient.mutate({
               ...data,
               inventoryProductId:
-                data.inventoryProductId === '__none__'
-                  ? ''
-                  : data.inventoryProductId,
-            });
-            toast.promise(promise, {
-              loading: t('schoolSettings.saving'),
-              success: t('schoolSettings.saved'),
-              error: t('common:genericServerError', { ns: 'common' }),
-            });
-            await promise;
-            form.reset({
-              schoolId,
-              name: '',
-              unit: 'g',
-              allergenTags: [],
-              notes: '',
-              inventoryProductId: '',
-            });
-          })}
+                data.inventoryProductId === '__none__' ?
+                  ''
+                : data.inventoryProductId,
+            }),
+          )}
+          type="button"
         >
-          <p className="font-medium">
-            <Trans i18nKey="kinder:mealMenu.addIngredient" />
-          </p>
+          <Trans i18nKey="kinder:ui.saveChanges" />
+        </KinderSubmitButton>
+      }
+      onOpenChange={setOpen}
+      open={open}
+      title={<Trans i18nKey="kinder:mealMenu.editIngredient" />}
+    >
+      <Form {...form}>
+        <form className="flex flex-col gap-4">
           <FormField
             control={form.control}
             name="name"
@@ -150,7 +150,7 @@ export function IngredientsPanel({
                   </FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value || undefined}
+                    value={field.value || '__none__'}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -174,11 +174,8 @@ export function IngredientsPanel({
               )}
             />
           ) : null}
-          <Button type="submit">
-            <Trans i18nKey="kinder:mealMenu.addIngredient" />
-          </Button>
         </form>
       </Form>
-    </div>
+    </KinderFormDialog>
   );
 }

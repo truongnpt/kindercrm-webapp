@@ -14,6 +14,8 @@ import {
   CreateMenuSchema,
   DeleteMenuItemSchema,
   DeleteMenuTemplateSchema,
+  DeleteDishSchema,
+  DeleteIngredientSchema,
   PublishMenuSchema,
   SaveMenuTemplateSchema,
   UpsertDishSchema,
@@ -345,4 +347,44 @@ export const deleteMenuTemplateAction = enhanceAction(
     return { success: true };
   },
   { schema: DeleteMenuTemplateSchema },
+);
+
+export const deleteDishAction = enhanceAction(
+  async (data) => {
+    const client = getSupabaseServerClient();
+
+    const { error } = await client
+      .from('dishes')
+      .update({ is_active: false })
+      .eq('id', data.dishId)
+      .eq('school_id', data.schoolId);
+
+    if (error) {
+      throw error;
+    }
+
+    revalidateMenuPaths();
+    return { success: true };
+  },
+  { schema: DeleteDishSchema },
+);
+
+export const deleteIngredientAction = enhanceAction(
+  async (data) => {
+    const client = getSupabaseServerClient();
+
+    const { error } = await client
+      .from('ingredients')
+      .update({ is_active: false })
+      .eq('id', data.ingredientId)
+      .eq('school_id', data.schoolId);
+
+    if (error) {
+      throw error;
+    }
+
+    revalidateMenuPaths();
+    return { success: true };
+  },
+  { schema: DeleteIngredientSchema },
 );

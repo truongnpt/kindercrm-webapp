@@ -174,6 +174,39 @@ export function LeadListTable({
             </tbody>
           </table>
         </DataTableCard>
+
+        <div className="space-y-3 md:hidden">
+          {filteredLeads.map((lead) => (
+            <article className="kinder-mobile-card" key={lead.id}>
+              <div className="flex items-start gap-3">
+                <CrmLeadAvatar name={lead.parent_name} size="md" />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <Link
+                      className="text-foreground font-medium hover:text-primary hover:underline"
+                      href={`${pathsConfig.app.crmLead}/${lead.id}`}
+                    >
+                      {lead.parent_name}
+                    </Link>
+                    <CrmStageBadge stage={lead.stage} />
+                  </div>
+                  {lead.child_name ? (
+                    <p className="text-muted-foreground mt-1 text-sm">
+                      {lead.child_name}
+                    </p>
+                  ) : null}
+                  <p className="text-muted-foreground mt-1 text-xs">
+                    {lead.phone}
+                  </p>
+                </div>
+              </div>
+              <EntityRowActions
+                onDelete={() => setDeleteLead(lead)}
+                onEdit={() => setEditLead(lead)}
+              />
+            </article>
+          ))}
+        </div>
       )}
 
       {editLead ? (

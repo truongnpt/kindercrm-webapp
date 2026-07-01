@@ -28,12 +28,17 @@ import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
-import { PurchaseOrdersPanel } from './_components/purchase-orders-panel';
-import { ProductsPanel } from './_components/products-panel';
-import { SuppliersPanel } from './_components/suppliers-panel';
-import { TransactionsPanel } from './_components/transactions-panel';
+import { CreatePurchaseOrderDialog } from './_components/create-purchase-order-dialog';
+import { CreateProductDialog } from './_components/create-product-dialog';
+import { CreateStockCountDialog } from './_components/create-stock-count-dialog';
+import { CreateSupplierDialog } from './_components/create-supplier-dialog';
+import { ProductsList } from './_components/products-list';
+import { PurchaseOrdersList } from './_components/purchase-orders-list';
+import { RecordTransactionDialog } from './_components/record-transaction-dialog';
+import { SuppliersList } from './_components/suppliers-list';
+import { TransactionsList } from './_components/transactions-list';
 import { StockCountsPanel } from './_components/stock-counts-panel';
-import { TransferStockPanel } from './_components/transfer-stock-panel';
+import { TransferStockDialog } from './_components/transfer-stock-dialog';
 import { ExpiryAlertsBanner } from './_components/expiry-alerts-banner';
 
 export const generateMetadata = async () => {
@@ -127,34 +132,50 @@ async function InventoryPage({
           </TabbedModuleList>
 
           <TabbedModuleContent value="products">
-            <ProductsPanel products={products} schoolId={context.school.id} />
+            <div className="mb-4 flex justify-end">
+              <CreateProductDialog schoolId={context.school.id} />
+            </div>
+            <ProductsList products={products} schoolId={context.school.id} />
           </TabbedModuleContent>
 
           <TabbedModuleContent value="transactions">
-            <TransactionsPanel
-              products={products}
-              schoolId={context.school.id}
-              transactions={transactions}
-            />
+            <div className="mb-4 flex justify-end">
+              <RecordTransactionDialog
+                products={products}
+                schoolId={context.school.id}
+              />
+            </div>
+            <TransactionsList transactions={transactions} />
           </TabbedModuleContent>
 
           <TabbedModuleContent value="suppliers">
-            <SuppliersPanel
+            <div className="mb-4 flex justify-end">
+              <CreateSupplierDialog schoolId={context.school.id} />
+            </div>
+            <SuppliersList
               schoolId={context.school.id}
               suppliers={suppliers}
             />
           </TabbedModuleContent>
 
           <TabbedModuleContent value="purchaseOrders">
-            <PurchaseOrdersPanel
+            <div className="mb-4 flex justify-end">
+              <CreatePurchaseOrderDialog
+                products={products}
+                schoolId={context.school.id}
+                suppliers={suppliers}
+              />
+            </div>
+            <PurchaseOrdersList
               orders={purchaseOrders}
-              products={products}
               schoolId={context.school.id}
-              suppliers={suppliers}
             />
           </TabbedModuleContent>
 
           <TabbedModuleContent value="stockCounts">
+            <div className="mb-4 flex justify-end">
+              <CreateStockCountDialog schoolId={context.school.id} />
+            </div>
             <StockCountsPanel
               activeCount={activeStockCount}
               schoolId={context.school.id}
@@ -163,7 +184,12 @@ async function InventoryPage({
           </TabbedModuleContent>
 
           <TabbedModuleContent value="transfer">
-            <TransferStockPanel products={products} schoolId={context.school.id} />
+            <div className="mb-4 flex justify-end">
+              <TransferStockDialog
+                products={products}
+                schoolId={context.school.id}
+              />
+            </div>
           </TabbedModuleContent>
         </TabbedModule>
       </KinderPageBody>

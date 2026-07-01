@@ -54,6 +54,7 @@ export function StudentsList({
   if (students.length === 0) {
     return (
       <EmptyState
+        compact
         descriptionKey="kinder:ui.emptyDefaultDescription"
         icon={GraduationCap}
         titleKey="kinder:students.empty"

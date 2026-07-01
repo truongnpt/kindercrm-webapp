@@ -8,13 +8,6 @@ import { useForm } from 'react-hook-form';
 
 import { Button } from '@kit/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@kit/ui/dialog';
-import {
   Form,
   FormControl,
   FormField,
@@ -32,6 +25,12 @@ import {
 } from '@kit/ui/select';
 import { Trans } from '@kit/ui/trans';
 
+import {
+  KinderFormDialog,
+  KinderSubmitButton,
+  kinderQueryKeys,
+  useKinderMutation,
+} from '~/components/kinder-ui';
 import { CreateClassSchema } from '~/lib/kinder/classes/schemas/class.schema';
 import { createClassAction } from '~/lib/kinder/classes/server-actions';
 import type { Classroom, SchoolYear, Semester } from '~/lib/kinder/classes/types';
@@ -70,141 +69,134 @@ export function CreateClassDialog({
 
   const schoolYearId = form.watch('schoolYearId');
   const filteredSemesters = semesters.filter(
-    (s) => s.school_year_id === schoolYearId,
+    (semester) => semester.school_year_id === schoolYearId,
   );
 
+  const createClass = useKinderMutation({
+    mutationFn: createClassAction,
+    invalidateKeys: [kinderQueryKeys.classes.all(schoolId)],
+    onSuccess: () => {
+      form.reset({
+        schoolId,
+        schoolYearId: defaultSchoolYearId,
+        semesterId: '',
+        classroomId: '',
+        campusId: '',
+        name: '',
+        code: '',
+        capacity: 25,
+        teacherUserId: '',
+      });
+      setOpen(false);
+    },
+  });
+
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
+    <KinderFormDialog
+      description={<Trans i18nKey="kinder:classes.createDescription" />}
+      footer={
+        <KinderSubmitButton
+          loading={createClass.isPending}
+          onClick={form.handleSubmit((data) => createClass.mutate(data))}
+          type="button"
+        >
+          <Trans i18nKey="kinder:classes.create" />
+        </KinderSubmitButton>
+      }
+      onOpenChange={setOpen}
+      open={open}
+      size="lg"
+      title={<Trans i18nKey="kinder:classes.create" />}
+      trigger={
+        <Button className="rounded-lg" type="button">
+          <Plus className="mr-2 size-4" />
           <Trans i18nKey="kinder:classes.create" />
         </Button>
-      </DialogTrigger>
+      }
+    >
+      <Form {...form}>
+        <form className="flex flex-col gap-4">
+          <FormField
+            control={form.control}
+            name="schoolYearId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <Trans i18nKey="kinder:classes.schoolYear" />
+                </FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {schoolYears.map((year) => (
+                      <SelectItem key={year.id} value={year.id}>
+                        {year.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
 
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>
-            <Trans i18nKey="kinder:classes.create" />
-          </DialogTitle>
-        </DialogHeader>
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <Trans i18nKey="kinder:classes.name" />
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} required />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <Form {...form}>
-          <form
-            className="space-y-4"
-            onSubmit={form.handleSubmit(async (data) => {
-              await createClassAction(data);
-              setOpen(false);
-            })}
-          >
+          <FormField
+            control={form.control}
+            name="code"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <Trans i18nKey="kinder:classes.code" />
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} required />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className="grid gap-4 sm:grid-cols-2">
             <FormField
               control={form.control}
-              name="schoolYearId"
+              name="capacity"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    <Trans i18nKey="kinder:classes.schoolYear" />
-                  </FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {schoolYears.map((y) => (
-                        <SelectItem key={y.id} value={y.id}>
-                          {y.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:classes.name" />
+                    <Trans i18nKey="kinder:classes.capacity" />
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} required />
+                    <Input type="number" {...field} />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
 
             <FormField
               control={form.control}
-              name="code"
+              name="semesterId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    <Trans i18nKey="kinder:classes.code" />
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} required />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="capacity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      <Trans i18nKey="kinder:classes.capacity" />
-                    </FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="semesterId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      <Trans i18nKey="kinder:classes.semester" />
-                    </FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="—" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {filteredSemesters.map((s) => (
-                          <SelectItem key={s.id} value={s.id}>
-                            {s.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="classroomId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:classes.classroom" />
+                    <Trans i18nKey="kinder:classes.semester" />
                   </FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
@@ -213,9 +205,9 @@ export function CreateClassDialog({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {classrooms.map((room) => (
-                        <SelectItem key={room.id} value={room.id}>
-                          {room.name}
+                      {filteredSemesters.map((semester) => (
+                        <SelectItem key={semester.id} value={semester.id}>
+                          {semester.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -223,39 +215,61 @@ export function CreateClassDialog({
                 </FormItem>
               )}
             />
+          </div>
 
-            <FormField
-              control={form.control}
-              name="teacherUserId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:classes.teacher" />
-                  </FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="—" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {teachers.map((t) => (
-                        <SelectItem key={t.id} value={t.id}>
-                          {t.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="classroomId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <Trans i18nKey="kinder:classes.classroom" />
+                </FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="—" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {classrooms.map((room) => (
+                      <SelectItem key={room.id} value={room.id}>
+                        {room.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
 
-            <Button className="w-full" type="submit">
-              <Trans i18nKey="kinder:classes.create" />
-            </Button>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+          <FormField
+            control={form.control}
+            name="teacherUserId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <Trans i18nKey="kinder:classes.teacher" />
+                </FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="—" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {teachers.map((teacher) => (
+                      <SelectItem key={teacher.id} value={teacher.id}>
+                        {teacher.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
+    </KinderFormDialog>
   );
 }

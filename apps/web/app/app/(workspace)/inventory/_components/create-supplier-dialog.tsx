@@ -1,9 +1,10 @@
 'use client';
 
+import { useState } from 'react';
+
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
 
 import { Button } from '@kit/ui/button';
 import {
@@ -16,19 +17,17 @@ import {
 import { Input } from '@kit/ui/input';
 import { Trans } from '@kit/ui/trans';
 
+import {
+  KinderFormDialog,
+  KinderSubmitButton,
+  kinderQueryKeys,
+  useKinderMutation,
+} from '~/components/kinder-ui';
 import { UpsertSupplierSchema } from '~/lib/kinder/inventory/schemas/inventory.schema';
-import { PanelEmpty } from '~/components/kinder-ui';
 import { upsertSupplierAction } from '~/lib/kinder/inventory/server-actions';
-import type { InventorySupplier } from '~/lib/kinder/inventory/types';
 
-export function SuppliersPanel({
-  schoolId,
-  suppliers,
-}: {
-  schoolId: string;
-  suppliers: InventorySupplier[];
-}) {
-  const { t } = useTranslation('kinder');
+export function CreateSupplierDialog({ schoolId }: { schoolId: string }) {
+  const [open, setOpen] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(UpsertSupplierSchema),
@@ -43,48 +42,48 @@ export function SuppliersPanel({
     },
   });
 
-  return (
-    <div className="space-y-6">
-      {suppliers.length === 0 ? (
-        <PanelEmpty messageKey="kinder:inventory.emptySuppliers" />
-      ) : (
-        <ul className="kinder-list-panel">
-          {suppliers.map((supplier) => (
-            <li className="p-4 text-sm" key={supplier.id}>
-              <p className="font-medium">{supplier.name}</p>
-              {supplier.phone ? (
-                <p className="text-muted-foreground text-xs">{supplier.phone}</p>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-      )}
+  const createSupplier = useKinderMutation({
+    mutationFn: upsertSupplierAction,
+    invalidateKeys: [kinderQueryKeys.inventory(schoolId)],
+    onSuccess: () => {
+      form.reset({
+        schoolId,
+        name: '',
+        contactName: '',
+        phone: '',
+        email: '',
+        address: '',
+        notes: '',
+      });
+      setOpen(false);
+    },
+  });
 
-      <Form {...form}>
-        <form
-          className="kinder-form-panel max-w-xl grid-cols-1 sm:grid-cols-2"
-          onSubmit={form.handleSubmit(async (data) => {
-            const promise = upsertSupplierAction(data);
-            toast.promise(promise, {
-              loading: t('schoolSettings.saving'),
-              success: t('schoolSettings.saved'),
-              error: t('common:genericServerError', { ns: 'common' }),
-            });
-            await promise;
-            form.reset({
-              schoolId,
-              name: '',
-              contactName: '',
-              phone: '',
-              email: '',
-              address: '',
-              notes: '',
-            });
-          })}
+  return (
+    <KinderFormDialog
+      description={<Trans i18nKey="kinder:inventory.addSupplierDescription" />}
+      footer={
+        <KinderSubmitButton
+          loading={createSupplier.isPending}
+          onClick={form.handleSubmit((data) => createSupplier.mutate(data))}
+          type="button"
         >
-          <p className="font-medium sm:col-span-2">
-            <Trans i18nKey="kinder:inventory.addSupplier" />
-          </p>
+          <Trans i18nKey="kinder:inventory.addSupplier" />
+        </KinderSubmitButton>
+      }
+      onOpenChange={setOpen}
+      open={open}
+      size="lg"
+      title={<Trans i18nKey="kinder:inventory.addSupplier" />}
+      trigger={
+        <Button className="rounded-lg" size="sm" type="button">
+          <Plus className="mr-2 size-4" />
+          <Trans i18nKey="kinder:inventory.addSupplier" />
+        </Button>
+      }
+    >
+      <Form {...form}>
+        <form className="grid gap-4 sm:grid-cols-2">
           <FormField
             control={form.control}
             name="name"
@@ -127,11 +126,8 @@ export function SuppliersPanel({
               </FormItem>
             )}
           />
-          <Button className="sm:col-span-2" type="submit">
-            <Trans i18nKey="kinder:inventory.addSupplier" />
-          </Button>
         </form>
       </Form>
-    </div>
+    </KinderFormDialog>
   );
 }

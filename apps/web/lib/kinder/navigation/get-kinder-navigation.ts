@@ -42,18 +42,30 @@ export function getKinderNavigationConfig(
   pkg: Package | null | undefined,
   subscription?: SchoolSubscription | null,
 ) {
-  const filteredRoutes = navigationConfig.routes.map((group) => {
-    if (!('children' in group)) {
-      return group;
-    }
+  const filteredRoutes = navigationConfig.routes
+    .map((group) => {
+      if (!('children' in group)) {
+        return group;
+      }
 
-    return {
-      ...group,
-      children: group.children.filter((item) =>
-        isPathAllowed(item.path, pkg, subscription),
-      ),
-    };
-  });
+      return {
+        ...group,
+        children: group.children.filter((item) =>
+          isPathAllowed(item.path, pkg, subscription),
+        ),
+      };
+    })
+    .filter((group) => {
+      if ('divider' in group) {
+        return true;
+      }
+
+      if ('children' in group) {
+        return group.children.length > 0;
+      }
+
+      return true;
+    });
 
   return {
     ...navigationConfig,

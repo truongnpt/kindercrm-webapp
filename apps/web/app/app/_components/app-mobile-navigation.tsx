@@ -61,15 +61,27 @@ export function AppMobileNavigation({
 
   const links = navigation.routes.flatMap((item, index) => {
     if ('children' in item) {
-      return item.children.map((child) => (
-        <SheetNavLink
-          active={isRouteActive(child.path, pathname, child.end)}
-          Icon={child.Icon}
-          key={child.path}
-          label={child.label}
-          path={child.path}
-        />
-      ));
+      if (item.children.length === 0) {
+        return [];
+      }
+
+      return [
+        <p
+          className="text-muted-foreground px-3 pt-3 pb-1 text-xs font-semibold tracking-wide first:pt-0"
+          key={`group-${index}`}
+        >
+          <Trans defaults={item.label} i18nKey={item.label} />
+        </p>,
+        ...item.children.map((child) => (
+          <SheetNavLink
+            active={isRouteActive(child.path, pathname, child.end)}
+            Icon={child.Icon}
+            key={child.path}
+            label={child.label}
+            path={child.path}
+          />
+        )),
+      ];
     }
 
     if ('divider' in item) {

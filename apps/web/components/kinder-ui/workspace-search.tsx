@@ -14,18 +14,12 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from '@kit/ui/command';
 import { Button } from '@kit/ui/button';
 import { cn } from '@kit/ui/utils';
 import { Trans } from '@kit/ui/trans';
 
 import type { navigationConfig } from '~/config/navigation.config';
-
-type NavItem = {
-  label: string;
-  path: string;
-};
 
 export function WorkspaceSearch({
   navigation,
@@ -38,15 +32,20 @@ export function WorkspaceSearch({
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
-  const items: NavItem[] = navigation.routes.flatMap((group) => {
-    if (!('children' in group)) {
+  const groups = navigation.routes.flatMap((group) => {
+    if (!('children' in group) || group.children.length === 0) {
       return [];
     }
 
-    return group.children.map((child) => ({
-      label: t(child.label),
-      path: child.path,
-    }));
+    return [
+      {
+        label: t(group.label),
+        items: group.children.map((child) => ({
+          label: t(child.label),
+          path: child.path,
+        })),
+      },
+    ];
   });
 
   useEffect(() => {
@@ -83,21 +82,22 @@ export function WorkspaceSearch({
           <CommandEmpty>
             <Trans i18nKey="kinder:workspace.searchEmpty" />
           </CommandEmpty>
-          <CommandGroup heading={t('kinder:workspace.searchGroup')}>
-            {items.map((item) => (
-              <CommandItem
-                key={item.path}
-                onSelect={() => {
-                  setOpen(false);
-                  router.push(item.path);
-                }}
-                value={`${item.label} ${item.path}`}
-              >
-                {item.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-          <CommandSeparator />
+          {groups.map((group) => (
+            <CommandGroup heading={group.label} key={group.label}>
+              {group.items.map((item) => (
+                <CommandItem
+                  key={item.path}
+                  onSelect={() => {
+                    setOpen(false);
+                    router.push(item.path);
+                  }}
+                  value={`${item.label} ${item.path}`}
+                >
+                  {item.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          ))}
         </CommandList>
       </CommandDialog>
     </>

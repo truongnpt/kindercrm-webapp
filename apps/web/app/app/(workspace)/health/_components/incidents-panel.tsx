@@ -1,27 +1,28 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
+import { AlertTriangle } from 'lucide-react';
 
 import { Button } from '@kit/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from '@kit/ui/form';
-import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
-import { CreateHealthIncidentSchema } from '~/lib/kinder/health/schemas/health.schema';
-import { PanelEmpty } from '~/components/kinder-ui';
-import { createHealthIncidentAction, notifyParentIncidentAction } from '~/lib/kinder/health/server-actions';
+import {
+  DataTableCard,
+  EmptyState,
+  StatusBadge,
+  kinderQueryKeys,
+  useKinderMutation,
+} from '~/components/kinder-ui';
+import { notifyParentIncidentAction } from '~/lib/kinder/health/server-actions';
 import type { HealthIncident, StudentOption } from '~/lib/kinder/health/types';
 
+import { AddIncidentDialog } from './add-incident-dialog';
 import { HealthStudentFilter } from './health-student-filter';
+
+const SEVERITY_TONE: Record<string, 'success' | 'warning' | 'danger'> = {
+  minor: 'success',
+  moderate: 'warning',
+  serious: 'danger',
+};
 
 export function IncidentsPanel({
   schoolId,
@@ -34,195 +35,156 @@ export function IncidentsPanel({
   incidents: HealthIncident[];
   studentId?: string;
 }) {
-  const { t } = useTranslation('kinder');
   const studentMap = new Map(students.map((s) => [s.id, s]));
 
-  const form = useForm({
-    resolver: zodResolver(CreateHealthIncidentSchema),
-    defaultValues: {
-      schoolId,
-      studentId: studentId ?? students[0]?.id ?? '',
-      incidentDate: new Date().toISOString().slice(0, 10),
-      incidentTime: '',
-      incidentType: 'other' as const,
-      severity: 'minor' as const,
-      description: '',
-      treatment: '',
-      notifyParent: true,
-    },
+  const notifyMutation = useKinderMutation({
+    mutationFn: notifyParentIncidentAction,
+    invalidateKeys: [kinderQueryKeys.health(schoolId)],
   });
 
   return (
     <div className="space-y-6">
-      <HealthStudentFilter studentId={studentId} students={students} tab="incidents" />
+      <HealthStudentFilter
+        studentId={studentId}
+        students={students}
+        tab="incidents"
+      />
+
+      <div className="flex justify-end">
+        <AddIncidentDialog
+          schoolId={schoolId}
+          studentId={studentId}
+          students={students}
+        />
+      </div>
 
       {incidents.length === 0 ? (
-        <PanelEmpty messageKey="kinder:health.emptyIncidents" />
+        <EmptyState
+          compact
+          descriptionKey="kinder:ui.emptyDefaultDescription"
+          icon={AlertTriangle}
+          titleKey="kinder:health.emptyIncidents"
+        />
       ) : (
-        <ul className="kinder-list-panel">
-          {incidents.map((incident) => (
-            <li className="flex items-start justify-between gap-3 p-4 text-sm" key={incident.id}>
-              <div>
-                <p className="font-medium">
-                  {studentMap.get(incident.student_id)?.full_name ?? '—'} ·{' '}
-                  {incident.incident_date}
-                </p>
-                <p className="text-muted-foreground text-xs">
-                  <Trans
-                    i18nKey={`kinder:health.incidentTypes.${incident.incident_type}`}
-                  />{' '}
-                  ·{' '}
-                  <Trans
-                    i18nKey={`kinder:health.severity.${incident.severity}`}
-                  />
-                </p>
-                <p className="mt-1">{incident.description}</p>
-              </div>
-              {!incident.parent_notified_at ? (
-                <Button
-                  onClick={async () => {
-                    const promise = notifyParentIncidentAction({
-                      schoolId,
-                      incidentId: incident.id,
-                    });
-                    toast.promise(promise, {
-                      loading: t('schoolSettings.saving'),
-                      success: t('health.parentNotified'),
-                      error: t('common:genericServerError', { ns: 'common' }),
-                    });
-                    await promise;
-                  }}
-                  size="sm"
-                  type="button"
-                  variant="outline"
-                >
-                  <Trans i18nKey="kinder:health.notifyParent" />
-                </Button>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <Form {...form}>
-        <form
-          className="kinder-form-panel max-w-xl grid-cols-1"
-          onSubmit={form.handleSubmit(async (data) => {
-            const promise = createHealthIncidentAction(data);
-            toast.promise(promise, {
-              loading: t('schoolSettings.saving'),
-              success: t('health.incidentSaved'),
-              error: t('common:genericServerError', { ns: 'common' }),
-            });
-            await promise;
-            form.reset({
-              schoolId,
-              studentId: data.studentId,
-              incidentDate: new Date().toISOString().slice(0, 10),
-              incidentTime: '',
-              incidentType: 'other',
-              severity: 'minor',
-              description: '',
-              treatment: '',
-              notifyParent: true,
-            });
-          })}
-        >
-          <p className="font-medium">
-            <Trans i18nKey="kinder:health.addIncident" />
-          </p>
-          <FormField
-            control={form.control}
-            name="studentId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  <Trans i18nKey="kinder:students.student" />
-                </FormLabel>
-                <FormControl>
-                  <select
-                    className="border-input bg-background flex h-9 w-full rounded-md border px-3 text-sm"
-                    {...field}
-                  >
-                    {students.map((student) => (
-                      <option key={student.id} value={student.id}>
-                        {student.full_name}
-                      </option>
-                    ))}
-                  </select>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  <Trans i18nKey="kinder:health.incidentDescription" />
-                </FormLabel>
-                <FormControl>
-                  <Textarea {...field} required rows={3} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <div className="grid gap-3 sm:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="incidentType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:health.incidentType" />
-                  </FormLabel>
-                  <FormControl>
-                    <select
-                      className="border-input bg-background flex h-9 w-full rounded-md border px-3 text-sm"
-                      {...field}
-                    >
-                      {['injury', 'illness', 'allergy_reaction', 'fall', 'other'].map(
-                        (type) => (
-                          <option key={type} value={type}>
-                            {t(`health.incidentTypes.${type}`)}
-                          </option>
-                        ),
-                      )}
-                    </select>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="severity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:health.severityLabel" />
-                  </FormLabel>
-                  <FormControl>
-                    <select
-                      className="border-input bg-background flex h-9 w-full rounded-md border px-3 text-sm"
-                      {...field}
-                    >
-                      {['minor', 'moderate', 'serious'].map((level) => (
-                        <option key={level} value={level}>
-                          {t(`health.severity.${level}`)}
-                        </option>
-                      ))}
-                    </select>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+        <>
+          <div className="hidden md:block">
+            <DataTableCard
+              description={<Trans i18nKey="kinder:health.tabs.incidents" />}
+              title={<Trans i18nKey="kinder:health.tabs.incidents" />}
+            >
+              <table className="w-full text-sm">
+                <thead>
+                  <tr>
+                    <th>
+                      <Trans i18nKey="kinder:students.student" />
+                    </th>
+                    <th>
+                      <Trans i18nKey="kinder:attendance.date" />
+                    </th>
+                    <th>
+                      <Trans i18nKey="kinder:health.incidentType" />
+                    </th>
+                    <th>
+                      <Trans i18nKey="kinder:health.severityLabel" />
+                    </th>
+                    <th className="text-right" />
+                  </tr>
+                </thead>
+                <tbody>
+                  {incidents.map((incident) => (
+                    <tr key={incident.id}>
+                      <td>
+                        <p className="font-medium">
+                          {studentMap.get(incident.student_id)?.full_name ?? '—'}
+                        </p>
+                        <p className="text-muted-foreground mt-0.5 line-clamp-2 text-xs">
+                          {incident.description}
+                        </p>
+                      </td>
+                      <td>{incident.incident_date}</td>
+                      <td>
+                        <Trans
+                          i18nKey={`kinder:health.incidentTypes.${incident.incident_type}`}
+                        />
+                      </td>
+                      <td>
+                        <StatusBadge
+                          tone={SEVERITY_TONE[incident.severity] ?? 'muted'}
+                        >
+                          <Trans
+                            i18nKey={`kinder:health.severity.${incident.severity}`}
+                          />
+                        </StatusBadge>
+                      </td>
+                      <td className="text-right">
+                        {!incident.parent_notified_at ? (
+                          <Button
+                            className="rounded-lg"
+                            disabled={notifyMutation.isPending}
+                            onClick={() =>
+                              notifyMutation.mutate({
+                                schoolId,
+                                incidentId: incident.id,
+                              })
+                            }
+                            size="sm"
+                            type="button"
+                            variant="outline"
+                          >
+                            <Trans i18nKey="kinder:health.notifyParent" />
+                          </Button>
+                        ) : null}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </DataTableCard>
           </div>
-          <Button disabled={students.length === 0} type="submit">
-            <Trans i18nKey="kinder:health.addIncident" />
-          </Button>
-        </form>
-      </Form>
+
+          <div className="space-y-3 md:hidden">
+            {incidents.map((incident) => (
+              <article className="kinder-mobile-card" key={incident.id}>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-medium">
+                      {studentMap.get(incident.student_id)?.full_name ?? '—'}
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      {incident.incident_date}
+                    </p>
+                  </div>
+                  <StatusBadge
+                    tone={SEVERITY_TONE[incident.severity] ?? 'muted'}
+                  >
+                    <Trans
+                      i18nKey={`kinder:health.severity.${incident.severity}`}
+                    />
+                  </StatusBadge>
+                </div>
+                <p className="mt-2 text-sm">{incident.description}</p>
+                {!incident.parent_notified_at ? (
+                  <Button
+                    className="mt-3 w-full"
+                    disabled={notifyMutation.isPending}
+                    onClick={() =>
+                      notifyMutation.mutate({
+                        schoolId,
+                        incidentId: incident.id,
+                      })
+                    }
+                    size="sm"
+                    type="button"
+                    variant="outline"
+                  >
+                    <Trans i18nKey="kinder:health.notifyParent" />
+                  </Button>
+                ) : null}
+              </article>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

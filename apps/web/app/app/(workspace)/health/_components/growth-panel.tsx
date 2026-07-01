@@ -1,27 +1,13 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
+import { TrendingUp } from 'lucide-react';
 
-import { Button } from '@kit/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from '@kit/ui/form';
-import { Input } from '@kit/ui/input';
-import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
-import { UpsertGrowthRecordSchema } from '~/lib/kinder/health/schemas/health.schema';
-import { PanelEmpty } from '~/components/kinder-ui';
-import { upsertGrowthRecordAction } from '~/lib/kinder/health/server-actions';
+import { DataTableCard, EmptyState } from '~/components/kinder-ui';
 import type { HealthGrowthRecord, StudentOption } from '~/lib/kinder/health/types';
 
+import { AddGrowthDialog } from './add-growth-dialog';
 import { HealthStudentFilter } from './health-student-filter';
 
 export function GrowthPanel({
@@ -35,153 +21,102 @@ export function GrowthPanel({
   records: HealthGrowthRecord[];
   studentId?: string;
 }) {
-  const { t } = useTranslation('kinder');
   const studentMap = new Map(students.map((s) => [s.id, s]));
-
-  const form = useForm({
-    resolver: zodResolver(UpsertGrowthRecordSchema),
-    defaultValues: {
-      schoolId,
-      studentId: studentId ?? students[0]?.id ?? '',
-      recordDate: new Date().toISOString().slice(0, 10),
-      heightCm: undefined as number | undefined,
-      weightKg: undefined as number | undefined,
-      notes: '',
-    },
-  });
 
   return (
     <div className="space-y-6">
-      <HealthStudentFilter studentId={studentId} students={students} tab="growth" />
+      <HealthStudentFilter
+        studentId={studentId}
+        students={students}
+        tab="growth"
+      />
+
+      <div className="flex justify-end">
+        <AddGrowthDialog
+          schoolId={schoolId}
+          studentId={studentId}
+          students={students}
+        />
+      </div>
 
       {records.length === 0 ? (
-        <PanelEmpty messageKey="kinder:health.emptyGrowth" />
+        <EmptyState
+          compact
+          descriptionKey="kinder:ui.emptyDefaultDescription"
+          icon={TrendingUp}
+          titleKey="kinder:health.emptyGrowth"
+        />
       ) : (
-        <ul className="kinder-list-panel">
-          {records.map((record) => (
-            <li className="p-4 text-sm" key={record.id}>
-              <p className="font-medium">
-                {studentMap.get(record.student_id)?.full_name ?? '—'} ·{' '}
-                {record.record_date}
-              </p>
-              <p className="text-muted-foreground text-xs">
-                {record.height_cm ? `${record.height_cm} cm` : '—'} ·{' '}
-                {record.weight_kg ? `${record.weight_kg} kg` : '—'} · BMI:{' '}
-                {record.bmi ?? '—'}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <Form {...form}>
-        <form
-          className="kinder-form-panel max-w-xl grid-cols-1"
-          onSubmit={form.handleSubmit(async (data) => {
-            const promise = upsertGrowthRecordAction(data);
-            toast.promise(promise, {
-              loading: t('schoolSettings.saving'),
-              success: t('health.growthSaved'),
-              error: t('common:genericServerError', { ns: 'common' }),
-            });
-            await promise;
-            form.reset({
-              schoolId,
-              studentId: data.studentId,
-              recordDate: new Date().toISOString().slice(0, 10),
-              notes: '',
-            });
-          })}
-        >
-          <p className="font-medium">
-            <Trans i18nKey="kinder:health.addGrowth" />
-          </p>
-          <FormField
-            control={form.control}
-            name="studentId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  <Trans i18nKey="kinder:students.student" />
-                </FormLabel>
-                <FormControl>
-                  <select
-                    className="border-input bg-background flex h-9 w-full rounded-md border px-3 text-sm"
-                    {...field}
-                  >
-                    {students.map((student) => (
-                      <option key={student.id} value={student.id}>
-                        {student.full_name}
-                      </option>
-                    ))}
-                  </select>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="recordDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  <Trans i18nKey="kinder:health.recordDate" />
-                </FormLabel>
-                <FormControl>
-                  <Input type="date" {...field} required />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <div className="grid gap-3 sm:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="heightCm"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:health.heightCm" />
-                  </FormLabel>
-                  <FormControl>
-                    <Input min={0} step="0.1" type="number" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="weightKg"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey="kinder:health.weightKg" />
-                  </FormLabel>
-                  <FormControl>
-                    <Input min={0} step="0.01" type="number" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+        <>
+          <div className="hidden md:block">
+            <DataTableCard
+              description={<Trans i18nKey="kinder:health.tabs.growth" />}
+              title={<Trans i18nKey="kinder:health.tabs.growth" />}
+            >
+              <table className="w-full text-sm">
+                <thead>
+                  <tr>
+                    <th>
+                      <Trans i18nKey="kinder:students.student" />
+                    </th>
+                    <th>
+                      <Trans i18nKey="kinder:health.recordDate" />
+                    </th>
+                    <th>
+                      <Trans i18nKey="kinder:health.height" />
+                    </th>
+                    <th>
+                      <Trans i18nKey="kinder:health.weight" />
+                    </th>
+                    <th>BMI</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {records.map((record) => (
+                    <tr key={record.id}>
+                      <td className="font-medium">
+                        {studentMap.get(record.student_id)?.full_name ?? '—'}
+                      </td>
+                      <td>{record.record_date}</td>
+                      <td>
+                        {record.height_cm ? `${record.height_cm} cm` : '—'}
+                      </td>
+                      <td>
+                        {record.weight_kg ? `${record.weight_kg} kg` : '—'}
+                      </td>
+                      <td>{record.bmi ?? '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </DataTableCard>
           </div>
-          <FormField
-            control={form.control}
-            name="notes"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  <Trans i18nKey="kinder:crm.notes" />
-                </FormLabel>
-                <FormControl>
-                  <Textarea {...field} rows={2} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <Button disabled={students.length === 0} type="submit">
-            <Trans i18nKey="kinder:health.addGrowth" />
-          </Button>
-        </form>
-      </Form>
+
+          <div className="space-y-3 md:hidden">
+            {records.map((record) => (
+              <article className="kinder-mobile-card" key={record.id}>
+                <p className="font-medium">
+                  {studentMap.get(record.student_id)?.full_name ?? '—'}
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  {record.record_date}
+                </p>
+                <div className="text-muted-foreground mt-3 grid grid-cols-2 gap-2 text-sm">
+                  <p>
+                    <Trans i18nKey="kinder:health.height" />:{' '}
+                    {record.height_cm ? `${record.height_cm} cm` : '—'}
+                  </p>
+                  <p>
+                    <Trans i18nKey="kinder:health.weight" />:{' '}
+                    {record.weight_kg ? `${record.weight_kg} kg` : '—'}
+                  </p>
+                  <p className="col-span-2">BMI: {record.bmi ?? '—'}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

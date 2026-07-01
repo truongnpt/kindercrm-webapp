@@ -1,28 +1,23 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
+
+import { ClipboardCheck } from 'lucide-react';
 
 import { Button } from '@kit/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from '@kit/ui/form';
 import { Input } from '@kit/ui/input';
 import { Trans } from '@kit/ui/trans';
 
-import { CreateStockCountSchema } from '~/lib/kinder/inventory/schemas/inventory-phase3.schema';
-import { PanelEmpty } from '~/components/kinder-ui';
+import {
+  DataTableCard,
+  EmptyState,
+  StatusBadge,
+  kinderQueryKeys,
+  useKinderMutation,
+} from '~/components/kinder-ui';
 import {
   completeStockCountAction,
-  createStockCountAction,
   upsertStockCountItemAction,
 } from '~/lib/kinder/inventory/stock-count-server-actions';
 import type { StockCountWithItems } from '~/lib/kinder/inventory/types-phase3';
@@ -33,110 +28,107 @@ export function StockCountsPanel({
   activeCount,
 }: {
   schoolId: string;
-  stockCounts: Array<{ id: string; title: string; count_date: string; status: string }>;
+  stockCounts: Array<{
+    id: string;
+    title: string;
+    count_date: string;
+    status: string;
+  }>;
   activeCount: StockCountWithItems | null;
 }) {
-  const { t } = useTranslation('kinder');
   const router = useRouter();
   const [selectedId, setSelectedId] = useState(activeCount?.id ?? '');
 
-  const form = useForm({
-    resolver: zodResolver(CreateStockCountSchema),
-    defaultValues: {
-      schoolId,
-      title: '',
-      countDate: new Date().toISOString().slice(0, 10),
-      notes: '',
-    },
+  const completeMutation = useKinderMutation({
+    mutationFn: completeStockCountAction,
+    invalidateKeys: [kinderQueryKeys.inventory(schoolId)],
   });
+
+  if (stockCounts.length === 0) {
+    return (
+      <EmptyState
+        compact
+        descriptionKey="kinder:ui.emptyDefaultDescription"
+        icon={ClipboardCheck}
+        titleKey="kinder:inventory.emptyStockCounts"
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <Form {...form}>
-        <form
-          className="kinder-form-panel max-w-xl grid-cols-1"
-          onSubmit={form.handleSubmit(async (data) => {
-            const promise = createStockCountAction(data);
-            toast.promise(promise, {
-              loading: t('schoolSettings.saving'),
-              success: t('inventory.stockCountCreated'),
-              error: t('common:genericServerError', { ns: 'common' }),
-            });
-            const result = await promise;
-            if (result.stockCountId) {
-              setSelectedId(result.stockCountId);
-              router.push(
-                `?tab=stockCounts&countId=${result.stockCountId}`,
-              );
-            }
-            form.reset({
-              schoolId,
-              title: '',
-              countDate: new Date().toISOString().slice(0, 10),
-              notes: '',
-            });
-          })}
+      <div className="hidden md:block">
+        <DataTableCard
+          description={<Trans i18nKey="kinder:inventory.tabs.stockCounts" />}
+          title={<Trans i18nKey="kinder:inventory.tabs.stockCounts" />}
         >
-          <p className="font-medium">
-            <Trans i18nKey="kinder:inventory.createStockCount" />
-          </p>
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
+          <table className="w-full text-sm">
+            <thead>
+              <tr>
+                <th>
                   <Trans i18nKey="kinder:inventory.stockCountTitle" />
-                </FormLabel>
-                <FormControl>
-                  <Input {...field} required />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="countDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
+                </th>
+                <th>
                   <Trans i18nKey="kinder:inventory.countDate" />
-                </FormLabel>
-                <FormControl>
-                  <Input type="date" {...field} required />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <Button type="submit">
-            <Trans i18nKey="kinder:inventory.createStockCount" />
-          </Button>
-        </form>
-      </Form>
+                </th>
+                <th>
+                  <Trans i18nKey="kinder:mealMenu.status" />
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {stockCounts.map((count) => (
+                <tr
+                  className="cursor-pointer"
+                  key={count.id}
+                  onClick={() => {
+                    setSelectedId(count.id);
+                    router.push(`?tab=stockCounts&countId=${count.id}`);
+                  }}
+                >
+                  <td className="font-medium">{count.title}</td>
+                  <td>{count.count_date}</td>
+                  <td>
+                    <StatusBadge
+                      tone={count.status === 'draft' ? 'warning' : 'success'}
+                    >
+                      {count.status}
+                    </StatusBadge>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </DataTableCard>
+      </div>
 
-      {stockCounts.length === 0 ? (
-        <PanelEmpty messageKey="kinder:inventory.emptyStockCounts" />
-      ) : (
-        <ul className="kinder-list-panel">
-          {stockCounts.map((count) => (
-            <li className="p-4 text-sm" key={count.id}>
-              <button
-                className="w-full text-left"
-                onClick={() => {
-                  setSelectedId(count.id);
-                  router.push(`?tab=stockCounts&countId=${count.id}`);
-                }}
-                type="button"
-              >
+      <div className="space-y-3 md:hidden">
+        {stockCounts.map((count) => (
+          <button
+            className="kinder-mobile-card w-full text-left"
+            key={count.id}
+            onClick={() => {
+              setSelectedId(count.id);
+              router.push(`?tab=stockCounts&countId=${count.id}`);
+            }}
+            type="button"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div>
                 <p className="font-medium">{count.title}</p>
                 <p className="text-muted-foreground text-xs">
-                  {count.count_date} · {count.status}
+                  {count.count_date}
                 </p>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+              </div>
+              <StatusBadge
+                tone={count.status === 'draft' ? 'warning' : 'success'}
+              >
+                {count.status}
+              </StatusBadge>
+            </div>
+          </button>
+        ))}
+      </div>
 
       {activeCount && selectedId === activeCount.id ? (
         <div className="kinder-surface flex flex-col gap-3 p-4">
@@ -144,18 +136,13 @@ export function StockCountsPanel({
             <p className="font-medium">{activeCount.title}</p>
             {activeCount.status === 'draft' ? (
               <Button
-                onClick={async () => {
-                  const promise = completeStockCountAction({
+                disabled={completeMutation.isPending}
+                onClick={() =>
+                  completeMutation.mutate({
                     schoolId,
                     stockCountId: activeCount.id,
-                  });
-                  toast.promise(promise, {
-                    loading: t('schoolSettings.saving'),
-                    success: t('inventory.stockCountCompleted'),
-                    error: t('common:genericServerError', { ns: 'common' }),
-                  });
-                  await promise;
-                }}
+                  })
+                }
                 size="sm"
                 type="button"
               >

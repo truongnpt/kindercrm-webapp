@@ -25,7 +25,7 @@ const iconClasses = 'w-4';
 
 const routes = [
   {
-    label: 'common:routes.application',
+    label: 'common:routes.groupOverview',
     children: [
       {
         label: 'common:routes.dashboard',
@@ -33,6 +33,11 @@ const routes = [
         Icon: <Home className={iconClasses} />,
         end: true,
       },
+    ],
+  },
+  {
+    label: 'common:routes.groupEnrollment',
+    children: [
       {
         label: 'common:routes.crm',
         path: pathsConfig.app.crm,
@@ -48,20 +53,15 @@ const routes = [
         path: pathsConfig.app.classes,
         Icon: <School className={iconClasses} />,
       },
-      {
-        label: 'common:routes.finance',
-        path: pathsConfig.app.finance,
-        Icon: <Wallet className={iconClasses} />,
-      },
+    ],
+  },
+  {
+    label: 'common:routes.groupDailyCare',
+    children: [
       {
         label: 'common:routes.attendance',
         path: pathsConfig.app.attendance,
         Icon: <CalendarCheck className={iconClasses} />,
-      },
-      {
-        label: 'common:routes.staff',
-        path: pathsConfig.app.staff,
-        Icon: <UserCog className={iconClasses} />,
       },
       {
         label: 'common:routes.dailyReports',
@@ -74,15 +74,40 @@ const routes = [
         Icon: <Soup className={iconClasses} />,
       },
       {
-        label: 'common:routes.inventory',
-        path: pathsConfig.app.inventory,
-        Icon: <Package className={iconClasses} />,
-      },
-      {
         label: 'common:routes.health',
         path: pathsConfig.app.health,
         Icon: <HeartPulse className={iconClasses} />,
       },
+    ],
+  },
+  {
+    label: 'common:routes.groupFinance',
+    children: [
+      {
+        label: 'common:routes.finance',
+        path: pathsConfig.app.finance,
+        Icon: <Wallet className={iconClasses} />,
+      },
+    ],
+  },
+  {
+    label: 'common:routes.groupAdministration',
+    children: [
+      {
+        label: 'common:routes.staff',
+        path: pathsConfig.app.staff,
+        Icon: <UserCog className={iconClasses} />,
+      },
+      {
+        label: 'common:routes.inventory',
+        path: pathsConfig.app.inventory,
+        Icon: <Package className={iconClasses} />,
+      },
+    ],
+  },
+  {
+    label: 'common:routes.groupTools',
+    children: [
       {
         label: 'common:routes.ai',
         path: pathsConfig.app.ai,

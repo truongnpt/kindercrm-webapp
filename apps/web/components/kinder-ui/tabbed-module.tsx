@@ -24,7 +24,7 @@ export function TabbedModuleList({
   className,
 }: React.PropsWithChildren<{ className?: string }>) {
   return (
-    <TabsList className={cn('', className)}>{children}</TabsList>
+    <TabsList className={cn('sm:w-auto', className)}>{children}</TabsList>
   );
 }
 
@@ -33,9 +33,7 @@ export function TabbedModuleTrigger({
   children,
 }: React.PropsWithChildren<{ value: string }>) {
   return (
-    <TabsTrigger className="kinder-tab-trigger" value={value}>
-      {children}
-    </TabsTrigger>
+    <TabsTrigger value={value}>{children}</TabsTrigger>
   );
 }
 
