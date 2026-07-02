@@ -7,7 +7,14 @@ const EMPLOYMENT_STATUSES = [
   'terminated',
 ] as const;
 
-const ACCESS_ROLES = ['staff', 'admin', 'accountant'] as const;
+const ACCESS_ROLES = ['staff', 'admin', 'manager'] as const;
+
+const AccessRoleKeySchema = z.union([
+  z.enum(ACCESS_ROLES),
+  z.string().regex(
+    /^custom:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+  ),
+]);
 
 const CONTRACT_TYPES = [
   'full_time',
@@ -38,7 +45,7 @@ export const CreateStaffEmployeeSchema = z.object({
   email: z.string().email().optional().or(z.literal('')),
   phone: z.string().max(50).optional().or(z.literal('')),
   isTeacher: z.boolean().default(false),
-  accessRole: z.enum(ACCESS_ROLES).default('staff'),
+  accessRoleKey: AccessRoleKeySchema.default('staff'),
   grantSystemAccess: z.boolean().default(false),
   departmentId: z.string().uuid().optional().or(z.literal('')),
   positionId: z.string().uuid().optional().or(z.literal('')),
@@ -60,7 +67,7 @@ export const UpdateStaffEmployeeSchema = z.object({
   email: z.string().email().optional().or(z.literal('')),
   phone: z.string().max(50).optional().or(z.literal('')),
   isTeacher: z.boolean(),
-  accessRole: z.enum(ACCESS_ROLES),
+  accessRoleKey: AccessRoleKeySchema,
   grantSystemAccess: z.boolean(),
   departmentId: z.string().uuid().optional().or(z.literal('')),
   positionId: z.string().uuid().optional().or(z.literal('')),
@@ -103,4 +110,9 @@ export const AssignStaffClassSchema = z.object({
 export const RemoveStaffClassAssignmentSchema = z.object({
   schoolId: z.string().uuid(),
   assignmentId: z.string().uuid(),
+});
+
+export const ResendStaffInviteSchema = z.object({
+  schoolId: z.string().uuid(),
+  employeeId: z.string().uuid(),
 });

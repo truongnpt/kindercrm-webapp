@@ -1,14 +1,28 @@
 'use client';
 
+import { BarChart3, CalendarCheck2, CreditCard, HeartPulse } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { Badge } from '@kit/ui/badge';
 import { Button } from '@kit/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@kit/ui/tabs';
 import { Trans } from '@kit/ui/trans';
 
-import { PanelEmpty, DataTableShell } from '~/components/kinder-ui';
+import {
+  BentoGrid,
+  BentoTile,
+  BentoTileHeader,
+  DataTableCard,
+  PanelEmpty,
+  StatCard,
+  StatusBadge,
+  TabbedModule,
+  TabbedModuleContent,
+  TabbedModuleList,
+  TabbedModuleTrigger,
+} from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
 import { acknowledgeDailyReportAction } from '~/lib/kinder/daily-reports/server-actions';
 import type { StudentDailyReport } from '~/lib/kinder/daily-reports/types';
@@ -47,8 +61,10 @@ export function ParentChildDetailPanel({
   invoices,
   dailyReports,
   health,
+  defaultTab,
 }: {
   student: {
+    id: string;
     full_name: string;
     student_code: string;
     class_name: string | null;
@@ -75,35 +91,92 @@ export function ParentChildDetailPanel({
     medications: HealthMedication[];
     incidents: HealthIncident[];
   };
+  defaultTab: string;
 }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get('tab') ?? defaultTab;
+
+  const setTab = (tab: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tab', tab);
+    router.push(
+      `${pathsConfig.parent.child}/${student.id}?${params.toString()}`,
+    );
+  };
+
+  const unpaidInvoices = invoices.filter(
+    (invoice) => invoice.total_amount > invoice.paid_amount,
+  ).length;
+  const attendancePresent = attendance.filter((row) =>
+    ['present', 'late', 'early_leave'].includes(row.status),
+  ).length;
+
   return (
     <div className="space-y-4">
-      <div className="kinder-surface p-4">
-        <p className="font-mono text-xs">{student.student_code}</p>
-        <p className="mt-1 text-lg font-semibold">{student.full_name}</p>
-        <p className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:students.className" />:{' '}
-          {student.class_name ?? '—'}
-        </p>
-      </div>
+      <BentoGrid columns={3}>
+        <StatCard
+          icon={BarChart3}
+          labelKey="kinder:parent.stats.reports"
+          tone="default"
+          value={String(dailyReports.length)}
+        />
+        <StatCard
+          icon={CalendarCheck2}
+          labelKey="kinder:parent.stats.attendancePresent"
+          tone="success"
+          value={String(attendancePresent)}
+        />
+        <StatCard
+          icon={CreditCard}
+          labelKey="kinder:parent.stats.unpaidInvoices"
+          tone="warning"
+          value={String(unpaidInvoices)}
+        />
+      </BentoGrid>
 
-      <Tabs defaultValue="reports">
-        <TabsList className="kinder-tab-list">
-          <TabsTrigger className="kinder-tab-trigger" value="reports">
-            <Trans i18nKey="kinder:parent.tabs.reports" />
-          </TabsTrigger>
-          <TabsTrigger className="kinder-tab-trigger" value="attendance">
-            <Trans i18nKey="kinder:parent.tabs.attendance" />
-          </TabsTrigger>
-          <TabsTrigger className="kinder-tab-trigger" value="finance">
-            <Trans i18nKey="kinder:parent.tabs.finance" />
-          </TabsTrigger>
-          <TabsTrigger className="kinder-tab-trigger" value="health">
-            <Trans i18nKey="kinder:parent.tabs.health" />
-          </TabsTrigger>
-        </TabsList>
+      <BentoTile className="min-w-0 overflow-hidden p-0" padding="none">
+        <div className="border-b border-border px-5 py-4 sm:px-6">
+          <BentoTileHeader
+            className="mb-0 border-0 pb-0"
+            description={
+              <span className="text-sm">
+                <span className="font-mono">{student.student_code}</span>
+                {' · '}
+                <Trans i18nKey="kinder:students.className" />
+                : {student.class_name ?? '—'}
+              </span>
+            }
+            title={<Trans i18nKey="kinder:parent.childWorkspaceTitle" />}
+          />
+        </div>
 
-        <TabsContent className="mt-4 space-y-3" value="reports">
+        <TabbedModule
+          className="min-w-0 gap-0 p-4 sm:p-6"
+          defaultValue={defaultTab}
+          onValueChange={setTab}
+          value={activeTab}
+        >
+          <TabbedModuleList className="mb-4 flex-wrap">
+            <TabbedModuleTrigger value="reports">
+              <BarChart3 className="mr-2 size-4" />
+              <Trans i18nKey="kinder:parent.tabs.reports" />
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="attendance">
+              <CalendarCheck2 className="mr-2 size-4" />
+              <Trans i18nKey="kinder:parent.tabs.attendance" />
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="finance">
+              <CreditCard className="mr-2 size-4" />
+              <Trans i18nKey="kinder:parent.tabs.finance" />
+            </TabbedModuleTrigger>
+            <TabbedModuleTrigger value="health">
+              <HeartPulse className="mr-2 size-4" />
+              <Trans i18nKey="kinder:parent.tabs.health" />
+            </TabbedModuleTrigger>
+          </TabbedModuleList>
+
+        <TabbedModuleContent value="reports">
           {dailyReports.length === 0 ? (
             <PanelEmpty messageKey="kinder:parent.reports.empty" />
           ) : (
@@ -148,19 +221,25 @@ export function ParentChildDetailPanel({
                 ) : null}
                 {attachments.length > 0 ? (
                   <div className="mt-3">
+                    <p className="text-muted-foreground mb-2 text-xs font-medium uppercase tracking-wide">
+                      <Trans i18nKey="kinder:dailyReports.tabs.media" />
+                    </p>
                     <ParentDailyReportMedia attachments={attachments} />
                   </div>
                 ) : null}
               </div>
             ))
           )}
-        </TabsContent>
+        </TabbedModuleContent>
 
-        <TabsContent className="mt-4" value="attendance">
+        <TabbedModuleContent value="attendance">
           {attendance.length === 0 ? (
             <PanelEmpty messageKey="kinder:parent.attendance.empty" />
           ) : (
-            <DataTableShell>
+            <DataTableCard
+              description={<Trans i18nKey="kinder:parent.attendanceHint" />}
+              title={<Trans i18nKey="kinder:parent.tabs.attendance" />}
+            >
               <table className="w-full text-sm">
                 <thead>
                   <tr>
@@ -177,53 +256,70 @@ export function ParentChildDetailPanel({
                     <tr key={row.attendance_date}>
                       <td className="px-4 py-3">{row.attendance_date}</td>
                       <td className="px-4 py-3">
-                        <Badge variant="outline">
+                        <StatusBadge
+                          tone={
+                            row.status === 'present'
+                              ? 'success'
+                              : row.status === 'late'
+                                ? 'warning'
+                                : row.status === 'absent'
+                                  ? 'danger'
+                                  : 'default'
+                          }
+                        >
                           <Trans
                             i18nKey={`kinder:attendance.statuses.${row.status}`}
                           />
-                        </Badge>
+                        </StatusBadge>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </DataTableShell>
+            </DataTableCard>
           )}
-        </TabsContent>
+        </TabbedModuleContent>
 
-        <TabsContent className="mt-4 space-y-3" value="finance">
+        <TabbedModuleContent value="finance">
           {invoices.length === 0 ? (
             <PanelEmpty messageKey="kinder:parent.finance.empty" />
           ) : (
-            invoices.map((invoice) => {
-              const balance = invoice.total_amount - invoice.paid_amount;
+            <DataTableCard
+              description={<Trans i18nKey="kinder:parent.financeHint" />}
+              title={<Trans i18nKey="kinder:parent.tabs.finance" />}
+            >
+              <div className="space-y-3">
+                {invoices.map((invoice) => {
+                  const balance = invoice.total_amount - invoice.paid_amount;
 
-              return (
-                <div className="kinder-mobile-card text-sm" key={invoice.id}>
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="font-mono text-xs">{invoice.invoice_number}</p>
-                    <Badge>
-                      <Trans
-                        i18nKey={`kinder:finance.invoices.statuses.${invoice.status}`}
-                      />
-                    </Badge>
-                  </div>
-                  <p className="mt-2">
-                    {invoice.billing_period} · {formatVnd(invoice.total_amount)}
-                  </p>
-                  {balance > 0 ? (
-                    <p className="text-muted-foreground">
-                      <Trans i18nKey="kinder:finance.debts.balance" />:{' '}
-                      {formatVnd(balance)}
-                    </p>
-                  ) : null}
-                </div>
-              );
-            })
+                  return (
+                    <div className="kinder-mobile-card text-sm" key={invoice.id}>
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="font-mono text-xs">{invoice.invoice_number}</p>
+                        <Badge>
+                          <Trans
+                            i18nKey={`kinder:finance.invoices.statuses.${invoice.status}`}
+                          />
+                        </Badge>
+                      </div>
+                      <p className="mt-2">
+                        {invoice.billing_period} · {formatVnd(invoice.total_amount)}
+                      </p>
+                      {balance > 0 ? (
+                        <p className="text-muted-foreground">
+                          <Trans i18nKey="kinder:finance.debts.balance" />:{' '}
+                          {formatVnd(balance)}
+                        </p>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+            </DataTableCard>
           )}
-        </TabsContent>
+        </TabbedModuleContent>
 
-        <TabsContent className="mt-4" value="health">
+        <TabbedModuleContent value="health">
           <ParentHealthPanel
             allergies={health.allergies}
             growth={health.growth}
@@ -232,8 +328,9 @@ export function ParentChildDetailPanel({
             medications={health.medications}
             vaccinations={health.vaccinations}
           />
-        </TabsContent>
-      </Tabs>
+        </TabbedModuleContent>
+      </TabbedModule>
+      </BentoTile>
     </div>
   );
 }

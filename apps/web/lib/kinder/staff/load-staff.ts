@@ -70,7 +70,8 @@ export const loadStaffEmployees = cache(
         *,
         department:staff_departments (id, name),
         position:staff_positions (id, name),
-        campus:campuses (id, name)
+        campus:campuses (id, name),
+        custom_role:school_custom_roles (id, name)
       `,
       )
       .eq('school_id', schoolId)
@@ -126,7 +127,8 @@ export const loadStaffEmployeeById = cache(
         *,
         department:staff_departments (id, name),
         position:staff_positions (id, name),
-        campus:campuses (id, name)
+        campus:campuses (id, name),
+        custom_role:school_custom_roles (id, name)
       `,
       )
       .eq('school_id', schoolId)

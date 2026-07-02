@@ -15,8 +15,10 @@ import {
   useKinderMutation,
 } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
+import type { SchoolCustomRole, StaffModulePermissions } from '~/lib/kinder/permissions';
 import type { Campus } from '~/lib/kinder/types';
 import { deleteStaffEmployeeAction } from '~/lib/kinder/staff/server-actions';
+import { canResendStaffInvite } from '~/lib/kinder/staff/staff-invite-state';
 import type {
   StaffDepartment,
   StaffEmployeeDetail,
@@ -24,6 +26,7 @@ import type {
 } from '~/lib/kinder/staff/types';
 
 import { EditStaffDialog } from '../../_components/edit-staff-dialog';
+import { StaffResendInviteButton } from './staff-resend-invite-button';
 
 export function StaffDetailActions({
   employee,
@@ -31,12 +34,16 @@ export function StaffDetailActions({
   departments,
   positions,
   campuses,
+  customRoles,
+  permissions,
 }: {
   employee: StaffEmployeeDetail;
   schoolId: string;
   departments: StaffDepartment[];
   positions: StaffPosition[];
   campuses: Campus[];
+  customRoles: SchoolCustomRole[];
+  permissions: StaffModulePermissions;
 }) {
   const router = useRouter();
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -51,26 +58,42 @@ export function StaffDetailActions({
     },
   });
 
+  const canResendInvite =
+    permissions.canManageAccess && canResendStaffInvite(employee);
+
   return (
     <>
       <div className="flex flex-wrap items-center gap-2">
-        <EditStaffDialog
-          campuses={campuses}
-          departments={departments}
-          employee={employee}
-          positions={positions}
-          schoolId={schoolId}
-        />
-        <Button
-          className="rounded-full"
-          onClick={() => setDeleteOpen(true)}
-          size="sm"
-          type="button"
-          variant="destructive"
-        >
-          <Trash2 className="mr-2 size-4" />
-          <Trans i18nKey="kinder:ui.delete" />
-        </Button>
+        {permissions.canUpdate ? (
+          <EditStaffDialog
+            campuses={campuses}
+            canManageAccess={permissions.canManageAccess}
+            customRoles={customRoles}
+            departments={departments}
+            employee={employee}
+            positions={positions}
+            schoolId={schoolId}
+          />
+        ) : null}
+        {canResendInvite ? (
+          <StaffResendInviteButton
+            className="rounded-full"
+            employeeId={employee.id}
+            schoolId={schoolId}
+          />
+        ) : null}
+        {permissions.canDelete ? (
+          <Button
+            className="rounded-full"
+            onClick={() => setDeleteOpen(true)}
+            size="sm"
+            type="button"
+            variant="destructive"
+          >
+            <Trash2 className="mr-2 size-4" />
+            <Trans i18nKey="kinder:ui.delete" />
+          </Button>
+        ) : null}
       </div>
 
       <KinderConfirmDialog

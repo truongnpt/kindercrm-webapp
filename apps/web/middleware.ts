@@ -8,6 +8,10 @@ import { createMiddlewareClient } from '@kit/supabase/middleware-client';
 
 import appConfig from '~/config/app.config';
 import pathsConfig from '~/config/paths.config';
+import {
+  ACTIVE_SCHOOL_COOKIE,
+  activeSchoolCookieOptions,
+} from '~/lib/kinder/tenant/active-school-cookie.constants';
 
 const CSRF_SECRET_COOKIE = 'csrfSecret';
 const NEXT_ACTION_HEADER = 'next-action';
@@ -166,6 +170,8 @@ function getPatterns() {
             new URL(pathsConfig.auth.verifyMfa, origin).href,
           );
         }
+
+        await syncActiveSchoolCookie(req, res, data.claims.sub as string);
       },
     },
     {
@@ -253,4 +259,44 @@ function matchUrlPattern(url: string) {
 
 function setRequestId(request: Request) {
   request.headers.set('x-correlation-id', crypto.randomUUID());
+}
+
+async function syncActiveSchoolCookie(
+  request: NextRequest,
+  response: NextResponse,
+  userId: string,
+) {
+  const cookieSchoolId = request.cookies.get(ACTIVE_SCHOOL_COOKIE)?.value;
+  const supabase = createMiddlewareClient(request, response);
+
+  const { data: memberships } = await supabase
+    .from('school_members')
+    .select('role, school:schools(id, status)')
+    .eq('user_id', userId)
+    .is('deleted_at', null);
+
+  const staffSchoolIds = (memberships ?? [])
+    .filter(
+      (membership) =>
+        membership.role !== 'parent' &&
+        membership.school &&
+        membership.school.status !== 'archived',
+    )
+    .map((membership) => membership.school!.id);
+
+  if (staffSchoolIds.length === 0) {
+    return;
+  }
+
+  const activeSchoolId =
+    staffSchoolIds.find((schoolId) => schoolId === cookieSchoolId) ??
+    staffSchoolIds[0]!;
+
+  if (activeSchoolId !== cookieSchoolId) {
+    response.cookies.set(
+      ACTIVE_SCHOOL_COOKIE,
+      activeSchoolId,
+      activeSchoolCookieOptions,
+    );
+  }
 }

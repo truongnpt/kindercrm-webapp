@@ -5,6 +5,12 @@ import { Trans } from '@kit/ui/trans';
 import { KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import {
+  buildStaffModulePermissions,
+  loadMemberPermissions,
+  STAFF_PERMISSIONS,
+} from '~/lib/kinder/permissions';
+import { hasPermission } from '~/lib/kinder/permissions/check-permission';
+import {
   loadStaffDepartments,
   loadStaffPositions,
 } from '~/lib/kinder/staff/load-staff';
@@ -35,9 +41,19 @@ async function StaffSetupPage() {
 
   requirePackageFeature(context, 'staff');
 
-  const canManage = ['owner', 'admin'].includes(context.role);
+  const memberPermissions = await loadMemberPermissions(
+    context.school.id,
+    context.role,
+    context.customRoleId,
+  );
 
-  if (!canManage) {
+  if (!hasPermission(memberPermissions, STAFF_PERMISSIONS.DIRECTORY_VIEW)) {
+    redirect(pathsConfig.app.home);
+  }
+
+  const permissions = buildStaffModulePermissions(memberPermissions);
+
+  if (!permissions.canManageSetup) {
     redirect(pathsConfig.app.staff);
   }
 
@@ -61,7 +77,7 @@ async function StaffSetupPage() {
       />
 
       <KinderPageBody>
-        <StaffModuleNav className="mb-2" />
+        <StaffModuleNav className="mb-2" permissions={permissions} />
 
         <StaffSetupWorkspace
           departments={departments}

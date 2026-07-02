@@ -65,6 +65,8 @@ enable_signup = true
 [auth.email]
 # Allow/disallow new user signups via email to your project.
 enable_signup = true
+# Invite / magic-link / recovery OTP validity (seconds). Max 86400 (24h) per Supabase.
+otp_expiry = 86400
 # If enabled, a user will be required to confirm any email change on both the old, and new email
 # addresses. If disabled, only the new email is required to confirm.
 double_confirm_changes = true
@@ -94,7 +96,7 @@ redirect_uri = "http://127.0.0.1:55521/auth/v1/callback"
 url = ""
 
 [auth.email.template.invite]
-subject = "You are invited to Makerkit"
+subject = "You are invited to Kinder CRM"
 content_path = "./supabase/templates/invite-user.html"
 
 [auth.email.template.confirmation]

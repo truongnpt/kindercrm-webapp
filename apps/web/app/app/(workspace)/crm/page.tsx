@@ -9,7 +9,8 @@ import {
   loadSchoolMembersForAssign,
 } from '~/lib/kinder/crm/load-leads';
 import { seedDefaultLeadSources } from '~/lib/kinder/crm/seed-lead-sources';
-import { requirePackageFeature } from '~/lib/kinder/subscription/features';
+import pathsConfig from '~/config/paths.config';
+import { assertModuleAccessFromContext } from '~/lib/kinder/permissions/module-access.server';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
@@ -36,7 +37,7 @@ async function CrmPage() {
     return null;
   }
 
-  requirePackageFeature(context, 'crm');
+  await assertModuleAccessFromContext(context, pathsConfig.app.crm, 'view');
 
   const client = getSupabaseServerClient();
   let sources = await loadLeadSources(context.school.id);

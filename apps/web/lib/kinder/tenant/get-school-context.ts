@@ -14,10 +14,7 @@ import type {
   SchoolSubscription,
 } from '~/lib/kinder/types';
 
-import {
-  getActiveSchoolIdFromCookie,
-  setActiveSchoolIdCookie,
-} from './active-school-cookie';
+import { getActiveSchoolIdFromCookie } from './active-school-cookie';
 
 export const loadUserSchools = cache(async (userId: string) => {
   const client = getSupabaseServerClient();
@@ -27,6 +24,7 @@ export const loadUserSchools = cache(async (userId: string) => {
     .select(
       `
       role,
+      custom_role_id,
       school:schools (
         id,
         name,
@@ -47,6 +45,7 @@ export const loadUserSchools = cache(async (userId: string) => {
     .filter((row) => row.school && row.school.status !== 'archived')
     .map((row) => ({
       role: row.role as SchoolMemberRole,
+      customRoleId: row.custom_role_id ?? null,
       school: row.school as Pick<
         School,
         'id' | 'name' | 'slug' | 'logo_url' | 'status'
@@ -74,10 +73,6 @@ export const getSchoolContext = cache(
     const active =
       staffMemberships.find((m) => m.school.id === cookieSchoolId) ??
       staffMemberships[0]!;
-
-    if (active.school.id !== cookieSchoolId) {
-      await setActiveSchoolIdCookie(active.school.id);
-    }
 
     const client = getSupabaseServerClient();
 
@@ -110,6 +105,7 @@ export const getSchoolContext = cache(
     return {
       school: school as School,
       role: active.role,
+      customRoleId: active.customRoleId,
       subscription: sub,
       package: sub?.package ?? null,
     };

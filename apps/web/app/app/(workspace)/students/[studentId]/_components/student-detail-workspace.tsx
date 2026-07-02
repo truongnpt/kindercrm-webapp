@@ -12,7 +12,10 @@ import {
   TabbedModuleList,
   TabbedModuleTrigger,
 } from '~/components/kinder-ui';
-import type { StudentDailyReport } from '~/lib/kinder/daily-reports/types';
+import type {
+  DailyReportAttachment,
+  StudentDailyReport,
+} from '~/lib/kinder/daily-reports/types';
 import type {
   Student,
   StudentAllergy,
@@ -54,6 +57,7 @@ export function StudentDetailWorkspace({
   timeline,
   parentLinks,
   dailyReports,
+  dailyReportAttachments,
   hasParentPortal,
   hasDailyReports,
 }: {
@@ -68,6 +72,7 @@ export function StudentDetailWorkspace({
   timeline: TimelineItem[];
   parentLinks: ParentLink[];
   dailyReports: StudentDailyReport[];
+  dailyReportAttachments: Record<string, DailyReportAttachment[]>;
   hasParentPortal: boolean;
   hasDailyReports: boolean;
 }) {
@@ -105,14 +110,12 @@ export function StudentDetailWorkspace({
         </TabbedModuleList>
 
         <TabbedModuleContent
-          className="px-5 py-5 sm:px-6 sm:py-6"
           value="profile"
         >
           <StudentProfileBento student={student} />
         </TabbedModuleContent>
 
         <TabbedModuleContent
-          className="px-5 pb-5 sm:px-6 sm:pb-6"
           value="contacts"
         >
           <StudentContactsPanels
@@ -128,7 +131,6 @@ export function StudentDetailWorkspace({
 
         {hasParentPortal ? (
           <TabbedModuleContent
-            className="px-5 pb-5 sm:px-6 sm:pb-6"
             value="parent"
           >
             <ParentLinkPanel
@@ -141,10 +143,10 @@ export function StudentDetailWorkspace({
 
         {hasDailyReports ? (
           <TabbedModuleContent
-            className="px-5 pb-5 sm:px-6 sm:pb-6"
             value="reports"
           >
             <DailyReportsPanel
+              attachmentsByReportId={dailyReportAttachments}
               reports={dailyReports}
               schoolId={schoolId}
               studentId={studentId}
@@ -153,7 +155,6 @@ export function StudentDetailWorkspace({
         ) : null}
 
         <TabbedModuleContent
-          className="px-5 pb-5 sm:px-6 sm:pb-6"
           value="timeline"
         >
           <SectionCard title={<Trans i18nKey="kinder:students.timeline" />}>

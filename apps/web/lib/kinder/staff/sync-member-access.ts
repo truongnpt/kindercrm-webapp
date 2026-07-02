@@ -5,26 +5,51 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '~/lib/database.types';
 import { findAccountByEmailForSchool } from '~/lib/kinder/tenant/account-lookup';
 
+import { provisionStaffAccount } from './provision-staff-account';
+
 type StaffAccessRole = Database['public']['Enums']['staff_access_role'];
 type SchoolMemberRole = Database['public']['Enums']['school_member_role'];
 
 function mapAccessRoleToMemberRole(
   accessRole: StaffAccessRole,
 ): SchoolMemberRole {
-  return accessRole;
+  if (accessRole === 'accountant') {
+    return 'staff';
+  }
+
+  return accessRole as SchoolMemberRole;
 }
+
+export type SyncStaffMemberAccessResult =
+  | {
+      linked: true;
+      userId: string;
+      memberId: string | null | undefined;
+      invited?: boolean;
+    }
+  | {
+      linked: false;
+      reason?:
+        | 'missing_email'
+        | 'account_not_found'
+        | 'invite_failed'
+        | 'revoked';
+      message?: string;
+    };
 
 export async function syncStaffMemberAccess(
   client: SupabaseClient<Database>,
   params: {
     schoolId: string;
     employeeId: string;
+    fullName: string;
     email: string | null;
     accessRole: StaffAccessRole;
+    customRoleId?: string | null;
     grantSystemAccess: boolean;
     employmentStatus: Database['public']['Enums']['staff_employment_status'];
   },
-) {
+): Promise<SyncStaffMemberAccessResult> {
   if (
     !params.grantSystemAccess ||
     params.employmentStatus === 'terminated' ||
@@ -45,20 +70,60 @@ export async function syncStaffMemberAccess(
 
     await client
       .from('staff_employees')
-      .update({ member_id: null, user_id: null })
+      .update({
+        member_id: null,
+        user_id: null,
+        invite_sent_at: null,
+        custom_role_id: null,
+      })
       .eq('id', params.employeeId);
 
-    return { linked: false as const };
+    return { linked: false, reason: 'revoked' };
   }
 
   if (!params.email) {
-    return { linked: false as const, reason: 'missing_email' as const };
+    return { linked: false, reason: 'missing_email' };
   }
 
-  const account = await findAccountByEmailForSchool(params.schoolId, params.email);
+  let account = await findAccountByEmailForSchool(
+    params.schoolId,
+    params.email,
+  );
+  let invited = false;
 
   if (!account) {
-    return { linked: false as const, reason: 'account_not_found' as const };
+    const provision = await provisionStaffAccount({
+      email: params.email,
+      fullName: params.fullName,
+    });
+
+    if (provision.outcome === 'error') {
+      await client
+        .from('staff_employees')
+        .update({ invite_sent_at: null })
+        .eq('id', params.employeeId);
+
+      return {
+        linked: false,
+        reason: 'invite_failed',
+        message: provision.message,
+      };
+    }
+
+    invited = provision.outcome === 'invited';
+
+    await client
+      .from('staff_employees')
+      .update({
+        invite_sent_at: new Date().toISOString(),
+      })
+      .eq('id', params.employeeId);
+
+    account = {
+      id: provision.userId,
+      email: params.email,
+      name: params.fullName,
+    };
   }
 
   const memberRole = mapAccessRoleToMemberRole(params.accessRole);
@@ -77,6 +142,7 @@ export async function syncStaffMemberAccess(
       .from('school_members')
       .update({
         role: memberRole,
+        custom_role_id: params.customRoleId ?? null,
         deleted_at: null,
       })
       .eq('id', existingMember.id);
@@ -91,6 +157,7 @@ export async function syncStaffMemberAccess(
         school_id: params.schoolId,
         user_id: account.id,
         role: memberRole,
+        custom_role_id: params.customRoleId ?? null,
       })
       .select('id')
       .single();
@@ -107,6 +174,7 @@ export async function syncStaffMemberAccess(
     .update({
       user_id: account.id,
       member_id: memberId ?? null,
+      custom_role_id: params.customRoleId ?? null,
     })
     .eq('id', params.employeeId);
 
@@ -115,8 +183,9 @@ export async function syncStaffMemberAccess(
   }
 
   return {
-    linked: true as const,
+    linked: true,
     userId: account.id,
     memberId,
+    invited,
   };
 }

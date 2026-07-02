@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from 'react';
 
 import { ImageIcon, Trash2, VideoIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -77,6 +78,7 @@ export function DailyReportMediaPanel({
   readOnly?: boolean;
 }) {
   const { t } = useTranslation('kinder');
+  const router = useRouter();
   const client = useSupabase();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -165,6 +167,7 @@ export function DailyReportMediaPanel({
       });
 
       await promise;
+      router.refresh();
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : t('common:genericServerError', { ns: 'common' }),
@@ -267,6 +270,7 @@ export function DailyReportMediaPanel({
                         });
 
                         await promise;
+                        router.refresh();
                       }}
                       size="icon"
                       type="button"

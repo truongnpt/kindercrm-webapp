@@ -39,7 +39,7 @@ export function CrmWorkspace({
       </div>
 
       <TabbedModule className="min-w-0 p-4 gap-0" defaultValue="pipeline">
-        <TabbedModuleList>
+        <TabbedModuleList className=" mb-4">
           <TabbedModuleTrigger value="pipeline">
             <Kanban className="mr-2 size-4" />
             <Trans i18nKey="kinder:crm.pipeline" />
@@ -51,13 +51,12 @@ export function CrmWorkspace({
         </TabbedModuleList>
 
         <TabbedModuleContent
-          className="min-w-0 overflow-hidden px-5 py-5 sm:px-6"
           value="pipeline"
         >
           <LeadPipelineBoard leads={leads} schoolId={schoolId} />
         </TabbedModuleContent>
 
-        <TabbedModuleContent className="px-5 pb-5 sm:px-6 sm:pb-6" value="list">
+        <TabbedModuleContent value="list">
           <LeadListTable
             leads={leads}
             members={members}

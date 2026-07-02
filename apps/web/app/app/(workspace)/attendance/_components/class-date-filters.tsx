@@ -2,6 +2,9 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+import { Button } from '@kit/ui/button';
 import { Input } from '@kit/ui/input';
 import {
   Select,
@@ -19,25 +22,40 @@ function todayString() {
   return new Date().toISOString().slice(0, 10);
 }
 
+function shiftDate(date: string, days: number) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next.toISOString().slice(0, 10);
+}
+
 export function ClassDateFilters({ classes }: { classes: ClassGroup[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const classId = searchParams.get('classId') ?? classes[0]?.id ?? '';
   const date = searchParams.get('date') ?? todayString();
 
-  const updateParams = (key: string, value: string) => {
+  const updateParams = (updates: Record<string, string | undefined>) => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set(key, value);
+    params.set('tab', 'daily');
+
+    for (const [key, value] of Object.entries(updates)) {
+      if (!value) {
+        params.delete(key);
+      } else {
+        params.set(key, value);
+      }
+    }
+
     router.push(`${pathsConfig.app.attendance}?${params.toString()}`);
   };
 
   return (
     <div className="flex flex-wrap items-center gap-3">
       <Select
-        onValueChange={(value) => updateParams('classId', value)}
+        onValueChange={(value) => updateParams({ classId: value })}
         value={classId}
       >
-        <SelectTrigger className="w-[220px]">
+        <SelectTrigger className="w-[240px]">
           <SelectValue placeholder="Chọn lớp" />
         </SelectTrigger>
         <SelectContent>
@@ -49,16 +67,40 @@ export function ClassDateFilters({ classes }: { classes: ClassGroup[] }) {
         </SelectContent>
       </Select>
 
-      <div className="flex items-center gap-2">
-        <span className="text-muted-foreground text-sm">
-          <Trans i18nKey="kinder:attendance.date" />
-        </span>
+      <div className="flex items-center gap-1">
+        <Button
+          onClick={() => updateParams({ date: shiftDate(date, -1) })}
+          size="icon"
+          type="button"
+          variant="outline"
+        >
+          <ChevronLeft className="size-4" />
+        </Button>
+
         <Input
           className="w-[160px]"
-          onChange={(event) => updateParams('date', event.target.value)}
+          onChange={(event) => updateParams({ date: event.target.value })}
           type="date"
           value={date}
         />
+
+        <Button
+          onClick={() => updateParams({ date: shiftDate(date, 1) })}
+          size="icon"
+          type="button"
+          variant="outline"
+        >
+          <ChevronRight className="size-4" />
+        </Button>
+
+        <Button
+          onClick={() => updateParams({ date: todayString() })}
+          size="sm"
+          type="button"
+          variant="ghost"
+        >
+          <Trans i18nKey="kinder:attendance.today" />
+        </Button>
       </div>
     </div>
   );

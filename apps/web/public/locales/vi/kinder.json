@@ -122,6 +122,13 @@
   "subscription": {
     "title": "Gói đăng ký",
     "description": "Xem gói hiện tại, hạn mức và lịch sử thay đổi.",
+    "workspaceTitle": "Không gian gói đăng ký",
+    "workspaceHint": "Quản lý gói, theo dõi hạn mức sử dụng và xem lịch sử thay đổi.",
+    "tabs": {
+      "plan": "Gói",
+      "usage": "Sử dụng",
+      "history": "Lịch sử"
+    },
     "currentPlan": "Gói hiện tại",
     "trialBadge": "Dùng thử",
     "trialFullAccess": "Gói dùng thử bao gồm đầy đủ mọi tính năng đến {{date}}.",
@@ -147,12 +154,28 @@
   "schoolSettings": {
     "title": "Thông tin trường",
     "description": "Cập nhật thông tin và thương hiệu trường học.",
+    "workspaceTitle": "Cài đặt trường",
+    "workspaceHint": "Cấu hình hồ sơ công khai, liên hệ và thương hiệu của trường.",
+    "basicInfoTitle": "Thông tin cơ bản",
+    "basicInfoHint": "Định danh trường và thông tin liên hệ hiển thị cho nhân sự, phụ huynh.",
+    "brandingTitle": "Nhận diện thương hiệu",
+    "brandingHint": "Tùy chỉnh logo và màu chủ đạo để thống nhất giao diện trường.",
+    "domainTitle": "Thiết lập tên miền",
+    "domainHint": "Tên miền tùy chỉnh dùng để truy cập cổng trường (không bắt buộc).",
     "name": "Tên trường",
     "phone": "Số điện thoại",
     "email": "Email",
     "address": "Địa chỉ",
     "logoUrl": "URL logo",
+    "logoUpload": "Logo trường",
+    "uploadLogo": "Tải logo",
+    "changeLogo": "Đổi logo",
+    "removeLogo": "Xóa logo",
+    "logoHint": "Hỗ trợ định dạng: PNG, JPG, WEBP, GIF, SVG.",
+    "logoUploaded": "Đã tải logo",
+    "logoTypeError": "Định dạng logo không được hỗ trợ.",
     "themeColor": "Màu chủ đạo",
+    "themeColorHint": "Chọn màu thương hiệu dùng cho card và các nút hành động.",
     "customDomain": "Tên miền tùy chỉnh",
     "save": "Lưu thay đổi",
     "saving": "Đang lưu...",
@@ -161,6 +184,8 @@
   "campuses": {
     "title": "Cơ sở & chi nhánh",
     "description": "Quản lý các cơ sở và chi nhánh của trường.",
+    "workspaceTitle": "Cơ sở",
+    "workspaceHint": "Tổ chức các địa điểm vật lý và chi nhánh trong hệ thống trường.",
     "addCampus": "Thêm cơ sở",
     "addBranch": "Thêm chi nhánh",
     "name": "Tên",
@@ -174,6 +199,7 @@
     "creating": "Đang tạo...",
     "created": "Đã thêm cơ sở",
     "empty": "Chưa có cơ sở nào.",
+    "emptyDescription": "Thêm cơ sở hoặc chi nhánh đầu tiên để tổ chức lớp học và nhân sự theo địa điểm.",
     "parentCampus": "Thuộc cơ sở"
   },
   "schoolSwitcher": {
@@ -346,6 +372,16 @@
     "noStudents": "Chưa có học sinh trong lớp.",
     "noSchedule": "Chưa có tiết học nào.",
     "setup": "Thiết lập",
+    "setupHint": "Thiết lập năm học và phòng học trước khi tạo lớp.",
+    "schoolYearsHint": "Kỳ học dùng khi tạo và quản lý lớp.",
+    "classroomsHint": "Phòng vật lý có thể gán cho từng lớp.",
+    "schoolYearsEmpty": "Chưa có năm học. Thêm mới để bắt đầu.",
+    "classroomsEmpty": "Chưa có phòng học. Thêm mới để bắt đầu.",
+    "currentYear": "Hiện tại",
+    "setAsCurrentYear": "Đặt làm năm học hiện tại",
+    "setAsCurrentYearHint": "Lớp mới sẽ mặc định thuộc năm học hiện tại.",
+    "defaultSchoolYearName": "Năm học {{start}}-{{end}}",
+    "capacitySeats": "{{count}} chỗ",
     "schoolYears": "Năm học",
     "semesters": "Học kỳ",
     "classrooms": "Phòng học",
@@ -430,6 +466,7 @@
       "dueDate": "Hạn thanh toán",
       "total": "Tổng tiền",
       "paid": "Đã thu",
+      "balance": "Còn lại",
       "status": "Trạng thái",
       "detail": "Chi tiết hóa đơn",
       "detailHint": "Xem khoản thu, ghi nhận thanh toán và tạo mã QR.",
@@ -511,18 +548,26 @@
   "attendance": {
     "title": "Điểm danh",
     "description": "Điểm danh hàng ngày theo lớp, quản lý nghỉ phép và báo cáo.",
+    "workspaceTitle": "Không gian điểm danh",
+    "workspaceHint": "Điểm danh theo lớp, xử lý đơn nghỉ và theo dõi tỷ lệ đi học theo thời gian thực.",
     "date": "Ngày",
+    "today": "Hôm nay",
     "status": "Trạng thái",
     "lateMinutes": "Trễ (phút)",
     "quickActions": "Thao tác",
     "checkIn": "Vào lớp",
     "checkOut": "Tan học",
+    "checkInTime": "Giờ vào",
+    "checkOutTime": "Giờ ra",
     "save": "Lưu điểm danh",
     "saved": "Đã lưu điểm danh",
     "checkInDone": "Đã ghi nhận vào lớp",
     "checkOutDone": "Đã ghi nhận tan học",
+    "dailyTitle": "Điểm danh theo danh sách lớp",
+    "dailyHint": "Cập nhật trạng thái từng học sinh, thao tác nhanh check-in/check-out, sau đó lưu đồng loạt.",
     "emptyClass": "Lớp chưa có học sinh.",
     "noClasses": "Chưa có lớp active. Hãy tạo lớp và xếp học sinh trước.",
+    "noClassesDescription": "Bạn cần ít nhất một lớp đang hoạt động và có học sinh để bắt đầu điểm danh.",
     "tabs": {
       "daily": "Hàng ngày",
       "leave": "Nghỉ phép",
@@ -534,6 +579,17 @@
       "marked": "{{count}} đã điểm danh",
       "present": "{{count}} có mặt"
     },
+    "stats": {
+      "present": "Có mặt hôm nay",
+      "absent": "Vắng hôm nay",
+      "late": "Đi trễ hôm nay",
+      "pendingLeave": "Đơn nghỉ chờ duyệt",
+      "rateLabel": "Tỷ lệ điểm danh"
+    },
+    "bulk": {
+      "present": "Đánh dấu tất cả có mặt",
+      "absent": "Đánh dấu tất cả vắng"
+    },
     "statuses": {
       "present": "Có mặt",
       "absent": "Vắng",
@@ -542,8 +598,11 @@
       "early_leave": "Về sớm"
     },
     "leave": {
+      "title": "Đơn nghỉ phép",
+      "description": "Tạo và xử lý đơn nghỉ phép của học sinh theo ngày.",
       "create": "Tạo đơn nghỉ",
-      "empty": "Không có đơn nghỉ đang chờ.",
+      "empty": "Không có đơn nghỉ phù hợp bộ lọc.",
+      "period": "Khoảng nghỉ",
       "startDate": "Từ ngày",
       "endDate": "Đến ngày",
       "reason": "Lý do",
@@ -552,11 +611,21 @@
       "reviewed": "Đã xử lý đơn",
       "approve": "Duyệt",
       "reject": "Từ chối",
+      "filters": {
+        "pending": "Chờ duyệt",
+        "approved": "Đã duyệt",
+        "rejected": "Đã từ chối",
+        "all": "Tất cả"
+      },
       "statuses": {
         "pending": "Chờ duyệt",
         "approved": "Đã duyệt",
         "rejected": "Từ chối"
       }
+    },
+    "calendar": {
+      "title": "Lịch nghỉ phép",
+      "description": "Xem nhanh các đơn nghỉ theo lịch, bấm vào ngày để chuyển sang điểm danh ngày đó."
     },
     "report": {
       "allClasses": "Tất cả lớp",
@@ -565,7 +634,83 @@
       "absentCount": "Vắng",
       "lateCount": "Đi trễ",
       "excusedCount": "Nghỉ phép",
-      "attendanceRate": "Tỷ lệ đi học"
+      "attendanceRate": "Tỷ lệ đi học",
+      "rateTitle": "Xu hướng chuyên cần"
+    }
+  },
+  "permissions": {
+    "title": "Phân quyền",
+    "pageDescription": "Cấu hình quyền theo vai trò hệ thống (Admin, Manager, Staff) và vai trò tùy chỉnh.",
+    "description": "Tùy chỉnh quyền theo vai trò. Owner luôn có toàn quyền.",
+    "permissionColumn": "Quyền",
+    "save": "Lưu phân quyền",
+    "ownerNote": "Vai trò Owner luôn có toàn quyền và không hiển thị trong bảng.",
+    "groups": {
+      "staff": "Module Nhân viên",
+      "crm": "Tuyển sinh (CRM)",
+      "students": "Học sinh",
+      "classes": "Lớp học",
+      "reports": "Báo cáo",
+      "settings": "Cài đặt trường"
+    },
+    "roles": {
+      "owner": "Chủ trường",
+      "admin": "Quản trị",
+      "manager": "Quản lý vận hành",
+      "staff": "Nhân viên",
+      "parent": "Phụ huynh"
+    },
+    "roleDescriptions": {
+      "owner": "Toàn quyền sở hữu trường, bao gồm gói đăng ký và cấu hình billing.",
+      "admin": "Toàn quyền quản lý trường, cấu hình hệ thống, phân quyền, nhân sự, học sinh và báo cáo.",
+      "manager": "Quản lý vận hành: lớp học, giáo viên, tuyển sinh và báo cáo trong phạm vi được phân công.",
+      "staff": "Nhân viên nghiệp vụ — quyền chi tiết được cấp qua ma trận phân quyền hoặc vai trò tùy chỉnh (HR, Kế toán, ...).",
+      "parent": "Chỉ truy cập cổng phụ huynh — xem thông tin con, học phí, điểm danh và tương tác với nhà trường."
+    },
+    "customRoles": {
+      "title": "Vai trò tùy chỉnh",
+      "description": "Tạo vai trò riêng cho trường (HR, Support, ...) và cấu hình quyền trong bảng bên dưới.",
+      "add": "Thêm vai trò",
+      "create": "Tạo vai trò",
+      "name": "Tên vai trò",
+      "slug": "Mã vai trò",
+      "empty": "Chưa có vai trò tùy chỉnh.",
+      "created": "Đã tạo vai trò",
+      "deleted": "Đã xóa vai trò",
+      "deleteTitle": "Xóa vai trò",
+      "deleteConfirm": "Xóa vai trò «{{name}}»? Hành động này không thể hoàn tác."
+    },
+    "staff": {
+      "directoryView": "Xem danh sách nhân viên",
+      "directoryCreate": "Thêm nhân viên",
+      "directoryUpdate": "Cập nhật nhân viên",
+      "directoryDelete": "Xóa nhân viên",
+      "setupManage": "Quản lý phòng ban & chức danh",
+      "contractsView": "Xem hợp đồng",
+      "contractsManage": "Quản lý hợp đồng",
+      "classesView": "Xem phân công lớp",
+      "classesManage": "Quản lý phân công lớp",
+      "accessManage": "Cấp quyền đăng nhập",
+      "permissionsManage": "Quản lý ma trận phân quyền"
+    },
+    "crm": {
+      "leadsView": "Xem leads tuyển sinh",
+      "leadsManage": "Quản lý leads tuyển sinh"
+    },
+    "students": {
+      "directoryView": "Xem danh sách học sinh",
+      "directoryManage": "Quản lý học sinh"
+    },
+    "classes": {
+      "directoryView": "Xem danh sách lớp",
+      "directoryManage": "Quản lý lớp học"
+    },
+    "reports": {
+      "view": "Xem báo cáo"
+    },
+    "settings": {
+      "schoolManage": "Cấu hình thông tin trường",
+      "subscriptionManage": "Quản lý gói đăng ký"
     }
   },
   "staff": {
@@ -604,9 +749,20 @@
     "isTeacherHint": "Đánh dấu nếu nhân viên này có thể được phân công làm GVCN hoặc dạy lớp.",
     "teacherBadge": "Giáo viên",
     "grantAccess": "Cấp quyền đăng nhập",
-    "grantAccessHint": "Liên kết tài khoản đã đăng ký cùng email để truy cập hệ thống.",
+    "grantAccessHint": "Hệ thống sẽ tạo tài khoản và gửi email mời đặt mật khẩu.",
     "accountLinked": "Đã liên kết tài khoản",
-    "accountPending": "Chờ liên kết tài khoản",
+    "accountPending": "Chưa liên kết tài khoản",
+    "invitePending": "Chờ xác nhận invite",
+    "inviteAccepted": "Đã kích hoạt tài khoản",
+    "resendInvite": "Gửi lại lời mời",
+    "inviteSent": "Đã gửi email mời",
+    "inviteResendFailed": "Không gửi được email mời. Vui lòng thử lại.",
+    "inviteActionTitle": "Kích hoạt tài khoản đăng nhập",
+    "inviteFailedHint": "Nhân viên được cấp quyền đăng nhập nhưng email mời chưa gửi thành công. Bấm «Gửi lại lời mời» để gửi link đặt mật khẩu.",
+    "invitePendingHint": "Email mời đã được gửi nhưng nhân viên chưa kích hoạt tài khoản. Nếu link hết hạn, bấm «Gửi lại lời mời» để nhận link mới.",
+    "inviteNoEmailHint": "Nhân viên được cấp quyền đăng nhập nhưng chưa có email. Cập nhật email trong hồ sơ để gửi lời mời.",
+    "inviteLastSent": "Lần gửi gần nhất: {{date}}",
+    "inviteContactAdmin": "Liên hệ quản trị viên để được gửi lại lời mời",
     "activeContract": "Hợp đồng hiện tại",
     "notes": "Ghi chú",
     "save": "Lưu",
@@ -638,6 +794,7 @@
     "accessRoles": {
       "staff": "Nhân viên",
       "admin": "Quản trị",
+      "manager": "Quản lý vận hành",
       "accountant": "Kế toán"
     },
     "statuses": {
@@ -692,9 +849,19 @@
     "linkAccount": "Liên kết tài khoản",
     "unlink": "Gỡ liên kết",
     "linked": "Đã liên kết tài khoản phụ huynh",
+    "inviteSent": "Đã gửi email mời đến phụ huynh",
     "unlinked": "Đã gỡ liên kết",
     "noLinks": "Chưa có tài khoản phụ huynh được liên kết.",
+    "childWorkspaceTitle": "Tổng quan học sinh",
+    "attendanceHint": "Lịch sử điểm danh gần đây của học sinh.",
+    "financeHint": "Hóa đơn và số dư cần thanh toán của học sinh.",
+    "stats": {
+      "reports": "Nhật ký ngày",
+      "attendancePresent": "Ngày có mặt",
+      "unpaidInvoices": "Hóa đơn chưa thu"
+    },
     "staffPortal": "Khu vực nhà trường",
+    "accountSettings": "Cài đặt tài khoản",
     "tabs": {
       "reports": "Nhật ký",
       "attendance": "Điểm danh",
@@ -723,14 +890,31 @@
   "dailyReports": {
     "title": "Nhật ký hằng ngày",
     "description": "Ghi nhận hoạt động, sức khỏe và sinh hoạt của học sinh.",
-    "consumedLabel": "Mức ăn",
+    "workspaceTitle": "Không gian nhật ký",
+    "workspaceHint": "Ghi nhật ký theo lớp và theo dõi tiến độ toàn trường.",
+    "classTitle": "Nhật ký theo lớp",
+    "classHint": "Chỉnh nhanh tâm trạng và ghi chú. Mở chi tiết để nhập bữa ăn, sức khỏe, timeline và media.",
+    "overviewHint": "Tiến độ hoàn thành nhật ký của từng lớp trong ngày đã chọn.",
+    "openClass": "Mở lớp",
+    "emptyClass": "Lớp chưa có học sinh.",
+    "noClassesDescription": "Tạo lớp đang hoạt động trước khi ghi nhật ký.",
+    "stats": {
+      "enrolled": "Học sinh",
+      "published": "Đã gửi PH",
+      "draft": "Bản nháp",
+      "missing": "Chưa ghi",
+      "completionLabel": "Hoàn thành"
+    },
     "tabs": {
       "class": "Theo lớp",
       "detail": "Chi tiết",
       "overview": "Tổng quan",
       "media": "Hình ảnh"
     },
+    "consumedLabel": "Mức ăn",
     "uploadMedia": "Tải ảnh/video",
+    "mediaCount": "{{count}} ảnh/video",
+    "mediaUploadHint": "Tải ảnh hoặc video cho nhật ký đang chỉnh sửa. Phụ huynh chỉ thấy sau khi gửi.",
     "saveBeforeMedia": "Lưu nhật ký trước khi tải media",
     "mediaEmpty": "Chưa có hình ảnh hoặc video.",
     "mediaUploaded": "Đã tải media",
@@ -751,6 +935,16 @@
     "teacherNote": "Ghi chú giáo viên",
     "dailySummary": "Tóm tắt ngày",
     "save": "Lưu nhật ký",
+    "saveDraft": "Lưu nháp",
+    "saveDraftSuccess": "Đã lưu bản nháp",
+    "saveAndPublish": "Lưu và gửi phụ huynh",
+    "editReport": "Sửa",
+    "newReport": "Nhật ký mới",
+    "editingReport": "Đang chỉnh sửa nhật ký ngày {{date}}",
+    "deleteReport": "Xóa nhật ký",
+    "deleteReportConfirm": "Xóa bản nháp này? Hành động không thể hoàn tác.",
+    "reportDeleted": "Đã xóa nhật ký",
+    "draftParentHint": "Phụ huynh chỉ xem được nhật ký đã gửi. Nhấn \"Gửi phụ huynh\" để công bố.",
     "publish": "Gửi phụ huynh",
     "published": "Đã gửi phụ huynh",
     "draft": "Bản nháp",
@@ -764,6 +958,7 @@
     "timeline": "Dòng thời gian",
     "acknowledge": "Đã xem",
     "acknowledged": "Phụ huynh đã xác nhận",
+    "acknowledgedReadOnly": "Phụ huynh đã xác nhận nhật ký này — không thể chỉnh sửa.",
     "consumed": {
       "full": "Hết",
       "half": "Một nửa",
@@ -865,6 +1060,9 @@
   "inventory": {
     "title": "Quản lý kho",
     "description": "Theo dõi nguyên vật liệu, nhập xuất và cảnh báo tồn kho.",
+    "workspaceTitle": "Không gian kho",
+    "workspaceHint": "Quản lý sản phẩm, giao dịch kho, nhà cung cấp và đơn mua hàng.",
+    "transferHint": "Chuyển tồn kho giữa các sản phẩm khi phân loại hoặc gộp hàng.",
     "tabs": {
       "products": "Sản phẩm",
       "transactions": "Giao dịch",
@@ -943,7 +1141,11 @@
   "ai": {
     "title": "Trợ lý AI",
     "description": "Chat, dự báo và kiến thức nội bộ cho nhà trường.",
+    "workspaceTitle": "Không gian AI",
+    "workspaceHint": "Trò chuyện với trợ lý, xem phân tích và quản lý bài viết kiến thức.",
     "descriptionFallback": "Chế độ cơ bản — thêm OPENAI_API_KEY để bật AI đầy đủ.",
+    "creditsUsed": "Đã dùng",
+    "providerStatus": "Nhà cung cấp",
     "tabs": {
       "chat": "Trò chuyện",
       "insights": "Phân tích",
@@ -983,6 +1185,8 @@
   "health": {
     "title": "Quản lý sức khỏe",
     "description": "Theo dõi hồ sơ sức khỏe, tăng trưởng, tiêm chủng, thuốc và sự cố y tế của học sinh.",
+    "workspaceTitle": "Không gian sức khỏe",
+    "workspaceHint": "Theo dõi hồ sơ sức khỏe, tiêm chủng, thuốc và sự cố y tế của học sinh.",
     "profile": "Hồ sơ sức khỏe",
     "allergies": "Dị ứng",
     "height": "Chiều cao",

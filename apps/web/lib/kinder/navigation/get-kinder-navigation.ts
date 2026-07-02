@@ -3,44 +3,41 @@ import type { z } from 'zod';
 import type { NavigationConfigSchema } from '@kit/ui/navigation-schema';
 
 import { navigationConfig } from '~/config/navigation.config';
-import pathsConfig from '~/config/paths.config';
+import { hasPermission } from '~/lib/kinder/permissions/check-permission';
+import { getModuleByPath } from '~/lib/kinder/permissions/module-registry';
+import type { KinderPermission } from '~/lib/kinder/permissions/permission-keys';
 import {
   hasPackageFeature,
-  type PackageFeature,
 } from '~/lib/kinder/subscription/package-features';
 import type { Package, SchoolSubscription } from '~/lib/kinder/types';
-
-const PATH_FEATURES: Array<{ path: string; feature: PackageFeature }> = [
-  { path: pathsConfig.app.crm, feature: 'crm' },
-  { path: pathsConfig.app.students, feature: 'students' },
-  { path: pathsConfig.app.classes, feature: 'classes' },
-  { path: pathsConfig.app.finance, feature: 'finance' },
-  { path: pathsConfig.app.attendance, feature: 'attendance' },
-  { path: pathsConfig.app.staff, feature: 'staff' },
-  { path: pathsConfig.app.dailyReports, feature: 'daily_reports' },
-  { path: pathsConfig.app.menu, feature: 'meal_menu' },
-  { path: pathsConfig.app.inventory, feature: 'inventory' },
-  { path: pathsConfig.app.health, feature: 'health_management' },
-  { path: pathsConfig.app.ai, feature: 'ai_assistant' },
-];
 
 function isPathAllowed(
   path: string,
   pkg: Package | null | undefined,
   subscription?: SchoolSubscription | null,
+  permissions?: ReadonlySet<KinderPermission>,
 ) {
-  const match = PATH_FEATURES.find((entry) => entry.path === path);
+  const module = getModuleByPath(path);
 
-  if (!match) {
+  if (module) {
+    if (!hasPackageFeature(pkg, module.packageFeature, subscription)) {
+      return false;
+    }
+
+    if (permissions && !hasPermission(permissions, module.viewPermission)) {
+      return false;
+    }
+
     return true;
   }
 
-  return hasPackageFeature(pkg, match.feature, subscription);
+  return true;
 }
 
 export function getKinderNavigationConfig(
   pkg: Package | null | undefined,
   subscription?: SchoolSubscription | null,
+  permissions?: ReadonlySet<KinderPermission>,
 ) {
   const filteredRoutes = navigationConfig.routes
     .map((group) => {
@@ -51,7 +48,7 @@ export function getKinderNavigationConfig(
       return {
         ...group,
         children: group.children.filter((item) =>
-          isPathAllowed(item.path, pkg, subscription),
+          isPathAllowed(item.path, pkg, subscription, permissions),
         ),
       };
     })

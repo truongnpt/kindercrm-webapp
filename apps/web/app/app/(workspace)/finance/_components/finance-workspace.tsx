@@ -1,6 +1,7 @@
 'use client';
 
-import { FileText, Receipt, Wallet } from 'lucide-react';
+import { BarChart3, FileText, Receipt, Wallet } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { Trans } from '@kit/ui/trans';
 
@@ -12,6 +13,7 @@ import {
   TabbedModuleList,
   TabbedModuleTrigger,
 } from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
 import type {
   FinanceSummary,
   InvoiceWithStudent,
@@ -38,6 +40,16 @@ export function FinanceWorkspace({
   feeItems: TuitionFeeItem[];
   schoolId: string;
 }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get('tab') ?? defaultTab;
+
+  const setTab = (tab: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tab', tab);
+    router.push(`${pathsConfig.app.finance}?${params.toString()}`);
+  };
+
   return (
     <BentoTile className="min-w-0 overflow-hidden p-0" padding="none">
       <div className="border-b border-border px-5 py-4 sm:px-6">
@@ -48,9 +60,15 @@ export function FinanceWorkspace({
         />
       </div>
 
-      <TabbedModule className="min-w-0 p-4 gap-0" defaultValue={defaultTab}>
-        <TabbedModuleList>
+      <TabbedModule
+        className="min-w-0 gap-0 p-4 sm:p-6"
+        defaultValue={defaultTab}
+        onValueChange={setTab}
+        value={activeTab}
+      >
+        <TabbedModuleList className="mb-4 flex-wrap">
           <TabbedModuleTrigger value="overview">
+            <BarChart3 className="mr-2 size-4" />
             <Trans i18nKey="kinder:finance.tabs.overview" />
           </TabbedModuleTrigger>
           <TabbedModuleTrigger value="invoices">
@@ -67,31 +85,19 @@ export function FinanceWorkspace({
           </TabbedModuleTrigger>
         </TabbedModuleList>
 
-        <TabbedModuleContent
-          className="px-5 py-5 sm:px-6"
-          value="overview"
-        >
+        <TabbedModuleContent value="overview">
           <FinanceDashboard summary={summary} />
         </TabbedModuleContent>
 
-        <TabbedModuleContent
-          className="px-5 pb-5 sm:px-6 sm:pb-6"
-          value="invoices"
-        >
+        <TabbedModuleContent value="invoices">
           <InvoicesList invoices={invoices} />
         </TabbedModuleContent>
 
-        <TabbedModuleContent
-          className="px-5 pb-5 sm:px-6 sm:pb-6"
-          value="tuition"
-        >
+        <TabbedModuleContent value="tuition">
           <TuitionFeesPanel feeItems={feeItems} schoolId={schoolId} />
         </TabbedModuleContent>
 
-        <TabbedModuleContent
-          className="px-5 pb-5 sm:px-6 sm:pb-6"
-          value="debts"
-        >
+        <TabbedModuleContent value="debts">
           <DebtsList debts={debts} />
         </TabbedModuleContent>
       </TabbedModule>

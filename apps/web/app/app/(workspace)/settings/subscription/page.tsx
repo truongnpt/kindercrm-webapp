@@ -1,16 +1,9 @@
-import { History } from 'lucide-react';
-
-import { Badge } from '@kit/ui/badge';
 import { Trans } from '@kit/ui/trans';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
-import {
-  EmptyState,
-  InlineAlert,
-  KinderPageBody,
-  KinderPageHeader,
-  SectionCard,
-} from '~/components/kinder-ui';
+import { KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
+import { assertModuleAccessFromContext } from '~/lib/kinder/permissions/module-access.server';
 import {
   isActiveTrialSubscription,
   loadPublicPackages,
@@ -22,8 +15,7 @@ import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
-import { QuotaUsageBanner } from '../../_components/quota-usage-banner';
-import { SubscriptionPlans } from './_components/subscription-plans';
+import { SubscriptionWorkspace } from './_components/subscription-workspace';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -33,13 +25,24 @@ export const generateMetadata = async () => {
   };
 };
 
-async function SubscriptionPage() {
+async function SubscriptionPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
+  const { tab } = await searchParams;
   const user = await requireUserInServerComponent();
   const context = await getSchoolContext(user.id);
 
   if (!context) {
     return null;
   }
+
+  await assertModuleAccessFromContext(
+    context,
+    pathsConfig.app.settingsSubscription,
+    'view',
+  );
 
   const client = getSupabaseServerClient();
   const [packages, history, usageSummary] = await Promise.all([
@@ -51,97 +54,38 @@ async function SubscriptionPage() {
   const packageMap = new Map(packages.map((pkg) => [pkg.id, pkg]));
   const isOwner = context.role === 'owner';
   const trialEnds = context.subscription?.trial_ends_at
-    ? new Date(context.subscription.trial_ends_at).toLocaleDateString('vi-VN')
+    ? new Date(context.subscription.trial_ends_at).toLocaleDateString()
     : null;
   const isTrial = isActiveTrialSubscription(context.subscription);
 
   return (
     <>
       <KinderPageHeader
-        breadcrumbs={[{ label: <Trans i18nKey="kinder:subscription.title" /> }]}
+        breadcrumbs={[
+          {
+            label: <Trans i18nKey="common:routes.settings" />,
+          },
+          { label: <Trans i18nKey="kinder:subscription.title" /> },
+        ]}
         description={<Trans i18nKey="kinder:subscription.description" />}
         title={<Trans i18nKey="kinder:subscription.title" />}
       />
 
       <KinderPageBody>
-        <SectionCard>
-          <div className="flex flex-wrap items-center gap-3">
-            <div>
-              <p className="text-muted-foreground text-sm">
-                <Trans i18nKey="kinder:subscription.currentPlan" />
-              </p>
-              <p className="text-foreground text-2xl font-semibold tracking-tight">
-                {context.package?.name ?? '—'}
-              </p>
-            </div>
-            {context.subscription?.status === 'trial' ? (
-              <Badge variant="secondary">
-                <Trans i18nKey="kinder:subscription.trialBadge" />
-              </Badge>
-            ) : (
-              <Badge>
-                <Trans i18nKey="kinder:subscription.activeBadge" />
-              </Badge>
-            )}
-          </div>
-        </SectionCard>
-
-        {isTrial && trialEnds ? (
-          <InlineAlert tone="info">
-            <Trans
-              i18nKey="kinder:subscription.trialFullAccess"
-              values={{ date: trialEnds }}
-            />
-          </InlineAlert>
-        ) : null}
-
-        <QuotaUsageBanner
-          package={context.package}
+        <SubscriptionWorkspace
+          currentPackageId={context.package?.id ?? null}
+          currentPackageName={context.package?.name ?? '—'}
+          defaultTab={tab ?? 'plan'}
+          history={history}
+          isOwner={isOwner}
+          isTrial={isTrial}
+          packageMap={packageMap}
+          packages={packages}
+          pkg={context.package}
+          schoolId={context.school.id}
+          trialEnds={trialEnds}
           usage={usageSummary.usage}
         />
-
-        <SubscriptionPlans
-          currentPackageId={context.package?.id ?? null}
-          isOwner={isOwner}
-          packages={packages}
-          schoolId={context.school.id}
-        />
-
-        <SectionCard title={<Trans i18nKey="kinder:subscription.history" />}>
-          {history.length === 0 ? (
-            <EmptyState
-              compact
-              descriptionKey="kinder:ui.emptyDefaultDescription"
-              icon={History}
-              titleKey="kinder:subscription.historyEmpty"
-            />
-          ) : (
-            <ul className="flex flex-col gap-3">
-              {history.map((item) => (
-                <li className="kinder-mobile-card text-sm" key={item.id}>
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="font-medium">
-                      {packageMap.get(item.package_id)?.name ?? item.package_id}
-                    </span>
-                    <span className="text-muted-foreground">
-                      {new Date(item.created_at).toLocaleString('vi-VN')}
-                    </span>
-                  </div>
-                  {item.previous_package_id ? (
-                    <p className="text-muted-foreground mt-1">
-                      {packageMap.get(item.previous_package_id)?.name ??
-                        item.previous_package_id}{' '}
-                      → {packageMap.get(item.package_id)?.name}
-                    </p>
-                  ) : null}
-                  {item.note ? (
-                    <p className="text-muted-foreground mt-1">{item.note}</p>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
-          )}
-        </SectionCard>
       </KinderPageBody>
     </>
   );

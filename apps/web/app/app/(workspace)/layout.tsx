@@ -7,6 +7,7 @@ import { SidebarProvider } from '@kit/ui/shadcn-sidebar';
 import { navigationConfig } from '~/config/navigation.config';
 import pathsConfig from '~/config/paths.config';
 import { getKinderNavigationConfig } from '~/lib/kinder/navigation/get-kinder-navigation';
+import { loadMemberPermissions } from '~/lib/kinder/permissions';
 import {
   loadUnreadNotificationCount,
   loadUserNotifications,
@@ -117,16 +118,25 @@ async function loadWorkspaceData() {
     }
   }
 
-  const [notifications, unreadCount, platformAdmin] = context
+  const [notifications, unreadCount, platformAdmin, memberPermissions] = context
     ? await Promise.all([
         loadUserNotifications(user.id),
         loadUnreadNotificationCount(user.id),
         getPlatformAdminContext(user.id),
+        loadMemberPermissions(
+          context.school.id,
+          context.role,
+          context.customRoleId,
+        ),
       ])
-    : [[], 0, null];
+    : [[], 0, null, undefined];
 
   const navigation = context
-    ? getKinderNavigationConfig(context.package, context.subscription)
+    ? getKinderNavigationConfig(
+        context.package,
+        context.subscription,
+        memberPermissions,
+      )
     : navigationConfig;
 
   return {

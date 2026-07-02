@@ -6,6 +6,7 @@ import {
   BentoTile,
   BentoTileHeader,
 } from '~/components/kinder-ui';
+import type { SchoolCustomRole, StaffModulePermissions } from '~/lib/kinder/permissions';
 import type { Campus } from '~/lib/kinder/types';
 import type {
   StaffDepartment,
@@ -20,16 +21,18 @@ export function StaffWorkspace({
   departments,
   positions,
   campuses,
+  customRoles,
   schoolId,
-  canManage,
+  permissions,
   hasActiveFilters,
 }: {
   employees: StaffEmployeeListItem[];
   departments: StaffDepartment[];
   positions: StaffPosition[];
   campuses: Campus[];
+  customRoles: SchoolCustomRole[];
   schoolId: string;
-  canManage: boolean;
+  permissions: StaffModulePermissions;
   hasActiveFilters: boolean;
 }) {
   return (
@@ -45,7 +48,8 @@ export function StaffWorkspace({
       <div className="px-5 py-5 sm:px-6 sm:py-6">
         <StaffList
           campuses={campuses}
-          canManage={canManage}
+          customRoles={customRoles}
+          permissions={permissions}
           departments={departments}
           employees={employees}
           hasActiveFilters={hasActiveFilters}

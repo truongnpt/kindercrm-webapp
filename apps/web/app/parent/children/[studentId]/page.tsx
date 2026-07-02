@@ -26,10 +26,13 @@ export const generateMetadata = async () => {
 
 async function ParentChildPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ studentId: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }) {
   const { studentId } = await params;
+  const { tab } = await searchParams;
   const user = await requireUserInServerComponent();
 
   let student;
@@ -61,6 +64,7 @@ async function ParentChildPage({
       <PageBody>
         <ParentChildDetailPanel
           attendance={attendance}
+          defaultTab={tab ?? 'reports'}
           dailyReports={dailyReportsWithMedia}
           health={health}
           invoices={invoices}

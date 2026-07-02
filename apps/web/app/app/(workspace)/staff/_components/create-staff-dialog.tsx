@@ -16,6 +16,7 @@ import {
   kinderQueryKeys,
   useKinderMutation,
 } from '~/components/kinder-ui';
+import type { SchoolCustomRole } from '~/lib/kinder/permissions';
 import type { Campus } from '~/lib/kinder/types';
 import { CreateStaffEmployeeSchema } from '~/lib/kinder/staff/schemas/staff.schema';
 import { createStaffEmployeeAction } from '~/lib/kinder/staff/server-actions';
@@ -28,11 +29,15 @@ export function CreateStaffDialog({
   departments,
   positions,
   campuses,
+  canManageAccess,
+  customRoles = [],
 }: {
   schoolId: string;
   departments: StaffDepartment[];
   positions: StaffPosition[];
   campuses: Campus[];
+  canManageAccess: boolean;
+  customRoles?: SchoolCustomRole[];
 }) {
   const [open, setOpen] = useState(false);
 
@@ -45,7 +50,7 @@ export function CreateStaffDialog({
       email: '',
       phone: '',
       isTeacher: false,
-      accessRole: 'staff' as const,
+      accessRoleKey: 'staff',
       grantSystemAccess: false,
       departmentId: '',
       positionId: '',
@@ -66,7 +71,7 @@ export function CreateStaffDialog({
         email: '',
         phone: '',
         isTeacher: false,
-        accessRole: 'staff',
+        accessRoleKey: 'staff',
         grantSystemAccess: false,
         departmentId: '',
         positionId: '',
@@ -105,6 +110,8 @@ export function CreateStaffDialog({
         <form className="flex flex-col gap-4">
           <StaffFormFields
             campuses={campuses}
+            canManageAccess={canManageAccess}
+            customRoles={customRoles}
             departments={departments}
             form={form}
             mode="create"

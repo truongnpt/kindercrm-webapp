@@ -1,9 +1,16 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 import { Trans } from '@kit/ui/trans';
 
 import { DetailPageHeader, KinderPageBody } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
+import {
+  buildStaffModulePermissions,
+  loadMemberPermissions,
+  loadSchoolCustomRoles,
+  STAFF_PERMISSIONS,
+} from '~/lib/kinder/permissions';
+import { hasPermission } from '~/lib/kinder/permissions/check-permission';
 import {
   loadActiveClassesForStaff,
   loadStaffClassAssignments,
@@ -47,6 +54,18 @@ async function StaffDetailPage({
 
   requirePackageFeature(context, 'staff');
 
+  const memberPermissions = await loadMemberPermissions(
+    context.school.id,
+    context.role,
+    context.customRoleId,
+  );
+
+  if (!hasPermission(memberPermissions, STAFF_PERMISSIONS.DIRECTORY_VIEW)) {
+    redirect(pathsConfig.app.home);
+  }
+
+  const permissions = buildStaffModulePermissions(memberPermissions);
+
   const employee = await loadStaffEmployeeById(context.school.id, staffId);
 
   if (!employee) {
@@ -57,6 +76,7 @@ async function StaffDetailPage({
     departments,
     positions,
     campuses,
+    customRoles,
     contracts,
     homeroomClasses,
     classAssignments,
@@ -65,13 +85,21 @@ async function StaffDetailPage({
     loadStaffDepartments(context.school.id),
     loadStaffPositions(context.school.id),
     loadCampuses(context.school.id),
-    loadStaffContracts(context.school.id, staffId),
-    loadStaffHomeroomClasses(context.school.id, employee.user_id),
-    loadStaffClassAssignments(context.school.id, staffId),
-    loadActiveClassesForStaff(context.school.id),
+    loadSchoolCustomRoles(context.school.id),
+    permissions.canViewContracts ?
+      loadStaffContracts(context.school.id, staffId)
+    : Promise.resolve([]),
+    employee.is_teacher && permissions.canViewClasses ?
+      loadStaffHomeroomClasses(context.school.id, employee.user_id)
+    : Promise.resolve([]),
+    employee.is_teacher && permissions.canViewClasses ?
+      loadStaffClassAssignments(context.school.id, staffId)
+    : Promise.resolve([]),
+    permissions.canManageClasses ?
+      loadActiveClassesForStaff(context.school.id)
+    : Promise.resolve([]),
   ]);
 
-  const canManage = ['owner', 'admin'].includes(context.role);
   const activeContract = contracts.find((contract) => contract.is_active);
 
   const normalizedAssignments = (classAssignments as Array<{
@@ -84,15 +112,19 @@ async function StaffDetailPage({
     class: item.class,
   }));
 
+  const showActions = permissions.canUpdate || permissions.canDelete;
+
   return (
     <>
       <DetailPageHeader
         actions={
-          canManage ? (
+          showActions ? (
             <StaffDetailActions
               campuses={campuses}
+              customRoles={customRoles}
               departments={departments}
               employee={employee}
+              permissions={permissions}
               positions={positions}
               schoolId={context.school.id}
             />
@@ -115,10 +147,10 @@ async function StaffDetailPage({
           activeContract={activeContract}
           assignments={normalizedAssignments}
           availableClasses={availableClasses}
-          canManage={canManage}
           contracts={contracts}
           employee={employee}
           homeroomClasses={homeroomClasses}
+          permissions={permissions}
           schoolId={context.school.id}
         />
       </KinderPageBody>

@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 import type { JwtPayload } from '@supabase/supabase-js';
 
-import { ChevronsUpDown, Home, LogOut } from 'lucide-react';
+import { ChevronsUpDown, Home, LogOut, User } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -44,6 +44,7 @@ export function PersonalAccountDropdown({
 
   paths: {
     home: string;
+    account?: string;
   };
 
   features: {
@@ -132,6 +133,23 @@ export function PersonalAccountDropdown({
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
+
+        <If condition={paths.account}>
+          <DropdownMenuItem asChild>
+            <Link
+              className={'s-full flex cursor-pointer items-center space-x-2'}
+              href={paths.account!}
+            >
+              <User className={'h-5'} />
+
+              <span>
+                <Trans i18nKey={'common:routes.account'} />
+              </span>
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+        </If>
 
         <DropdownMenuItem asChild>
           <Link

@@ -112,11 +112,19 @@ export function ParentLinkPanel({
           className="kinder-form-panel sm:grid-cols-2"
           onSubmit={form.handleSubmit(async (data) => {
             const promise = linkParentAccountAction(data);
-            toast.promise(promise, {
-              loading: t('schoolSettings.saving'),
-              success: t('parent.linked'),
-              error: t('common:genericServerError', { ns: 'common' }),
-            });
+            toast.promise(
+              promise.then((result) => {
+                if (result?.invited) {
+                  return t('parent.inviteSent');
+                }
+                return t('parent.linked');
+              }),
+              {
+                loading: t('schoolSettings.saving'),
+                success: (message) => message,
+                error: t('common:genericServerError', { ns: 'common' }),
+              },
+            );
             await promise;
             form.reset({
               schoolId,

@@ -2,6 +2,7 @@ import 'server-only';
 
 import { cache } from 'react';
 
+import { getSupabaseServerAdminClient } from '@kit/supabase/server-admin-client';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import type { NotificationCategory, UserNotification } from './types';
@@ -49,7 +50,7 @@ export async function createUserNotification(input: {
   referenceType?: string;
   referenceId?: string;
 }) {
-  const client = getSupabaseServerClient();
+  const client = getSupabaseServerAdminClient();
 
   const { error } = await client.from('user_notifications').insert({
     school_id: input.schoolId,

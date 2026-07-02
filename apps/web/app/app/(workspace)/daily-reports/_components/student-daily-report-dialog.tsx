@@ -94,6 +94,9 @@ export function StudentDailyReportDialog({
   const [timeline, setTimeline] = useState<DailyReportTimelineEntry[]>([]);
   const [attachments, setAttachments] = useState<DailyReportAttachment[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isAcknowledged, setIsAcknowledged] = useState(
+    !!student.report?.parent_acknowledged_at,
+  );
 
   const report = student.report;
 
@@ -121,6 +124,7 @@ export function StudentDailyReportDialog({
           setReportId(bundle.report.id);
           setTimeline(bundle.timeline);
           setAttachments(bundle.attachments);
+          setIsAcknowledged(!!bundle.report.parent_acknowledged_at);
           form.reset(
             buildFormValues(
               schoolId,
@@ -129,6 +133,8 @@ export function StudentDailyReportDialog({
               bundle.report,
             ),
           );
+        } else {
+          setIsAcknowledged(false);
         }
       } finally {
         setLoading(false);
@@ -156,7 +162,17 @@ export function StudentDailyReportDialog({
                 <Trans i18nKey="kinder:dailyReports.draft" />
               </Badge>
             )}
+            {isAcknowledged ? (
+              <Badge variant="outline">
+                <Trans i18nKey="kinder:dailyReports.acknowledged" />
+              </Badge>
+            ) : null}
           </div>
+          {isAcknowledged ? (
+            <p className="text-muted-foreground text-sm">
+              <Trans i18nKey="kinder:dailyReports.acknowledgedReadOnly" />
+            </p>
+          ) : null}
         </DialogHeader>
 
         {loading ? (
@@ -184,8 +200,12 @@ export function StudentDailyReportDialog({
             </TabsList>
 
             <Form {...form}>
+              <fieldset
+                className="mt-4 space-y-4 border-0 p-0"
+                disabled={isAcknowledged}
+              >
               <form
-                className="mt-4 space-y-4"
+                className="space-y-4"
                 onSubmit={form.handleSubmit(async (data) => {
                   const promise = upsertDailyReportAction(data);
                   toast.promise(promise, {
@@ -447,6 +467,7 @@ export function StudentDailyReportDialog({
                 <TabsContent value="timeline">
                   <DailyReportTimelinePanel
                     entries={timeline}
+                    readOnly={isAcknowledged}
                     reportId={reportId}
                     schoolId={schoolId}
                   />
@@ -455,11 +476,13 @@ export function StudentDailyReportDialog({
                 <TabsContent value="media">
                   <DailyReportMediaPanel
                     attachments={attachments}
+                    readOnly={isAcknowledged}
                     reportId={reportId}
                     schoolId={schoolId}
                   />
                 </TabsContent>
 
+                {!isAcknowledged ? (
                 <div className="flex gap-2 border-t pt-4">
                   <Button type="submit">
                     <Trans i18nKey="kinder:dailyReports.save" />
@@ -491,7 +514,9 @@ export function StudentDailyReportDialog({
                     <Trans i18nKey="kinder:dailyReports.publish" />
                   </Button>
                 </div>
+                ) : null}
               </form>
+              </fieldset>
             </Form>
           </Tabs>
         )}

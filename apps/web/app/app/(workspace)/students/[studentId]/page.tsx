@@ -9,6 +9,7 @@ import {
   loadParentLinksForStudent,
 } from '~/lib/kinder/parent/load-parent';
 import {
+  loadDailyReportAttachmentsMap,
   loadStudentDailyReports,
 } from '~/lib/kinder/daily-reports/load-daily-reports';
 import {
@@ -93,6 +94,13 @@ async function StudentDetailPage({
       : Promise.resolve([]),
   ]);
 
+  const dailyReportAttachments =
+    hasDailyReports && dailyReports.length > 0
+      ? await loadDailyReportAttachmentsMap(
+          dailyReports.map((report) => report.id),
+        )
+      : {};
+
   return (
     <>
       <DetailPageHeader
@@ -117,6 +125,7 @@ async function StudentDetailPage({
       <KinderPageBody>
         <StudentDetailWorkspace
           allergies={allergies}
+          dailyReportAttachments={dailyReportAttachments}
           dailyReports={dailyReports}
           emergencyContacts={emergencyContacts}
           hasDailyReports={hasDailyReports}

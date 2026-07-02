@@ -10,6 +10,7 @@ import {
   TabbedModuleList,
   TabbedModuleTrigger,
 } from '~/components/kinder-ui';
+import type { StaffModulePermissions } from '~/lib/kinder/permissions';
 import type { StaffHomeroomClass } from '~/lib/kinder/staff/types';
 import type {
   StaffContract,
@@ -28,7 +29,7 @@ export function StaffDetailWorkspace({
   assignments,
   availableClasses,
   schoolId,
-  canManage,
+  permissions,
 }: {
   employee: StaffEmployeeDetail;
   activeContract?: StaffContract;
@@ -41,8 +42,11 @@ export function StaffDetailWorkspace({
   }>;
   availableClasses: Array<{ id: string; name: string; code: string }>;
   schoolId: string;
-  canManage: boolean;
+  permissions: StaffModulePermissions;
 }) {
+  const showClassesTab =
+    employee.is_teacher && permissions.canViewClasses;
+
   return (
     <BentoTile className="min-w-0 overflow-hidden p-0" padding="none">
       <div className="border-b border-border px-5 py-4 sm:px-6">
@@ -58,12 +62,12 @@ export function StaffDetailWorkspace({
           <TabbedModuleTrigger value="profile">
             <Trans i18nKey="kinder:staff.tabs.profile" />
           </TabbedModuleTrigger>
-          {canManage ? (
+          {permissions.canViewContracts ? (
             <TabbedModuleTrigger value="contracts">
               <Trans i18nKey="kinder:staff.contracts.title" />
             </TabbedModuleTrigger>
           ) : null}
-          {employee.is_teacher ? (
+          {showClassesTab ? (
             <TabbedModuleTrigger value="classes">
               <Trans i18nKey="kinder:staff.classes.title" />
             </TabbedModuleTrigger>
@@ -77,15 +81,18 @@ export function StaffDetailWorkspace({
           <StaffProfileBento
             activeContract={activeContract}
             employee={employee}
+            permissions={permissions}
+            schoolId={schoolId}
           />
         </TabbedModuleContent>
 
-        {canManage ? (
+        {permissions.canViewContracts ? (
           <TabbedModuleContent
             className="px-5 pb-5 sm:px-6 sm:pb-6"
             value="contracts"
           >
             <StaffContractsPanel
+              canManage={permissions.canManageContracts}
               contracts={contracts}
               employeeId={employee.id}
               schoolId={schoolId}
@@ -93,7 +100,7 @@ export function StaffDetailWorkspace({
           </TabbedModuleContent>
         ) : null}
 
-        {employee.is_teacher ? (
+        {showClassesTab ? (
           <TabbedModuleContent
             className="px-5 pb-5 sm:px-6 sm:pb-6"
             value="classes"
@@ -101,7 +108,7 @@ export function StaffDetailWorkspace({
             <StaffClassesPanel
               assignments={assignments}
               availableClasses={availableClasses}
-              canManage={canManage}
+              canManage={permissions.canManageClasses}
               employeeId={employee.id}
               homeroomClasses={homeroomClasses}
               schoolId={schoolId}

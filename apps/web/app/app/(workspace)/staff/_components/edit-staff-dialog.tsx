@@ -17,6 +17,7 @@ import {
   useKinderMutation,
 } from '~/components/kinder-ui';
 import type { Campus } from '~/lib/kinder/types';
+import { toAccessRoleKey, type SchoolCustomRole } from '~/lib/kinder/permissions';
 import type { z } from 'zod';
 
 import { UpdateStaffEmployeeSchema } from '~/lib/kinder/staff/schemas/staff.schema';
@@ -42,7 +43,10 @@ function toFormValues(employee: EditableStaff, schoolId: string): UpdateStaffFor
     email: employee.email ?? '',
     phone: employee.phone ?? '',
     isTeacher: employee.is_teacher,
-    accessRole: employee.access_role,
+    accessRoleKey: toAccessRoleKey({
+      accessRole: employee.access_role,
+      customRoleId: employee.custom_role_id,
+    }),
     grantSystemAccess: employee.grant_system_access,
     departmentId: employee.department_id ?? '',
     positionId: employee.position_id ?? '',
@@ -60,6 +64,8 @@ export function EditStaffDialog({
   departments,
   positions,
   campuses,
+  canManageAccess,
+  customRoles = [],
   open: controlledOpen,
   onOpenChange,
   trigger,
@@ -70,6 +76,8 @@ export function EditStaffDialog({
   departments: StaffDepartment[];
   positions: StaffPosition[];
   campuses: Campus[];
+  canManageAccess: boolean;
+  customRoles?: SchoolCustomRole[];
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   trigger?: React.ReactNode;
@@ -130,6 +138,8 @@ export function EditStaffDialog({
         <form className="flex flex-col gap-4">
           <StaffFormFields
             campuses={campuses}
+            canManageAccess={canManageAccess}
+            customRoles={customRoles}
             departments={departments}
             form={form}
             mode="edit"

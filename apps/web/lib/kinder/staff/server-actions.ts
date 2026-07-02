@@ -8,6 +8,13 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import pathsConfig from '~/config/paths.config';
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
+import {
+  parseAccessRoleKey,
+  STAFF_PERMISSIONS,
+  type KinderPermission,
+} from '~/lib/kinder/permissions';
+import { assertPermissionFromContext } from '~/lib/kinder/permissions/assert-permission.server';
+import { requireSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 
 import { generateEmployeeCode } from './generate-employee-code';
 import { countStaffEmployees } from './load-staff';
@@ -19,8 +26,10 @@ import {
   CreateStaffEmployeeSchema,
   DeleteStaffEmployeeSchema,
   RemoveStaffClassAssignmentSchema,
+  ResendStaffInviteSchema,
   UpdateStaffEmployeeSchema,
 } from './schemas/staff.schema';
+import { resendStaffInvite } from './provision-staff-account';
 import { syncStaffMemberAccess } from './sync-member-access';
 
 const STAFF_PATH = pathsConfig.app.staff;
@@ -34,27 +43,21 @@ function revalidateStaffPaths(employeeId?: string) {
   }
 }
 
-async function assertSchoolAdmin(schoolId: string, userId: string) {
-  const client = getSupabaseServerClient();
+async function assertStaffPermission(
+  userId: string,
+  schoolId: string,
+  permission: KinderPermission,
+) {
+  const context = await requireSchoolContext(userId);
 
-  const { data, error } = await client
-    .from('school_members')
-    .select('role')
-    .eq('school_id', schoolId)
-    .eq('user_id', userId)
-    .is('deleted_at', null)
-    .maybeSingle();
-
-  if (error) {
-    throw error;
-  }
-
-  if (!data || !['owner', 'admin'].includes(data.role)) {
+  if (context.school.id !== schoolId) {
     throw new KinderError(
       KINDER_ERROR_CODES.SCHOOL_ACCESS_DENIED,
-      'Only school owners and admins can manage staff',
+      'School mismatch',
     );
   }
+
+  await assertPermissionFromContext(context, permission);
 }
 
 async function getNextEmployeeSequence(schoolId: string) {
@@ -65,7 +68,11 @@ async function getNextEmployeeSequence(schoolId: string) {
 
 export const createDepartmentAction = enhanceAction(
   async (data, user) => {
-    await assertSchoolAdmin(data.schoolId, user.id);
+    await assertStaffPermission(
+      user.id,
+      data.schoolId,
+      STAFF_PERMISSIONS.SETUP_MANAGE,
+    );
 
     const client = getSupabaseServerClient();
 
@@ -87,7 +94,11 @@ export const createDepartmentAction = enhanceAction(
 
 export const createPositionAction = enhanceAction(
   async (data, user) => {
-    await assertSchoolAdmin(data.schoolId, user.id);
+    await assertStaffPermission(
+      user.id,
+      data.schoolId,
+      STAFF_PERMISSIONS.SETUP_MANAGE,
+    );
 
     const client = getSupabaseServerClient();
 
@@ -110,12 +121,25 @@ export const createPositionAction = enhanceAction(
 
 export const createStaffEmployeeAction = enhanceAction(
   async (data, user) => {
-    await assertSchoolAdmin(data.schoolId, user.id);
+    await assertStaffPermission(
+      user.id,
+      data.schoolId,
+      STAFF_PERMISSIONS.DIRECTORY_CREATE,
+    );
+
+    if (data.grantSystemAccess) {
+      await assertStaffPermission(
+        user.id,
+        data.schoolId,
+        STAFF_PERMISSIONS.ACCESS_MANAGE,
+      );
+    }
 
     const client = getSupabaseServerClient();
     const sequence = await getNextEmployeeSequence(data.schoolId);
     const employeeCode =
       data.employeeCode?.trim() || generateEmployeeCode(sequence);
+    const { accessRole, customRoleId } = parseAccessRoleKey(data.accessRoleKey);
 
     const { data: employee, error } = await client
       .from('staff_employees')
@@ -126,7 +150,8 @@ export const createStaffEmployeeAction = enhanceAction(
         email: data.email || null,
         phone: data.phone || null,
         is_teacher: data.isTeacher,
-        access_role: data.accessRole,
+        access_role: accessRole,
+        custom_role_id: customRoleId,
         grant_system_access: data.grantSystemAccess,
         department_id: data.departmentId || null,
         position_id: data.positionId || null,
@@ -151,8 +176,10 @@ export const createStaffEmployeeAction = enhanceAction(
     await syncStaffMemberAccess(client, {
       schoolId: data.schoolId,
       employeeId: employee.id,
+      fullName: data.fullName,
       email: data.email || null,
-      accessRole: data.accessRole,
+      accessRole,
+      customRoleId,
       grantSystemAccess: data.grantSystemAccess,
       employmentStatus: 'active',
     });
@@ -165,9 +192,22 @@ export const createStaffEmployeeAction = enhanceAction(
 
 export const updateStaffEmployeeAction = enhanceAction(
   async (data, user) => {
-    await assertSchoolAdmin(data.schoolId, user.id);
+    await assertStaffPermission(
+      user.id,
+      data.schoolId,
+      STAFF_PERMISSIONS.DIRECTORY_UPDATE,
+    );
+
+    if (data.grantSystemAccess) {
+      await assertStaffPermission(
+        user.id,
+        data.schoolId,
+        STAFF_PERMISSIONS.ACCESS_MANAGE,
+      );
+    }
 
     const client = getSupabaseServerClient();
+    const { accessRole, customRoleId } = parseAccessRoleKey(data.accessRoleKey);
 
     const { error } = await client
       .from('staff_employees')
@@ -176,7 +216,8 @@ export const updateStaffEmployeeAction = enhanceAction(
         email: data.email || null,
         phone: data.phone || null,
         is_teacher: data.isTeacher,
-        access_role: data.accessRole,
+        access_role: accessRole,
+        custom_role_id: customRoleId,
         grant_system_access: data.grantSystemAccess,
         department_id: data.departmentId || null,
         position_id: data.positionId || null,
@@ -202,8 +243,10 @@ export const updateStaffEmployeeAction = enhanceAction(
     await syncStaffMemberAccess(client, {
       schoolId: data.schoolId,
       employeeId: data.employeeId,
+      fullName: data.fullName,
       email: data.email || null,
-      accessRole: data.accessRole,
+      accessRole,
+      customRoleId,
       grantSystemAccess: data.grantSystemAccess,
       employmentStatus: data.employmentStatus,
     });
@@ -216,7 +259,11 @@ export const updateStaffEmployeeAction = enhanceAction(
 
 export const deleteStaffEmployeeAction = enhanceAction(
   async (data, user) => {
-    await assertSchoolAdmin(data.schoolId, user.id);
+    await assertStaffPermission(
+      user.id,
+      data.schoolId,
+      STAFF_PERMISSIONS.DIRECTORY_DELETE,
+    );
 
     const client = getSupabaseServerClient();
 
@@ -271,7 +318,11 @@ export const deleteStaffEmployeeAction = enhanceAction(
 
 export const createStaffContractAction = enhanceAction(
   async (data, user) => {
-    await assertSchoolAdmin(data.schoolId, user.id);
+    await assertStaffPermission(
+      user.id,
+      data.schoolId,
+      STAFF_PERMISSIONS.CONTRACTS_MANAGE,
+    );
 
     const client = getSupabaseServerClient();
 
@@ -305,7 +356,11 @@ export const createStaffContractAction = enhanceAction(
 
 export const assignStaffClassAction = enhanceAction(
   async (data, user) => {
-    await assertSchoolAdmin(data.schoolId, user.id);
+    await assertStaffPermission(
+      user.id,
+      data.schoolId,
+      STAFF_PERMISSIONS.CLASSES_MANAGE,
+    );
 
     const client = getSupabaseServerClient();
 
@@ -362,7 +417,11 @@ export const assignStaffClassAction = enhanceAction(
 
 export const removeStaffClassAssignmentAction = enhanceAction(
   async (data, user) => {
-    await assertSchoolAdmin(data.schoolId, user.id);
+    await assertStaffPermission(
+      user.id,
+      data.schoolId,
+      STAFF_PERMISSIONS.CLASSES_MANAGE,
+    );
 
     const client = getSupabaseServerClient();
 
@@ -402,4 +461,85 @@ export const removeStaffClassAssignmentAction = enhanceAction(
     return { success: true };
   },
   { schema: RemoveStaffClassAssignmentSchema },
+);
+
+export const resendStaffInviteAction = enhanceAction(
+  async (data, user) => {
+    await assertStaffPermission(
+      user.id,
+      data.schoolId,
+      STAFF_PERMISSIONS.ACCESS_MANAGE,
+    );
+
+    const client = getSupabaseServerClient();
+
+    const { data: employee, error } = await client
+      .from('staff_employees')
+      .select(
+        'id, full_name, email, grant_system_access, employment_status, access_role, custom_role_id',
+      )
+      .eq('id', data.employeeId)
+      .eq('school_id', data.schoolId)
+      .is('deleted_at', null)
+      .single();
+
+    if (error || !employee) {
+      throw new KinderError(
+        KINDER_ERROR_CODES.STAFF_NOT_FOUND,
+        'Employee not found',
+      );
+    }
+
+    if (!employee.grant_system_access) {
+      throw new KinderError(
+        KINDER_ERROR_CODES.STAFF_INVITE_FAILED,
+        'System access is not enabled for this employee',
+      );
+    }
+
+    if (!employee.email) {
+      throw new KinderError(
+        KINDER_ERROR_CODES.STAFF_INVITE_FAILED,
+        'Employee email is required to send an invite',
+      );
+    }
+
+    const provision = await resendStaffInvite({
+      email: employee.email,
+      fullName: employee.full_name,
+    });
+
+    if (provision.outcome === 'error') {
+      throw new KinderError(
+        KINDER_ERROR_CODES.STAFF_INVITE_FAILED,
+        provision.message,
+      );
+    }
+
+    if (provision.outcome === 'invited') {
+      const { error: inviteTimestampError } = await client
+        .from('staff_employees')
+        .update({ invite_sent_at: new Date().toISOString() })
+        .eq('id', employee.id);
+
+      if (inviteTimestampError) {
+        throw inviteTimestampError;
+      }
+    }
+
+    await syncStaffMemberAccess(client, {
+      schoolId: data.schoolId,
+      employeeId: employee.id,
+      fullName: employee.full_name,
+      email: employee.email,
+      accessRole: employee.access_role,
+      customRoleId: employee.custom_role_id,
+      grantSystemAccess: employee.grant_system_access,
+      employmentStatus: employee.employment_status,
+    });
+
+    revalidateStaffPaths(employee.id);
+    return { success: true, invited: provision.outcome === 'invited' };
+  },
+  { schema: ResendStaffInviteSchema },
 );

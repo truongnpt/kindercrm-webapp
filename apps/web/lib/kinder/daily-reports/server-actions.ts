@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { enhanceAction } from '@kit/next/actions';
+import { getSupabaseServerAdminClient } from '@kit/supabase/server-admin-client';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -15,6 +16,7 @@ import {
   AddTimelineEntrySchema,
   BulkUpsertClassDailyReportsSchema,
   DeleteAttachmentSchema,
+  DeleteDailyReportSchema,
   DeleteTimelineEntrySchema,
   FetchDailyReportBundleSchema,
   PublishDailyReportSchema,
@@ -26,6 +28,10 @@ import { notifyParentsOfDailyReport } from '~/lib/kinder/notifications/load-noti
 import { DAILY_REPORT_MEDIA_BUCKET } from './storage';
 
 const DAILY_REPORTS_PATH = pathsConfig.app.dailyReports;
+
+function normalizeReportDate(reportDate: string) {
+  return reportDate.slice(0, 10);
+}
 
 function revalidateDailyReportPaths(studentId?: string) {
   revalidatePath(DAILY_REPORTS_PATH);
@@ -99,13 +105,31 @@ export const upsertDailyReportAction = enhanceAction(
     const activitiesText =
       data.activities || buildActivitiesSummary(data.learningActivities) || null;
 
+    const reportDate = normalizeReportDate(data.reportDate);
+
+    const { data: existingReport, error: existingError } = await client
+      .from('student_daily_reports')
+      .select('parent_acknowledged_at')
+      .eq('school_id', data.schoolId)
+      .eq('student_id', data.studentId)
+      .eq('report_date', reportDate)
+      .maybeSingle();
+
+    if (existingError) {
+      throw existingError;
+    }
+
+    if (existingReport?.parent_acknowledged_at) {
+      throw new Error('Cannot edit a report acknowledged by parent');
+    }
+
     const { data: report, error } = await client
       .from('student_daily_reports')
       .upsert(
         {
           school_id: data.schoolId,
           student_id: data.studentId,
-          report_date: data.reportDate,
+          report_date: reportDate,
           mood: data.mood || null,
           meals: mealsText,
           nap: napText,
@@ -139,7 +163,33 @@ export const bulkUpsertClassDailyReportsAction = enhanceAction(
   async (data, user) => {
     const client = getSupabaseServerClient();
 
-    const rows = data.reports.map((report) => ({
+    const studentIds = data.reports.map((report) => report.studentId);
+
+    const { data: existingReports, error: existingError } = await client
+      .from('student_daily_reports')
+      .select('student_id, parent_acknowledged_at')
+      .eq('school_id', data.schoolId)
+      .eq('report_date', data.reportDate)
+      .in(
+        'student_id',
+        studentIds.length > 0
+          ? studentIds
+          : ['00000000-0000-0000-0000-000000000000'],
+      );
+
+    if (existingError) {
+      throw existingError;
+    }
+
+    const lockedStudentIds = new Set(
+      (existingReports ?? [])
+        .filter((report) => report.parent_acknowledged_at)
+        .map((report) => report.student_id),
+    );
+
+    const rows = data.reports
+      .filter((report) => !lockedStudentIds.has(report.studentId))
+      .map((report) => ({
       school_id: data.schoolId,
       student_id: report.studentId,
       report_date: data.reportDate,
@@ -148,6 +198,11 @@ export const bulkUpsertClassDailyReportsAction = enhanceAction(
       daily_summary: report.dailySummary || null,
       created_by: user.id,
     }));
+
+    if (rows.length === 0) {
+      revalidateDailyReportPaths();
+      return { success: true };
+    }
 
     const { error } = await client.from('student_daily_reports').upsert(rows, {
       onConflict: 'school_id,student_id,report_date',
@@ -167,6 +222,23 @@ export const bulkUpsertClassDailyReportsAction = enhanceAction(
 export const publishDailyReportAction = enhanceAction(
   async (data) => {
     const client = getSupabaseServerClient();
+    const reportDate = normalizeReportDate(data.reportDate);
+
+    const { data: existingReport, error: existingError } = await client
+      .from('student_daily_reports')
+      .select('parent_acknowledged_at')
+      .eq('school_id', data.schoolId)
+      .eq('student_id', data.studentId)
+      .eq('report_date', reportDate)
+      .maybeSingle();
+
+    if (existingError) {
+      throw existingError;
+    }
+
+    if (existingReport?.parent_acknowledged_at) {
+      throw new Error('Cannot publish a report acknowledged by parent');
+    }
 
     const { data: report, error } = await client
       .from('student_daily_reports')
@@ -176,7 +248,7 @@ export const publishDailyReportAction = enhanceAction(
       })
       .eq('school_id', data.schoolId)
       .eq('student_id', data.studentId)
-      .eq('report_date', data.reportDate)
+      .eq('report_date', reportDate)
       .select('id, students(full_name)')
       .single();
 
@@ -187,18 +259,62 @@ export const publishDailyReportAction = enhanceAction(
     const studentRow = report.students as { full_name: string } | null;
     const studentName = studentRow?.full_name ?? 'Học sinh';
 
-    await notifyParentsOfDailyReport({
-      schoolId: data.schoolId,
-      studentId: data.studentId,
-      studentName,
-      reportDate: data.reportDate,
-      reportId: report.id,
-    });
+    try {
+      await notifyParentsOfDailyReport({
+        schoolId: data.schoolId,
+        studentId: data.studentId,
+        studentName,
+        reportDate,
+        reportId: report.id,
+      });
+    } catch (notifyError) {
+      console.error('Failed to notify parents of daily report', notifyError);
+    }
 
     revalidateDailyReportPaths(data.studentId);
     return { success: true };
   },
   { schema: PublishDailyReportSchema },
+);
+
+export const deleteDailyReportAction = enhanceAction(
+  async (data) => {
+    const client = getSupabaseServerClient();
+    await assertReportSchoolAccess(client, data.schoolId, data.reportId);
+
+    const { data: report, error: fetchError } = await client
+      .from('student_daily_reports')
+      .select('status, parent_acknowledged_at')
+      .eq('id', data.reportId)
+      .single();
+
+    if (fetchError || !report) {
+      throw new Error('Daily report not found');
+    }
+
+    if (report.parent_acknowledged_at) {
+      throw new Error('Cannot delete a report acknowledged by parent');
+    }
+
+    if (report.status === 'published') {
+      throw new Error('Cannot delete a published daily report');
+    }
+
+    const admin = getSupabaseServerAdminClient();
+    const { error } = await admin
+      .from('student_daily_reports')
+      .delete()
+      .eq('id', data.reportId)
+      .eq('school_id', data.schoolId);
+
+    if (error) {
+      throw error;
+    }
+
+    revalidateDailyReportPaths(data.studentId);
+    return { success: true };
+  },
+  { schema: DeleteDailyReportSchema },
 );
 
 /** DAILY-012 Parent acknowledgement */
@@ -249,6 +365,7 @@ export const acknowledgeDailyReportAction = enhanceAction(
 export const addTimelineEntryAction = enhanceAction(
   async (data, user) => {
     const client = getSupabaseServerClient();
+    await assertReportEditable(client, data.schoolId, data.reportId);
 
     const { error } = await client.from('daily_report_timeline_entries').insert({
       school_id: data.schoolId,
@@ -291,11 +408,34 @@ async function assertReportSchoolAccess(
   return data;
 }
 
+async function assertReportEditable(
+  client: SupabaseClient<Database>,
+  schoolId: string,
+  reportId: string,
+) {
+  const { data, error } = await client
+    .from('student_daily_reports')
+    .select('id, school_id, parent_acknowledged_at')
+    .eq('id', reportId)
+    .eq('school_id', schoolId)
+    .single();
+
+  if (error || !data) {
+    throw new Error('Daily report not found');
+  }
+
+  if (data.parent_acknowledged_at) {
+    throw new Error('Cannot modify a report acknowledged by parent');
+  }
+
+  return data;
+}
+
 /** DAILY-015 Register uploaded media */
 export const registerDailyReportAttachmentAction = enhanceAction(
   async (data, user) => {
     const client = getSupabaseServerClient();
-    await assertReportSchoolAccess(client, data.schoolId, data.reportId);
+    await assertReportEditable(client, data.schoolId, data.reportId);
 
     const { data: attachment, error } = await client
       .from('daily_report_attachments')
@@ -327,7 +467,7 @@ export const registerDailyReportAttachmentAction = enhanceAction(
 export const deleteDailyReportAttachmentAction = enhanceAction(
   async (data) => {
     const client = getSupabaseServerClient();
-    await assertReportSchoolAccess(client, data.schoolId, data.reportId);
+    await assertReportEditable(client, data.schoolId, data.reportId);
 
     const { data: attachment, error: fetchError } = await client
       .from('daily_report_attachments')
@@ -363,7 +503,7 @@ export const deleteDailyReportAttachmentAction = enhanceAction(
 export const deleteTimelineEntryAction = enhanceAction(
   async (data) => {
     const client = getSupabaseServerClient();
-    await assertReportSchoolAccess(client, data.schoolId, data.reportId);
+    await assertReportEditable(client, data.schoolId, data.reportId);
 
     const { error } = await client
       .from('daily_report_timeline_entries')

@@ -10,6 +10,8 @@ import type {
   ClassDailyReportStudent,
   DailyReportAttachment,
   DailyReportTimelineEntry,
+  DailyReportsClassSummary,
+  DailyReportsDaySummary,
   StudentDailyReport,
 } from './types';
 
@@ -165,6 +167,39 @@ export const loadDailyReportAttachments = cache(async (reportId: string) => {
   return (data ?? []) as DailyReportAttachment[];
 });
 
+export const loadDailyReportAttachmentsMap = cache(
+  async (reportIds: string[]) => {
+    if (reportIds.length === 0) {
+      return {} as Record<string, DailyReportAttachment[]>;
+    }
+
+    const client = getSupabaseServerClient();
+
+    const { data, error } = await client
+      .from('daily_report_attachments')
+      .select('*')
+      .in('report_id', reportIds)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    const map: Record<string, DailyReportAttachment[]> = Object.fromEntries(
+      reportIds.map((id) => [id, []]),
+    );
+
+    for (const row of data ?? []) {
+      const attachment = row as DailyReportAttachment;
+      const list = map[attachment.report_id] ?? [];
+      list.push(attachment);
+      map[attachment.report_id] = list;
+    }
+
+    return map;
+  },
+);
+
 export const loadDailyReportBundle = cache(
   async (schoolId: string, studentId: string, reportDate: string) => {
     const report = await loadStudentDailyReport(schoolId, studentId, reportDate);
@@ -185,6 +220,73 @@ export const loadDailyReportBundle = cache(
 export const loadParentDailyReportAttachments = cache(async (reportId: string) => {
   return loadDailyReportAttachments(reportId);
 });
+
+function summarizeRoster(roster: ClassDailyReportStudent[]) {
+  const publishedCount = roster.filter(
+    (student) => student.report?.status === 'published',
+  ).length;
+  const draftCount = roster.filter(
+    (student) =>
+      student.report != null && student.report.status !== 'published',
+  ).length;
+  const missingCount = roster.filter((student) => !student.report).length;
+
+  return {
+    totalStudents: roster.length,
+    publishedCount,
+    draftCount,
+    missingCount,
+  };
+}
+
+export function buildDailyReportsDaySummary(input: {
+  reportDate: string;
+  classId: string | null;
+  className: string | null;
+  roster: ClassDailyReportStudent[];
+  activeClasses: number;
+}): DailyReportsDaySummary {
+  const counts = summarizeRoster(input.roster);
+  const completionRate =
+    counts.totalStudents > 0
+      ? Math.round((counts.publishedCount / counts.totalStudents) * 100)
+      : 0;
+
+  return {
+    reportDate: input.reportDate,
+    classId: input.classId,
+    className: input.className,
+    activeClasses: input.activeClasses,
+    completionRate,
+    ...counts,
+  };
+}
+
+export const loadDailyReportsOverviewForDate = cache(
+  async (schoolId: string, reportDate: string) => {
+    const classes = await loadActiveClasses(schoolId);
+
+    const summaries: DailyReportsClassSummary[] = await Promise.all(
+      classes.map(async (cls) => {
+        const roster = await loadDailyReportsForClassDate(
+          schoolId,
+          cls.id,
+          reportDate,
+        );
+        const counts = summarizeRoster(roster);
+
+        return {
+          classId: cls.id,
+          className: cls.name,
+          classCode: cls.code,
+          ...counts,
+        };
+      }),
+    );
+
+    return summaries;
+  },
+);
 
 export const loadParentDailyReports = cache(
   async (userId: string, studentId: string, limit = 14) => {

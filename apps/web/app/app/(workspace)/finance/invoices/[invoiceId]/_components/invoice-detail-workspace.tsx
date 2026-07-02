@@ -1,5 +1,8 @@
 'use client';
 
+import { CreditCard, FileText, QrCode, Wallet } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+
 import { Trans } from '@kit/ui/trans';
 
 import {
@@ -10,6 +13,7 @@ import {
   TabbedModuleList,
   TabbedModuleTrigger,
 } from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
 import type { VietQrConfig } from '~/lib/kinder/finance/vietqr';
 import type {
   InvoiceAdjustment,
@@ -32,6 +36,7 @@ export function InvoiceDetailWorkspace({
   balance,
   showQr,
   vietQrConfig,
+  defaultTab,
 }: {
   invoice: InvoiceWithStudent;
   schoolId: string;
@@ -42,7 +47,20 @@ export function InvoiceDetailWorkspace({
   balance: number;
   showQr: boolean;
   vietQrConfig: VietQrConfig | null;
+  defaultTab: string;
 }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get('tab') ?? defaultTab;
+
+  const setTab = (tab: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tab', tab);
+    router.push(
+      `${pathsConfig.app.finance}/invoices/${invoice.id}?${params.toString()}`,
+    );
+  };
+
   const panelProps = {
     adjustments,
     invoice,
@@ -63,42 +81,38 @@ export function InvoiceDetailWorkspace({
       </div>
 
       <TabbedModule
-        className="min-w-0 p-4 gap-0"
-        defaultValue={showQr ? 'qr' : 'overview'}
+        className="min-w-0 gap-0 p-4 sm:p-6"
+        defaultValue={defaultTab}
+        onValueChange={setTab}
+        value={activeTab}
       >
-        <TabbedModuleList>
+        <TabbedModuleList className="mb-4 flex-wrap">
           <TabbedModuleTrigger value="overview">
+            <FileText className="mr-2 size-4" />
             <Trans i18nKey="kinder:finance.tabs.overview" />
           </TabbedModuleTrigger>
           <TabbedModuleTrigger value="payments">
+            <CreditCard className="mr-2 size-4" />
             <Trans i18nKey="kinder:finance.payments.title" />
           </TabbedModuleTrigger>
           {showQr ? (
             <TabbedModuleTrigger value="qr">
+              <QrCode className="mr-2 size-4" />
               <Trans i18nKey="kinder:finance.qr.title" />
             </TabbedModuleTrigger>
           ) : null}
         </TabbedModuleList>
 
-        <TabbedModuleContent
-          className="px-5 py-5 sm:px-6 sm:py-6"
-          value="overview"
-        >
+        <TabbedModuleContent value="overview">
           <InvoiceDetailPanel {...panelProps} view="overview" />
         </TabbedModuleContent>
 
-        <TabbedModuleContent
-          className="px-5 pb-5 sm:px-6 sm:pb-6"
-          value="payments"
-        >
+        <TabbedModuleContent value="payments">
           <InvoiceDetailPanel {...panelProps} view="payments" />
         </TabbedModuleContent>
 
         {showQr && vietQrConfig ? (
-          <TabbedModuleContent
-            className="px-5 pb-5 sm:px-6 sm:pb-6"
-            value="qr"
-          >
+          <TabbedModuleContent value="qr">
             <InvoiceVietQrPanel
               amount={balance}
               config={vietQrConfig}

@@ -43,10 +43,12 @@ export function StaffContractsPanel({
   schoolId,
   employeeId,
   contracts,
+  canManage,
 }: {
   schoolId: string;
   employeeId: string;
   contracts: StaffContract[];
+  canManage: boolean;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -89,16 +91,18 @@ export function StaffContractsPanel({
           description={<Trans i18nKey="kinder:staff.contracts.hint" />}
           title={<Trans i18nKey="kinder:staff.contracts.title" />}
         />
-        <Button
-          className="shrink-0 rounded-full"
-          onClick={() => setOpen(true)}
-          size="sm"
-          type="button"
-          variant="outline"
-        >
-          <Plus className="mr-1.5 size-4" />
-          <Trans i18nKey="kinder:staff.contracts.add" />
-        </Button>
+        {canManage ? (
+          <Button
+            className="shrink-0 rounded-full"
+            onClick={() => setOpen(true)}
+            size="sm"
+            type="button"
+            variant="outline"
+          >
+            <Plus className="mr-1.5 size-4" />
+            <Trans i18nKey="kinder:staff.contracts.add" />
+          </Button>
+        ) : null}
       </div>
 
       {contracts.length > 0 ? (
@@ -133,7 +137,8 @@ export function StaffContractsPanel({
         </div>
       )}
 
-      <KinderFormDialog
+      {canManage ? (
+        <KinderFormDialog
         onOpenChange={setOpen}
         open={open}
         size="md"
@@ -262,6 +267,7 @@ export function StaffContractsPanel({
           </form>
         </Form>
       </KinderFormDialog>
+      ) : null}
     </BentoTile>
   );
 }

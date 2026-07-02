@@ -2,6 +2,7 @@ export type SchoolStatus = 'active' | 'suspended' | 'archived';
 export type SchoolMemberRole =
   | 'owner'
   | 'admin'
+  | 'manager'
   | 'staff'
   | 'teacher'
   | 'accountant'
@@ -71,6 +72,7 @@ export interface SchoolSubscription {
 export interface SchoolContext {
   school: School;
   role: SchoolMemberRole;
+  customRoleId: string | null;
   subscription: SchoolSubscription | null;
   package: Package | null;
 }

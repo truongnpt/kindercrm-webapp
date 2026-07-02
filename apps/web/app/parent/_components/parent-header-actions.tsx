@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 
+import { User } from 'lucide-react';
+
 import { useSignOut } from '@kit/supabase/hooks/use-sign-out';
 import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
@@ -17,6 +19,12 @@ export function ParentHeaderActions({
 
   return (
     <div className="flex items-center gap-2">
+      <Button asChild size="sm" variant="outline">
+        <Link href={pathsConfig.parent.account}>
+          <User className="mr-2 size-4" />
+          <Trans i18nKey="common:routes.account" />
+        </Link>
+      </Button>
       {hasStaffAccess ? (
         <Button asChild size="sm" variant="outline">
           <Link href={pathsConfig.app.home}>

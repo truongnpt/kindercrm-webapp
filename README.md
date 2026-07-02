@@ -47,6 +47,7 @@ pnpm install
 ```bash
 pnpm supabase:web:start
 pnpm supabase:web:reset   # áp dụng migration + seed
+cd apps/web && npx supabase migration up # áp dụng migration local
 ```
 
 Copy `apps/web/.env.example` → `apps/web/.env.local` và điền keys từ `pnpm supabase:web:status`.
@@ -61,12 +62,12 @@ Mở [http://localhost:3000](http://localhost:3000).
 
 ## Scripts hữu ích
 
-| Lệnh | Mô tả |
-|------|--------|
-| `pnpm dev` | Chạy toàn bộ monorepo |
-| `pnpm --filter web typecheck` | Kiểm tra TypeScript |
-| `pnpm supabase:web:reset` | Reset DB local |
-| `pnpm supabase:web:typegen` | Sinh lại `database.types.ts` |
+| Lệnh                          | Mô tả                        |
+| ----------------------------- | ---------------------------- |
+| `pnpm dev`                    | Chạy toàn bộ monorepo        |
+| `pnpm --filter web typecheck` | Kiểm tra TypeScript          |
+| `pnpm supabase:web:reset`     | Reset DB local               |
+| `pnpm supabase:web:typegen`   | Sinh lại `database.types.ts` |
 
 ## Triển khai production
 

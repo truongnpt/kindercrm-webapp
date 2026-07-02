@@ -19,6 +19,7 @@ export type StaffEmployeeListItem = StaffEmployee & {
   department: Pick<StaffDepartment, 'id' | 'name'> | null;
   position: Pick<StaffPosition, 'id' | 'name'> | null;
   campus: { id: string; name: string } | null;
+  custom_role: { id: string; name: string } | null;
 };
 
 export type StaffEmployeeDetail = StaffEmployeeListItem & {

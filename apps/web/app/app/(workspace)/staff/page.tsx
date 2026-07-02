@@ -5,11 +5,16 @@ import { Trans } from '@kit/ui/trans';
 import { KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import {
+  assertModuleAccessFromContext,
+  buildStaffModulePermissions,
+  loadMemberPermissions,
+  loadSchoolCustomRoles,
+} from '~/lib/kinder/permissions';
+import {
   loadStaffDepartments,
   loadStaffEmployees,
   loadStaffPositions,
 } from '~/lib/kinder/staff/load-staff';
-import { requirePackageFeature } from '~/lib/kinder/subscription/features';
 import { getSchoolContext, loadCampuses } from '~/lib/kinder/tenant/get-school-context';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
@@ -47,20 +52,30 @@ async function StaffPage({
     return null;
   }
 
-  requirePackageFeature(context, 'staff');
+  await assertModuleAccessFromContext(context, pathsConfig.app.staff, 'view');
 
-  const canManage = ['owner', 'admin'].includes(context.role);
+  const memberPermissions = await loadMemberPermissions(
+    context.school.id,
+    context.role,
+    context.customRoleId,
+  );
+
+  const permissions = buildStaffModulePermissions(memberPermissions);
 
   if (params.tab === 'setup') {
-    redirect(canManage ? pathsConfig.app.staffSetup : pathsConfig.app.staff);
+    redirect(
+      permissions.canManageSetup ?
+        pathsConfig.app.staffSetup
+      : pathsConfig.app.staff,
+    );
   }
 
   const filterOptions = {
     status: params.status,
     departmentId:
-      params.departmentId && params.departmentId !== 'all'
-        ? params.departmentId
-        : undefined,
+      params.departmentId && params.departmentId !== 'all' ?
+        params.departmentId
+      : undefined,
     teachersOnly: params.teachersOnly === '1',
     search: params.search,
   };
@@ -72,22 +87,25 @@ async function StaffPage({
       params.search?.trim(),
   );
 
-  const [employees, allEmployees, departments, positions, campuses] =
+  const [employees, allEmployees, departments, positions, campuses, customRoles] =
     await Promise.all([
       loadStaffEmployees(context.school.id, filterOptions),
       loadStaffEmployees(context.school.id),
       loadStaffDepartments(context.school.id),
       loadStaffPositions(context.school.id),
       loadCampuses(context.school.id),
+      loadSchoolCustomRoles(context.school.id),
     ]);
 
   return (
     <>
       <KinderPageHeader
         actions={
-          canManage ? (
+          permissions.canCreate ? (
             <CreateStaffDialog
               campuses={campuses}
+              canManageAccess={permissions.canManageAccess}
+              customRoles={customRoles}
               departments={departments}
               positions={positions}
               schoolId={context.school.id}
@@ -100,16 +118,17 @@ async function StaffPage({
       />
 
       <KinderPageBody>
-        {canManage ? <StaffModuleNav className="mb-2" /> : null}
+        <StaffModuleNav className="mb-2" permissions={permissions} />
 
         <StaffOverview employees={allEmployees} />
 
         <StaffWorkspace
           campuses={campuses}
-          canManage={canManage}
+          customRoles={customRoles}
           departments={departments}
           employees={employees}
           hasActiveFilters={hasActiveFilters}
+          permissions={permissions}
           positions={positions}
           schoolId={context.school.id}
         />

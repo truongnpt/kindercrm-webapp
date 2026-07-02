@@ -16,6 +16,7 @@ import {
   loadInvoicePayments,
   loadPaymentRefunds,
 } from '~/lib/kinder/finance/load-finance';
+import { assertModuleAccessFromContext } from '~/lib/kinder/permissions/module-access.server';
 import { requirePackageFeature } from '~/lib/kinder/subscription/features';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
@@ -23,6 +24,7 @@ import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
 import { InvoiceDetailWorkspace } from './_components/invoice-detail-workspace';
+import { InvoiceOverview } from './_components/invoice-overview';
 
 const INVOICE_STATUS_TONE: Record<
   string,
@@ -46,10 +48,13 @@ export const generateMetadata = async () => {
 
 async function InvoiceDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ invoiceId: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }) {
   const { invoiceId } = await params;
+  const { tab } = await searchParams;
   const user = await requireUserInServerComponent();
   const context = await getSchoolContext(user.id);
 
@@ -58,6 +63,7 @@ async function InvoiceDetailPage({
   }
 
   requirePackageFeature(context, 'finance');
+  await assertModuleAccessFromContext(context, pathsConfig.app.finance, 'view');
 
   const invoice = await loadInvoiceById(context.school.id, invoiceId);
 
@@ -84,6 +90,8 @@ async function InvoiceDetailPage({
     invoice.status !== 'cancelled' &&
     invoice.status !== 'paid';
 
+  const defaultTab = tab ?? (showQr ? 'qr' : 'overview');
+
   return (
     <>
       <DetailPageHeader
@@ -109,9 +117,11 @@ async function InvoiceDetailPage({
       />
 
       <KinderPageBody>
+        <InvoiceOverview balance={balance} invoice={invoice} />
         <InvoiceDetailWorkspace
           adjustments={adjustments}
           balance={balance}
+          defaultTab={defaultTab}
           invoice={invoice}
           lineItems={lineItems}
           payments={payments}

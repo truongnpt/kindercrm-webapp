@@ -10,6 +10,7 @@ import { loadClasses } from '~/lib/kinder/classes/load-classes';
 import { ensureDefaultSchoolYear } from '~/lib/kinder/classes/seed-school-year';
 
 import type {
+  AttendanceDaySummary,
   AttendanceMonthlySummary,
   AttendanceRecord,
   ClassRosterStudent,
@@ -97,6 +98,48 @@ export const loadAttendanceForClassDate = cache(
     return roster;
   },
 );
+
+export function buildAttendanceDaySummary(input: {
+  date: string;
+  classId: string | null;
+  className: string | null;
+  roster: ClassRosterStudent[];
+  pendingLeave: number;
+  activeClasses: number;
+}): AttendanceDaySummary {
+  const attendedStatuses = new Set(['present', 'late', 'early_leave']);
+  const present = input.roster.filter((student) =>
+    attendedStatuses.has(student.record?.status ?? ''),
+  ).length;
+  const absent = input.roster.filter(
+    (student) => student.record?.status === 'absent',
+  ).length;
+  const late = input.roster.filter(
+    (student) => student.record?.status === 'late',
+  ).length;
+  const excused = input.roster.filter(
+    (student) => student.record?.status === 'excused',
+  ).length;
+  const marked = input.roster.filter((student) => student.record).length;
+  const enrolled = input.roster.length;
+  const attendanceRate =
+    enrolled > 0 ? Math.round((present / enrolled) * 100) : 0;
+
+  return {
+    date: input.date,
+    classId: input.classId,
+    className: input.className,
+    enrolled,
+    marked,
+    present,
+    absent,
+    late,
+    excused,
+    attendanceRate,
+    pendingLeave: input.pendingLeave,
+    activeClasses: input.activeClasses,
+  };
+}
 
 export const loadLeaveRequests = cache(async (schoolId: string, status?: string) => {
   const client = getSupabaseServerClient();

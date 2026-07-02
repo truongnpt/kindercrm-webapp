@@ -23,6 +23,7 @@ import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import type { Campus } from '~/lib/kinder/types';
+import type { SchoolCustomRole } from '~/lib/kinder/permissions';
 import type { StaffDepartment, StaffPosition } from '~/lib/kinder/staff/types';
 
 const EMPLOYMENT_STATUSES = [
@@ -37,14 +38,18 @@ export function StaffFormFields({
   departments,
   positions,
   campuses,
+  customRoles = [],
   mode,
+  canManageAccess = false,
 }: {
   // Shared across create/edit schemas with different shapes.
   form: UseFormReturn<any>;
   departments: StaffDepartment[];
   positions: StaffPosition[];
   campuses: Campus[];
+  customRoles?: SchoolCustomRole[];
   mode: 'create' | 'edit';
+  canManageAccess?: boolean;
 }) {
   return (
     <div className="space-y-4">
@@ -176,10 +181,10 @@ export function StaffFormFields({
         )}
       />
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      {canManageAccess ? (
         <FormField
           control={form.control}
-          name="accessRole"
+          name="accessRoleKey"
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -192,15 +197,20 @@ export function StaffFormFields({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="staff">
-                    <Trans i18nKey="kinder:staff.accessRoles.staff" />
-                  </SelectItem>
                   <SelectItem value="admin">
                     <Trans i18nKey="kinder:staff.accessRoles.admin" />
                   </SelectItem>
-                  <SelectItem value="accountant">
-                    <Trans i18nKey="kinder:staff.accessRoles.accountant" />
+                  <SelectItem value="manager">
+                    <Trans i18nKey="kinder:staff.accessRoles.manager" />
                   </SelectItem>
+                  <SelectItem value="staff">
+                    <Trans i18nKey="kinder:staff.accessRoles.staff" />
+                  </SelectItem>
+                  {customRoles.map((role) => (
+                    <SelectItem key={role.id} value={`custom:${role.id}`}>
+                      {role.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormDescription>
@@ -209,7 +219,9 @@ export function StaffFormFields({
             </FormItem>
           )}
         />
+      ) : null}
 
+      <div className="grid gap-4 sm:grid-cols-2">
         {mode === 'edit' ? (
           <FormField
             control={form.control}
@@ -277,28 +289,30 @@ export function StaffFormFields({
         )}
       />
 
-      <FormField
-        control={form.control}
-        name="grantSystemAccess"
-        render={({ field }) => (
-          <FormItem className="flex flex-row items-start gap-3 rounded-2xl bg-muted/30 p-4">
-            <FormControl>
-              <Checkbox
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-            </FormControl>
-            <div className="space-y-1">
-              <FormLabel>
-                <Trans i18nKey="kinder:staff.grantAccess" />
-              </FormLabel>
-              <FormDescription>
-                <Trans i18nKey="kinder:staff.grantAccessHint" />
-              </FormDescription>
-            </div>
-          </FormItem>
-        )}
-      />
+      {canManageAccess ? (
+        <FormField
+          control={form.control}
+          name="grantSystemAccess"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start gap-3 rounded-2xl bg-muted/30 p-4">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1">
+                <FormLabel>
+                  <Trans i18nKey="kinder:staff.grantAccess" />
+                </FormLabel>
+                <FormDescription>
+                  <Trans i18nKey="kinder:staff.grantAccessHint" />
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+      ) : null}
 
       <FormField
         control={form.control}

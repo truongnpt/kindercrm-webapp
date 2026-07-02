@@ -2,6 +2,10 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+import { Button } from '@kit/ui/button';
+import { Input } from '@kit/ui/input';
 import {
   Select,
   SelectContent,
@@ -9,33 +13,49 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@kit/ui/select';
-import pathsConfig from '~/config/paths.config';
+import { Trans } from '@kit/ui/trans';
 
-export function DailyReportFilters({
-  classes,
-}: {
-  classes: Array<{ id: string; name: string; code: string }>;
-}) {
+import pathsConfig from '~/config/paths.config';
+import type { ClassGroup } from '~/lib/kinder/classes/types';
+
+function todayString() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function shiftDate(date: string, days: number) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next.toISOString().slice(0, 10);
+}
+
+export function DailyReportFilters({ classes }: { classes: ClassGroup[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const classId = searchParams.get('classId') ?? classes[0]?.id ?? '';
-  const reportDate =
-    searchParams.get('date') ?? new Date().toISOString().slice(0, 10);
+  const reportDate = searchParams.get('date') ?? todayString();
 
-  function updateParams(key: string, value: string) {
+  const updateParams = (updates: Record<string, string | undefined>) => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set(key, value);
+
+    for (const [key, value] of Object.entries(updates)) {
+      if (!value) {
+        params.delete(key);
+      } else {
+        params.set(key, value);
+      }
+    }
+
     router.push(`${pathsConfig.app.dailyReports}?${params.toString()}`);
-  }
+  };
 
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="flex flex-wrap items-center gap-3">
       <Select
-        onValueChange={(value) => updateParams('classId', value)}
+        onValueChange={(value) => updateParams({ classId: value })}
         value={classId}
       >
-        <SelectTrigger className="w-48">
-          <SelectValue placeholder="Class" />
+        <SelectTrigger className="w-[240px]">
+          <SelectValue placeholder="Chọn lớp" />
         </SelectTrigger>
         <SelectContent>
           {classes.map((cls) => (
@@ -46,12 +66,41 @@ export function DailyReportFilters({
         </SelectContent>
       </Select>
 
-      <input
-        className="border-input bg-background h-9 rounded-md border px-3 text-sm"
-        onChange={(event) => updateParams('date', event.target.value)}
-        type="date"
-        value={reportDate}
-      />
+      <div className="flex items-center gap-1">
+        <Button
+          onClick={() => updateParams({ date: shiftDate(reportDate, -1) })}
+          size="icon"
+          type="button"
+          variant="outline"
+        >
+          <ChevronLeft className="size-4" />
+        </Button>
+
+        <Input
+          className="w-[160px]"
+          onChange={(event) => updateParams({ date: event.target.value })}
+          type="date"
+          value={reportDate}
+        />
+
+        <Button
+          onClick={() => updateParams({ date: shiftDate(reportDate, 1) })}
+          size="icon"
+          type="button"
+          variant="outline"
+        >
+          <ChevronRight className="size-4" />
+        </Button>
+
+        <Button
+          onClick={() => updateParams({ date: todayString() })}
+          size="sm"
+          type="button"
+          variant="ghost"
+        >
+          <Trans i18nKey="kinder:attendance.today" />
+        </Button>
+      </div>
     </div>
   );
 }

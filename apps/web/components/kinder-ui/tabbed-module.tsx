@@ -3,16 +3,22 @@ import { cn } from '@kit/ui/utils';
 
 export function TabbedModule({
   defaultValue,
+  value,
+  onValueChange,
   children,
   className,
 }: React.PropsWithChildren<{
-  defaultValue: string;
+  defaultValue?: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
   className?: string;
 }>) {
   return (
     <Tabs
       className={cn('flex w-full flex-col gap-6', className)}
       defaultValue={defaultValue}
+      onValueChange={onValueChange}
+      value={value}
     >
       {children}
     </Tabs>
@@ -44,7 +50,7 @@ export function TabbedModuleContent({
 }: React.PropsWithChildren<{ value: string; className?: string }>) {
   return (
     <TabsContent
-      className={cn('mt-0 focus-visible:outline-none', className)}
+      className={cn('mt-4 focus-visible:outline-none', className)}
       value={value}
     >
       {children}

@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import { User } from 'lucide-react';
+
 import { AppLogo } from '~/components/app-logo';
 import pathsConfig from '~/config/paths.config';
 import { Button } from '@kit/ui/button';
@@ -26,13 +28,22 @@ export function PlatformShell({
             <PlatformNav platformRole={platformRole} />
           </div>
 
-          {showWorkspaceLink ? (
+          <div className="flex items-center gap-2">
             <Button asChild size="sm" variant="outline">
-              <Link href={pathsConfig.app.home}>
-                <Trans i18nKey="kinder:platform.backToWorkspace" />
+              <Link href={pathsConfig.platform.account}>
+                <User className="mr-2 size-4" />
+                <Trans i18nKey="common:routes.account" />
               </Link>
             </Button>
-          ) : null}
+
+            {showWorkspaceLink ? (
+              <Button asChild size="sm" variant="outline">
+                <Link href={pathsConfig.app.home}>
+                  <Trans i18nKey="kinder:platform.backToWorkspace" />
+                </Link>
+              </Button>
+            ) : null}
+          </div>
         </div>
       </header>
 

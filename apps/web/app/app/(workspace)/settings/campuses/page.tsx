@@ -1,16 +1,14 @@
 import { Building2 } from 'lucide-react';
 
-import { Badge } from '@kit/ui/badge';
 import { Trans } from '@kit/ui/trans';
 
 import {
-  BentoGrid,
-  BentoTile,
-  BentoTileHeader,
   EmptyState,
   KinderPageBody,
   KinderPageHeader,
 } from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
+import { assertModuleAccessFromContext } from '~/lib/kinder/permissions/module-access.server';
 import {
   getSchoolContext,
   loadCampuses,
@@ -19,6 +17,7 @@ import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
+import { CampusesWorkspace } from './_components/campuses-workspace';
 import { CreateCampusDialog } from './_components/create-campus-dialog';
 
 export const generateMetadata = async () => {
@@ -37,6 +36,12 @@ async function CampusesPage() {
     return null;
   }
 
+  await assertModuleAccessFromContext(
+    context,
+    pathsConfig.app.settingsCampuses,
+    'manage',
+  );
+
   const campuses = await loadCampuses(context.school.id);
 
   return (
@@ -48,6 +53,12 @@ async function CampusesPage() {
             schoolId={context.school.id}
           />
         }
+        breadcrumbs={[
+          {
+            label: <Trans i18nKey="common:routes.settings" />,
+          },
+          { label: <Trans i18nKey="kinder:campuses.title" /> },
+        ]}
         description={<Trans i18nKey="kinder:campuses.description" />}
         title={<Trans i18nKey="kinder:campuses.title" />}
       />
@@ -55,37 +66,12 @@ async function CampusesPage() {
       <KinderPageBody>
         {campuses.length === 0 ? (
           <EmptyState
-            descriptionKey="kinder:ui.emptyDefaultDescription"
+            descriptionKey="kinder:campuses.emptyDescription"
             icon={Building2}
             titleKey="kinder:campuses.empty"
           />
         ) : (
-          <BentoGrid columns={3}>
-            {campuses.map((campus) => (
-              <BentoTile key={campus.id}>
-                <BentoTileHeader title={campus.name} />
-                {campus.address ? (
-                  <p className="text-muted-foreground text-sm">{campus.address}</p>
-                ) : null}
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Badge variant="outline">
-                    <Trans
-                      i18nKey={
-                        campus.campus_type === 'branch'
-                          ? 'kinder:campuses.typeBranch'
-                          : 'kinder:campuses.typeCampus'
-                      }
-                    />
-                  </Badge>
-                  {campus.is_main ? (
-                    <Badge>
-                      <Trans i18nKey="kinder:campuses.main" />
-                    </Badge>
-                  ) : null}
-                </div>
-              </BentoTile>
-            ))}
-          </BentoGrid>
+          <CampusesWorkspace campuses={campuses} />
         )}
       </KinderPageBody>
     </>

@@ -1,14 +1,7 @@
 import { Trans } from '@kit/ui/trans';
 
-import {
-  KinderPageBody,
-  KinderPageHeader,
-  TabbedModule,
-  TabbedModuleContent,
-  TabbedModuleList,
-  TabbedModuleTrigger,
-} from '~/components/kinder-ui';
-
+import { KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
 import { getAiConfig } from '~/lib/kinder/ai/config';
 import { getAiCreditStatus } from '~/lib/kinder/ai/credits';
 import {
@@ -20,15 +13,15 @@ import {
   buildRuleBasedInsights,
   buildSchoolAiContext,
 } from '~/lib/kinder/ai/school-context';
+import { assertModuleAccessFromContext } from '~/lib/kinder/permissions/module-access.server';
 import { requirePackageFeature } from '~/lib/kinder/subscription/features';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
-import { AiChatPanel } from './_components/ai-chat-panel';
-import { AiInsightsPanel } from './_components/ai-insights-panel';
-import { AiKnowledgePanel } from './_components/ai-knowledge-panel';
+import { AiOverview } from './_components/ai-overview';
+import { AiWorkspace } from './_components/ai-workspace';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -52,6 +45,7 @@ async function AiAssistantPage({
   }
 
   requirePackageFeature(context, 'ai_assistant');
+  await assertModuleAccessFromContext(context, pathsConfig.app.ai, 'view');
 
   const [sessions, articles, creditStatus, schoolContext, aiConfig] =
     await Promise.all([
@@ -87,43 +81,20 @@ async function AiAssistantPage({
       />
 
       <KinderPageBody>
-        <TabbedModule defaultValue={tab ?? 'chat'}>
-          <TabbedModuleList>
-            <TabbedModuleTrigger value="chat">
-              <Trans i18nKey="kinder:ai.tabs.chat" />
-            </TabbedModuleTrigger>
-            <TabbedModuleTrigger value="insights">
-              <Trans i18nKey="kinder:ai.tabs.insights" />
-            </TabbedModuleTrigger>
-            <TabbedModuleTrigger value="knowledge">
-              <Trans i18nKey="kinder:ai.tabs.knowledge" />
-            </TabbedModuleTrigger>
-          </TabbedModuleList>
-
-          <TabbedModuleContent value="chat">
-            <AiChatPanel
-              creditsRemaining={creditStatus.creditsRemaining}
-              initialMessages={messages}
-              initialSessionId={activeSessionId}
-              schoolId={context.school.id}
-              sessions={sessions}
-            />
-          </TabbedModuleContent>
-
-          <TabbedModuleContent value="insights">
-            <AiInsightsPanel
-              initialInsights={initialInsights}
-              schoolId={context.school.id}
-            />
-          </TabbedModuleContent>
-
-          <TabbedModuleContent value="knowledge">
-            <AiKnowledgePanel
-              articles={articles}
-              schoolId={context.school.id}
-            />
-          </TabbedModuleContent>
-        </TabbedModule>
+        <AiOverview
+          creditStatus={creditStatus}
+          isConfigured={aiConfig.isConfigured}
+        />
+        <AiWorkspace
+          activeSessionId={activeSessionId}
+          articles={articles}
+          creditsRemaining={creditStatus.creditsRemaining}
+          defaultTab={tab ?? 'chat'}
+          initialInsights={initialInsights}
+          messages={messages}
+          schoolId={context.school.id}
+          sessions={sessions}
+        />
       </KinderPageBody>
     </>
   );

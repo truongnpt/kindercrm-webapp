@@ -9,6 +9,7 @@ import pathsConfig from '~/config/paths.config';
 import { upsertDailyReportAction } from '~/lib/kinder/daily-reports/server-actions';
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
 import { findAccountByEmailForSchool } from '~/lib/kinder/tenant/account-lookup';
+import { resendParentInvite } from './provision-parent-account';
 
 import {
   LinkParentAccountSchema,
@@ -53,14 +54,30 @@ export const linkParentAccountAction = enhanceAction(
     await assertSchoolStaffAdmin(data.schoolId, user.id);
 
     const client = getSupabaseServerClient();
+    const normalizedEmail = data.email.trim().toLowerCase();
 
-    const account = await findAccountByEmailForSchool(data.schoolId, data.email);
+    const account = await findAccountByEmailForSchool(
+      data.schoolId,
+      normalizedEmail,
+    );
+    let linkedUserId = account?.id ?? null;
+    let invited = false;
 
-    if (!account) {
-      throw new KinderError(
-        KINDER_ERROR_CODES.PARENT_ACCOUNT_NOT_FOUND,
-        'No registered account found for this email',
-      );
+    if (!linkedUserId) {
+      const provision = await resendParentInvite({
+        email: normalizedEmail,
+        fullName: normalizedEmail,
+      });
+
+      if (provision.outcome === 'error') {
+        throw new KinderError(
+          KINDER_ERROR_CODES.PARENT_ACCOUNT_NOT_FOUND,
+          provision.message,
+        );
+      }
+
+      linkedUserId = provision.userId;
+      invited = provision.outcome === 'invited';
     }
 
     const { data: link, error: linkError } = await client
@@ -69,7 +86,7 @@ export const linkParentAccountAction = enhanceAction(
         {
           school_id: data.schoolId,
           student_id: data.studentId,
-          user_id: account.id,
+          user_id: linkedUserId,
           student_parent_id: data.studentParentId || null,
           relationship: data.relationship,
           is_primary: data.isPrimary,
@@ -88,19 +105,19 @@ export const linkParentAccountAction = enhanceAction(
       .from('school_members')
       .select('id')
       .eq('school_id', data.schoolId)
-      .eq('user_id', account.id)
+      .eq('user_id', linkedUserId)
       .maybeSingle();
 
     if (!existingMember) {
       await client.from('school_members').insert({
         school_id: data.schoolId,
-        user_id: account.id,
+        user_id: linkedUserId,
         role: 'parent',
       });
     }
 
     revalidateParentPaths(data.studentId);
-    return { success: true, linkId: link?.id };
+    return { success: true, linkId: link?.id, invited };
   },
   { schema: LinkParentAccountSchema },
 );

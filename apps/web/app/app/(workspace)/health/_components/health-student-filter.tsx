@@ -11,6 +11,7 @@ import {
 } from '@kit/ui/select';
 import { Trans } from '@kit/ui/trans';
 
+import pathsConfig from '~/config/paths.config';
 import type { StudentOption } from '~/lib/kinder/health/types';
 
 export function HealthStudentFilter({
@@ -37,7 +38,7 @@ export function HealthStudentFilter({
           params.set('studentId', value);
         }
 
-        router.push(`?${params.toString()}`);
+        router.push(`${pathsConfig.app.health}?${params.toString()}`);
       }}
       value={studentId ?? 'all'}
     >

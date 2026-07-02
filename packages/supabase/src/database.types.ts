@@ -2465,6 +2465,44 @@ export type Database = {
           },
         ]
       }
+      school_role_permissions: {
+        Row: {
+          created_at: string
+          granted: boolean
+          id: string
+          permission: string
+          role: Database["public"]["Enums"]["school_member_role"]
+          school_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          granted?: boolean
+          id?: string
+          permission: string
+          role: Database["public"]["Enums"]["school_member_role"]
+          school_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          granted?: boolean
+          id?: string
+          permission?: string
+          role?: Database["public"]["Enums"]["school_member_role"]
+          school_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "school_role_permissions_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       school_subscription_history: {
         Row: {
           changed_by: string | null
@@ -3724,61 +3762,65 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_school_for_owner: {
+        Args: {
+          p_address?: string
+          p_campus_name?: string
+          p_email?: string
+          p_name: string
+          p_phone?: string
+          p_slug: string
+        }
+        Returns: string
+      }
+      default_role_has_permission: {
+        Args: {
+          p_permission: string
+          p_role: Database["public"]["Enums"]["school_member_role"]
+        }
+        Returns: boolean
+      }
+      find_account_by_email_for_school: {
+        Args: { p_email: string; p_school_id: string }
+        Returns: {
+          email: string
+          id: string
+          name: string
+        }[]
+      }
       get_auth_user_parent_student_ids: { Args: never; Returns: string[] }
       get_auth_user_school_ids: { Args: never; Returns: string[] }
+      get_school_member_accounts: {
+        Args: { p_school_id: string; p_user_ids?: string[] }
+        Returns: {
+          email: string
+          id: string
+          name: string
+        }[]
+      }
       is_platform_admin: {
         Args: {
           allowed_roles?: Database["public"]["Enums"]["platform_admin_role"][]
         }
         Returns: boolean
       }
+      is_school_slug_available: { Args: { p_slug: string }; Returns: boolean }
+      seed_school_role_permissions: {
+        Args: { p_school_id: string }
+        Returns: undefined
+      }
       user_can_access_daily_report_media: {
         Args: { object_name: string }
+        Returns: boolean
+      }
+      user_has_school_permission: {
+        Args: { p_permission: string; p_school_id: string }
         Returns: boolean
       }
       user_has_school_role: {
         Args: {
           allowed_roles: Database["public"]["Enums"]["school_member_role"][]
           target_school_id: string
-        }
-        Returns: boolean
-      }
-      create_school_for_owner: {
-        Args: {
-          p_name: string
-          p_slug: string
-          p_phone?: string | null
-          p_email?: string | null
-          p_address?: string | null
-          p_campus_name?: string | null
-        }
-        Returns: string
-      }
-      find_account_by_email_for_school: {
-        Args: {
-          p_school_id: string
-          p_email: string
-        }
-        Returns: {
-          id: string
-          email: string | null
-          name: string
-        }[]
-      }
-      get_school_member_accounts: {
-        Args: {
-          p_school_id: string
-          p_user_ids?: string[] | null
-        }
-        Returns: {
-          id: string
-          email: string | null
-          name: string
-        }[]
-      }
-      is_school_slug_available: {
-        Args: {
-          p_slug: string
         }
         Returns: boolean
       }

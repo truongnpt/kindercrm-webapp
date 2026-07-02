@@ -1,14 +1,15 @@
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
+import { redirect } from 'next/navigation';
+
+import type { SupabaseClient } from '@supabase/supabase-js';
+
 import { Trans } from '@kit/ui/trans';
 
 import {
   KinderPageBody,
   KinderPageHeader,
-  TabbedModule,
-  TabbedModuleContent,
-  TabbedModuleList,
-  TabbedModuleTrigger,
 } from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
 import { ensureDefaultSchoolYear } from '~/lib/kinder/classes/seed-school-year';
 import {
   loadClassrooms,
@@ -17,14 +18,15 @@ import {
   loadSemesters,
   loadTeachersForSchool,
 } from '~/lib/kinder/classes/load-classes';
-import { requirePackageFeature } from '~/lib/kinder/subscription/features';
+import { assertModuleAccessFromContext } from '~/lib/kinder/permissions/module-access.server';
+import { CLASSES_PERMISSIONS, hasPermission, loadMemberPermissions } from '~/lib/kinder/permissions';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
+import type { Database } from '~/lib/database.types';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
-import { ClassesList } from './_components/classes-list';
-import { ClassesSetupPanel } from './_components/classes-setup-panel';
+import { ClassesWorkspace } from './_components/classes_workspace';
 import { CreateClassDialog } from './_components/create-class-dialog';
 
 export const generateMetadata = async () => {
@@ -35,7 +37,13 @@ export const generateMetadata = async () => {
   };
 };
 
-async function ClassesPage() {
+async function ClassesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    tab?: 'classes' | 'setup';
+  }>;
+}) {
   const user = await requireUserInServerComponent();
   const context = await getSchoolContext(user.id);
 
@@ -43,62 +51,68 @@ async function ClassesPage() {
     return null;
   }
 
-  requirePackageFeature(context, 'classes');
+  await assertModuleAccessFromContext(context, pathsConfig.app.classes, 'view');
 
-  const client = getSupabaseServerClient();
+  const client = getSupabaseServerClient() as SupabaseClient<Database>;
   await ensureDefaultSchoolYear(client, context.school.id);
 
   const schoolYears = await loadSchoolYears(context.school.id);
   const currentYear =
     schoolYears.find((y) => y.is_current) ?? schoolYears[0]!;
 
-  const [semesters, classrooms, classes, teachers] = await Promise.all([
+  const params = await searchParams;
+  const requestedTab = params.tab ?? 'classes';
+
+  const memberPermissions = await loadMemberPermissions(
+    context.school.id,
+    context.role,
+    context.customRoleId,
+  );
+  const canManageClasses = hasPermission(
+    memberPermissions,
+    CLASSES_PERMISSIONS.DIRECTORY_MANAGE,
+  );
+
+  if (requestedTab === 'setup' && !canManageClasses) {
+    redirect(pathsConfig.app.classes);
+  }
+
+  const classes = await loadClasses(context.school.id, currentYear.id);
+
+  const [semesters, classrooms, teachers] = canManageClasses ? await Promise.all([
     loadSemesters(context.school.id, currentYear.id),
     loadClassrooms(context.school.id),
-    loadClasses(context.school.id, currentYear.id),
     loadTeachersForSchool(context.school.id),
-  ]);
+  ]) : [[], [], []];
 
   return (
     <>
       <KinderPageHeader
         actions={
-          <CreateClassDialog
-            classrooms={classrooms}
-            defaultSchoolYearId={currentYear.id}
-            schoolId={context.school.id}
-            schoolYears={schoolYears}
-            semesters={semesters}
-            teachers={teachers}
-          />
+          canManageClasses ? (
+            <CreateClassDialog
+              classrooms={classrooms}
+              defaultSchoolYearId={currentYear.id}
+              schoolId={context.school.id}
+              schoolYears={schoolYears}
+              semesters={semesters}
+              teachers={teachers}
+            />
+          ) : undefined
         }
         description={<Trans i18nKey="kinder:classes.description" />}
         title={<Trans i18nKey="kinder:classes.title" />}
       />
 
       <KinderPageBody>
-        <TabbedModule defaultValue="classes">
-          <TabbedModuleList>
-            <TabbedModuleTrigger value="classes">
-              <Trans i18nKey="common:routes.classes" />
-            </TabbedModuleTrigger>
-            <TabbedModuleTrigger value="setup">
-              <Trans i18nKey="kinder:classes.setup" />
-            </TabbedModuleTrigger>
-          </TabbedModuleList>
-
-          <TabbedModuleContent value="classes">
-            <ClassesList classes={classes} />
-          </TabbedModuleContent>
-
-          <TabbedModuleContent value="setup">
-            <ClassesSetupPanel
-              classrooms={classrooms}
-              schoolId={context.school.id}
-              schoolYears={schoolYears}
-            />
-          </TabbedModuleContent>
-        </TabbedModule>
+        <ClassesWorkspace
+          classes={classes}
+          classrooms={classrooms}
+          defaultTab={requestedTab}
+          canManageClasses={canManageClasses}
+          schoolId={context.school.id}
+          schoolYears={schoolYears}
+        />
       </KinderPageBody>
     </>
   );

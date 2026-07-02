@@ -27,6 +27,7 @@ const PathsSchema = z.object({
     staff: z.string().min(1),
     staffDetail: z.string().min(1),
     staffSetup: z.string().min(1),
+    staffPermissions: z.string().min(1),
     dailyReports: z.string().min(1),
     menu: z.string().min(1),
     menuDetail: z.string().min(1),
@@ -34,6 +35,7 @@ const PathsSchema = z.object({
     ai: z.string().min(1),
     health: z.string().min(1),
     suspended: z.string().min(1),
+    account: z.string().min(1),
   }),
   platform: z.object({
     home: z.string().min(1),
@@ -42,10 +44,12 @@ const PathsSchema = z.object({
     packages: z.string().min(1),
     admins: z.string().min(1),
     auditLogs: z.string().min(1),
+    account: z.string().min(1),
   }),
   parent: z.object({
     home: z.string().min(1),
     child: z.string().min(1),
+    account: z.string().min(1),
   }),
 });
 
@@ -76,6 +80,7 @@ const pathsConfig = PathsSchema.parse({
     staff: '/app/staff',
     staffDetail: '/app/staff',
     staffSetup: '/app/staff/setup',
+    staffPermissions: '/app/staff/permissions',
     dailyReports: '/app/daily-reports',
     menu: '/app/menu',
     menuDetail: '/app/menu',
@@ -83,6 +88,7 @@ const pathsConfig = PathsSchema.parse({
     ai: '/app/ai',
     health: '/app/health',
     suspended: '/app/suspended',
+    account: '/app/account',
   },
   platform: {
     home: '/platform',
@@ -91,10 +97,12 @@ const pathsConfig = PathsSchema.parse({
     packages: '/platform/packages',
     admins: '/platform/admins',
     auditLogs: '/platform/audit-logs',
+    account: '/platform/account',
   },
   parent: {
     home: '/parent',
     child: '/parent/children',
+    account: '/parent/account',
   },
 } satisfies z.infer<typeof PathsSchema>);
 

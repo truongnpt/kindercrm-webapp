@@ -1,7 +1,8 @@
 import { Trans } from '@kit/ui/trans';
 
 import { KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
-import { requirePackageFeature } from '~/lib/kinder/subscription/features';
+import pathsConfig from '~/config/paths.config';
+import { assertModuleAccessFromContext } from '~/lib/kinder/permissions/module-access.server';
 import { loadStudents } from '~/lib/kinder/students/load-students';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
@@ -33,7 +34,7 @@ async function StudentsPage({
     return null;
   }
 
-  requirePackageFeature(context, 'students');
+  await assertModuleAccessFromContext(context, pathsConfig.app.students, 'view');
 
   const [students, allStudents] = await Promise.all([
     loadStudents(context.school.id, status),

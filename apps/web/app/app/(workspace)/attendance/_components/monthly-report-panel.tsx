@@ -12,9 +12,14 @@ import {
 } from '@kit/ui/select';
 import { Trans } from '@kit/ui/trans';
 
+import {
+  BentoGrid,
+  SectionCard,
+  StatCard,
+} from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
-import type { ClassGroup } from '~/lib/kinder/classes/types';
 import type { AttendanceMonthlySummary } from '~/lib/kinder/attendance/types';
+import type { ClassGroup } from '~/lib/kinder/classes/types';
 
 function currentMonth() {
   const now = new Date();
@@ -47,17 +52,8 @@ export function MonthlyReportPanel({
     router.push(`${pathsConfig.app.attendance}?${params.toString()}`);
   };
 
-  const cards = [
-    { key: 'totalRecords', value: summary.totalRecords },
-    { key: 'presentCount', value: summary.presentCount },
-    { key: 'absentCount', value: summary.absentCount },
-    { key: 'lateCount', value: summary.lateCount },
-    { key: 'excusedCount', value: summary.excusedCount },
-    { key: 'attendanceRate', value: `${summary.attendanceRate}%` },
-  ] as const;
-
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-3">
         <Input
           className="w-[160px]"
@@ -70,7 +66,7 @@ export function MonthlyReportPanel({
           onValueChange={(value) => updateParams('reportClassId', value)}
           value={classId}
         >
-          <SelectTrigger className="w-[220px]">
+          <SelectTrigger className="w-[240px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -86,16 +82,62 @@ export function MonthlyReportPanel({
         </Select>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {cards.map((card) => (
-          <div className="kinder-mobile-card" key={card.key}>
-            <p className="text-muted-foreground text-sm">
-              <Trans i18nKey={`kinder:attendance.report.${card.key}`} />
-            </p>
-            <p className="mt-2 text-2xl font-semibold">{card.value}</p>
+      <BentoGrid columns={3}>
+        <StatCard
+          labelKey="kinder:attendance.report.totalRecords"
+          tone="default"
+          value={String(summary.totalRecords)}
+        />
+        <StatCard
+          labelKey="kinder:attendance.report.presentCount"
+          tone="success"
+          value={String(summary.presentCount)}
+        />
+        <StatCard
+          labelKey="kinder:attendance.report.absentCount"
+          tone="warning"
+          value={String(summary.absentCount)}
+        />
+        <StatCard
+          labelKey="kinder:attendance.report.lateCount"
+          tone="info"
+          value={String(summary.lateCount)}
+        />
+        <StatCard
+          labelKey="kinder:attendance.report.excusedCount"
+          tone="default"
+          value={String(summary.excusedCount)}
+        />
+        <StatCard
+          labelKey="kinder:attendance.report.attendanceRate"
+          tone="success"
+          value={`${summary.attendanceRate}%`}
+        />
+      </BentoGrid>
+
+      <SectionCard title={<Trans i18nKey="kinder:attendance.report.rateTitle" />}>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">
+              <Trans i18nKey="kinder:attendance.report.attendanceRate" />
+            </span>
+            <span className="font-semibold tabular-nums">
+              {summary.attendanceRate}%
+            </span>
           </div>
-        ))}
-      </div>
+          <div className="bg-muted h-2 overflow-hidden rounded-full">
+            <div
+              className="bg-primary h-full rounded-full transition-all"
+              style={{ width: `${summary.attendanceRate}%` }}
+            />
+          </div>
+          {summary.className ? (
+            <p className="text-muted-foreground text-xs">
+              {summary.className}
+            </p>
+          ) : null}
+        </div>
+      </SectionCard>
     </div>
   );
 }

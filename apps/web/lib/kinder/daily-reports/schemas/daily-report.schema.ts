@@ -20,7 +20,18 @@ const ToiletRecordSchema = z.object({
 });
 
 const HealthObservationSchema = z.object({
-  temperature: z.coerce.number().min(35).max(42).optional(),
+  temperature: z.preprocess(
+    (value) => {
+      if (value === '' || value === null || value === undefined) {
+        return undefined;
+      }
+
+      const parsed = Number(value);
+
+      return Number.isNaN(parsed) ? undefined : parsed;
+    },
+    z.number().min(35).max(42).optional(),
+  ),
   symptoms: z.string().max(500).optional().or(z.literal('')),
   notes: z.string().max(1000).optional().or(z.literal('')),
 });
@@ -61,6 +72,12 @@ export const PublishDailyReportSchema = z.object({
   schoolId: z.string().uuid(),
   studentId: z.string().uuid(),
   reportDate: z.string().min(1),
+});
+
+export const DeleteDailyReportSchema = z.object({
+  schoolId: z.string().uuid(),
+  studentId: z.string().uuid(),
+  reportId: z.string().uuid(),
 });
 
 export const AcknowledgeDailyReportSchema = z.object({

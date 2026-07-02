@@ -37,6 +37,7 @@ const LanguageToggle = dynamic(
 
 const paths = {
   home: pathsConfig.app.home,
+  account: pathsConfig.app.account,
 };
 
 const features = {

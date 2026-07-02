@@ -3,6 +3,7 @@ import { Trans } from '@kit/ui/trans';
 
 import { BentoGrid, BentoTile, BentoTileHeader } from '~/components/kinder-ui';
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
+import type { StaffModulePermissions } from '~/lib/kinder/permissions';
 import type {
   StaffContract,
   StaffEmployeeDetail,
@@ -10,6 +11,7 @@ import type {
 
 import { StaffAvatar } from '../../_components/staff-avatar';
 import { StaffStatusBadge } from '../../_components/staff-status-badge';
+import { StaffAccessInvitePanel } from './staff-access-invite-panel';
 
 function InfoRow({
   label,
@@ -31,12 +33,22 @@ function InfoRow({
 export function StaffProfileBento({
   employee,
   activeContract,
+  schoolId,
+  permissions,
 }: {
   employee: StaffEmployeeDetail;
   activeContract?: StaffContract;
+  schoolId: string;
+  permissions: StaffModulePermissions;
 }) {
   return (
     <BentoGrid>
+      <StaffAccessInvitePanel
+        employee={employee}
+        permissions={permissions}
+        schoolId={schoolId}
+      />
+
       <BentoTile colSpan={2}>
         <div className="flex items-start gap-4">
           <StaffAvatar name={employee.full_name} size="lg" />
@@ -59,6 +71,18 @@ export function StaffProfileBento({
               ) : employee.grant_system_access ? (
                 <Badge variant="outline">
                   <Trans i18nKey="kinder:staff.accountPending" />
+                </Badge>
+              ) : null}
+              {employee.user_id &&
+              employee.invite_sent_at &&
+              !employee.invite_accepted_at ? (
+                <Badge variant="secondary">
+                  <Trans i18nKey="kinder:staff.invitePending" />
+                </Badge>
+              ) : null}
+              {employee.invite_accepted_at ? (
+                <Badge variant="outline">
+                  <Trans i18nKey="kinder:staff.inviteAccepted" />
                 </Badge>
               ) : null}
             </div>
@@ -98,9 +122,11 @@ export function StaffProfileBento({
           <InfoRow
             label={<Trans i18nKey="kinder:staff.accessRole" />}
             value={
-              <Trans
-                i18nKey={`kinder:staff.accessRoles.${employee.access_role}`}
-              />
+              employee.custom_role?.name ?? (
+                <Trans
+                  i18nKey={`kinder:staff.accessRoles.${employee.access_role}`}
+                />
+              )
             }
           />
           <InfoRow

@@ -27,6 +27,7 @@ import type {
 } from '~/lib/kinder/staff/types';
 
 import { EditStaffDialog } from './edit-staff-dialog';
+import type { SchoolCustomRole, StaffModulePermissions } from '~/lib/kinder/permissions';
 import { StaffAvatar } from './staff-avatar';
 import { StaffFilters } from './staff-filters';
 import { StaffStatusBadge } from './staff-status-badge';
@@ -37,7 +38,8 @@ export function StaffList({
   departments,
   positions,
   campuses,
-  canManage,
+  customRoles,
+  permissions,
   hasActiveFilters,
 }: {
   employees: StaffEmployeeListItem[];
@@ -45,7 +47,8 @@ export function StaffList({
   departments: StaffDepartment[];
   positions: StaffPosition[];
   campuses: Campus[];
-  canManage: boolean;
+  customRoles: SchoolCustomRole[];
+  permissions: StaffModulePermissions;
   hasActiveFilters: boolean;
 }) {
   const [editEmployee, setEditEmployee] = useState<StaffEmployeeListItem | null>(
@@ -60,8 +63,9 @@ export function StaffList({
     onSuccess: () => setDeleteEmployee(null),
   });
 
-  const filtersToolbar =
-    canManage ? <StaffFilters departments={departments} /> : undefined;
+  const filtersToolbar = <StaffFilters departments={departments} />;
+  const showRowActions =
+    permissions.canUpdate || permissions.canDelete;
 
   if (employees.length === 0) {
     return (
@@ -110,7 +114,7 @@ export function StaffList({
                 <th>
                   <Trans i18nKey="kinder:staff.status" />
                 </th>
-                {canManage ? <th className="text-right" /> : null}
+                {showRowActions ? <th className="text-right" /> : null}
               </tr>
             </thead>
             <tbody>
@@ -141,9 +145,11 @@ export function StaffList({
                   <td>
                     <div className="flex flex-wrap items-center gap-1.5">
                       <Badge variant="outline">
-                        <Trans
-                          i18nKey={`kinder:staff.accessRoles.${employee.access_role}`}
-                        />
+                        {employee.custom_role?.name ?? (
+                          <Trans
+                            i18nKey={`kinder:staff.accessRoles.${employee.access_role}`}
+                          />
+                        )}
                       </Badge>
                       {employee.is_teacher ? (
                         <Badge variant="secondary">
@@ -155,11 +161,19 @@ export function StaffList({
                   <td>
                     <StaffStatusBadge status={employee.employment_status} />
                   </td>
-                  {canManage ? (
+                  {showRowActions ? (
                     <td className="text-right">
                       <EntityRowActions
-                        onDelete={() => setDeleteEmployee(employee)}
-                        onEdit={() => setEditEmployee(employee)}
+                        onDelete={
+                          permissions.canDelete ?
+                            () => setDeleteEmployee(employee)
+                          : undefined
+                        }
+                        onEdit={
+                          permissions.canUpdate ?
+                            () => setEditEmployee(employee)
+                          : undefined
+                        }
                       />
                     </td>
                   ) : null}
@@ -200,9 +214,11 @@ export function StaffList({
 
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   <Badge variant="outline">
-                    <Trans
-                      i18nKey={`kinder:staff.accessRoles.${employee.access_role}`}
-                    />
+                    {employee.custom_role?.name ?? (
+                      <Trans
+                        i18nKey={`kinder:staff.accessRoles.${employee.access_role}`}
+                      />
+                    )}
                   </Badge>
                   {employee.is_teacher ? (
                     <Badge variant="secondary">
@@ -211,11 +227,19 @@ export function StaffList({
                   ) : null}
                 </div>
 
-                {canManage ? (
+                {showRowActions ? (
                   <div className="mt-3">
                     <EntityRowActions
-                      onDelete={() => setDeleteEmployee(employee)}
-                      onEdit={() => setEditEmployee(employee)}
+                      onDelete={
+                        permissions.canDelete ?
+                          () => setDeleteEmployee(employee)
+                        : undefined
+                      }
+                      onEdit={
+                        permissions.canUpdate ?
+                          () => setEditEmployee(employee)
+                        : undefined
+                      }
                     />
                   </div>
                 ) : null}
@@ -228,6 +252,8 @@ export function StaffList({
       {editEmployee ? (
         <EditStaffDialog
           campuses={campuses}
+          canManageAccess={permissions.canManageAccess}
+          customRoles={customRoles}
           departments={departments}
           employee={editEmployee}
           hideTrigger

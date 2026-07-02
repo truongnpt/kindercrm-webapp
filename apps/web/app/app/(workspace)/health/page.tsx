@@ -1,16 +1,9 @@
-import { Suspense } from 'react';
+import { Users } from 'lucide-react';
 
 import { Trans } from '@kit/ui/trans';
 
-import {
-  KinderPageBody,
-  KinderPageHeader,
-  TabbedModule,
-  TabbedModuleContent,
-  TabbedModuleList,
-  TabbedModuleTrigger,
-} from '~/components/kinder-ui';
-
+import { EmptyState, KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
 import {
   loadGrowthRecords,
   loadHealthDashboardSummary,
@@ -21,19 +14,15 @@ import {
   loadStudentHealthSummaries,
   loadVaccinations,
 } from '~/lib/kinder/health/load-health';
+import { assertModuleAccessFromContext } from '~/lib/kinder/permissions/module-access.server';
 import { requirePackageFeature } from '~/lib/kinder/subscription/features';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
-import { CheckupsPanel } from './_components/checkups-panel';
-import { GrowthPanel } from './_components/growth-panel';
-import { HealthDashboardPanel } from './_components/health-dashboard-panel';
-import { HealthProfilesPanel } from './_components/health-profiles-panel';
-import { IncidentsPanel } from './_components/incidents-panel';
-import { MedicationsPanel } from './_components/medications-panel';
-import { VaccinationsPanel } from './_components/vaccinations-panel';
+import { HealthOverview } from './_components/health-overview';
+import { HealthWorkspace } from './_components/health-workspace';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -57,6 +46,7 @@ async function HealthPage({
   }
 
   requirePackageFeature(context, 'health_management');
+  await assertModuleAccessFromContext(context, pathsConfig.app.health, 'view');
 
   const schoolId = context.school.id;
   const filterStudentId = studentId && studentId !== 'all' ? studentId : undefined;
@@ -81,104 +71,41 @@ async function HealthPage({
     loadHealthIncidents(schoolId, filterStudentId),
   ]);
 
-  const defaultTab = tab ?? 'dashboard';
+  const defaultTab = tab ?? 'profiles';
 
   return (
     <>
       <KinderPageHeader
+        breadcrumbs={[{ label: <Trans i18nKey="kinder:health.title" /> }]}
         description={<Trans i18nKey="kinder:health.description" />}
         title={<Trans i18nKey="kinder:health.title" />}
       />
 
       <KinderPageBody>
-        <TabbedModule defaultValue={defaultTab}>
-          <TabbedModuleList className="flex-wrap">
-            <TabbedModuleTrigger value="dashboard">
-              <Trans i18nKey="kinder:health.tabs.dashboard" />
-            </TabbedModuleTrigger>
-            <TabbedModuleTrigger value="profiles">
-              <Trans i18nKey="kinder:health.tabs.profiles" />
-            </TabbedModuleTrigger>
-            <TabbedModuleTrigger value="growth">
-              <Trans i18nKey="kinder:health.tabs.growth" />
-            </TabbedModuleTrigger>
-            <TabbedModuleTrigger value="vaccinations">
-              <Trans i18nKey="kinder:health.tabs.vaccinations" />
-            </TabbedModuleTrigger>
-            <TabbedModuleTrigger value="checkups">
-              <Trans i18nKey="kinder:health.tabs.checkups" />
-            </TabbedModuleTrigger>
-            <TabbedModuleTrigger value="medications">
-              <Trans i18nKey="kinder:health.tabs.medications" />
-            </TabbedModuleTrigger>
-            <TabbedModuleTrigger value="incidents">
-              <Trans i18nKey="kinder:health.tabs.incidents" />
-            </TabbedModuleTrigger>
-          </TabbedModuleList>
-
-          <TabbedModuleContent value="dashboard">
-            <HealthDashboardPanel summary={summary} />
-          </TabbedModuleContent>
-
-          <TabbedModuleContent value="profiles">
-            <HealthProfilesPanel summaries={summaries} />
-          </TabbedModuleContent>
-
-          <TabbedModuleContent value="growth">
-            <Suspense>
-              <GrowthPanel
-                records={growth}
-                schoolId={schoolId}
-                studentId={filterStudentId}
-                students={students}
-              />
-            </Suspense>
-          </TabbedModuleContent>
-
-          <TabbedModuleContent value="vaccinations">
-            <Suspense>
-              <VaccinationsPanel
-                schoolId={schoolId}
-                studentId={filterStudentId}
-                students={students}
-                vaccinations={vaccinations}
-              />
-            </Suspense>
-          </TabbedModuleContent>
-
-          <TabbedModuleContent value="checkups">
-            <Suspense>
-              <CheckupsPanel
-                checkups={checkups}
-                schoolId={schoolId}
-                studentId={filterStudentId}
-                students={students}
-              />
-            </Suspense>
-          </TabbedModuleContent>
-
-          <TabbedModuleContent value="medications">
-            <Suspense>
-              <MedicationsPanel
-                medications={medications}
-                schoolId={schoolId}
-                studentId={filterStudentId}
-                students={students}
-              />
-            </Suspense>
-          </TabbedModuleContent>
-
-          <TabbedModuleContent value="incidents">
-            <Suspense>
-              <IncidentsPanel
-                incidents={incidents}
-                schoolId={schoolId}
-                studentId={filterStudentId}
-                students={students}
-              />
-            </Suspense>
-          </TabbedModuleContent>
-        </TabbedModule>
+        {students.length === 0 ? (
+          <EmptyState
+            descriptionKey="kinder:health.emptyStudentsDescription"
+            icon={Users}
+            titleKey="kinder:health.emptyStudents"
+          />
+        ) : (
+          <>
+            <HealthOverview summary={summary} />
+            <HealthWorkspace
+              checkups={checkups}
+              defaultTab={defaultTab}
+              filterStudentId={filterStudentId}
+              growth={growth}
+              incidents={incidents}
+              medications={medications}
+              schoolId={schoolId}
+              students={students}
+              summaries={summaries}
+              summary={summary}
+              vaccinations={vaccinations}
+            />
+          </>
+        )}
       </KinderPageBody>
     </>
   );

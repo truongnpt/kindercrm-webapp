@@ -52,3 +52,25 @@ export type ClassDailyReportStudent = {
   studentCode: string;
   report: StudentDailyReport | null;
 };
+
+export type DailyReportsClassSummary = {
+  classId: string;
+  className: string;
+  classCode: string;
+  totalStudents: number;
+  publishedCount: number;
+  draftCount: number;
+  missingCount: number;
+};
+
+export type DailyReportsDaySummary = {
+  reportDate: string;
+  classId: string | null;
+  className: string | null;
+  totalStudents: number;
+  publishedCount: number;
+  draftCount: number;
+  missingCount: number;
+  completionRate: number;
+  activeClasses: number;
+};

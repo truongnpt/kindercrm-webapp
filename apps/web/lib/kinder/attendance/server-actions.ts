@@ -6,6 +6,8 @@ import { enhanceAction } from '@kit/next/actions';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import pathsConfig from '~/config/paths.config';
+import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
+import { requireSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 
 import {
   CheckInSchema,
@@ -19,6 +21,15 @@ const ATTENDANCE_PATH = pathsConfig.app.attendance;
 
 function revalidateAttendancePaths() {
   revalidatePath(ATTENDANCE_PATH);
+}
+
+function assertSchoolMatch(schoolId: string, contextSchoolId: string) {
+  if (schoolId !== contextSchoolId) {
+    throw new KinderError(
+      KINDER_ERROR_CODES.SCHOOL_ACCESS_DENIED,
+      'School mismatch',
+    );
+  }
 }
 
 function eachDateInRange(startDate: string, endDate: string) {
@@ -37,6 +48,9 @@ function eachDateInRange(startDate: string, endDate: string) {
 /** ATT-004 Manual class attendance */
 export const recordClassAttendanceAction = enhanceAction(
   async (data, user) => {
+    const context = await requireSchoolContext(user.id);
+    assertSchoolMatch(data.schoolId, context.school.id);
+
     const client = getSupabaseServerClient();
 
     const rows = data.records.map((record) => {
@@ -84,6 +98,9 @@ export const recordClassAttendanceAction = enhanceAction(
 /** ATT-001 Check in */
 export const checkInAction = enhanceAction(
   async (data, user) => {
+    const context = await requireSchoolContext(user.id);
+    assertSchoolMatch(data.schoolId, context.school.id);
+
     const client = getSupabaseServerClient();
     const isLate = data.isLate ?? false;
     const now = new Date().toISOString();
@@ -116,6 +133,9 @@ export const checkInAction = enhanceAction(
 /** ATT-002 Check out */
 export const checkOutAction = enhanceAction(
   async (data, user) => {
+    const context = await requireSchoolContext(user.id);
+    assertSchoolMatch(data.schoolId, context.school.id);
+
     const client = getSupabaseServerClient();
     const now = new Date().toISOString();
 
@@ -161,6 +181,9 @@ export const checkOutAction = enhanceAction(
 /** ATT-005 Create leave request */
 export const createLeaveRequestAction = enhanceAction(
   async (data, user) => {
+    const context = await requireSchoolContext(user.id);
+    assertSchoolMatch(data.schoolId, context.school.id);
+
     const client = getSupabaseServerClient();
 
     const { error } = await client.from('leave_requests').insert({
@@ -185,6 +208,9 @@ export const createLeaveRequestAction = enhanceAction(
 /** ATT-005 Approve / reject leave */
 export const reviewLeaveRequestAction = enhanceAction(
   async (data, user) => {
+    const context = await requireSchoolContext(user.id);
+    assertSchoolMatch(data.schoolId, context.school.id);
+
     const client = getSupabaseServerClient();
 
     const { data: request, error: fetchError } = await client

@@ -1,6 +1,9 @@
 import { cookies } from 'next/headers';
 
-const ACTIVE_SCHOOL_COOKIE = 'kinder_active_school_id';
+import {
+  ACTIVE_SCHOOL_COOKIE,
+  activeSchoolCookieOptions,
+} from './active-school-cookie.constants';
 
 export async function getActiveSchoolIdFromCookie(): Promise<string | null> {
   const store = await cookies();
@@ -9,12 +12,7 @@ export async function getActiveSchoolIdFromCookie(): Promise<string | null> {
 
 export async function setActiveSchoolIdCookie(schoolId: string) {
   const store = await cookies();
-  store.set(ACTIVE_SCHOOL_COOKIE, schoolId, {
-    path: '/',
-    maxAge: 60 * 60 * 24 * 365,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-  });
+  store.set(ACTIVE_SCHOOL_COOKIE, schoolId, activeSchoolCookieOptions);
 }
 
 export { ACTIVE_SCHOOL_COOKIE };

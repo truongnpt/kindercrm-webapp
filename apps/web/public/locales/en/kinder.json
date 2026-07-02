@@ -122,6 +122,13 @@
   "subscription": {
     "title": "Subscription",
     "description": "View your plan, limits, and change history.",
+    "workspaceTitle": "Subscription workspace",
+    "workspaceHint": "Manage your plan, monitor usage quotas, and review billing history.",
+    "tabs": {
+      "plan": "Plans",
+      "usage": "Usage",
+      "history": "History"
+    },
     "currentPlan": "Current plan",
     "trialBadge": "Trial",
     "trialFullAccess": "Your trial includes full access to all modules until {{date}}.",
@@ -147,12 +154,28 @@
   "schoolSettings": {
     "title": "School profile",
     "description": "Update your school's information and branding.",
+    "workspaceTitle": "School settings",
+    "workspaceHint": "Configure your school's public profile, contact details, and branding.",
+    "basicInfoTitle": "Basic information",
+    "basicInfoHint": "School identity and contact information shown to staff and parents.",
+    "brandingTitle": "Branding",
+    "brandingHint": "Customize logo and primary color for a consistent school look.",
+    "domainTitle": "Domain settings",
+    "domainHint": "Optional custom domain used for school portal access.",
     "name": "School name",
     "phone": "Phone",
     "email": "Email",
     "address": "Address",
     "logoUrl": "Logo URL",
+    "logoUpload": "School logo",
+    "uploadLogo": "Upload logo",
+    "changeLogo": "Change logo",
+    "removeLogo": "Remove logo",
+    "logoHint": "Supported formats: PNG, JPG, WEBP, GIF, SVG.",
+    "logoUploaded": "Logo uploaded",
+    "logoTypeError": "Unsupported logo format.",
     "themeColor": "Primary color",
+    "themeColorHint": "Choose a brand color used across cards and action buttons.",
     "customDomain": "Custom domain",
     "save": "Save changes",
     "saving": "Saving...",
@@ -161,6 +184,8 @@
   "campuses": {
     "title": "Campuses & branches",
     "description": "Manage campuses and branches for your school.",
+    "workspaceTitle": "Campuses",
+    "workspaceHint": "Organize physical locations and branches across your school network.",
     "addCampus": "Add campus",
     "addBranch": "Add branch",
     "name": "Name",
@@ -174,6 +199,7 @@
     "creating": "Creating...",
     "created": "Campus added",
     "empty": "No campuses yet.",
+    "emptyDescription": "Add your first campus or branch to organize classes and staff by location.",
     "parentCampus": "Parent campus"
   },
   "schoolSwitcher": {
@@ -346,6 +372,16 @@
     "noStudents": "No students in this class.",
     "noSchedule": "No schedule slots yet.",
     "setup": "Setup",
+    "setupHint": "Configure school years and classrooms before creating classes.",
+    "schoolYearsHint": "Academic periods used when creating and organizing classes.",
+    "classroomsHint": "Physical rooms available for class assignments.",
+    "schoolYearsEmpty": "No school years yet. Add one to get started.",
+    "classroomsEmpty": "No classrooms yet. Add one to get started.",
+    "currentYear": "Current",
+    "setAsCurrentYear": "Set as current school year",
+    "setAsCurrentYearHint": "New classes default to the current school year.",
+    "defaultSchoolYearName": "School year {{start}}-{{end}}",
+    "capacitySeats": "{{count}} seats",
     "schoolYears": "School years",
     "semesters": "Semesters",
     "classrooms": "Classrooms",
@@ -430,6 +466,7 @@
       "dueDate": "Due date",
       "total": "Total",
       "paid": "Paid",
+      "balance": "Balance",
       "status": "Status",
       "detail": "Invoice detail",
       "detailHint": "Review line items, record payments, and generate QR codes.",
@@ -511,18 +548,26 @@
   "attendance": {
     "title": "Attendance",
     "description": "Daily class attendance, leave requests, and reports.",
+    "workspaceTitle": "Attendance workspace",
+    "workspaceHint": "Take attendance by class, process leave requests, and monitor attendance rate in real time.",
     "date": "Date",
+    "today": "Today",
     "status": "Status",
     "lateMinutes": "Late (min)",
     "quickActions": "Actions",
     "checkIn": "Check in",
     "checkOut": "Check out",
+    "checkInTime": "Check-in time",
+    "checkOutTime": "Check-out time",
     "save": "Save attendance",
     "saved": "Attendance saved",
     "checkInDone": "Check-in recorded",
     "checkOutDone": "Check-out recorded",
+    "dailyTitle": "Class attendance sheet",
+    "dailyHint": "Update each student status, use quick check-in/check-out actions, then save in bulk.",
     "emptyClass": "No students in this class.",
     "noClasses": "No active classes. Create a class and enroll students first.",
+    "noClassesDescription": "You need at least one active class with enrolled students to start attendance.",
     "tabs": {
       "daily": "Daily",
       "leave": "Leave",
@@ -534,6 +579,17 @@
       "marked": "{{count}} marked",
       "present": "{{count}} present"
     },
+    "stats": {
+      "present": "Present today",
+      "absent": "Absent today",
+      "late": "Late today",
+      "pendingLeave": "Pending leave requests",
+      "rateLabel": "Attendance rate"
+    },
+    "bulk": {
+      "present": "Mark all present",
+      "absent": "Mark all absent"
+    },
     "statuses": {
       "present": "Present",
       "absent": "Absent",
@@ -542,8 +598,11 @@
       "early_leave": "Early leave"
     },
     "leave": {
+      "title": "Leave requests",
+      "description": "Create and review student leave requests by date.",
       "create": "New leave request",
-      "empty": "No pending leave requests.",
+      "empty": "No leave requests for this filter.",
+      "period": "Leave period",
       "startDate": "Start date",
       "endDate": "End date",
       "reason": "Reason",
@@ -552,11 +611,21 @@
       "reviewed": "Request processed",
       "approve": "Approve",
       "reject": "Reject",
+      "filters": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "all": "All"
+      },
       "statuses": {
         "pending": "Pending",
         "approved": "Approved",
         "rejected": "Rejected"
       }
+    },
+    "calendar": {
+      "title": "Leave calendar",
+      "description": "Review leave requests on a calendar and click a day to jump to daily attendance."
     },
     "report": {
       "allClasses": "All classes",
@@ -565,7 +634,83 @@
       "absentCount": "Absent",
       "lateCount": "Late",
       "excusedCount": "Excused",
-      "attendanceRate": "Attendance rate"
+      "attendanceRate": "Attendance rate",
+      "rateTitle": "Attendance trend"
+    }
+  },
+  "permissions": {
+    "title": "Permissions",
+    "pageDescription": "Configure access for system roles (Admin, Manager, Staff) and custom roles.",
+    "description": "Customize access per role. Owner always has full access.",
+    "permissionColumn": "Permission",
+    "save": "Save permissions",
+    "ownerNote": "Owner role always has all permissions and is not listed here.",
+    "groups": {
+      "staff": "Staff module",
+      "crm": "Admissions (CRM)",
+      "students": "Students",
+      "classes": "Classes",
+      "reports": "Reports",
+      "settings": "School settings"
+    },
+    "roles": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "manager": "Operations manager",
+      "staff": "Staff",
+      "parent": "Parent"
+    },
+    "roleDescriptions": {
+      "owner": "Full school ownership, including subscription and billing configuration.",
+      "admin": "Full school management: system config, permissions, staff, students, and reports.",
+      "manager": "Operations management: classes, teachers, admissions, and scoped reports.",
+      "staff": "Business staff — granular access via the permission matrix or custom roles (HR, Accounting, etc.).",
+      "parent": "Parent portal only — view child info, fees, attendance, and school communication."
+    },
+    "customRoles": {
+      "title": "Custom roles",
+      "description": "Create school-specific roles (HR, Support, etc.) and configure their permissions in the matrix below.",
+      "add": "Add role",
+      "create": "Create role",
+      "name": "Role name",
+      "slug": "Role slug",
+      "empty": "No custom roles yet.",
+      "created": "Role created",
+      "deleted": "Role deleted",
+      "deleteTitle": "Delete role",
+      "deleteConfirm": "Delete role \"{{name}}\"? This cannot be undone."
+    },
+    "staff": {
+      "directoryView": "View employee directory",
+      "directoryCreate": "Create employees",
+      "directoryUpdate": "Update employees",
+      "directoryDelete": "Delete employees",
+      "setupManage": "Manage departments & positions",
+      "contractsView": "View contracts",
+      "contractsManage": "Manage contracts",
+      "classesView": "View class assignments",
+      "classesManage": "Manage class assignments",
+      "accessManage": "Grant system access",
+      "permissionsManage": "Manage permission matrix"
+    },
+    "crm": {
+      "leadsView": "View admission leads",
+      "leadsManage": "Manage admission leads"
+    },
+    "students": {
+      "directoryView": "View student directory",
+      "directoryManage": "Manage students"
+    },
+    "classes": {
+      "directoryView": "View class directory",
+      "directoryManage": "Manage classes"
+    },
+    "reports": {
+      "view": "View reports"
+    },
+    "settings": {
+      "schoolManage": "Manage school profile",
+      "subscriptionManage": "Manage subscription package"
     }
   },
   "staff": {
@@ -604,9 +749,20 @@
     "isTeacherHint": "Check if this employee can be assigned as homeroom teacher or to classes.",
     "teacherBadge": "Teacher",
     "grantAccess": "Grant system access",
-    "grantAccessHint": "Links an existing account with the same email for app login.",
+    "grantAccessHint": "The system will create an account and send an invite email to set a password.",
     "accountLinked": "Account linked",
-    "accountPending": "Pending account link",
+    "accountPending": "Account not linked",
+    "invitePending": "Awaiting invite acceptance",
+    "inviteAccepted": "Account activated",
+    "resendInvite": "Resend invite",
+    "inviteSent": "Invite email sent",
+    "inviteResendFailed": "Could not send the invite email. Please try again.",
+    "inviteActionTitle": "Activate login account",
+    "inviteFailedHint": "System access is enabled but the invite email was not sent. Click Resend invite to send a password setup link.",
+    "invitePendingHint": "An invite was sent but the employee has not activated their account yet. If the link expired, click Resend invite for a new one.",
+    "inviteNoEmailHint": "System access is enabled but no email is on file. Update the employee email to send an invite.",
+    "inviteLastSent": "Last sent: {{date}}",
+    "inviteContactAdmin": "Contact an administrator to resend the invite",
     "activeContract": "Active contract",
     "notes": "Notes",
     "save": "Save",
@@ -638,6 +794,7 @@
     "accessRoles": {
       "staff": "Staff",
       "admin": "Admin",
+      "manager": "Operations manager",
       "accountant": "Accountant"
     },
     "statuses": {
@@ -692,9 +849,19 @@
     "linkAccount": "Link account",
     "unlink": "Unlink",
     "linked": "Parent account linked",
+    "inviteSent": "Invite email sent to parent",
     "unlinked": "Parent account unlinked",
     "noLinks": "No parent accounts linked yet.",
+    "childWorkspaceTitle": "Child overview",
+    "attendanceHint": "Recent attendance records for your child.",
+    "financeHint": "Invoices and outstanding balances for this child.",
+    "stats": {
+      "reports": "Daily reports",
+      "attendancePresent": "Present days",
+      "unpaidInvoices": "Unpaid invoices"
+    },
     "staffPortal": "School workspace",
+    "accountSettings": "Account settings",
     "tabs": {
       "reports": "Daily reports",
       "attendance": "Attendance",
@@ -723,6 +890,21 @@
   "dailyReports": {
     "title": "Daily reports",
     "description": "Record student activities, health, and daily routines.",
+    "workspaceTitle": "Daily reports workspace",
+    "workspaceHint": "Log daily activities by class and track completion across the school.",
+    "classTitle": "Class daily reports",
+    "classHint": "Quick-edit mood and notes for each student. Open detail for meals, health, timeline, and media.",
+    "overviewHint": "Completion status for all classes on the selected date.",
+    "openClass": "Open class",
+    "emptyClass": "No students enrolled in this class.",
+    "noClassesDescription": "Create active classes before writing daily reports.",
+    "stats": {
+      "enrolled": "Students",
+      "published": "Sent to parents",
+      "draft": "Drafts",
+      "missing": "Not started",
+      "completionLabel": "Completion"
+    },
     "tabs": {
       "class": "By class",
       "detail": "Detail",
@@ -731,6 +913,8 @@
     },
     "consumedLabel": "Amount eaten",
     "uploadMedia": "Upload photo/video",
+    "mediaCount": "{{count}} photos/videos",
+    "mediaUploadHint": "Upload photos or videos for the report you are editing. Parents only see them after you send the report.",
     "saveBeforeMedia": "Save the report before uploading media",
     "mediaEmpty": "No photos or videos yet.",
     "mediaUploaded": "Media uploaded",
@@ -751,6 +935,16 @@
     "teacherNote": "Teacher note",
     "dailySummary": "Daily summary",
     "save": "Save report",
+    "saveDraft": "Save draft",
+    "saveDraftSuccess": "Draft saved",
+    "saveAndPublish": "Save and send to parents",
+    "editReport": "Edit",
+    "newReport": "New report",
+    "editingReport": "Editing report for {{date}}",
+    "deleteReport": "Delete report",
+    "deleteReportConfirm": "Delete this draft? This cannot be undone.",
+    "reportDeleted": "Report deleted",
+    "draftParentHint": "Parents only see reports that have been sent. Use \"Send to parents\" to publish.",
     "publish": "Send to parents",
     "published": "Sent to parents",
     "draft": "Draft",
@@ -764,6 +958,7 @@
     "timeline": "Timeline",
     "acknowledge": "Acknowledge",
     "acknowledged": "Parent acknowledged",
+    "acknowledgedReadOnly": "The parent has acknowledged this report — it can no longer be edited.",
     "consumed": {
       "full": "All",
       "half": "Half",
@@ -865,6 +1060,9 @@
   "inventory": {
     "title": "Inventory",
     "description": "Track materials, stock movements, and low-stock alerts.",
+    "workspaceTitle": "Inventory workspace",
+    "workspaceHint": "Manage products, stock movements, suppliers, and purchase orders.",
+    "transferHint": "Move stock between products when items are reclassified or consolidated.",
     "tabs": {
       "products": "Products",
       "transactions": "Transactions",
@@ -943,7 +1141,11 @@
   "ai": {
     "title": "AI Assistant",
     "description": "Chat, forecasts, and internal knowledge for your school.",
+    "workspaceTitle": "AI workspace",
+    "workspaceHint": "Chat with the assistant, review insights, and manage knowledge articles.",
     "descriptionFallback": "Basic mode — add OPENAI_API_KEY for full AI.",
+    "creditsUsed": "Credits used",
+    "providerStatus": "Provider",
     "tabs": {
       "chat": "Chat",
       "insights": "Insights",
@@ -983,6 +1185,8 @@
   "health": {
     "title": "Health management",
     "description": "Track student health profiles, growth, vaccinations, medications, and incidents.",
+    "workspaceTitle": "Health workspace",
+    "workspaceHint": "Monitor student health records, vaccinations, medications, and incidents.",
     "profile": "Health profile",
     "allergies": "Allergies",
     "height": "Height",

@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { Trans } from '@kit/ui/trans';
 
 import { KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
 import {
   loadActiveStudentsForFinance,
   loadActiveTuitionFeeItems,
@@ -11,6 +12,7 @@ import {
   loadInvoices,
   loadTuitionFeeItems,
 } from '~/lib/kinder/finance/load-finance';
+import { assertModuleAccessFromContext } from '~/lib/kinder/permissions/module-access.server';
 import { requirePackageFeature } from '~/lib/kinder/subscription/features';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
@@ -44,6 +46,7 @@ async function FinancePage({
   }
 
   requirePackageFeature(context, 'finance');
+  await assertModuleAccessFromContext(context, pathsConfig.app.finance, 'view');
 
   const [
     summary,

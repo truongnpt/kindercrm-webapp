@@ -36,3 +36,18 @@ export type AttendanceMonthlySummary = {
   earlyLeaveCount: number;
   attendanceRate: number;
 };
+
+export type AttendanceDaySummary = {
+  date: string;
+  classId: string | null;
+  className: string | null;
+  enrolled: number;
+  marked: number;
+  present: number;
+  absent: number;
+  late: number;
+  excused: number;
+  attendanceRate: number;
+  pendingLeave: number;
+  activeClasses: number;
+};
