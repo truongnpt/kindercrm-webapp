@@ -3,7 +3,6 @@ import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { Database } from '~/lib/database.types';
-import { provisionUserAccount } from '~/lib/kinder/auth/provision-user-account';
 import { findAccountByEmailForSchool } from '~/lib/kinder/tenant/account-lookup';
 
 type StaffAccessRole = Database['public']['Enums']['staff_access_role'];
@@ -21,8 +20,6 @@ export async function syncStaffMemberAccess(
     schoolId: string;
     employeeId: string;
     email: string | null;
-    fullName: string;
-    schoolName?: string;
     accessRole: StaffAccessRole;
     grantSystemAccess: boolean;
     employmentStatus: Database['public']['Enums']['staff_employment_status'];
@@ -58,25 +55,10 @@ export async function syncStaffMemberAccess(
     return { linked: false as const, reason: 'missing_email' as const };
   }
 
-  let account = await findAccountByEmailForSchool(params.schoolId, params.email);
-  let accountCreated = false;
-  let credentialsEmailSent = false;
+  const account = await findAccountByEmailForSchool(params.schoolId, params.email);
 
   if (!account) {
-    const provisioned = await provisionUserAccount({
-      email: params.email,
-      name: params.fullName,
-      accountType: 'staff',
-      schoolName: params.schoolName,
-    });
-
-    account = {
-      id: provisioned.userId,
-      email: provisioned.email,
-      name: params.fullName,
-    };
-    accountCreated = provisioned.created;
-    credentialsEmailSent = provisioned.credentialsEmailSent;
+    return { linked: false as const, reason: 'account_not_found' as const };
   }
 
   const memberRole = mapAccessRoleToMemberRole(params.accessRole);
@@ -136,7 +118,5 @@ export async function syncStaffMemberAccess(
     linked: true as const,
     userId: account.id,
     memberId,
-    accountCreated,
-    credentialsEmailSent,
   };
 }

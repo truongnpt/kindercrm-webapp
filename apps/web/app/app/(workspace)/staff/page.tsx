@@ -1,6 +1,9 @@
+import { redirect } from 'next/navigation';
+
 import { Trans } from '@kit/ui/trans';
 
 import { KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
 import {
   loadStaffDepartments,
   loadStaffEmployees,
@@ -13,6 +16,7 @@ import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
 import { CreateStaffDialog } from './_components/create-staff-dialog';
+import { StaffModuleNav } from './_components/staff-module-nav';
 import { StaffOverview } from './_components/staff-overview';
 import { StaffWorkspace } from './_components/staff-workspace';
 
@@ -45,6 +49,12 @@ async function StaffPage({
 
   requirePackageFeature(context, 'staff');
 
+  const canManage = ['owner', 'admin'].includes(context.role);
+
+  if (params.tab === 'setup') {
+    redirect(canManage ? pathsConfig.app.staffSetup : pathsConfig.app.staff);
+  }
+
   const filterOptions = {
     status: params.status,
     departmentId:
@@ -55,6 +65,13 @@ async function StaffPage({
     search: params.search,
   };
 
+  const hasActiveFilters = Boolean(
+    (params.status && params.status !== 'all') ||
+      (params.departmentId && params.departmentId !== 'all') ||
+      params.teachersOnly === '1' ||
+      params.search?.trim(),
+  );
+
   const [employees, allEmployees, departments, positions, campuses] =
     await Promise.all([
       loadStaffEmployees(context.school.id, filterOptions),
@@ -63,9 +80,6 @@ async function StaffPage({
       loadStaffPositions(context.school.id),
       loadCampuses(context.school.id),
     ]);
-
-  const defaultTab = params.tab ?? 'employees';
-  const canManage = ['owner', 'admin'].includes(context.role);
 
   return (
     <>
@@ -86,14 +100,16 @@ async function StaffPage({
       />
 
       <KinderPageBody>
+        {canManage ? <StaffModuleNav className="mb-2" /> : null}
+
         <StaffOverview employees={allEmployees} />
 
         <StaffWorkspace
           campuses={campuses}
           canManage={canManage}
-          defaultTab={defaultTab}
           departments={departments}
           employees={employees}
+          hasActiveFilters={hasActiveFilters}
           positions={positions}
           schoolId={context.school.id}
         />

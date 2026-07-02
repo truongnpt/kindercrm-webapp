@@ -10,7 +10,6 @@ import { Button } from '@kit/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -115,10 +114,7 @@ export function ParentLinkPanel({
             const promise = linkParentAccountAction(data);
             toast.promise(promise, {
               loading: t('schoolSettings.saving'),
-              success: (result) =>
-                result.accountCreated ?
-                  t('parent.linkedAndAccountCreated')
-                : t('parent.linked'),
+              success: t('parent.linked'),
               error: t('common:genericServerError', { ns: 'common' }),
             });
             await promise;
@@ -142,9 +138,6 @@ export function ParentLinkPanel({
                 <FormControl>
                   <Input placeholder="parent@email.com" type="email" {...field} required />
                 </FormControl>
-                <FormDescription>
-                  <Trans i18nKey="kinder:parent.linkEmailHint" />
-                </FormDescription>
               </FormItem>
             )}
           />

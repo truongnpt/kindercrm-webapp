@@ -28,6 +28,7 @@ import type {
 
 import { EditStaffDialog } from './edit-staff-dialog';
 import { StaffAvatar } from './staff-avatar';
+import { StaffFilters } from './staff-filters';
 import { StaffStatusBadge } from './staff-status-badge';
 
 export function StaffList({
@@ -37,6 +38,7 @@ export function StaffList({
   positions,
   campuses,
   canManage,
+  hasActiveFilters,
 }: {
   employees: StaffEmployeeListItem[];
   schoolId: string;
@@ -44,6 +46,7 @@ export function StaffList({
   positions: StaffPosition[];
   campuses: Campus[];
   canManage: boolean;
+  hasActiveFilters: boolean;
 }) {
   const [editEmployee, setEditEmployee] = useState<StaffEmployeeListItem | null>(
     null,
@@ -57,14 +60,28 @@ export function StaffList({
     onSuccess: () => setDeleteEmployee(null),
   });
 
+  const filtersToolbar =
+    canManage ? <StaffFilters departments={departments} /> : undefined;
+
   if (employees.length === 0) {
     return (
-      <EmptyState
-        compact
-        descriptionKey="kinder:staff.emptyDescription"
-        icon={Users}
-        titleKey="kinder:staff.empty"
-      />
+      <DataTableCard
+        description={<Trans i18nKey="kinder:staff.listDescription" />}
+        toolbar={filtersToolbar}
+      >
+        <EmptyState
+          compact
+          descriptionKey={
+            hasActiveFilters
+              ? 'kinder:staff.filterEmptyDescription'
+              : 'kinder:staff.emptyDescription'
+          }
+          icon={Users}
+          titleKey={
+            hasActiveFilters ? 'kinder:staff.filterEmpty' : 'kinder:staff.empty'
+          }
+        />
+      </DataTableCard>
     );
   }
 
@@ -73,7 +90,7 @@ export function StaffList({
       <div className="hidden md:block">
         <DataTableCard
           description={<Trans i18nKey="kinder:staff.listDescription" />}
-          title={<Trans i18nKey="kinder:staff.directory" />}
+          toolbar={filtersToolbar}
         >
           <table className="w-full text-sm">
             <thead>
@@ -153,7 +170,9 @@ export function StaffList({
         </DataTableCard>
       </div>
 
-      <div className="space-y-3 md:hidden">
+      <div className="space-y-4 md:hidden">
+        {filtersToolbar}
+
         {employees.map((employee) => (
           <article className="kinder-mobile-card" key={employee.id}>
             <div className="flex items-start gap-3">
