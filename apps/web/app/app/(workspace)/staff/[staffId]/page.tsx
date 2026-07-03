@@ -17,9 +17,11 @@ import {
   loadStaffContracts,
   loadStaffDepartments,
   loadStaffEmployeeById,
+  loadStaffEmployees,
   loadStaffHomeroomClasses,
   loadStaffPositions,
 } from '~/lib/kinder/staff/load-staff';
+import { loadStaffDocuments } from '~/lib/kinder/staff/load-staff-hr';
 import { requirePackageFeature } from '~/lib/kinder/subscription/features';
 import { getSchoolContext, loadCampuses } from '~/lib/kinder/tenant/get-school-context';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
@@ -78,6 +80,7 @@ async function StaffDetailPage({
     campuses,
     customRoles,
     contracts,
+    documents,
     homeroomClasses,
     classAssignments,
     availableClasses,
@@ -88,6 +91,9 @@ async function StaffDetailPage({
     loadSchoolCustomRoles(context.school.id),
     permissions.canViewContracts ?
       loadStaffContracts(context.school.id, staffId)
+    : Promise.resolve([]),
+    permissions.canViewDocuments ?
+      loadStaffDocuments(context.school.id, staffId)
     : Promise.resolve([]),
     employee.is_teacher && permissions.canViewClasses ?
       loadStaffHomeroomClasses(context.school.id, employee.user_id)
@@ -112,6 +118,14 @@ async function StaffDetailPage({
     class: item.class,
   }));
 
+  const managerOptions = (await loadStaffEmployees(context.school.id)).map(
+    (item) => ({
+      id: item.id,
+      full_name: item.full_name,
+      employee_code: item.employee_code,
+    }),
+  );
+
   const showActions = permissions.canUpdate || permissions.canDelete;
 
   return (
@@ -124,6 +138,7 @@ async function StaffDetailPage({
               customRoles={customRoles}
               departments={departments}
               employee={employee}
+              managers={managerOptions}
               permissions={permissions}
               positions={positions}
               schoolId={context.school.id}
@@ -148,6 +163,7 @@ async function StaffDetailPage({
           assignments={normalizedAssignments}
           availableClasses={availableClasses}
           contracts={contracts}
+          documents={documents}
           employee={employee}
           homeroomClasses={homeroomClasses}
           permissions={permissions}

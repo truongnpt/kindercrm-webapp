@@ -24,7 +24,11 @@ import { Trans } from '@kit/ui/trans';
 
 import type { Campus } from '~/lib/kinder/types';
 import type { SchoolCustomRole } from '~/lib/kinder/permissions';
-import type { StaffDepartment, StaffPosition } from '~/lib/kinder/staff/types';
+import type {
+  StaffDepartment,
+  StaffEmployeeListItem,
+  StaffPosition,
+} from '~/lib/kinder/staff/types';
 
 const EMPLOYMENT_STATUSES = [
   'active',
@@ -33,11 +37,14 @@ const EMPLOYMENT_STATUSES = [
   'terminated',
 ] as const;
 
+const GENDERS = ['male', 'female', 'other'] as const;
+
 export function StaffFormFields({
   form,
   departments,
   positions,
   campuses,
+  managers = [],
   customRoles = [],
   mode,
   canManageAccess = false,
@@ -47,6 +54,7 @@ export function StaffFormFields({
   departments: StaffDepartment[];
   positions: StaffPosition[];
   campuses: Campus[];
+  managers?: Array<Pick<StaffEmployeeListItem, 'id' | 'full_name' | 'employee_code'>>;
   customRoles?: SchoolCustomRole[];
   mode: 'create' | 'edit';
   canManageAccess?: boolean;
@@ -92,6 +100,278 @@ export function StaffFormFields({
             <FormItem>
               <FormLabel>
                 <Trans i18nKey="kinder:staff.phone" />
+              </FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <FormField
+          control={form.control}
+          name="dateOfBirth"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <Trans i18nKey="kinder:staff.dateOfBirth" />
+              </FormLabel>
+              <FormControl>
+                <Input type="date" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="gender"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <Trans i18nKey="kinder:staff.gender" />
+              </FormLabel>
+              <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {GENDERS.map((gender) => (
+                    <SelectItem key={gender} value={gender}>
+                      <Trans i18nKey={`kinder:staff.genders.${gender}`} />
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormItem>
+          )}
+        />
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <FormField
+          control={form.control}
+          name="idNumber"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <Trans i18nKey="kinder:staff.idNumber" />
+              </FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="managerId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <Trans i18nKey="kinder:staff.manager" />
+              </FormLabel>
+              <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="">
+                    <Trans i18nKey="kinder:staff.noManager" />
+                  </SelectItem>
+                  {managers.map((manager) => (
+                    <SelectItem key={manager.id} value={manager.id}>
+                      {manager.full_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormItem>
+          )}
+        />
+      </div>
+
+      <FormField
+        control={form.control}
+        name="address"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>
+              <Trans i18nKey="kinder:staff.address" />
+            </FormLabel>
+            <FormControl>
+              <Textarea {...field} rows={2} />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <FormField
+          control={form.control}
+          name="emergencyContactName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <Trans i18nKey="kinder:staff.emergencyContactName" />
+              </FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="emergencyContactPhone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <Trans i18nKey="kinder:staff.emergencyContactPhone" />
+              </FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <FormField
+          control={form.control}
+          name="dateOfBirth"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <Trans i18nKey="kinder:staff.dateOfBirth" />
+              </FormLabel>
+              <FormControl>
+                <Input type="date" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="gender"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <Trans i18nKey="kinder:staff.gender" />
+              </FormLabel>
+              <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {GENDERS.map((gender) => (
+                    <SelectItem key={gender} value={gender}>
+                      <Trans i18nKey={`kinder:staff.genders.${gender}`} />
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormItem>
+          )}
+        />
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <FormField
+          control={form.control}
+          name="idNumber"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <Trans i18nKey="kinder:staff.idNumber" />
+              </FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="managerId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <Trans i18nKey="kinder:staff.manager" />
+              </FormLabel>
+              <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="">
+                    <Trans i18nKey="kinder:staff.noManager" />
+                  </SelectItem>
+                  {managers.map((manager) => (
+                    <SelectItem key={manager.id} value={manager.id}>
+                      {manager.full_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormItem>
+          )}
+        />
+      </div>
+
+      <FormField
+        control={form.control}
+        name="address"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>
+              <Trans i18nKey="kinder:staff.address" />
+            </FormLabel>
+            <FormControl>
+              <Textarea {...field} rows={2} />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <FormField
+          control={form.control}
+          name="emergencyContactName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <Trans i18nKey="kinder:staff.emergencyContactName" />
+              </FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="emergencyContactPhone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <Trans i18nKey="kinder:staff.emergencyContactPhone" />
               </FormLabel>
               <FormControl>
                 <Input {...field} />
@@ -223,31 +503,47 @@ export function StaffFormFields({
 
       <div className="grid gap-4 sm:grid-cols-2">
         {mode === 'edit' ? (
-          <FormField
-            control={form.control}
-            name="employmentStatus"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  <Trans i18nKey="kinder:staff.status" />
-                </FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+          <>
+            <FormField
+              control={form.control}
+              name="employmentStatus"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    <Trans i18nKey="kinder:staff.status" />
+                  </FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {EMPLOYMENT_STATUSES.map((status) => (
+                        <SelectItem key={status} value={status}>
+                          <Trans i18nKey={`kinder:staff.statuses.${status}`} />
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="terminationDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    <Trans i18nKey="kinder:staff.terminationDate" />
+                  </FormLabel>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
+                    <Input type="date" {...field} />
                   </FormControl>
-                  <SelectContent>
-                    {EMPLOYMENT_STATUSES.map((status) => (
-                      <SelectItem key={status} value={status}>
-                        <Trans i18nKey={`kinder:staff.statuses.${status}`} />
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormItem>
-            )}
-          />
+                </FormItem>
+              )}
+            />
+          </>
         ) : (
           <FormField
             control={form.control}

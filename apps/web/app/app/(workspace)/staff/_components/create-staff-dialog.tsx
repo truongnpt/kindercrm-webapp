@@ -20,7 +20,11 @@ import type { SchoolCustomRole } from '~/lib/kinder/permissions';
 import type { Campus } from '~/lib/kinder/types';
 import { CreateStaffEmployeeSchema } from '~/lib/kinder/staff/schemas/staff.schema';
 import { createStaffEmployeeAction } from '~/lib/kinder/staff/server-actions';
-import type { StaffDepartment, StaffPosition } from '~/lib/kinder/staff/types';
+import type {
+  StaffDepartment,
+  StaffEmployeeListItem,
+  StaffPosition,
+} from '~/lib/kinder/staff/types';
 
 import { StaffFormFields } from './staff-form-fields';
 
@@ -29,6 +33,7 @@ export function CreateStaffDialog({
   departments,
   positions,
   campuses,
+  managers = [],
   canManageAccess,
   customRoles = [],
 }: {
@@ -36,6 +41,7 @@ export function CreateStaffDialog({
   departments: StaffDepartment[];
   positions: StaffPosition[];
   campuses: Campus[];
+  managers?: Array<Pick<StaffEmployeeListItem, 'id' | 'full_name' | 'employee_code'>>;
   canManageAccess: boolean;
   customRoles?: SchoolCustomRole[];
 }) {
@@ -55,7 +61,13 @@ export function CreateStaffDialog({
       departmentId: '',
       positionId: '',
       campusId: '',
+      managerId: '',
       hireDate: new Date().toISOString().slice(0, 10),
+      dateOfBirth: '',
+      idNumber: '',
+      address: '',
+      emergencyContactName: '',
+      emergencyContactPhone: '',
       notes: '',
     },
   });
@@ -115,6 +127,7 @@ export function CreateStaffDialog({
             customRoles={customRoles}
             departments={departments}
             form={form}
+            managers={managers}
             mode="create"
             positions={positions}
           />

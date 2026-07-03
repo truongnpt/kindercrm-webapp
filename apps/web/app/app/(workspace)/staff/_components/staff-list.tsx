@@ -38,6 +38,7 @@ export function StaffList({
   departments,
   positions,
   campuses,
+  managers = [],
   customRoles,
   permissions,
   hasActiveFilters,
@@ -47,6 +48,7 @@ export function StaffList({
   departments: StaffDepartment[];
   positions: StaffPosition[];
   campuses: Campus[];
+  managers?: Array<Pick<StaffEmployeeListItem, 'id' | 'full_name' | 'employee_code'>>;
   customRoles: SchoolCustomRole[];
   permissions: StaffModulePermissions;
   hasActiveFilters: boolean;
@@ -257,6 +259,7 @@ export function StaffList({
           departments={departments}
           employee={editEmployee}
           hideTrigger
+          managers={managers}
           onOpenChange={(open) => {
             if (!open) {
               setEditEmployee(null);

@@ -21,6 +21,7 @@ export function StaffWorkspace({
   departments,
   positions,
   campuses,
+  managers,
   customRoles,
   schoolId,
   permissions,
@@ -30,6 +31,7 @@ export function StaffWorkspace({
   departments: StaffDepartment[];
   positions: StaffPosition[];
   campuses: Campus[];
+  managers: Array<Pick<StaffEmployeeListItem, 'id' | 'full_name' | 'employee_code'>>;
   customRoles: SchoolCustomRole[];
   schoolId: string;
   permissions: StaffModulePermissions;
@@ -49,6 +51,7 @@ export function StaffWorkspace({
         <StaffList
           campuses={campuses}
           customRoles={customRoles}
+          managers={managers}
           permissions={permissions}
           departments={departments}
           employees={employees}

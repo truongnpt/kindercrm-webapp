@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FileText, Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@kit/ui/button';
@@ -35,6 +36,10 @@ import {
   useKinderMutation,
 } from '~/components/kinder-ui';
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
+import {
+  renewStaffContractAction,
+  terminateStaffContractAction,
+} from '~/lib/kinder/staff/hr-server-actions';
 import { CreateStaffContractSchema } from '~/lib/kinder/staff/schemas/staff.schema';
 import { createStaffContractAction } from '~/lib/kinder/staff/server-actions';
 import type { StaffContract } from '~/lib/kinder/staff/types';
@@ -50,6 +55,7 @@ export function StaffContractsPanel({
   contracts: StaffContract[];
   canManage: boolean;
 }) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
 
   const form = useForm({
@@ -82,6 +88,16 @@ export function StaffContractsPanel({
       });
       setOpen(false);
     },
+  });
+
+  const renewContract = useKinderMutation({
+    mutationFn: renewStaffContractAction,
+    onSuccess: () => router.refresh(),
+  });
+
+  const terminateContract = useKinderMutation({
+    mutationFn: terminateStaffContractAction,
+    onSuccess: () => router.refresh(),
   });
 
   return (
@@ -125,6 +141,52 @@ export function StaffContractsPanel({
                   <p className="text-foreground mt-1 font-medium">
                     {formatVnd(contract.salary_amount)}
                   </p>
+                  {canManage && contract.is_active ?
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <Button
+                        disabled={renewContract.isPending}
+                        onClick={() => {
+                          const nextStart = contract.end_date ?? new Date().toISOString().slice(0, 10);
+                          const nextEnd = contract.end_date ?
+                            new Date(
+                              new Date(`${contract.end_date}T00:00:00`).getTime() +
+                                365 * 24 * 60 * 60 * 1000,
+                            )
+                              .toISOString()
+                              .slice(0, 10)
+                          : '';
+
+                          renewContract.mutate({
+                            schoolId,
+                            contractId: contract.id,
+                            employeeId,
+                            startDate: nextStart,
+                            endDate: nextEnd,
+                          });
+                        }}
+                        size="sm"
+                        type="button"
+                        variant="outline"
+                      >
+                        <Trans i18nKey="kinder:staff.contracts.renew" />
+                      </Button>
+                      <Button
+                        disabled={terminateContract.isPending}
+                        onClick={() =>
+                          terminateContract.mutate({
+                            schoolId,
+                            contractId: contract.id,
+                            employeeId,
+                          })
+                        }
+                        size="sm"
+                        type="button"
+                        variant="ghost"
+                      >
+                        <Trans i18nKey="kinder:staff.contracts.terminate" />
+                      </Button>
+                    </div>
+                  : null}
                 </div>
               </div>
             </li>

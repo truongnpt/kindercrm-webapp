@@ -18,6 +18,56 @@ import type {
   StaffPosition,
 } from './types';
 
+type StaffManagerSummary = NonNullable<StaffEmployeeListItem['manager']>;
+
+function collectManagerIds(rows: Array<{ manager_id?: string | null }>) {
+  return [
+    ...new Set(
+      rows
+        .map((row) => row.manager_id)
+        .filter((id): id is string => Boolean(id)),
+    ),
+  ];
+}
+
+async function loadManagerSummaries(
+  schoolId: string,
+  managerIds: string[],
+) {
+  if (managerIds.length === 0) {
+    return new Map<string, StaffManagerSummary>();
+  }
+
+  const client = getSupabaseServerClient();
+
+  const { data, error } = await client
+    .from('staff_employees')
+    .select('id, full_name, employee_code')
+    .eq('school_id', schoolId)
+    .in('id', managerIds)
+    .is('deleted_at', null);
+
+  if (error) {
+    return new Map<string, StaffManagerSummary>();
+  }
+
+  return new Map(
+    (data ?? []).map((manager) => [manager.id, manager as StaffManagerSummary]),
+  );
+}
+
+function attachManagersToEmployees<
+  T extends { manager_id?: string | null },
+>(
+  rows: T[],
+  managers: Map<string, StaffManagerSummary>,
+): Array<T & { manager: StaffManagerSummary | null }> {
+  return rows.map((row) => ({
+    ...row,
+    manager: row.manager_id ? (managers.get(row.manager_id) ?? null) : null,
+  }));
+}
+
 export const loadStaffDepartments = cache(async (schoolId: string) => {
   const client = getSupabaseServerClient();
 
@@ -99,7 +149,15 @@ export const loadStaffEmployees = cache(
       throw error;
     }
 
-    let employees = (data ?? []) as StaffEmployeeListItem[];
+    const managerMap = await loadManagerSummaries(
+      schoolId,
+      collectManagerIds(data ?? []),
+    );
+
+    let employees = attachManagersToEmployees(
+      (data ?? []) as StaffEmployeeListItem[],
+      managerMap,
+    );
 
     if (filters?.search) {
       const term = filters.search.toLowerCase();
@@ -151,8 +209,18 @@ export const loadStaffEmployeeById = cache(
       account = accounts[0] ?? null;
     }
 
+    const managerMap = await loadManagerSummaries(
+      schoolId,
+      collectManagerIds([data]),
+    );
+
+    const employeeRow = attachManagersToEmployees(
+      [data as StaffEmployeeListItem],
+      managerMap,
+    )[0]!;
+
     return {
-      ...data,
+      ...employeeRow,
       account,
     } as StaffEmployeeDetail;
   },

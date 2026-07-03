@@ -3,7 +3,14 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { Settings, ShieldCheck, Users } from 'lucide-react';
+import {
+  BarChart3,
+  CalendarOff,
+  Clock,
+  Settings,
+  ShieldCheck,
+  Users,
+} from 'lucide-react';
 
 import { cn } from '@kit/ui/utils';
 import { Trans } from '@kit/ui/trans';
@@ -18,6 +25,29 @@ const BASE_LINKS = [
     icon: Users,
     exact: true,
     visible: () => true,
+  },
+  {
+    href: pathsConfig.app.staffAttendance,
+    labelKey: 'kinder:staff.tabs.attendance',
+    icon: Clock,
+    exact: false,
+    visible: (permissions: StaffModulePermissions) =>
+      permissions.canViewAttendance,
+  },
+  {
+    href: pathsConfig.app.staffLeave,
+    labelKey: 'kinder:staff.tabs.leave',
+    icon: CalendarOff,
+    exact: false,
+    visible: (permissions: StaffModulePermissions) => permissions.canViewLeave,
+  },
+  {
+    href: pathsConfig.app.staffReports,
+    labelKey: 'kinder:staff.tabs.reports',
+    icon: BarChart3,
+    exact: false,
+    visible: (permissions: StaffModulePermissions) =>
+      permissions.canAccessHrSections,
   },
   {
     href: pathsConfig.app.staffSetup,
@@ -53,7 +83,10 @@ export function StaffModuleNav({
   return (
     <nav
       aria-label="Staff sections"
-      className={cn('flex flex-wrap gap-2', className)}
+      className={cn(
+        'flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+        className,
+      )}
     >
       {links.map(({ href, labelKey, icon: Icon, exact }) => {
         const active =
@@ -62,7 +95,7 @@ export function StaffModuleNav({
         return (
           <Link
             className={cn(
-              'inline-flex h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium transition-colors',
+              'inline-flex h-10 shrink-0 items-center gap-2 rounded-lg border px-3 text-sm font-medium transition-colors sm:px-4',
               active ?
                 'border-primary/30 bg-primary/10 text-primary'
               : 'border-border bg-background text-muted-foreground hover:bg-muted/50 hover:text-foreground',
@@ -70,8 +103,10 @@ export function StaffModuleNav({
             href={href}
             key={href}
           >
-            <Icon className="size-4" />
-            <Trans i18nKey={labelKey} />
+            <Icon className="size-4 shrink-0" />
+            <span className="whitespace-nowrap">
+              <Trans i18nKey={labelKey} />
+            </span>
           </Link>
         );
       })}

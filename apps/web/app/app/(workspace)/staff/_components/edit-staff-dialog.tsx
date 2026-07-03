@@ -51,9 +51,16 @@ function toFormValues(employee: EditableStaff, schoolId: string): UpdateStaffFor
     departmentId: employee.department_id ?? '',
     positionId: employee.position_id ?? '',
     campusId: employee.campus_id ?? '',
+    managerId: employee.manager_id ?? '',
     employmentStatus: employee.employment_status,
     hireDate: employee.hire_date ?? '',
     terminationDate: employee.termination_date ?? '',
+    dateOfBirth: employee.date_of_birth ?? '',
+    gender: (employee.gender as UpdateStaffForm['gender']) ?? undefined,
+    idNumber: employee.id_number ?? '',
+    address: employee.address ?? '',
+    emergencyContactName: employee.emergency_contact_name ?? '',
+    emergencyContactPhone: employee.emergency_contact_phone ?? '',
     notes: employee.notes ?? '',
   };
 }
@@ -64,6 +71,7 @@ export function EditStaffDialog({
   departments,
   positions,
   campuses,
+  managers = [],
   canManageAccess,
   customRoles = [],
   open: controlledOpen,
@@ -76,6 +84,7 @@ export function EditStaffDialog({
   departments: StaffDepartment[];
   positions: StaffPosition[];
   campuses: Campus[];
+  managers?: Array<Pick<StaffEmployeeListItem, 'id' | 'full_name' | 'employee_code'>>;
   canManageAccess: boolean;
   customRoles?: SchoolCustomRole[];
   open?: boolean;
@@ -142,6 +151,7 @@ export function EditStaffDialog({
             customRoles={customRoles}
             departments={departments}
             form={form}
+            managers={managers.filter((manager) => manager.id !== employee.id)}
             mode="edit"
             positions={positions}
           />

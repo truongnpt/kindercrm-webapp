@@ -91,6 +91,40 @@ export function StaffProfileBento({
       </BentoTile>
 
       <BentoTile colSpan={2}>
+        <BentoTileHeader title={<Trans i18nKey="kinder:staff.personalInfo" />} />
+        <dl>
+          <InfoRow
+            label={<Trans i18nKey="kinder:staff.dateOfBirth" />}
+            value={employee.date_of_birth ?? '—'}
+          />
+          <InfoRow
+            label={<Trans i18nKey="kinder:staff.gender" />}
+            value={
+              employee.gender ?
+                <Trans i18nKey={`kinder:staff.genders.${employee.gender}`} />
+              : '—'
+            }
+          />
+          <InfoRow
+            label={<Trans i18nKey="kinder:staff.idNumber" />}
+            value={employee.id_number ?? '—'}
+          />
+          <InfoRow
+            label={<Trans i18nKey="kinder:staff.address" />}
+            value={employee.address ?? '—'}
+          />
+          <InfoRow
+            label={<Trans i18nKey="kinder:staff.emergencyContactName" />}
+            value={employee.emergency_contact_name ?? '—'}
+          />
+          <InfoRow
+            label={<Trans i18nKey="kinder:staff.emergencyContactPhone" />}
+            value={employee.emergency_contact_phone ?? '—'}
+          />
+        </dl>
+      </BentoTile>
+
+      <BentoTile colSpan={2}>
         <BentoTileHeader title={<Trans i18nKey="kinder:staff.contact" />} />
         <dl>
           <InfoRow
@@ -130,9 +164,19 @@ export function StaffProfileBento({
             }
           />
           <InfoRow
+            label={<Trans i18nKey="kinder:staff.manager" />}
+            value={employee.manager?.full_name ?? '—'}
+          />
+          <InfoRow
             label={<Trans i18nKey="kinder:staff.hireDate" />}
             value={employee.hire_date ?? '—'}
           />
+          {employee.termination_date ?
+            <InfoRow
+              label={<Trans i18nKey="kinder:staff.terminationDate" />}
+              value={employee.termination_date}
+            />
+          : null}
         </dl>
       </BentoTile>
 

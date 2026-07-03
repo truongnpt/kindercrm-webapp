@@ -14,10 +14,18 @@ export interface StaffModulePermissions {
   canManageClasses: boolean;
   canManageAccess: boolean;
   canManagePermissions: boolean;
+  canViewAttendance: boolean;
+  canManageAttendance: boolean;
+  canViewLeave: boolean;
+  canManageLeave: boolean;
+  canViewDocuments: boolean;
+  canManageDocuments: boolean;
   /** Any write action on staff records */
   canManageDirectory: boolean;
   /** Show setup / permissions nav links */
   canAccessAdminSections: boolean;
+  /** Show attendance / leave / reports nav links */
+  canAccessHrSections: boolean;
 }
 
 export function buildStaffModulePermissions(
@@ -30,6 +38,24 @@ export function buildStaffModulePermissions(
   const canManagePermissions = hasPermission(
     permissions,
     STAFF_PERMISSIONS.PERMISSIONS_MANAGE,
+  );
+  const canViewAttendance = hasPermission(
+    permissions,
+    STAFF_PERMISSIONS.ATTENDANCE_VIEW,
+  );
+  const canManageAttendance = hasPermission(
+    permissions,
+    STAFF_PERMISSIONS.ATTENDANCE_MANAGE,
+  );
+  const canViewLeave = hasPermission(permissions, STAFF_PERMISSIONS.LEAVE_VIEW);
+  const canManageLeave = hasPermission(permissions, STAFF_PERMISSIONS.LEAVE_MANAGE);
+  const canViewDocuments = hasPermission(
+    permissions,
+    STAFF_PERMISSIONS.DOCUMENTS_VIEW,
+  );
+  const canManageDocuments = hasPermission(
+    permissions,
+    STAFF_PERMISSIONS.DOCUMENTS_MANAGE,
   );
 
   return {
@@ -56,7 +82,17 @@ export function buildStaffModulePermissions(
     ),
     canManageAccess: hasPermission(permissions, STAFF_PERMISSIONS.ACCESS_MANAGE),
     canManagePermissions,
+    canViewAttendance,
+    canManageAttendance,
+    canViewLeave,
+    canManageLeave,
+    canViewDocuments,
+    canManageDocuments,
     canManageDirectory: canCreate || canUpdate || canDelete,
     canAccessAdminSections: canManageSetup || canManagePermissions,
+    canAccessHrSections:
+      canViewAttendance ||
+      canViewLeave ||
+      hasPermission(permissions, STAFF_PERMISSIONS.CONTRACTS_VIEW),
   };
 }

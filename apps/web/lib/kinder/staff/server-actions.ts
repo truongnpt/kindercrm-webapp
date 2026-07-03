@@ -8,16 +8,11 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import pathsConfig from '~/config/paths.config';
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
+import { generateEmployeeCode } from './generate-employee-code';
 import {
   parseAccessRoleKey,
   STAFF_PERMISSIONS,
-  type KinderPermission,
 } from '~/lib/kinder/permissions';
-import { assertPermissionFromContext } from '~/lib/kinder/permissions/assert-permission.server';
-import { requireSchoolContext } from '~/lib/kinder/tenant/get-school-context';
-
-import { generateEmployeeCode } from './generate-employee-code';
-import { countStaffEmployees } from './load-staff';
 import {
   AssignStaffClassSchema,
   CreateDepartmentSchema,
@@ -30,41 +25,14 @@ import {
   UpdateStaffEmployeeSchema,
 } from './schemas/staff.schema';
 import { resendStaffInvite } from './provision-staff-account';
+import {
+  assertStaffPermission,
+  getNextEmployeeSequence,
+  revalidateStaffPaths,
+} from './staff-action-utils';
 import { syncStaffMemberAccess } from './sync-member-access';
 
 const STAFF_PATH = pathsConfig.app.staff;
-
-function revalidateStaffPaths(employeeId?: string) {
-  revalidatePath(STAFF_PATH);
-  revalidatePath(pathsConfig.app.classes);
-
-  if (employeeId) {
-    revalidatePath(`${pathsConfig.app.staffDetail}/${employeeId}`);
-  }
-}
-
-async function assertStaffPermission(
-  userId: string,
-  schoolId: string,
-  permission: KinderPermission,
-) {
-  const context = await requireSchoolContext(userId);
-
-  if (context.school.id !== schoolId) {
-    throw new KinderError(
-      KINDER_ERROR_CODES.SCHOOL_ACCESS_DENIED,
-      'School mismatch',
-    );
-  }
-
-  await assertPermissionFromContext(context, permission);
-}
-
-async function getNextEmployeeSequence(schoolId: string) {
-  const count = await countStaffEmployees(schoolId);
-
-  return count + 1;
-}
 
 export const createDepartmentAction = enhanceAction(
   async (data, user) => {
@@ -156,6 +124,7 @@ export const createStaffEmployeeAction = enhanceAction(
         department_id: data.departmentId || null,
         position_id: data.positionId || null,
         campus_id: data.campusId || null,
+        manager_id: data.managerId || null,
         hire_date: data.hireDate || null,
         date_of_birth: data.dateOfBirth || null,
         gender: data.gender || null,
@@ -222,6 +191,7 @@ export const updateStaffEmployeeAction = enhanceAction(
         department_id: data.departmentId || null,
         position_id: data.positionId || null,
         campus_id: data.campusId || null,
+        manager_id: data.managerId || null,
         employment_status: data.employmentStatus,
         hire_date: data.hireDate || null,
         termination_date: data.terminationDate || null,

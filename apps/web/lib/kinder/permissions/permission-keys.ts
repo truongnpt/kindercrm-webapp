@@ -19,6 +19,12 @@ export const STAFF_PERMISSIONS = {
   CLASSES_MANAGE: 'staff.classes.manage',
   ACCESS_MANAGE: 'staff.access.manage',
   PERMISSIONS_MANAGE: 'staff.permissions.manage',
+  ATTENDANCE_VIEW: 'staff.attendance.view',
+  ATTENDANCE_MANAGE: 'staff.attendance.manage',
+  LEAVE_VIEW: 'staff.leave.view',
+  LEAVE_MANAGE: 'staff.leave.manage',
+  DOCUMENTS_VIEW: 'staff.documents.view',
+  DOCUMENTS_MANAGE: 'staff.documents.manage',
 } as const;
 
 export const CRM_PERMISSIONS = {
@@ -182,6 +188,30 @@ export const PERMISSION_GROUPS = [
       {
         key: STAFF_PERMISSIONS.PERMISSIONS_MANAGE,
         labelKey: 'kinder:permissions.staff.permissionsManage',
+      },
+      {
+        key: STAFF_PERMISSIONS.ATTENDANCE_VIEW,
+        labelKey: 'kinder:permissions.staff.attendanceView',
+      },
+      {
+        key: STAFF_PERMISSIONS.ATTENDANCE_MANAGE,
+        labelKey: 'kinder:permissions.staff.attendanceManage',
+      },
+      {
+        key: STAFF_PERMISSIONS.LEAVE_VIEW,
+        labelKey: 'kinder:permissions.staff.leaveView',
+      },
+      {
+        key: STAFF_PERMISSIONS.LEAVE_MANAGE,
+        labelKey: 'kinder:permissions.staff.leaveManage',
+      },
+      {
+        key: STAFF_PERMISSIONS.DOCUMENTS_VIEW,
+        labelKey: 'kinder:permissions.staff.documentsView',
+      },
+      {
+        key: STAFF_PERMISSIONS.DOCUMENTS_MANAGE,
+        labelKey: 'kinder:permissions.staff.documentsManage',
       },
     ],
   },

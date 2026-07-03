@@ -16,15 +16,18 @@ import type {
   StaffContract,
   StaffEmployeeDetail,
 } from '~/lib/kinder/staff/types';
+import type { StaffDocument } from '~/lib/kinder/staff/hr-types';
 
 import { StaffClassesPanel } from './staff-classes-panel';
 import { StaffContractsPanel } from './staff-contracts-panel';
+import { StaffDocumentsPanel } from './staff-documents-panel';
 import { StaffProfileBento } from './staff-profile-bento';
 
 export function StaffDetailWorkspace({
   employee,
   activeContract,
   contracts,
+  documents = [],
   homeroomClasses,
   assignments,
   availableClasses,
@@ -34,6 +37,7 @@ export function StaffDetailWorkspace({
   employee: StaffEmployeeDetail;
   activeContract?: StaffContract;
   contracts: StaffContract[];
+  documents?: StaffDocument[];
   homeroomClasses: StaffHomeroomClass[];
   assignments: Array<{
     id: string;
@@ -67,6 +71,11 @@ export function StaffDetailWorkspace({
               <Trans i18nKey="kinder:staff.contracts.title" />
             </TabbedModuleTrigger>
           ) : null}
+          {permissions.canViewDocuments ? (
+            <TabbedModuleTrigger value="documents">
+              <Trans i18nKey="kinder:staff.documents.title" />
+            </TabbedModuleTrigger>
+          ) : null}
           {showClassesTab ? (
             <TabbedModuleTrigger value="classes">
               <Trans i18nKey="kinder:staff.classes.title" />
@@ -94,6 +103,20 @@ export function StaffDetailWorkspace({
             <StaffContractsPanel
               canManage={permissions.canManageContracts}
               contracts={contracts}
+              employeeId={employee.id}
+              schoolId={schoolId}
+            />
+          </TabbedModuleContent>
+        ) : null}
+
+        {permissions.canViewDocuments ? (
+          <TabbedModuleContent
+            className="px-5 pb-5 sm:px-6 sm:pb-6"
+            value="documents"
+          >
+            <StaffDocumentsPanel
+              canManage={permissions.canManageDocuments}
+              documents={documents}
               employeeId={employee.id}
               schoolId={schoolId}
             />

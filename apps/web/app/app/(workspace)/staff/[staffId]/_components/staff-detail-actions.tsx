@@ -34,6 +34,7 @@ export function StaffDetailActions({
   departments,
   positions,
   campuses,
+  managers = [],
   customRoles,
   permissions,
 }: {
@@ -42,6 +43,7 @@ export function StaffDetailActions({
   departments: StaffDepartment[];
   positions: StaffPosition[];
   campuses: Campus[];
+  managers?: Array<{ id: string; full_name: string; employee_code: string }>;
   customRoles: SchoolCustomRole[];
   permissions: StaffModulePermissions;
 }) {
@@ -71,6 +73,7 @@ export function StaffDetailActions({
             customRoles={customRoles}
             departments={departments}
             employee={employee}
+            managers={managers}
             positions={positions}
             schoolId={schoolId}
           />

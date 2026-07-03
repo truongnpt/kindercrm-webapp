@@ -302,6 +302,88 @@ export type Database = {
           },
         ]
       }
+      calendar_events: {
+        Row: {
+          all_day: boolean
+          campus_id: string | null
+          category: Database["public"]["Enums"]["calendar_event_category"]
+          class_id: string | null
+          created_at: string
+          created_by: string | null
+          deleted_at: string | null
+          description: string | null
+          ends_at: string
+          id: string
+          notify_on_create: boolean
+          remind_days_before: number | null
+          school_id: string
+          scope_type: Database["public"]["Enums"]["calendar_event_scope"]
+          starts_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          all_day?: boolean
+          campus_id?: string | null
+          category?: Database["public"]["Enums"]["calendar_event_category"]
+          class_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          description?: string | null
+          ends_at: string
+          id?: string
+          notify_on_create?: boolean
+          remind_days_before?: number | null
+          school_id: string
+          scope_type?: Database["public"]["Enums"]["calendar_event_scope"]
+          starts_at: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          all_day?: boolean
+          campus_id?: string | null
+          category?: Database["public"]["Enums"]["calendar_event_category"]
+          class_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          description?: string | null
+          ends_at?: string
+          id?: string
+          notify_on_create?: boolean
+          remind_days_before?: number | null
+          school_id?: string
+          scope_type?: Database["public"]["Enums"]["calendar_event_scope"]
+          starts_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_events_campus_id_fkey"
+            columns: ["campus_id"]
+            isOneToOne: false
+            referencedRelation: "campuses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calendar_events_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calendar_events_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       campuses: {
         Row: {
           address: string | null
@@ -352,271 +434,6 @@ export type Database = {
           },
           {
             foreignKeyName: "campuses_school_id_fkey"
-            columns: ["school_id"]
-            isOneToOne: false
-            referencedRelation: "schools"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      communication_message_reactions: {
-        Row: {
-          created_at: string
-          id: string
-          message_id: string
-          reaction: Database["public"]["Enums"]["communication_reaction"]
-          school_id: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          message_id: string
-          reaction: Database["public"]["Enums"]["communication_reaction"]
-          school_id: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          message_id?: string
-          reaction?: Database["public"]["Enums"]["communication_reaction"]
-          school_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "communication_message_reactions_message_id_fkey"
-            columns: ["message_id"]
-            isOneToOne: false
-            referencedRelation: "communication_messages"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "communication_message_reactions_school_id_fkey"
-            columns: ["school_id"]
-            isOneToOne: false
-            referencedRelation: "schools"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      communication_messages: {
-        Row: {
-          attachment_file_name: string | null
-          attachment_mime_type: string | null
-          attachment_storage_path: string | null
-          body: string
-          created_at: string
-          id: string
-          reply_to_message_id: string | null
-          school_id: string
-          sender_type: string
-          sender_user_id: string
-          thread_id: string
-        }
-        Insert: {
-          attachment_file_name?: string | null
-          attachment_mime_type?: string | null
-          attachment_storage_path?: string | null
-          body: string
-          created_at?: string
-          id?: string
-          reply_to_message_id?: string | null
-          school_id: string
-          sender_type: string
-          sender_user_id: string
-          thread_id: string
-        }
-        Update: {
-          attachment_file_name?: string | null
-          attachment_mime_type?: string | null
-          attachment_storage_path?: string | null
-          body?: string
-          created_at?: string
-          id?: string
-          reply_to_message_id?: string | null
-          school_id?: string
-          sender_type?: string
-          sender_user_id?: string
-          thread_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "communication_messages_school_id_fkey"
-            columns: ["school_id"]
-            isOneToOne: false
-            referencedRelation: "schools"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "communication_messages_thread_id_fkey"
-            columns: ["thread_id"]
-            isOneToOne: false
-            referencedRelation: "communication_threads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      communication_thread_reads: {
-        Row: {
-          last_read_at: string
-          thread_id: string
-          user_id: string
-        }
-        Insert: {
-          last_read_at?: string
-          thread_id: string
-          user_id: string
-        }
-        Update: {
-          last_read_at?: string
-          thread_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "communication_thread_reads_thread_id_fkey"
-            columns: ["thread_id"]
-            isOneToOne: false
-            referencedRelation: "communication_threads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      communication_threads: {
-        Row: {
-          channel: Database["public"]["Enums"]["communication_channel"]
-          class_id: string | null
-          created_at: string
-          id: string
-          last_message_at: string | null
-          last_message_preview: string | null
-          school_id: string
-          student_id: string
-          updated_at: string
-        }
-        Insert: {
-          channel: Database["public"]["Enums"]["communication_channel"]
-          class_id?: string | null
-          created_at?: string
-          id?: string
-          last_message_at?: string | null
-          last_message_preview?: string | null
-          school_id: string
-          student_id: string
-          updated_at?: string
-        }
-        Update: {
-          channel?: Database["public"]["Enums"]["communication_channel"]
-          class_id?: string | null
-          created_at?: string
-          id?: string
-          last_message_at?: string | null
-          last_message_preview?: string | null
-          school_id?: string
-          student_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "communication_threads_class_id_fkey"
-            columns: ["class_id"]
-            isOneToOne: false
-            referencedRelation: "classes"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "communication_threads_school_id_fkey"
-            columns: ["school_id"]
-            isOneToOne: false
-            referencedRelation: "schools"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "communication_threads_student_id_fkey"
-            columns: ["student_id"]
-            isOneToOne: false
-            referencedRelation: "students"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      calendar_events: {
-        Row: {
-          all_day: boolean
-          campus_id: string | null
-          category: Database["public"]["Enums"]["calendar_event_category"]
-          class_id: string | null
-          created_at: string
-          created_by: string | null
-          deleted_at: string | null
-          description: string | null
-          ends_at: string
-          id: string
-          school_id: string
-          remind_days_before: number | null
-          notify_on_create: boolean
-          scope_type: Database["public"]["Enums"]["calendar_event_scope"]
-          starts_at: string
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          all_day?: boolean
-          campus_id?: string | null
-          category?: Database["public"]["Enums"]["calendar_event_category"]
-          class_id?: string | null
-          created_at?: string
-          created_by?: string | null
-          deleted_at?: string | null
-          description?: string | null
-          ends_at: string
-          id?: string
-          school_id: string
-          remind_days_before?: number | null
-          notify_on_create?: boolean
-          scope_type?: Database["public"]["Enums"]["calendar_event_scope"]
-          starts_at: string
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          all_day?: boolean
-          campus_id?: string | null
-          category?: Database["public"]["Enums"]["calendar_event_category"]
-          class_id?: string | null
-          created_at?: string
-          created_by?: string | null
-          deleted_at?: string | null
-          description?: string | null
-          ends_at?: string
-          id?: string
-          school_id?: string
-          remind_days_before?: number | null
-          notify_on_create?: boolean
-          scope_type?: Database["public"]["Enums"]["calendar_event_scope"]
-          starts_at?: string
-          title?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "calendar_events_campus_id_fkey"
-            columns: ["campus_id"]
-            isOneToOne: false
-            referencedRelation: "campuses"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "calendar_events_class_id_fkey"
-            columns: ["class_id"]
-            isOneToOne: false
-            referencedRelation: "classes"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "calendar_events_school_id_fkey"
             columns: ["school_id"]
             isOneToOne: false
             referencedRelation: "schools"
@@ -852,6 +669,196 @@ export type Database = {
             columns: ["school_id"]
             isOneToOne: false
             referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      communication_message_reactions: {
+        Row: {
+          created_at: string
+          id: string
+          message_id: string
+          reaction: Database["public"]["Enums"]["communication_reaction"]
+          school_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message_id: string
+          reaction: Database["public"]["Enums"]["communication_reaction"]
+          school_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message_id?: string
+          reaction?: Database["public"]["Enums"]["communication_reaction"]
+          school_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_message_reactions_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "communication_messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_message_reactions_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      communication_messages: {
+        Row: {
+          attachment_file_name: string | null
+          attachment_mime_type: string | null
+          attachment_storage_path: string | null
+          body: string
+          created_at: string
+          id: string
+          reply_to_message_id: string | null
+          school_id: string
+          sender_type: string
+          sender_user_id: string
+          thread_id: string
+        }
+        Insert: {
+          attachment_file_name?: string | null
+          attachment_mime_type?: string | null
+          attachment_storage_path?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          reply_to_message_id?: string | null
+          school_id: string
+          sender_type: string
+          sender_user_id: string
+          thread_id: string
+        }
+        Update: {
+          attachment_file_name?: string | null
+          attachment_mime_type?: string | null
+          attachment_storage_path?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          reply_to_message_id?: string | null
+          school_id?: string
+          sender_type?: string
+          sender_user_id?: string
+          thread_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_messages_reply_to_message_id_fkey"
+            columns: ["reply_to_message_id"]
+            isOneToOne: false
+            referencedRelation: "communication_messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_messages_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "communication_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      communication_thread_reads: {
+        Row: {
+          last_read_at: string
+          thread_id: string
+          user_id: string
+        }
+        Insert: {
+          last_read_at?: string
+          thread_id: string
+          user_id: string
+        }
+        Update: {
+          last_read_at?: string
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_thread_reads_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "communication_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      communication_threads: {
+        Row: {
+          channel: Database["public"]["Enums"]["communication_channel"]
+          class_id: string | null
+          created_at: string
+          id: string
+          last_message_at: string | null
+          last_message_preview: string | null
+          school_id: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          channel: Database["public"]["Enums"]["communication_channel"]
+          class_id?: string | null
+          created_at?: string
+          id?: string
+          last_message_at?: string | null
+          last_message_preview?: string | null
+          school_id: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          channel?: Database["public"]["Enums"]["communication_channel"]
+          class_id?: string | null
+          created_at?: string
+          id?: string
+          last_message_at?: string | null
+          last_message_preview?: string | null
+          school_id?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_threads_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_threads_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_threads_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
             referencedColumns: ["id"]
           },
         ]
@@ -2692,6 +2699,53 @@ export type Database = {
           },
         ]
       }
+      school_custom_roles: {
+        Row: {
+          created_at: string
+          deleted_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          school_id: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          school_id: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          school_id?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "school_custom_roles_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       school_members: {
         Row: {
           created_at: string
@@ -2733,53 +2787,6 @@ export type Database = {
           },
           {
             foreignKeyName: "school_members_school_id_fkey"
-            columns: ["school_id"]
-            isOneToOne: false
-            referencedRelation: "schools"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      school_custom_roles: {
-        Row: {
-          created_at: string
-          deleted_at: string | null
-          description: string | null
-          id: string
-          is_active: boolean
-          name: string
-          school_id: string
-          slug: string
-          sort_order: number
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          deleted_at?: string | null
-          description?: string | null
-          id?: string
-          is_active?: boolean
-          name: string
-          school_id: string
-          slug: string
-          sort_order?: number
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          deleted_at?: string | null
-          description?: string | null
-          id?: string
-          is_active?: boolean
-          name?: string
-          school_id?: string
-          slug?: string
-          sort_order?: number
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "school_custom_roles_school_id_fkey"
             columns: ["school_id"]
             isOneToOne: false
             referencedRelation: "schools"
@@ -3081,6 +3088,72 @@ export type Database = {
           },
         ]
       }
+      staff_attendance: {
+        Row: {
+          attendance_date: string
+          check_in_at: string | null
+          check_out_at: string | null
+          created_at: string
+          created_by: string | null
+          employee_id: string
+          id: string
+          is_early_leave: boolean
+          is_late: boolean
+          notes: string | null
+          school_id: string
+          source: Database["public"]["Enums"]["staff_attendance_source"]
+          total_minutes: number | null
+          updated_at: string
+        }
+        Insert: {
+          attendance_date: string
+          check_in_at?: string | null
+          check_out_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          employee_id: string
+          id?: string
+          is_early_leave?: boolean
+          is_late?: boolean
+          notes?: string | null
+          school_id: string
+          source?: Database["public"]["Enums"]["staff_attendance_source"]
+          total_minutes?: number | null
+          updated_at?: string
+        }
+        Update: {
+          attendance_date?: string
+          check_in_at?: string | null
+          check_out_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          employee_id?: string
+          id?: string
+          is_early_leave?: boolean
+          is_late?: boolean
+          notes?: string | null
+          school_id?: string
+          source?: Database["public"]["Enums"]["staff_attendance_source"]
+          total_minutes?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_attendance_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "staff_employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_attendance_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       staff_class_assignments: {
         Row: {
           assigned_at: string
@@ -3137,6 +3210,7 @@ export type Database = {
         Row: {
           contract_type: Database["public"]["Enums"]["staff_contract_type"]
           created_at: string
+          document_url: string | null
           employee_id: string
           end_date: string | null
           id: string
@@ -3145,12 +3219,14 @@ export type Database = {
           salary_amount: number
           school_id: string
           start_date: string
+          terminated_at: string | null
           title: string
           updated_at: string
         }
         Insert: {
           contract_type?: Database["public"]["Enums"]["staff_contract_type"]
           created_at?: string
+          document_url?: string | null
           employee_id: string
           end_date?: string | null
           id?: string
@@ -3159,12 +3235,14 @@ export type Database = {
           salary_amount?: number
           school_id: string
           start_date: string
+          terminated_at?: string | null
           title: string
           updated_at?: string
         }
         Update: {
           contract_type?: Database["public"]["Enums"]["staff_contract_type"]
           created_at?: string
+          document_url?: string | null
           employee_id?: string
           end_date?: string | null
           id?: string
@@ -3173,6 +3251,7 @@ export type Database = {
           salary_amount?: number
           school_id?: string
           start_date?: string
+          terminated_at?: string | null
           title?: string
           updated_at?: string
         }
@@ -3234,6 +3313,66 @@ export type Database = {
           },
         ]
       }
+      staff_documents: {
+        Row: {
+          created_at: string
+          document_type: Database["public"]["Enums"]["staff_document_type"]
+          employee_id: string
+          expires_at: string | null
+          file_name: string | null
+          file_url: string
+          id: string
+          notes: string | null
+          school_id: string
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_type?: Database["public"]["Enums"]["staff_document_type"]
+          employee_id: string
+          expires_at?: string | null
+          file_name?: string | null
+          file_url: string
+          id?: string
+          notes?: string | null
+          school_id: string
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_type?: Database["public"]["Enums"]["staff_document_type"]
+          employee_id?: string
+          expires_at?: string | null
+          file_name?: string | null
+          file_url?: string
+          id?: string
+          notes?: string | null
+          school_id?: string
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_documents_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "staff_employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_documents_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       staff_employees: {
         Row: {
           access_role: Database["public"]["Enums"]["staff_access_role"]
@@ -3259,6 +3398,7 @@ export type Database = {
           invite_accepted_at: string | null
           invite_sent_at: string | null
           is_teacher: boolean
+          manager_id: string | null
           member_id: string | null
           notes: string | null
           phone: string | null
@@ -3293,6 +3433,7 @@ export type Database = {
           invite_accepted_at?: string | null
           invite_sent_at?: string | null
           is_teacher?: boolean
+          manager_id?: string | null
           member_id?: string | null
           notes?: string | null
           phone?: string | null
@@ -3327,6 +3468,7 @@ export type Database = {
           invite_accepted_at?: string | null
           invite_sent_at?: string | null
           is_teacher?: boolean
+          manager_id?: string | null
           member_id?: string | null
           notes?: string | null
           phone?: string | null
@@ -3346,10 +3488,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "staff_employees_custom_role_id_fkey"
+            columns: ["custom_role_id"]
+            isOneToOne: false
+            referencedRelation: "school_custom_roles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "staff_employees_department_id_fkey"
             columns: ["department_id"]
             isOneToOne: false
             referencedRelation: "staff_departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_employees_manager_id_fkey"
+            columns: ["manager_id"]
+            isOneToOne: false
+            referencedRelation: "staff_employees"
             referencedColumns: ["id"]
           },
           {
@@ -3368,6 +3524,75 @@ export type Database = {
           },
           {
             foreignKeyName: "staff_employees_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      staff_leave_requests: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          days_count: number
+          employee_id: string
+          end_date: string
+          id: string
+          leave_type: Database["public"]["Enums"]["staff_leave_type"]
+          reason: string | null
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          school_id: string
+          start_date: string
+          status: Database["public"]["Enums"]["staff_leave_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          days_count?: number
+          employee_id: string
+          end_date: string
+          id?: string
+          leave_type?: Database["public"]["Enums"]["staff_leave_type"]
+          reason?: string | null
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          school_id: string
+          start_date: string
+          status?: Database["public"]["Enums"]["staff_leave_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          days_count?: number
+          employee_id?: string
+          end_date?: string
+          id?: string
+          leave_type?: Database["public"]["Enums"]["staff_leave_type"]
+          reason?: string | null
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          school_id?: string
+          start_date?: string
+          status?: Database["public"]["Enums"]["staff_leave_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_leave_requests_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "staff_employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_leave_requests_school_id_fkey"
             columns: ["school_id"]
             isOneToOne: false
             referencedRelation: "schools"
@@ -3567,6 +3792,95 @@ export type Database = {
           },
         ]
       }
+      student_contracts: {
+        Row: {
+          billing_period: string | null
+          contract_number: string
+          contract_type: Database["public"]["Enums"]["student_contract_type"]
+          created_at: string
+          created_by: string | null
+          end_date: string | null
+          id: string
+          invoice_id: string | null
+          school_id: string
+          signed_at: string | null
+          start_date: string
+          status: Database["public"]["Enums"]["student_contract_status"]
+          student_id: string
+          terms: string | null
+          title: string
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          billing_period?: string | null
+          contract_number: string
+          contract_type: Database["public"]["Enums"]["student_contract_type"]
+          created_at?: string
+          created_by?: string | null
+          end_date?: string | null
+          id?: string
+          invoice_id?: string | null
+          school_id: string
+          signed_at?: string | null
+          start_date: string
+          status?: Database["public"]["Enums"]["student_contract_status"]
+          student_id: string
+          terms?: string | null
+          title: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          billing_period?: string | null
+          contract_number?: string
+          contract_type?: Database["public"]["Enums"]["student_contract_type"]
+          created_at?: string
+          created_by?: string | null
+          end_date?: string | null
+          id?: string
+          invoice_id?: string | null
+          school_id?: string
+          signed_at?: string | null
+          start_date?: string
+          status?: Database["public"]["Enums"]["student_contract_status"]
+          student_id?: string
+          terms?: string | null
+          title?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_contracts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_contracts_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_contracts_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_contracts_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       student_daily_reports: {
         Row: {
           activities: string | null
@@ -3650,88 +3964,6 @@ export type Database = {
           },
           {
             foreignKeyName: "student_daily_reports_student_id_fkey"
-            columns: ["student_id"]
-            isOneToOne: false
-            referencedRelation: "students"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      student_contracts: {
-        Row: {
-          billing_period: string | null
-          contract_number: string
-          contract_type: Database["public"]["Enums"]["student_contract_type"]
-          created_at: string
-          created_by: string | null
-          end_date: string | null
-          id: string
-          invoice_id: string | null
-          school_id: string
-          signed_at: string | null
-          start_date: string
-          status: Database["public"]["Enums"]["student_contract_status"]
-          student_id: string
-          terms: string | null
-          title: string
-          total_amount: number
-          updated_at: string
-        }
-        Insert: {
-          billing_period?: string | null
-          contract_number: string
-          contract_type: Database["public"]["Enums"]["student_contract_type"]
-          created_at?: string
-          created_by?: string | null
-          end_date?: string | null
-          id?: string
-          invoice_id?: string | null
-          school_id: string
-          signed_at?: string | null
-          start_date: string
-          status?: Database["public"]["Enums"]["student_contract_status"]
-          student_id: string
-          terms?: string | null
-          title: string
-          total_amount?: number
-          updated_at?: string
-        }
-        Update: {
-          billing_period?: string | null
-          contract_number?: string
-          contract_type?: Database["public"]["Enums"]["student_contract_type"]
-          created_at?: string
-          created_by?: string | null
-          end_date?: string | null
-          id?: string
-          invoice_id?: string | null
-          school_id?: string
-          signed_at?: string | null
-          start_date?: string
-          status?: Database["public"]["Enums"]["student_contract_status"]
-          student_id?: string
-          terms?: string | null
-          title?: string
-          total_amount?: number
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "student_contracts_invoice_id_fkey"
-            columns: ["invoice_id"]
-            isOneToOne: false
-            referencedRelation: "invoices"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "student_contracts_school_id_fkey"
-            columns: ["school_id"]
-            isOneToOne: false
-            referencedRelation: "schools"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "student_contracts_student_id_fkey"
             columns: ["student_id"]
             isOneToOne: false
             referencedRelation: "students"
@@ -4185,6 +4417,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      bootstrap_platform_super_admin: {
+        Args: { p_email?: string; p_name?: string; p_password?: string }
+        Returns: string
+      }
       create_school_for_owner: {
         Args: {
           p_address?: string
@@ -4240,7 +4476,15 @@ export type Database = {
         Args: { p_grants: Json; p_school_id: string }
         Returns: undefined
       }
+      user_can_access_communication_media: {
+        Args: { object_name: string }
+        Returns: boolean
+      }
       user_can_access_daily_report_media: {
+        Args: { object_name: string }
+        Returns: boolean
+      }
+      user_can_access_student_photo: {
         Args: { object_name: string }
         Returns: boolean
       }
@@ -4271,9 +4515,6 @@ export type Database = {
         | "late"
         | "excused"
         | "early_leave"
-      campus_type: "campus" | "branch"
-      communication_channel: "homeroom" | "school_office"
-      communication_reaction: "like" | "love" | "haha" | "wow" | "sad" | "thanks"
       calendar_event_category:
         | "learning_activity"
         | "event"
@@ -4282,7 +4523,16 @@ export type Database = {
         | "health_checkup"
         | "other"
       calendar_event_scope: "school" | "campus" | "class"
+      campus_type: "campus" | "branch"
       class_status: "active" | "archived"
+      communication_channel: "homeroom" | "school_office"
+      communication_reaction:
+        | "like"
+        | "love"
+        | "haha"
+        | "wow"
+        | "sad"
+        | "thanks"
       daily_report_status: "draft" | "published"
       health_incident_severity: "minor" | "moderate" | "serious"
       health_incident_type:
@@ -4327,22 +4577,37 @@ export type Database = {
       meal_slot: "breakfast" | "lunch" | "snack" | "dinner"
       menu_period_type: "daily" | "weekly" | "monthly"
       menu_status: "draft" | "published"
-      notification_category: "daily_report" | "menu" | "inventory" | "system" | "calendar" | "communication"
+      notification_category:
+        | "daily_report"
+        | "menu"
+        | "inventory"
+        | "system"
+        | "calendar"
+        | "communication"
       payment_method: "cash" | "bank_transfer" | "card" | "other"
       platform_admin_role: "super_admin" | "support" | "billing"
       purchase_order_status: "draft" | "submitted" | "received" | "cancelled"
       school_member_role:
         | "owner"
         | "admin"
-        | "manager"
         | "staff"
         | "teacher"
         | "accountant"
         | "parent"
+        | "manager"
       school_status: "active" | "suspended" | "archived"
-      staff_access_role: "staff" | "admin" | "manager" | "accountant"
+      staff_access_role: "staff" | "admin" | "accountant" | "manager"
+      staff_attendance_source: "check_in" | "manual"
       staff_contract_type: "full_time" | "part_time" | "contract" | "probation"
+      staff_document_type:
+        | "id_card"
+        | "degree"
+        | "certificate"
+        | "contract"
+        | "other"
       staff_employment_status: "active" | "inactive" | "on_leave" | "terminated"
+      staff_leave_status: "pending" | "approved" | "rejected" | "cancelled"
+      staff_leave_type: "annual" | "sick" | "unpaid" | "other"
       stock_count_status: "draft" | "completed" | "cancelled"
       student_contract_status:
         | "draft"
@@ -5069,9 +5334,6 @@ export const Constants = {
         "excused",
         "early_leave",
       ],
-      campus_type: ["campus", "branch"],
-      communication_channel: ["homeroom", "school_office"],
-      communication_reaction: ["like", "love", "haha", "wow", "sad", "thanks"],
       calendar_event_category: [
         "learning_activity",
         "event",
@@ -5081,7 +5343,10 @@ export const Constants = {
         "other",
       ],
       calendar_event_scope: ["school", "campus", "class"],
+      campus_type: ["campus", "branch"],
       class_status: ["active", "archived"],
+      communication_channel: ["homeroom", "school_office"],
+      communication_reaction: ["like", "love", "haha", "wow", "sad", "thanks"],
       daily_report_status: ["draft", "published"],
       health_incident_severity: ["minor", "moderate", "serious"],
       health_incident_type: [
@@ -5131,25 +5396,41 @@ export const Constants = {
       meal_slot: ["breakfast", "lunch", "snack", "dinner"],
       menu_period_type: ["daily", "weekly", "monthly"],
       menu_status: ["draft", "published"],
-      notification_category: ["daily_report", "menu", "inventory", "system", "calendar", "communication"],
+      notification_category: [
+        "daily_report",
+        "menu",
+        "inventory",
+        "system",
+        "calendar",
+        "communication",
+      ],
       payment_method: ["cash", "bank_transfer", "card", "other"],
       platform_admin_role: ["super_admin", "support", "billing"],
       purchase_order_status: ["draft", "submitted", "received", "cancelled"],
       school_member_role: [
         "owner",
         "admin",
-        "manager",
         "staff",
         "teacher",
         "accountant",
         "parent",
+        "manager",
       ],
       school_status: ["active", "suspended", "archived"],
-      staff_access_role: ["staff", "admin", "manager", "accountant"],
+      staff_access_role: ["staff", "admin", "accountant", "manager"],
+      staff_attendance_source: ["check_in", "manual"],
       staff_contract_type: ["full_time", "part_time", "contract", "probation"],
+      staff_document_type: [
+        "id_card",
+        "degree",
+        "certificate",
+        "contract",
+        "other",
+      ],
       staff_employment_status: ["active", "inactive", "on_leave", "terminated"],
+      staff_leave_status: ["pending", "approved", "rejected", "cancelled"],
+      staff_leave_type: ["annual", "sick", "unpaid", "other"],
       stock_count_status: ["draft", "completed", "cancelled"],
-      student_gender: ["male", "female", "other"],
       student_contract_status: [
         "draft",
         "active",
@@ -5163,6 +5444,7 @@ export const Constants = {
         "service",
         "tuition_agreement",
       ],
+      student_gender: ["male", "female", "other"],
       student_status: [
         "active",
         "inactive",
