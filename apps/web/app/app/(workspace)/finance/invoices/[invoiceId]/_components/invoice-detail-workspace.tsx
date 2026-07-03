@@ -23,7 +23,10 @@ import type {
   PaymentRefund,
 } from '~/lib/kinder/finance/types';
 
+import type { StudentContractWithInvoice } from '~/lib/kinder/student-contracts/types';
+
 import { InvoiceDetailPanel } from './invoice-detail-panel';
+import { InvoiceLinkedContract } from './invoice-linked-contract';
 import { InvoiceVietQrPanel } from './invoice-vietqr-panel';
 
 export function InvoiceDetailWorkspace({
@@ -37,6 +40,7 @@ export function InvoiceDetailWorkspace({
   showQr,
   vietQrConfig,
   defaultTab,
+  linkedContract,
 }: {
   invoice: InvoiceWithStudent;
   schoolId: string;
@@ -48,6 +52,7 @@ export function InvoiceDetailWorkspace({
   showQr: boolean;
   vietQrConfig: VietQrConfig | null;
   defaultTab: string;
+  linkedContract?: StudentContractWithInvoice | null;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -79,6 +84,12 @@ export function InvoiceDetailWorkspace({
           title={<Trans i18nKey="kinder:finance.invoices.detail" />}
         />
       </div>
+
+      {linkedContract ? (
+        <div className="px-5 pt-4 sm:px-6">
+          <InvoiceLinkedContract contract={linkedContract} />
+        </div>
+      ) : null}
 
       <TabbedModule
         className="min-w-0 gap-0 p-4 sm:p-6"

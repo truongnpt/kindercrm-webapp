@@ -24,10 +24,13 @@ import type {
   StudentParent,
   StudentPickupPerson,
 } from '~/lib/kinder/students/types';
+import type { TuitionFeeItem } from '~/lib/kinder/finance/types';
+import type { StudentContractWithInvoice } from '~/lib/kinder/student-contracts/types';
 
 import { DailyReportsPanel } from './daily-reports-panel';
 import { ParentLinkPanel } from './parent-link-panel';
 import { StudentContactsPanels } from './student-contacts-panels';
+import { StudentContractsPanel } from './student-contracts-panel';
 import { StudentProfileBento } from './student-profile-bento';
 
 type ParentLink = {
@@ -60,6 +63,11 @@ export function StudentDetailWorkspace({
   dailyReportAttachments,
   hasParentPortal,
   hasDailyReports,
+  hasContracts,
+  contracts,
+  contractStudents,
+  feeItems,
+  canManageContracts,
 }: {
   student: Student;
   schoolId: string;
@@ -75,6 +83,16 @@ export function StudentDetailWorkspace({
   dailyReportAttachments: Record<string, DailyReportAttachment[]>;
   hasParentPortal: boolean;
   hasDailyReports: boolean;
+  hasContracts: boolean;
+  contracts: StudentContractWithInvoice[];
+  contractStudents: Array<{
+    id: string;
+    full_name: string;
+    student_code: string;
+    class_name: string | null;
+  }>;
+  feeItems: TuitionFeeItem[];
+  canManageContracts: boolean;
 }) {
   return (
     <BentoTile className="min-w-0 overflow-hidden p-0" padding="none">
@@ -94,6 +112,11 @@ export function StudentDetailWorkspace({
           <TabbedModuleTrigger value="contacts">
             <Trans i18nKey="kinder:students.parents" />
           </TabbedModuleTrigger>
+          {hasContracts ? (
+            <TabbedModuleTrigger value="contracts">
+              <Trans i18nKey="kinder:studentContracts.title" />
+            </TabbedModuleTrigger>
+          ) : null}
           {hasParentPortal ? (
             <TabbedModuleTrigger value="parent">
               <Trans i18nKey="kinder:parent.title" />
@@ -128,6 +151,20 @@ export function StudentDetailWorkspace({
             studentId={studentId}
           />
         </TabbedModuleContent>
+
+        {hasContracts ? (
+          <TabbedModuleContent value="contracts">
+            <StudentContractsPanel
+              canManage={canManageContracts}
+              contracts={contracts}
+              feeItems={feeItems}
+              schoolId={schoolId}
+              studentId={studentId}
+              studentName={student.full_name}
+              students={contractStudents}
+            />
+          </TabbedModuleContent>
+        ) : null}
 
         {hasParentPortal ? (
           <TabbedModuleContent

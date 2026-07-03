@@ -34,14 +34,36 @@ type PaymentRow = {
   receipt_number: string;
 };
 
+type ContractRow = {
+  id: string;
+  contract_number: string;
+  contract_type: string;
+  title: string;
+  status: string;
+  start_date: string;
+  end_date: string | null;
+  total_amount: number;
+  invoice_id: string | null;
+  invoice: {
+    id: string;
+    invoice_number: string;
+    status: string;
+    total_amount: number;
+    paid_amount: number;
+    due_date: string;
+  } | null;
+};
+
 export function ParentFinancePanel({
   invoices,
   payments,
+  contracts,
   studentName,
   vietQrConfig,
 }: {
   invoices: InvoiceRow[];
   payments: PaymentRow[];
+  contracts: ContractRow[];
   studentName: string;
   vietQrConfig: VietQrConfig | null;
 }) {
@@ -59,6 +81,12 @@ export function ParentFinancePanel({
     list.push(payment);
     paymentsByInvoice.set(payment.invoice_id, list);
   }
+
+  const contractByInvoiceId = new Map(
+    contracts
+      .filter((contract) => contract.invoice?.id)
+      .map((contract) => [contract.invoice!.id, contract]),
+  );
 
   if (invoices.length === 0) {
     return (
@@ -129,6 +157,7 @@ export function ParentFinancePanel({
         {invoices.map((invoice) => {
           const balance = invoice.total_amount - invoice.paid_amount;
           const invoicePayments = paymentsByInvoice.get(invoice.id) ?? [];
+          const linkedContract = contractByInvoiceId.get(invoice.id);
 
           return (
             <div
@@ -163,6 +192,23 @@ export function ParentFinancePanel({
                 <Trans i18nKey="kinder:parent.finance.dueDate" />:{' '}
                 {invoice.due_date}
               </p>
+
+              {linkedContract ? (
+                <div className="mt-3 rounded-xl border border-primary/15 bg-primary/5 p-3">
+                  <p className="text-xs font-semibold tracking-wide text-primary uppercase">
+                    <Trans i18nKey="kinder:parent.contracts.linkedInvoice" />
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-foreground">
+                    {linkedContract.title}
+                  </p>
+                  <p className="text-muted-foreground mt-1 text-xs">
+                    {linkedContract.contract_number} ·{' '}
+                    <Trans
+                      i18nKey={`kinder:studentContracts.types.${linkedContract.contract_type}`}
+                    />
+                  </p>
+                </div>
+              ) : null}
 
               {invoicePayments.length > 0 ? (
                 <div className="mt-3 border-t border-border pt-3">

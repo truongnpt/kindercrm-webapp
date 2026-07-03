@@ -30,6 +30,8 @@ export const kinderQueryKeys = {
       [...kinderQueryKeys.students.all(schoolId), 'list'] as const,
     detail: (schoolId: string, studentId: string) =>
       [...kinderQueryKeys.students.all(schoolId), studentId] as const,
+    contracts: (schoolId: string) =>
+      [...kinderQueryKeys.students.all(schoolId), 'contracts'] as const,
   },
 
   classes: {

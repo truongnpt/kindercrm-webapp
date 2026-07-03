@@ -4,6 +4,7 @@ import {
   CalendarDays,
   ClipboardList,
   CreditCard,
+  FileSignature,
   GraduationCap,
   HeartPulse,
   Home,
@@ -49,6 +50,11 @@ const routes = [
         label: 'common:routes.students',
         path: pathsConfig.app.students,
         Icon: <GraduationCap className={iconClasses} />,
+      },
+      {
+        label: 'common:routes.studentContracts',
+        path: pathsConfig.app.studentContracts,
+        Icon: <FileSignature className={iconClasses} />,
       },
       {
         label: 'common:routes.classes',

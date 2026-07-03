@@ -16,6 +16,7 @@ import {
   loadInvoicePayments,
   loadPaymentRefunds,
 } from '~/lib/kinder/finance/load-finance';
+import { loadStudentContractByInvoiceId } from '~/lib/kinder/student-contracts/load-student-contracts';
 import { assertModuleAccessFromContext } from '~/lib/kinder/permissions/module-access.server';
 import { requirePackageFeature } from '~/lib/kinder/subscription/features';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
@@ -71,10 +72,11 @@ async function InvoiceDetailPage({
     notFound();
   }
 
-  const [lineItems, adjustments, payments] = await Promise.all([
+  const [lineItems, adjustments, payments, linkedContract] = await Promise.all([
     loadInvoiceLineItems(context.school.id, invoiceId),
     loadInvoiceAdjustments(context.school.id, invoiceId),
     loadInvoicePayments(context.school.id, invoiceId),
+    loadStudentContractByInvoiceId(context.school.id, invoiceId),
   ]);
 
   const refunds = await loadPaymentRefunds(
@@ -124,6 +126,7 @@ async function InvoiceDetailPage({
           defaultTab={defaultTab}
           invoice={invoice}
           lineItems={lineItems}
+          linkedContract={linkedContract}
           payments={payments}
           refunds={refunds}
           schoolId={context.school.id}

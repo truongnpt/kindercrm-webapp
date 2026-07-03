@@ -6,6 +6,7 @@ import { requireUserInServerComponent } from '~/lib/server/require-user-in-serve
 import {
   loadParentLeaveRequests,
   loadParentStudentAttendance,
+  loadParentStudentContracts,
   loadParentStudentDetail,
   loadParentStudentInvoicePayments,
   loadParentStudentInvoices,
@@ -65,6 +66,7 @@ async function ParentChildPage({
     attendance,
     invoices,
     payments,
+    contracts,
     dailyReports,
     health,
     leaveRequests,
@@ -75,6 +77,7 @@ async function ParentChildPage({
     loadParentStudentAttendance(user.id, studentId),
     loadParentStudentInvoices(user.id, studentId),
     loadParentStudentInvoicePayments(user.id, studentId),
+    loadParentStudentContracts(user.id, studentId),
     loadParentDailyReports(user.id, studentId),
     loadParentStudentHealth(student.school_id, studentId),
     loadParentLeaveRequests(user.id, studentId),
@@ -93,6 +96,7 @@ async function ParentChildPage({
   return (
     <ParentChildDetailPanel
       attendance={attendance}
+      contracts={contracts}
       dailyReports={dailyReportsWithMedia}
       defaultTab={tab ?? 'reports'}
       health={health}

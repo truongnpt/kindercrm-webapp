@@ -254,6 +254,40 @@ export const loadParentStudentInvoices = cache(
   },
 );
 
+export const loadParentStudentContracts = cache(
+  async (userId: string, studentId: string) => {
+    await assertParentStudentAccess(userId, studentId);
+
+    const client = getSupabaseServerClient();
+
+    const { data, error } = await client
+      .from('student_contracts')
+      .select(
+        `
+        *,
+        invoice:invoices (
+          id,
+          invoice_number,
+          title,
+          status,
+          total_amount,
+          paid_amount,
+          due_date
+        )
+      `,
+      )
+      .eq('student_id', studentId)
+      .in('status', ['active', 'expired', 'terminated'])
+      .order('start_date', { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    return data ?? [];
+  },
+);
+
 export const loadParentLeaveRequests = cache(
   async (userId: string, studentId: string) => {
     await assertParentStudentAccess(userId, studentId);

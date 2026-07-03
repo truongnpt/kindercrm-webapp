@@ -366,6 +366,101 @@
       "withdrawn": "Đã rút hồ sơ"
     }
   },
+  "studentContracts": {
+    "title": "Hợp đồng học sinh",
+    "description": "Quản lý hợp đồng nhập học, tái ghi danh, dịch vụ và thỏa thuận học phí.",
+    "studentHint": "Các hợp đồng gắn với học sinh này, bao gồm học phí và dịch vụ.",
+    "listTitle": "Tất cả hợp đồng",
+    "listDescription": "Lọc theo loại, trạng thái hoặc học sinh. Xuất báo cáo CSV.",
+    "empty": "Chưa có hợp đồng",
+    "emptyDescription": "Tạo hợp đồng đầu tiên hoặc điều chỉnh bộ lọc.",
+    "studentEmpty": "Học sinh này chưa có hợp đồng.",
+    "create": "Tạo hợp đồng",
+    "export": "Xuất CSV",
+    "exportMenu": {
+      "trigger": "Xuất",
+      "csv": "CSV",
+      "pdf": "PDF"
+    },
+    "exportPdfTitle": "Báo cáo hợp đồng học sinh",
+    "exportedAt": "Xuất lúc {{date}}",
+    "exportStudent": "Học sinh: {{name}}",
+    "exportEmpty": "Không có hợp đồng để xuất.",
+    "exportPdfError": "Không thể tạo file PDF. Vui lòng thử lại.",
+    "exportColumns": {
+      "number": "Số hợp đồng",
+      "title": "Tiêu đề",
+      "type": "Loại",
+      "status": "Trạng thái",
+      "studentCode": "Mã học sinh",
+      "studentName": "Họ tên học sinh",
+      "className": "Lớp",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc",
+      "amount": "Giá trị (VND)",
+      "billingPeriod": "Kỳ học phí",
+      "invoiceNumber": "Số hóa đơn",
+      "signedAt": "Ngày ký",
+      "terms": "Điều khoản & ghi chú"
+    },
+    "number": "Số HĐ",
+    "student": "Học sinh",
+    "type": "Loại",
+    "status": "Trạng thái",
+    "period": "Thời hạn",
+    "amount": "Giá trị",
+    "invoice": "Hóa đơn",
+    "titleLabel": "Tiêu đề",
+    "startDate": "Ngày bắt đầu",
+    "endDate": "Ngày kết thúc",
+    "signedAt": "Ngày ký",
+    "billingPeriod": "Kỳ học phí",
+    "terms": "Điều khoản & ghi chú",
+    "serviceAmount": "Phí dịch vụ",
+    "createInvoice": "Tạo hóa đơn liên kết",
+    "createInvoiceHint": "Phát hành hóa đơn trong Tài chính và liên kết với hợp đồng này.",
+    "feeItems": "Khoản học phí",
+    "activateNow": "Kích hoạt ngay",
+    "activeContract": "Hợp đồng đang hiệu lực",
+    "viewInvoice": "Xem hóa đơn",
+    "viewContract": "Xem hợp đồng",
+    "linkedContract": "Hợp đồng học sinh liên kết",
+    "viewAllForStudent": "Xem tất cả hợp đồng của {{name}}",
+    "filterAllTypes": "Tất cả loại",
+    "filterAllStatuses": "Tất cả trạng thái",
+    "searchPlaceholder": "Tìm theo hợp đồng, học sinh hoặc mã…",
+    "summary": {
+      "total": "Tổng hợp đồng",
+      "active": "Đang hiệu lực",
+      "draft": "Nháp",
+      "expiringSoon": "Sắp hết hạn (30 ngày)"
+    },
+    "types": {
+      "enrollment": "Hợp đồng nhập học",
+      "re_enrollment": "Hợp đồng tái ghi danh",
+      "service": "Hợp đồng dịch vụ",
+      "tuition_agreement": "Thỏa thuận học phí"
+    },
+    "statuses": {
+      "draft": "Nháp",
+      "active": "Hiệu lực",
+      "expired": "Hết hạn",
+      "terminated": "Chấm dứt",
+      "cancelled": "Đã hủy"
+    },
+    "defaultTitles": {
+      "enrollment": "Hợp đồng nhập học",
+      "re_enrollment": "Hợp đồng tái ghi danh",
+      "service": "Hợp đồng dịch vụ",
+      "tuition_agreement": "Thỏa thuận học phí"
+    },
+    "actions": {
+      "activate": "Kích hoạt",
+      "cancel": "Hủy nháp",
+      "terminate": "Chấm dứt",
+      "markExpired": "Đánh dấu hết hạn"
+    }
+  },
   "classes": {
     "title": "Lớp học",
     "description": "Quản lý năm học, phòng học và phân lớp học sinh.",
@@ -832,7 +927,9 @@
     },
     "students": {
       "directoryView": "Xem danh sách học sinh",
-      "directoryManage": "Quản lý học sinh"
+      "directoryManage": "Quản lý học sinh",
+      "contractsView": "Xem hợp đồng học sinh",
+      "contractsManage": "Quản lý hợp đồng học sinh"
     },
     "classes": {
       "directoryView": "Xem danh sách lớp",
@@ -1038,6 +1135,7 @@
       "leave": "Xin nghỉ",
       "meals": "Thực đơn",
       "finance": "Học phí",
+      "contracts": "Hợp đồng",
       "health": "Sức khỏe",
       "profile": "Hồ sơ"
     },
@@ -1086,6 +1184,17 @@
       "dueDate": "Hạn thanh toán",
       "invoices": "Hóa đơn",
       "payments": "Lịch sử thanh toán"
+    },
+    "contracts": {
+      "empty": "Chưa có hợp đồng",
+      "emptyDescription": "Khi nhà trường phát hành hợp đồng nhập học hoặc thỏa thuận học phí, bạn sẽ thấy tại đây.",
+      "hint": "Hợp đồng nhập học, tái ghi danh, dịch vụ và thỏa thuận học phí của con bạn.",
+      "signedAt": "Ngày ký",
+      "linkedInvoice": "Hóa đơn học phí liên kết",
+      "viewTuition": "Xem chi tiết học phí",
+      "expiringTitle": "Hợp đồng sắp hết hạn",
+      "expiringDescription": "Có {{count}} hợp đồng sẽ hết hạn trong 30 ngày tới. Vui lòng liên hệ nhà trường nếu bạn muốn gia hạn.",
+      "expiresOn": "Hết hạn ngày {{date}}"
     },
     "health": {
       "empty": "Chưa có hồ sơ sức khỏe."

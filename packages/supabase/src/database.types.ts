@@ -3579,6 +3579,88 @@ export type Database = {
           },
         ]
       }
+      student_contracts: {
+        Row: {
+          billing_period: string | null
+          contract_number: string
+          contract_type: Database["public"]["Enums"]["student_contract_type"]
+          created_at: string
+          created_by: string | null
+          end_date: string | null
+          id: string
+          invoice_id: string | null
+          school_id: string
+          signed_at: string | null
+          start_date: string
+          status: Database["public"]["Enums"]["student_contract_status"]
+          student_id: string
+          terms: string | null
+          title: string
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          billing_period?: string | null
+          contract_number: string
+          contract_type: Database["public"]["Enums"]["student_contract_type"]
+          created_at?: string
+          created_by?: string | null
+          end_date?: string | null
+          id?: string
+          invoice_id?: string | null
+          school_id: string
+          signed_at?: string | null
+          start_date: string
+          status?: Database["public"]["Enums"]["student_contract_status"]
+          student_id: string
+          terms?: string | null
+          title: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          billing_period?: string | null
+          contract_number?: string
+          contract_type?: Database["public"]["Enums"]["student_contract_type"]
+          created_at?: string
+          created_by?: string | null
+          end_date?: string | null
+          id?: string
+          invoice_id?: string | null
+          school_id?: string
+          signed_at?: string | null
+          start_date?: string
+          status?: Database["public"]["Enums"]["student_contract_status"]
+          student_id?: string
+          terms?: string | null
+          title?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_contracts_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_contracts_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_contracts_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       student_emergency_contacts: {
         Row: {
           created_at: string
@@ -4175,6 +4257,17 @@ export type Database = {
       staff_contract_type: "full_time" | "part_time" | "contract" | "probation"
       staff_employment_status: "active" | "inactive" | "on_leave" | "terminated"
       stock_count_status: "draft" | "completed" | "cancelled"
+      student_contract_status:
+        | "draft"
+        | "active"
+        | "expired"
+        | "terminated"
+        | "cancelled"
+      student_contract_type:
+        | "enrollment"
+        | "re_enrollment"
+        | "service"
+        | "tuition_agreement"
       student_gender: "male" | "female" | "other"
       student_status:
         | "active"
@@ -4969,6 +5062,19 @@ export const Constants = {
       staff_employment_status: ["active", "inactive", "on_leave", "terminated"],
       stock_count_status: ["draft", "completed", "cancelled"],
       student_gender: ["male", "female", "other"],
+      student_contract_status: [
+        "draft",
+        "active",
+        "expired",
+        "terminated",
+        "cancelled",
+      ],
+      student_contract_type: [
+        "enrollment",
+        "re_enrollment",
+        "service",
+        "tuition_agreement",
+      ],
       student_status: [
         "active",
         "inactive",

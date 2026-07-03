@@ -87,6 +87,11 @@ export {
   type StaffModulePermissions,
 } from './staff-module-permissions';
 
+export {
+  buildStudentsModulePermissions,
+  type StudentsModulePermissions,
+} from './students-module-permissions';
+
 export type {
   ResolvedSchoolPermissions,
   SchoolCustomRole,

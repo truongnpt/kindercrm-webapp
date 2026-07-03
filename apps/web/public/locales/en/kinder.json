@@ -366,6 +366,101 @@
       "withdrawn": "Withdrawn"
     }
   },
+  "studentContracts": {
+    "title": "Student contracts",
+    "description": "Manage enrollment, re-enrollment, service, and tuition agreements.",
+    "studentHint": "Contracts linked to this student, including tuition and service agreements.",
+    "listTitle": "All contracts",
+    "listDescription": "Filter by type, status, or student. Export for reporting.",
+    "empty": "No contracts yet",
+    "emptyDescription": "Create the first contract or adjust your filters.",
+    "studentEmpty": "No contracts for this student yet.",
+    "create": "New contract",
+    "export": "Export CSV",
+    "exportMenu": {
+      "trigger": "Export",
+      "csv": "CSV",
+      "pdf": "PDF"
+    },
+    "exportPdfTitle": "Student contracts report",
+    "exportedAt": "Exported at {{date}}",
+    "exportStudent": "Student: {{name}}",
+    "exportEmpty": "No contracts to export.",
+    "exportPdfError": "Could not generate PDF. Please try again.",
+    "exportColumns": {
+      "number": "Contract no.",
+      "title": "Title",
+      "type": "Type",
+      "status": "Status",
+      "studentCode": "Student code",
+      "studentName": "Student name",
+      "className": "Class",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "amount": "Amount (VND)",
+      "billingPeriod": "Billing period",
+      "invoiceNumber": "Invoice no.",
+      "signedAt": "Signed date",
+      "terms": "Terms & notes"
+    },
+    "number": "Contract no.",
+    "student": "Student",
+    "type": "Type",
+    "status": "Status",
+    "period": "Period",
+    "amount": "Amount",
+    "invoice": "Invoice",
+    "titleLabel": "Title",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "signedAt": "Signed date",
+    "billingPeriod": "Billing period",
+    "terms": "Terms & notes",
+    "serviceAmount": "Service fee",
+    "createInvoice": "Create linked invoice",
+    "createInvoiceHint": "Issue an invoice in Finance and link it to this contract.",
+    "feeItems": "Tuition fee items",
+    "activateNow": "Activate immediately",
+    "activeContract": "Active contract",
+    "viewInvoice": "View invoice",
+    "viewContract": "View contract",
+    "linkedContract": "Linked student contract",
+    "viewAllForStudent": "View all contracts for {{name}}",
+    "filterAllTypes": "All types",
+    "filterAllStatuses": "All statuses",
+    "searchPlaceholder": "Search by contract, student, or code…",
+    "summary": {
+      "total": "Total contracts",
+      "active": "Active",
+      "draft": "Draft",
+      "expiringSoon": "Expiring in 30 days"
+    },
+    "types": {
+      "enrollment": "Enrollment contract",
+      "re_enrollment": "Re-enrollment contract",
+      "service": "Service contract",
+      "tuition_agreement": "Tuition agreement"
+    },
+    "statuses": {
+      "draft": "Draft",
+      "active": "Active",
+      "expired": "Expired",
+      "terminated": "Terminated",
+      "cancelled": "Cancelled"
+    },
+    "defaultTitles": {
+      "enrollment": "Enrollment agreement",
+      "re_enrollment": "Re-enrollment agreement",
+      "service": "Service agreement",
+      "tuition_agreement": "Tuition agreement"
+    },
+    "actions": {
+      "activate": "Activate",
+      "cancel": "Cancel draft",
+      "terminate": "Terminate",
+      "markExpired": "Mark expired"
+    }
+  },
   "classes": {
     "title": "Classes",
     "description": "Manage school years, rooms, and class assignments.",
@@ -832,7 +927,9 @@
     },
     "students": {
       "directoryView": "View student directory",
-      "directoryManage": "Manage students"
+      "directoryManage": "Manage students",
+      "contractsView": "View student contracts",
+      "contractsManage": "Manage student contracts"
     },
     "classes": {
       "directoryView": "View class directory",
@@ -1038,6 +1135,7 @@
       "leave": "Leave request",
       "meals": "Meals",
       "finance": "Tuition",
+      "contracts": "Contracts",
       "health": "Health",
       "profile": "Profile"
     },
@@ -1086,6 +1184,17 @@
       "dueDate": "Due date",
       "invoices": "Invoices",
       "payments": "Payment history"
+    },
+    "contracts": {
+      "empty": "No contracts yet",
+      "emptyDescription": "When the school publishes an enrollment or tuition agreement, it will appear here.",
+      "hint": "Enrollment, re-enrollment, service, and tuition agreements for your child.",
+      "signedAt": "Signed on",
+      "linkedInvoice": "Linked tuition invoice",
+      "viewTuition": "View tuition details",
+      "expiringTitle": "Contract expiring soon",
+      "expiringDescription": "{{count}} contract(s) will expire within the next 30 days. Please contact the school if you plan to renew.",
+      "expiresOn": "Expires on {{date}}"
     },
     "health": {
       "empty": "No health records yet."

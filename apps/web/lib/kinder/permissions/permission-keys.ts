@@ -29,6 +29,8 @@ export const CRM_PERMISSIONS = {
 export const STUDENTS_PERMISSIONS = {
   DIRECTORY_VIEW: 'students.students.view',
   DIRECTORY_MANAGE: 'students.students.manage',
+  CONTRACTS_VIEW: 'students.contracts.view',
+  CONTRACTS_MANAGE: 'students.contracts.manage',
 } as const;
 
 export const CLASSES_PERMISSIONS = {
@@ -208,6 +210,14 @@ export const PERMISSION_GROUPS = [
       {
         key: STUDENTS_PERMISSIONS.DIRECTORY_MANAGE,
         labelKey: 'kinder:permissions.students.directoryManage',
+      },
+      {
+        key: STUDENTS_PERMISSIONS.CONTRACTS_VIEW,
+        labelKey: 'kinder:permissions.students.contractsView',
+      },
+      {
+        key: STUDENTS_PERMISSIONS.CONTRACTS_MANAGE,
+        labelKey: 'kinder:permissions.students.contractsManage',
       },
     ],
   },

@@ -13,6 +13,14 @@ import {
   loadStudentDailyReports,
 } from '~/lib/kinder/daily-reports/load-daily-reports';
 import {
+  loadActiveTuitionFeeItems,
+} from '~/lib/kinder/finance/load-finance';
+import {
+  buildStudentsModulePermissions,
+  loadMemberPermissions,
+} from '~/lib/kinder/permissions';
+import { loadStudentContractsForStudent } from '~/lib/kinder/student-contracts/load-student-contracts';
+import {
   hasSchoolFeature,
   requirePackageFeature,
 } from '~/lib/kinder/subscription/features';
@@ -64,6 +72,14 @@ async function StudentDetailPage({
   const hasParentPortal = hasSchoolFeature(context, 'parent_portal');
   const hasDailyReports = hasSchoolFeature(context, 'daily_reports');
 
+  const memberPermissions = await loadMemberPermissions(
+    context.school.id,
+    context.role,
+    context.customRoleId,
+  );
+  const studentPermissions = buildStudentsModulePermissions(memberPermissions);
+  const hasContracts = studentPermissions.canViewContracts;
+
   const student = await loadStudentById(context.school.id, studentId);
 
   if (!student) {
@@ -79,6 +95,8 @@ async function StudentDetailPage({
     timeline,
     parentLinks,
     dailyReports,
+    contracts,
+    feeItems,
   ] = await Promise.all([
     loadStudentParents(context.school.id, studentId),
     loadStudentEmergencyContacts(context.school.id, studentId),
@@ -92,7 +110,25 @@ async function StudentDetailPage({
     hasDailyReports
       ? loadStudentDailyReports(context.school.id, studentId)
       : Promise.resolve([]),
+    hasContracts
+      ? loadStudentContractsForStudent(context.school.id, studentId)
+      : Promise.resolve([]),
+    hasContracts && studentPermissions.canManageContracts
+      ? loadActiveTuitionFeeItems(context.school.id)
+      : Promise.resolve([]),
   ]);
+
+  const contractStudents =
+    hasContracts && studentPermissions.canManageContracts
+      ? [
+          {
+            id: student.id,
+            full_name: student.full_name,
+            student_code: student.student_code,
+            class_name: student.class_name,
+          },
+        ]
+      : [];
 
   const dailyReportAttachments =
     hasDailyReports && dailyReports.length > 0
@@ -125,9 +161,14 @@ async function StudentDetailPage({
       <KinderPageBody>
         <StudentDetailWorkspace
           allergies={allergies}
+          canManageContracts={studentPermissions.canManageContracts}
+          contractStudents={contractStudents}
+          contracts={contracts}
           dailyReportAttachments={dailyReportAttachments}
           dailyReports={dailyReports}
           emergencyContacts={emergencyContacts}
+          feeItems={feeItems}
+          hasContracts={hasContracts}
           hasDailyReports={hasDailyReports}
           hasParentPortal={hasParentPortal}
           medical={medical}

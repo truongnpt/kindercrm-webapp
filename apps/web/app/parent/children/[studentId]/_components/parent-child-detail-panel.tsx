@@ -10,6 +10,7 @@ import {
   CalendarCheck2,
   CalendarOff,
   CreditCard,
+  FileSignature,
   HeartPulse,
   UserRound,
   UtensilsCrossed,
@@ -44,6 +45,7 @@ import type {
 import type { VietQrConfig } from '~/lib/kinder/finance/vietqr';
 import type { PublishedMenuDay } from '~/lib/kinder/meal-menu/types';
 
+import { ParentContractsPanel } from './parent-contracts-panel';
 import { ParentDailyReportMedia } from './parent-daily-report-media';
 import { ParentFinancePanel } from './parent-finance-panel';
 import { ParentHealthPanel } from './parent-health-panel';
@@ -68,6 +70,39 @@ type InvoiceRow = {
   due_date: string;
 };
 
+type PaymentRow = {
+  id: string;
+  invoice_id: string;
+  amount: number;
+  payment_method: string;
+  paid_at: string;
+  reference_note: string | null;
+  receipt_number: string;
+};
+
+type ContractRow = {
+  id: string;
+  contract_number: string;
+  contract_type: string;
+  title: string;
+  status: string;
+  start_date: string;
+  end_date: string | null;
+  total_amount: number;
+  billing_period: string | null;
+  signed_at: string | null;
+  terms: string | null;
+  invoice_id: string | null;
+  invoice: {
+    id: string;
+    invoice_number: string;
+    status: string;
+    total_amount: number;
+    paid_amount: number;
+    due_date: string;
+  } | null;
+};
+
 const tabs = [
   { value: 'reports', icon: BarChart3, labelKey: 'kinder:parent.tabs.reports' },
   {
@@ -90,6 +125,11 @@ const tabs = [
     icon: CreditCard,
     labelKey: 'kinder:parent.tabs.finance',
   },
+  {
+    value: 'contracts',
+    icon: FileSignature,
+    labelKey: 'kinder:parent.tabs.contracts',
+  },
   { value: 'health', icon: HeartPulse, labelKey: 'kinder:parent.tabs.health' },
   { value: 'profile', icon: UserRound, labelKey: 'kinder:parent.tabs.profile' },
 ] as const;
@@ -99,6 +139,7 @@ export function ParentChildDetailPanel({
   attendance,
   invoices,
   payments,
+  contracts,
   dailyReports,
   health,
   leaveRequests,
@@ -119,15 +160,8 @@ export function ParentChildDetailPanel({
   };
   attendance: AttendanceRow[];
   invoices: InvoiceRow[];
-  payments: Array<{
-    id: string;
-    invoice_id: string;
-    amount: number;
-    payment_method: string;
-    paid_at: string;
-    reference_note: string | null;
-    receipt_number: string;
-  }>;
+  payments: PaymentRow[];
+  contracts: ContractRow[];
   dailyReports: Array<{
     report: StudentDailyReport;
     attachments: DailyReportAttachment[];
@@ -317,10 +351,19 @@ export function ParentChildDetailPanel({
         ) : null}
         {activeTab === 'finance' ? (
           <ParentFinancePanel
+            contracts={contracts}
             invoices={invoices}
             payments={payments}
             studentName={student.full_name}
             vietQrConfig={vietQrConfig}
+          />
+        ) : null}
+        {activeTab === 'contracts' ? (
+          <ParentContractsPanel
+            contracts={contracts}
+            onOpenFinanceTab={() => setTab('finance')}
+            studentCode={student.student_code}
+            studentName={student.full_name}
           />
         ) : null}
         {activeTab === 'health' ? (
