@@ -167,11 +167,10 @@ export function AiChatPanel({
             value={input}
           />
           <Button
-            className="rounded-lg"
-            disabled={pending || creditsRemaining <= 0}
-            onClick={onSend}
-            type="button"
-          >
+ disabled={pending || creditsRemaining <= 0}
+ onClick={onSend}
+ type="button"
+ >
             <Send className="size-4" />
           </Button>
         </div>

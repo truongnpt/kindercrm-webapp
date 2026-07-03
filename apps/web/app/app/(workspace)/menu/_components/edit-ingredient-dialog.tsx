@@ -165,7 +165,11 @@ export function EditIngredientDialog({
                       </SelectItem>
                       {inventoryProducts.map((product) => (
                         <SelectItem key={product.id} value={product.id}>
-                          {product.name}
+                          {product.name} ({product.quantity} {product.unit}
+                          {product.isLowStock
+                            ? ` · ${t('inventory.lowStock')}`
+                            : ''}
+                          )
                         </SelectItem>
                       ))}
                     </SelectContent>

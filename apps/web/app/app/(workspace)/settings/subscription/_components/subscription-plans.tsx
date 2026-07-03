@@ -110,11 +110,11 @@ function PlanCard({
       features={features}
       footer={
         isCurrent ? (
-          <Button className="w-full rounded-lg" disabled variant="secondary">
+          <Button className="w-full" disabled variant="secondary">
             <Trans i18nKey="kinder:subscription.current" />
           </Button>
         ) : isEnterprise ? (
-          <Button className="w-full rounded-lg" disabled variant="outline">
+          <Button className="w-full" disabled variant="outline">
             <Trans i18nKey="kinder:subscription.enterpriseContact" />
           </Button>
         ) : (

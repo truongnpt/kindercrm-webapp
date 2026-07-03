@@ -1,13 +1,20 @@
-import { PanelEmpty, DataTableShell } from '~/components/kinder-ui';
+import { ClipboardList } from 'lucide-react';
+
+import { PlatformDataTable, PlatformEmptyState } from '~/components/platform-console';
 import type { PlatformAuditLogItem } from '~/lib/kinder/platform/types';
 
 export function AuditLogsTable({ logs }: { logs: PlatformAuditLogItem[] }) {
   if (logs.length === 0) {
-    return <PanelEmpty messageKey="kinder:platform.audit.empty" />;
+    return (
+      <PlatformEmptyState
+        icon={ClipboardList}
+        titleKey="kinder:platform.audit.empty"
+      />
+    );
   }
 
   return (
-    <DataTableShell>
+    <PlatformDataTable>
       <table className="w-full text-sm">
         <thead>
           <tr>
@@ -36,6 +43,6 @@ export function AuditLogsTable({ logs }: { logs: PlatformAuditLogItem[] }) {
           ))}
         </tbody>
       </table>
-    </DataTableShell>
+    </PlatformDataTable>
   );
 }

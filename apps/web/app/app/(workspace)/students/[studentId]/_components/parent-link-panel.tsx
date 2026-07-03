@@ -80,7 +80,7 @@ export function ParentLinkPanel({
                   </Badge>
                 ) : null}
                 <Button
-                  onClick={async () => {
+ onClick={async () => {
                     const promise = unlinkParentAccountAction({
                       schoolId,
                       studentId,

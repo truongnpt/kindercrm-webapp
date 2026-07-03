@@ -102,9 +102,8 @@ export function PurchaseOrdersList({
                     {order.status === 'submitted' ? (
                       <div className="flex justify-end gap-2">
                         <Button
-                          className="rounded-lg"
-                          disabled={receiveMutation.isPending}
-                          onClick={() =>
+ disabled={receiveMutation.isPending}
+ onClick={() =>
                             receiveMutation.mutate({
                               schoolId,
                               purchaseOrderId: order.id,
@@ -116,8 +115,8 @@ export function PurchaseOrdersList({
                           <Trans i18nKey="kinder:inventory.receivePo" />
                         </Button>
                         <Button
-                          disabled={cancelMutation.isPending}
-                          onClick={() =>
+ disabled={cancelMutation.isPending}
+ onClick={() =>
                             cancelMutation.mutate({
                               schoolId,
                               purchaseOrderId: order.id,
@@ -158,10 +157,9 @@ export function PurchaseOrdersList({
             </div>
             {order.status === 'submitted' ? (
               <div className="mt-3 flex gap-2">
-                <Button
-                  className="flex-1"
-                  disabled={receiveMutation.isPending}
-                  onClick={() =>
+                <Button className="flex-1"
+ disabled={receiveMutation.isPending}
+ onClick={() =>
                     receiveMutation.mutate({
                       schoolId,
                       purchaseOrderId: order.id,
@@ -173,8 +171,8 @@ export function PurchaseOrdersList({
                   <Trans i18nKey="kinder:inventory.receivePo" />
                 </Button>
                 <Button
-                  disabled={cancelMutation.isPending}
-                  onClick={() =>
+ disabled={cancelMutation.isPending}
+ onClick={() =>
                     cancelMutation.mutate({
                       schoolId,
                       purchaseOrderId: order.id,

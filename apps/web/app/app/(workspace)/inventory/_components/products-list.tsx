@@ -19,9 +19,11 @@ import { EditProductDialog } from './edit-product-dialog';
 export function ProductsList({
   products,
   schoolId,
+  lowStockOnly = false,
 }: {
   products: InventoryProductWithStock[];
   schoolId: string;
+  lowStockOnly?: boolean;
 }) {
   const [editProduct, setEditProduct] =
     useState<InventoryProductWithStock | null>(null);
@@ -30,9 +32,17 @@ export function ProductsList({
     return (
       <EmptyState
         compact
-        descriptionKey="kinder:inventory.emptyProductsDescription"
+        descriptionKey={
+          lowStockOnly
+            ? 'kinder:inventory.emptyLowStockDescription'
+            : 'kinder:inventory.emptyProductsDescription'
+        }
         icon={Package}
-        titleKey="kinder:inventory.emptyProducts"
+        titleKey={
+          lowStockOnly
+            ? 'kinder:inventory.emptyLowStock'
+            : 'kinder:inventory.emptyProducts'
+        }
       />
     );
   }

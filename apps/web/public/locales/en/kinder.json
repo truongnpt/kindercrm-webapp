@@ -1,7 +1,13 @@
 {
   "onboarding": {
     "title": "Set up your school",
-    "description": "Create your first preschool to start using Kinder CRM.",
+    "description": "Fill in your preschool details to create your workspace.",
+    "heroTitle": "Start managing your preschool in one place",
+    "heroSubtitle": "Kinder CRM helps you handle enrollment, students, tuition, attendance, and parent communication from a single platform.",
+    "badge": "Getting started",
+    "footerHint": "You can update school settings anytime after setup.",
+    "defaultCampusName": "Main campus",
+    "created": "School created successfully",
     "schoolName": "School name",
     "schoolSlug": "URL slug",
     "schoolSlugHint": "Used in URLs. Lowercase letters, numbers, and hyphens only.",
@@ -9,8 +15,20 @@
     "email": "Email",
     "address": "Address",
     "campusName": "Main campus name",
-    "submit": "Create school",
-    "creating": "Creating..."
+    "submit": "Create school & continue",
+    "creating": "Creating...",
+    "sections": {
+      "school": "School information",
+      "contact": "Contact details"
+    },
+    "steps": {
+      "setup": "Create your school profile",
+      "setupHint": "Name, slug, and main campus for your organization.",
+      "students": "Enroll students & classes",
+      "studentsHint": "Import or add students and assign homeroom classes.",
+      "operate": "Run daily operations",
+      "operateHint": "Attendance, daily reports, tuition, and parent portal."
+    }
   },
   "dashboard": {
     "title": "Dashboard",
@@ -53,7 +71,13 @@
       "schools": "Schools",
       "packages": "Packages",
       "admins": "Admins",
-      "audit": "Audit"
+      "audit": "Audit",
+      "account": "Account"
+    },
+    "roles": {
+      "super_admin": "Super Admin",
+      "support": "Support",
+      "billing": "Billing"
     },
     "stats": {
       "totalSchools": "Total schools",
@@ -83,6 +107,9 @@
       "actions": "Actions",
       "detail": "View",
       "filter": "Filter",
+      "search": "Search",
+      "searchPlaceholder": "School name or slug…",
+      "statusAll": "All statuses",
       "back": "Back to schools",
       "info": "School information",
       "owner": "Owner",
@@ -292,6 +319,14 @@
     "status": "Status",
     "notes": "Notes",
     "photoUrl": "Photo URL",
+    "photo": "Profile photo",
+    "uploadPhoto": "Upload photo",
+    "removePhoto": "Remove photo",
+    "photoUploadHint": "JPEG, PNG or WebP. Large images are compressed automatically (max 5 MB).",
+    "unsupportedPhoto": "Unsupported image type. Use JPEG, PNG or WebP.",
+    "photoTooLarge": "Image is too large. Maximum size is 5 MB.",
+    "photoProcessFailed": "Could not process the image. Try another file.",
+    "photoUploadFailed": "Could not upload the photo. Please try again.",
     "save": "Save",
     "delete": "Delete student",
     "detail": "Student profile",
@@ -542,8 +577,104 @@
     "imported": "Imported {{count}} records.",
     "partialSuccess": "{{imported}} imported, {{failed}} failed."
   },
+  "communication": {
+    "title": "Messages",
+    "parentDescription": "Chat with your child's homeroom teacher or the school office.",
+    "staffDescription": "Reply to parent messages from homeroom and school office channels.",
+    "conversations": "Conversations",
+    "threadCount": "{{count}} conversations",
+    "selectThreadTitle": "Choose a conversation",
+    "selectThread": "Select a conversation from the list to start chatting.",
+    "backToList": "Back to conversations",
+    "send": "Send message",
+    "sendHint": "Press Enter to send, Shift+Enter for a new line.",
+    "attachImage": "Attach image",
+    "imagePreview": "Photo",
+    "imageOptimized": "Image was compressed to fit the size limit.",
+    "unsupportedImage": "Only JPEG, PNG, WebP, and GIF images are supported.",
+    "imageTooLarge": "Image is too large. Please choose a smaller file.",
+    "imageProcessFailed": "Could not process this image. Try another file.",
+    "reply": "Reply",
+    "replyingTo": "Replying to",
+    "cancelReply": "Cancel reply",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "addReaction": "Add reaction",
+    "reactionFailed": "Could not update reaction. Please try again.",
+    "reactions": {
+      "like": "Like",
+      "love": "Love",
+      "haha": "Haha",
+      "wow": "Wow",
+      "sad": "Sad",
+      "thanks": "Thanks"
+    },
+    "emptyThreads": "No conversations yet. Messages will appear when you or the school start a chat.",
+    "emptyMessages": "No messages yet. Send the first message below.",
+    "messagePlaceholder": "Type a message…",
+    "sendFailed": "Could not send message. Please try again.",
+    "you": "You",
+    "channels": {
+      "homeroom": "Homeroom teacher",
+      "school_office": "School office"
+    }
+  },
   "calendar": {
-    "eventsOnDate": "Events on selected date"
+    "title": "Calendar",
+    "description": "Manage school events, holidays, and important dates.",
+    "workspaceTitle": "School calendar",
+    "workspaceHint": "View events by month and manage the school schedule.",
+    "eventsOnDate": "Events on {{date}}",
+    "empty": "No events this month.",
+    "emptyDescription": "Create your first event to share the schedule with staff and parents.",
+    "create": "New event",
+    "edit": "Edit event",
+    "delete": "Delete event",
+    "deleteConfirm": "Delete this event?",
+    "upcoming": "Upcoming events",
+    "noUpcoming": "No upcoming events.",
+    "allDay": "All day",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "startTime": "Start time",
+    "endTime": "End time",
+    "category": "Category",
+    "eventTitle": "Title",
+    "details": "Event details",
+    "tabs": {
+      "month": "Month",
+      "week": "Week",
+      "day": "Day",
+      "list": "List"
+    },
+    "filters": {
+      "allClasses": "All classes",
+      "allCategories": "All categories"
+    },
+    "scope": "Audience",
+    "campus": "Campus",
+    "class": "Class",
+    "scopes": {
+      "school": "Whole school",
+      "campus": "Campus",
+      "class": "Class"
+    },
+    "remindDaysBefore": "Reminder",
+    "reminderNone": "No reminder",
+    "reminderSameDay": "On event day",
+    "reminderDaysBefore": "{{days}} day(s) before",
+    "notifyOnCreate": "Notify staff and parents when published",
+    "noEventsDay": "No events on this day",
+    "upcomingHint": "School events starting soon",
+    "viewAll": "View calendar",
+    "categories": {
+      "learning_activity": "Learning activity",
+      "event": "Event",
+      "holiday": "Holiday",
+      "parent_meeting": "Parent meeting",
+      "health_checkup": "Health checkup",
+      "other": "Other"
+    }
   },
   "attendance": {
     "title": "Attendance",
@@ -651,7 +782,9 @@
       "students": "Students",
       "classes": "Classes",
       "reports": "Reports",
-      "settings": "School settings"
+      "settings": "School settings",
+      "calendar": "Calendar",
+      "communication": "Communication"
     },
     "roles": {
       "owner": "Owner",
@@ -711,6 +844,14 @@
     "settings": {
       "schoolManage": "Manage school profile",
       "subscriptionManage": "Manage subscription package"
+    },
+    "calendar": {
+      "eventsView": "View calendar events",
+      "eventsManage": "Manage calendar events"
+    },
+    "communication": {
+      "messagesView": "View parent messages",
+      "messagesManage": "Reply to parent messages"
     }
   },
   "staff": {
@@ -839,7 +980,7 @@
   "parent": {
     "title": "Parent portal",
     "subtitle": "Follow your child's school day",
-    "homeDescription": "Select a child to view daily reports, attendance, and tuition.",
+    "homeDescription": "Today's overview — attendance, daily reports, tuition, and alerts.",
     "myChildren": "My children",
     "viewChild": "View details",
     "childDetail": "Child profile",
@@ -862,26 +1003,89 @@
     },
     "staffPortal": "School workspace",
     "accountSettings": "Account settings",
+    "backToHome": "Back to home",
+    "nav": {
+      "home": "Home",
+      "calendar": "Calendar",
+      "messages": "Messages",
+      "notifications": "Notifications",
+      "profile": "Profile"
+    },
+    "calendar": {
+      "title": "School calendar",
+      "description": "View school events, holidays, and activities for your child.",
+      "eventsTitle": "Upcoming events",
+      "eventsHint": "School-wide and class events visible to your family.",
+      "allChildren": "All children",
+      "upcoming": "Upcoming events",
+      "upcomingHint": "School events your family can see.",
+      "viewAll": "View calendar",
+      "empty": "No events this month",
+      "emptyDescription": "When the school publishes events, they will appear here."
+    },
+    "dashboard": {
+      "greeting": "Good day",
+      "todayAttendance": "Today",
+      "todayReport": "Daily report",
+      "tuition": "Tuition",
+      "paidUp": "All paid",
+      "outstandingTuition": "Outstanding balance",
+      "unreadNotifications": "{{count}} unread notifications"
+    },
     "tabs": {
       "reports": "Daily reports",
       "attendance": "Attendance",
+      "leave": "Leave request",
+      "meals": "Meals",
       "finance": "Tuition",
-      "health": "Health"
+      "health": "Health",
+      "profile": "Profile"
     },
     "reports": {
       "empty": "No daily reports yet.",
+      "timelineHint": "Latest reports from teachers, newest first.",
       "mood": "Mood",
       "meals": "Meals",
       "nap": "Nap",
       "activities": "Activities",
+      "learning": "Learning activities",
+      "hygiene": "Hygiene",
       "note": "Teacher note",
       "save": "Save report"
     },
     "attendance": {
-      "empty": "No attendance records yet."
+      "empty": "No attendance records yet.",
+      "checkIn": "Check-in",
+      "totalDays": "Total days",
+      "absentDays": "Absent days"
+    },
+    "leave": {
+      "hint": "Submit leave requests for your child. School staff will review and approve.",
+      "empty": "No leave requests yet."
+    },
+    "meals": {
+      "today": "Today's menu",
+      "week": "This week",
+      "todayHint": "Published menu for today.",
+      "weekHint": "Menu for the current week.",
+      "emptyToday": "No menu published for today.",
+      "allergyNote": "Contact the school if your child has food allergies."
+    },
+    "profile": {
+      "student": "Student",
+      "homeroomTeacher": "Homeroom teacher",
+      "homeroomClass": "Class",
+      "noHomeroomTeacher": "No homeroom teacher assigned yet.",
+      "teacherContactUnavailable": "Contact details are not available.",
+      "parents": "Parents / guardians",
+      "emergency": "Emergency contacts",
+      "emptyContacts": "No contact information on file."
     },
     "finance": {
-      "empty": "No invoices yet."
+      "empty": "No invoices yet.",
+      "dueDate": "Due date",
+      "invoices": "Invoices",
+      "payments": "Payment history"
     },
     "health": {
       "empty": "No health records yet."
@@ -969,6 +1173,18 @@
       "breakfast": "Breakfast",
       "lunch": "Lunch",
       "snack": "Snack"
+    },
+    "remindStaff": "Remind homeroom teachers",
+    "exportEmpty": "No daily reports to export for this date.",
+    "remindStaffAllComplete": "All classes have sent daily reports for this date.",
+    "remindStaffSuccess": "Reminders sent to {{count}} class(es)."
+  },
+  "menu": {
+    "mealSlots": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "snack": "Snack",
+      "dinner": "Dinner"
     }
   },
   "mealMenu": {
@@ -1055,7 +1271,9 @@
     "editDish": "Edit dish",
     "editDishDescription": "Update dish name, allergens, and portion notes.",
     "editIngredient": "Edit ingredient",
-    "editIngredientDescription": "Update ingredient details and inventory link."
+    "editIngredientDescription": "Update ingredient details and inventory link.",
+    "noInventoryLinkHint": "Not linked to inventory — edit to connect a stock product.",
+    "viewInventory": "View in inventory"
   },
   "inventory": {
     "title": "Inventory",
@@ -1106,6 +1324,9 @@
       "totalUnits": "Total units on hand"
     },
     "emptyProducts": "No products yet.",
+    "emptyLowStock": "No low-stock products",
+    "emptyLowStockDescription": "All products are above their minimum stock levels.",
+    "exportEmpty": "No products to export.",
     "emptyTransactions": "No transactions yet.",
     "emptySuppliers": "No suppliers yet.",
     "createPo": "Create purchase order",
@@ -1136,7 +1357,17 @@
     "title": "Notifications",
     "empty": "No notifications.",
     "markAllRead": "Mark all read",
-    "dailyReport": "Daily report"
+    "close": "Close",
+    "yesterday": "Yesterday",
+    "dailyReport": "Daily report",
+    "categories": {
+      "daily_report": "Daily report",
+      "communication": "Message",
+      "calendar": "Calendar",
+      "menu": "Menu",
+      "inventory": "Inventory",
+      "system": "System"
+    }
   },
   "ai": {
     "title": "AI Assistant",
@@ -1250,6 +1481,15 @@
       "minor": "Minor",
       "moderate": "Moderate",
       "serious": "Serious"
+    },
+    "exportEmpty": "No health records to export for this selection.",
+    "exportKinds": {
+      "profiles": "Student profiles",
+      "growth": "Growth records",
+      "vaccinations": "Vaccinations",
+      "checkups": "Medical checkups",
+      "medications": "Medications",
+      "incidents": "Incidents"
     }
   },
   "ui": {

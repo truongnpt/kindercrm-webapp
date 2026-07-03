@@ -1,6 +1,6 @@
 import { Trans } from '@kit/ui/trans';
 
-import { KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
+import { PlatformPageBody, PlatformPageHeader } from '~/components/platform-console';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { loadPlatformPackages } from '~/lib/kinder/platform/load-platform-ops';
@@ -25,15 +25,15 @@ async function PlatformPackagesPage() {
 
   return (
     <>
-      <KinderPageHeader
+      <PlatformPageHeader
         actions={<PackageCreateDialog />}
         description={<Trans i18nKey="kinder:platform.packages.description" />}
         title={<Trans i18nKey="kinder:platform.packages.title" />}
       />
 
-      <KinderPageBody>
+      <PlatformPageBody>
         <PackagesTable packages={packages} />
-      </KinderPageBody>
+      </PlatformPageBody>
     </>
   );
 }

@@ -33,8 +33,8 @@ export function ParentHeaderActions({
         </Button>
       ) : null}
       <Button
-        disabled={signOut.isPending}
-        onClick={() => signOut.mutateAsync()}
+ disabled={signOut.isPending}
+ onClick={() => signOut.mutateAsync()}
         size="sm"
         type="button"
         variant="ghost"

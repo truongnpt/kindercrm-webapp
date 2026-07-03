@@ -41,9 +41,9 @@ export function StaffResendInviteButton({
 
   return (
     <Button
-      className={className}
-      disabled={resendInvite.isPending}
-      onClick={() => resendInvite.mutate({ employeeId, schoolId })}
+ className={className}
+ disabled={resendInvite.isPending}
+ onClick={() => resendInvite.mutate({ employeeId, schoolId })}
       size={size}
       type="button"
       variant={variant}

@@ -6,6 +6,8 @@ import type { KinderPermission } from './permission-keys';
 import {
   CLASSES_PERMISSIONS,
   CRM_PERMISSIONS,
+  CALENDAR_PERMISSIONS,
+  COMMUNICATION_PERMISSIONS,
   REPORTS_PERMISSIONS,
   SETTINGS_PERMISSIONS,
   STAFF_PERMISSIONS,
@@ -66,12 +68,28 @@ export const KINDER_MODULE_REGISTRY: KinderModuleDefinition[] = [
     managePermission: CLASSES_PERMISSIONS.DIRECTORY_MANAGE,
   },
   {
+    id: 'calendar',
+    labelKey: 'common:routes.calendar',
+    path: pathsConfig.app.calendar,
+    packageFeature: 'calendar',
+    viewPermission: CALENDAR_PERMISSIONS.EVENTS_VIEW,
+    managePermission: CALENDAR_PERMISSIONS.EVENTS_MANAGE,
+  },
+  {
     id: 'daily_reports',
     labelKey: 'common:routes.dailyReports',
     path: pathsConfig.app.dailyReports,
     packageFeature: 'daily_reports',
     viewPermission: CLASSES_PERMISSIONS.DIRECTORY_VIEW,
     managePermission: CLASSES_PERMISSIONS.DIRECTORY_MANAGE,
+  },
+  {
+    id: 'messages',
+    labelKey: 'common:routes.messages',
+    path: pathsConfig.app.messages,
+    packageFeature: 'parent_portal',
+    viewPermission: COMMUNICATION_PERMISSIONS.MESSAGES_VIEW,
+    managePermission: COMMUNICATION_PERMISSIONS.MESSAGES_MANAGE,
   },
   {
     id: 'menu',

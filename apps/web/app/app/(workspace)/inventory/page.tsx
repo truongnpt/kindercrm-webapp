@@ -22,6 +22,7 @@ import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
 import { ExpiryAlertsBanner } from './_components/expiry-alerts-banner';
+import { InventoryExport } from './_components/inventory-export';
 import { InventoryOverview } from './_components/inventory-overview';
 import { InventoryWorkspace } from './_components/inventory-workspace';
 
@@ -36,9 +37,11 @@ export const generateMetadata = async () => {
 async function InventoryPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string; countId?: string }>;
+  searchParams: Promise<{ tab?: string; countId?: string; lowStock?: string }>;
 }) {
-  const { tab, countId } = await searchParams;
+  const params = await searchParams;
+  const { tab, countId } = params;
+  const lowStockOnly = params.lowStock === '1';
   const user = await requireUserInServerComponent();
   const context = await getSchoolContext(user.id);
 
@@ -72,6 +75,7 @@ async function InventoryPage({
   return (
     <>
       <KinderPageHeader
+        actions={<InventoryExport products={products} />}
         breadcrumbs={[{ label: <Trans i18nKey="kinder:inventory.title" /> }]}
         description={<Trans i18nKey="kinder:inventory.description" />}
         title={<Trans i18nKey="kinder:inventory.title" />}
@@ -83,6 +87,7 @@ async function InventoryPage({
         <InventoryWorkspace
           activeStockCount={activeStockCount}
           defaultTab={tab ?? 'products'}
+          lowStockOnly={lowStockOnly}
           products={products}
           purchaseOrders={purchaseOrders}
           schoolId={context.school.id}

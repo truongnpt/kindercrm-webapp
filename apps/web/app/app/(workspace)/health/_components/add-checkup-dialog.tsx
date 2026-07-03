@@ -96,7 +96,7 @@ export function AddCheckupDialog({
       size="lg"
       title={<Trans i18nKey="kinder:health.addCheckup" />}
       trigger={
-        <Button className="rounded-lg" size="sm" type="button">
+        <Button size="sm" type="button">
           <Plus className="mr-2 size-4" />
           <Trans i18nKey="kinder:health.addCheckup" />
         </Button>

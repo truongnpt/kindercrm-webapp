@@ -81,7 +81,7 @@ export function DailyReportTimelinePanel({
                 </div>
                 {!readOnly && reportId ? (
                   <Button
-                    onClick={async () => {
+ onClick={async () => {
                       const promise = deleteTimelineEntryAction({
                         schoolId,
                         reportId,

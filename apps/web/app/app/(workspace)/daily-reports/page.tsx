@@ -7,6 +7,7 @@ import pathsConfig from '~/config/paths.config';
 import {
   buildDailyReportsDaySummary,
   loadActiveClasses,
+  loadDailyReportsExportRows,
   loadDailyReportsForClassDate,
   loadDailyReportsOverviewForDate,
 } from '~/lib/kinder/daily-reports/load-daily-reports';
@@ -18,6 +19,8 @@ import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
 import { DailyReportsOverview } from './_components/daily-reports-overview';
+import { DailyReportsExport } from './_components/daily-reports-export';
+import { DailyReportsRemindStaff } from './_components/daily-reports-remind-staff';
 import { DailyReportsWorkspace } from './_components/daily-reports-workspace';
 
 function todayString() {
@@ -62,7 +65,7 @@ async function DailyReportsPage({
   const defaultTab = params.tab ?? 'class';
   const selectedClass = classes.find((cls) => cls.id === classId);
 
-  const [roster, classSummaries] = await Promise.all([
+  const [roster, classSummaries, exportRows] = await Promise.all([
     classId
       ? loadDailyReportsForClassDate(
           context.school.id,
@@ -71,6 +74,7 @@ async function DailyReportsPage({
         )
       : Promise.resolve([]),
     loadDailyReportsOverviewForDate(context.school.id, reportDate),
+    loadDailyReportsExportRows(context.school.id, reportDate, classId),
   ]);
 
   const daySummary = buildDailyReportsDaySummary({
@@ -84,6 +88,16 @@ async function DailyReportsPage({
   return (
     <>
       <KinderPageHeader
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            <DailyReportsRemindStaff
+              reportDate={reportDate}
+              schoolId={context.school.id}
+              summaries={classSummaries}
+            />
+            <DailyReportsExport reportDate={reportDate} rows={exportRows} />
+          </div>
+        }
         breadcrumbs={[{ label: <Trans i18nKey="kinder:dailyReports.title" /> }]}
         description={<Trans i18nKey="kinder:dailyReports.description" />}
         title={<Trans i18nKey="kinder:dailyReports.title" />}

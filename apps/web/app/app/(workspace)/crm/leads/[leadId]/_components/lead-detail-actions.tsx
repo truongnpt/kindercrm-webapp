@@ -74,7 +74,7 @@ export function LeadDetailActions({
           <Trans i18nKey="kinder:students.convertFromLead" />
         </KinderSubmitButton>
         <Button
-          onClick={() => setDeleteOpen(true)}
+ onClick={() => setDeleteOpen(true)}
           size="sm"
           type="button"
           variant="destructive"

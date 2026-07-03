@@ -1,7 +1,13 @@
 {
   "onboarding": {
     "title": "Thiết lập trường học",
-    "description": "Tạo trường mầm non đầu tiên để bắt đầu sử dụng Kinder CRM.",
+    "description": "Điền thông tin trường mầm non để tạo không gian làm việc.",
+    "heroTitle": "Quản lý trường mầm non trên một nền tảng",
+    "heroSubtitle": "Kinder CRM giúp bạn xử lý tuyển sinh, học sinh, học phí, điểm danh và kết nối phụ huynh trong cùng một hệ thống.",
+    "badge": "Bắt đầu",
+    "footerHint": "Bạn có thể cập nhật thông tin trường bất cứ lúc nào sau khi thiết lập.",
+    "defaultCampusName": "Cơ sở chính",
+    "created": "Đã tạo trường thành công",
     "schoolName": "Tên trường",
     "schoolSlug": "Đường dẫn (slug)",
     "schoolSlugHint": "Dùng trong URL, chỉ chữ thường, số và dấu gạch ngang.",
@@ -9,8 +15,20 @@
     "email": "Email",
     "address": "Địa chỉ",
     "campusName": "Tên cơ sở chính",
-    "submit": "Tạo trường học",
-    "creating": "Đang tạo..."
+    "submit": "Tạo trường & tiếp tục",
+    "creating": "Đang tạo...",
+    "sections": {
+      "school": "Thông tin trường",
+      "contact": "Liên hệ"
+    },
+    "steps": {
+      "setup": "Tạo hồ sơ trường",
+      "setupHint": "Tên, slug và cơ sở chính của đơn vị.",
+      "students": "Nhập học sinh & lớp học",
+      "studentsHint": "Thêm hoặc import học sinh và phân lớp chủ nhiệm.",
+      "operate": "Vận hành hằng ngày",
+      "operateHint": "Điểm danh, nhật ký, học phí và cổng phụ huynh."
+    }
   },
   "dashboard": {
     "title": "Bảng điều khiển",
@@ -53,7 +71,13 @@
       "schools": "Trường học",
       "packages": "Gói",
       "admins": "Quản trị",
-      "audit": "Nhật ký"
+      "audit": "Nhật ký",
+      "account": "Tài khoản"
+    },
+    "roles": {
+      "super_admin": "Super Admin",
+      "support": "Hỗ trợ",
+      "billing": "Billing"
     },
     "stats": {
       "totalSchools": "Tổng trường",
@@ -83,6 +107,9 @@
       "actions": "Thao tác",
       "detail": "Chi tiết",
       "filter": "Lọc",
+      "search": "Tìm kiếm",
+      "searchPlaceholder": "Tên trường hoặc slug…",
+      "statusAll": "Tất cả trạng thái",
       "back": "Về danh sách",
       "info": "Thông tin trường",
       "owner": "Chủ sở hữu",
@@ -292,6 +319,14 @@
     "status": "Trạng thái",
     "notes": "Ghi chú",
     "photoUrl": "URL ảnh",
+    "photo": "Ảnh đại diện",
+    "uploadPhoto": "Tải ảnh lên",
+    "removePhoto": "Xóa ảnh",
+    "photoUploadHint": "JPEG, PNG hoặc WebP. Ảnh lớn sẽ được nén tự động (tối đa 5 MB).",
+    "unsupportedPhoto": "Định dạng ảnh không hỗ trợ. Dùng JPEG, PNG hoặc WebP.",
+    "photoTooLarge": "Ảnh quá lớn. Kích thước tối đa là 5 MB.",
+    "photoProcessFailed": "Không xử lý được ảnh. Vui lòng chọn file khác.",
+    "photoUploadFailed": "Không tải được ảnh lên. Vui lòng thử lại.",
     "save": "Lưu",
     "delete": "Xóa học sinh",
     "detail": "Hồ sơ học sinh",
@@ -542,8 +577,104 @@
     "imported": "Đã nhập {{count}} bản ghi.",
     "partialSuccess": "Nhập {{imported}} thành công, {{failed}} lỗi."
   },
+  "communication": {
+    "title": "Tin nhắn",
+    "parentDescription": "Trao đổi với giáo viên chủ nhiệm hoặc văn phòng nhà trường.",
+    "staffDescription": "Phản hồi tin nhắn phụ huynh qua kênh GVCN và văn phòng.",
+    "conversations": "Hội thoại",
+    "threadCount": "{{count}} hội thoại",
+    "selectThreadTitle": "Chọn hội thoại",
+    "selectThread": "Chọn một hội thoại trong danh sách để bắt đầu trò chuyện.",
+    "backToList": "Quay lại danh sách",
+    "send": "Gửi tin nhắn",
+    "sendHint": "Nhấn Enter để gửi, Shift+Enter để xuống dòng.",
+    "attachImage": "Đính kèm ảnh",
+    "imagePreview": "Hình ảnh",
+    "imageOptimized": "Ảnh đã được nén để phù hợp giới hạn dung lượng.",
+    "unsupportedImage": "Chỉ hỗ trợ ảnh JPEG, PNG, WebP và GIF.",
+    "imageTooLarge": "Ảnh quá lớn. Vui lòng chọn file nhỏ hơn.",
+    "imageProcessFailed": "Không xử lý được ảnh này. Hãy thử file khác.",
+    "reply": "Trả lời",
+    "replyingTo": "Trả lời",
+    "cancelReply": "Hủy trả lời",
+    "today": "Hôm nay",
+    "yesterday": "Hôm qua",
+    "addReaction": "Thêm cảm xúc",
+    "reactionFailed": "Không cập nhật được cảm xúc. Vui lòng thử lại.",
+    "reactions": {
+      "like": "Thích",
+      "love": "Yêu thích",
+      "haha": "Haha",
+      "wow": "Wow",
+      "sad": "Buồn",
+      "thanks": "Cảm ơn"
+    },
+    "emptyThreads": "Chưa có hội thoại. Tin nhắn sẽ xuất hiện khi bạn hoặc nhà trường bắt đầu trò chuyện.",
+    "emptyMessages": "Chưa có tin nhắn. Gửi tin nhắn đầu tiên bên dưới.",
+    "messagePlaceholder": "Nhập tin nhắn…",
+    "sendFailed": "Không gửi được tin nhắn. Vui lòng thử lại.",
+    "you": "Bạn",
+    "channels": {
+      "homeroom": "Giáo viên chủ nhiệm",
+      "school_office": "Văn phòng nhà trường"
+    }
+  },
   "calendar": {
-    "eventsOnDate": "Sự kiện trong ngày đã chọn"
+    "title": "Lịch",
+    "description": "Quản lý sự kiện, ngày nghỉ và các mốc quan trọng của trường.",
+    "workspaceTitle": "Lịch nhà trường",
+    "workspaceHint": "Xem sự kiện theo tháng và quản lý lịch hoạt động.",
+    "eventsOnDate": "Sự kiện ngày {{date}}",
+    "empty": "Chưa có sự kiện trong tháng này.",
+    "emptyDescription": "Tạo sự kiện đầu tiên để chia sẻ lịch với giáo viên và phụ huynh.",
+    "create": "Tạo sự kiện",
+    "edit": "Sửa sự kiện",
+    "delete": "Xóa sự kiện",
+    "deleteConfirm": "Xóa sự kiện này?",
+    "upcoming": "Sự kiện sắp tới",
+    "noUpcoming": "Không có sự kiện sắp tới.",
+    "allDay": "Cả ngày",
+    "startDate": "Ngày bắt đầu",
+    "endDate": "Ngày kết thúc",
+    "startTime": "Giờ bắt đầu",
+    "endTime": "Giờ kết thúc",
+    "category": "Loại sự kiện",
+    "eventTitle": "Tiêu đề",
+    "details": "Chi tiết sự kiện",
+    "tabs": {
+      "month": "Tháng",
+      "week": "Tuần",
+      "day": "Ngày",
+      "list": "Danh sách"
+    },
+    "filters": {
+      "allClasses": "Tất cả lớp",
+      "allCategories": "Tất cả loại"
+    },
+    "scope": "Phạm vi",
+    "campus": "Cơ sở",
+    "class": "Lớp",
+    "scopes": {
+      "school": "Toàn trường",
+      "campus": "Cơ sở",
+      "class": "Lớp"
+    },
+    "remindDaysBefore": "Nhắc nhở",
+    "reminderNone": "Không nhắc",
+    "reminderSameDay": "Vào ngày diễn ra",
+    "reminderDaysBefore": "Trước {{days}} ngày",
+    "notifyOnCreate": "Gửi thông báo khi tạo sự kiện",
+    "noEventsDay": "Không có sự kiện trong ngày này",
+    "upcomingHint": "Các sự kiện sắp diễn ra của trường",
+    "viewAll": "Xem lịch",
+    "categories": {
+      "learning_activity": "Hoạt động học tập",
+      "event": "Sự kiện",
+      "holiday": "Nghỉ lễ",
+      "parent_meeting": "Họp phụ huynh",
+      "health_checkup": "Khám sức khỏe",
+      "other": "Khác"
+    }
   },
   "attendance": {
     "title": "Điểm danh",
@@ -651,7 +782,9 @@
       "students": "Học sinh",
       "classes": "Lớp học",
       "reports": "Báo cáo",
-      "settings": "Cài đặt trường"
+      "settings": "Cài đặt trường",
+      "calendar": "Lịch",
+      "communication": "Tin nhắn"
     },
     "roles": {
       "owner": "Chủ trường",
@@ -711,6 +844,14 @@
     "settings": {
       "schoolManage": "Cấu hình thông tin trường",
       "subscriptionManage": "Quản lý gói đăng ký"
+    },
+    "calendar": {
+      "eventsView": "Xem lịch sự kiện",
+      "eventsManage": "Quản lý sự kiện"
+    },
+    "communication": {
+      "messagesView": "Xem tin nhắn phụ huynh",
+      "messagesManage": "Phản hồi tin nhắn phụ huynh"
     }
   },
   "staff": {
@@ -839,7 +980,7 @@
   "parent": {
     "title": "Cổng phụ huynh",
     "subtitle": "Theo dõi con em tại trường",
-    "homeDescription": "Chọn học sinh để xem nhật ký, điểm danh và học phí.",
+    "homeDescription": "Tổng quan hôm nay — điểm danh, nhật ký, học phí và thông báo.",
     "myChildren": "Con của tôi",
     "viewChild": "Xem chi tiết",
     "childDetail": "Thông tin học sinh",
@@ -862,26 +1003,89 @@
     },
     "staffPortal": "Khu vực nhà trường",
     "accountSettings": "Cài đặt tài khoản",
+    "backToHome": "Về trang chủ",
+    "nav": {
+      "home": "Trang chủ",
+      "calendar": "Lịch",
+      "messages": "Tin nhắn",
+      "notifications": "Thông báo",
+      "profile": "Hồ sơ"
+    },
+    "calendar": {
+      "title": "Lịch nhà trường",
+      "description": "Xem sự kiện, ngày nghỉ và hoạt động của trường dành cho con bạn.",
+      "eventsTitle": "Sự kiện sắp tới",
+      "eventsHint": "Sự kiện toàn trường và theo lớp mà gia đình bạn được xem.",
+      "allChildren": "Tất cả các con",
+      "upcoming": "Sự kiện sắp tới",
+      "upcomingHint": "Sự kiện nhà trường mà gia đình bạn được xem.",
+      "viewAll": "Xem lịch",
+      "empty": "Chưa có sự kiện trong tháng này",
+      "emptyDescription": "Khi nhà trường đăng sự kiện, chúng sẽ hiển thị tại đây."
+    },
+    "dashboard": {
+      "greeting": "Xin chào",
+      "todayAttendance": "Hôm nay",
+      "todayReport": "Nhật ký",
+      "tuition": "Học phí",
+      "paidUp": "Đã thanh toán đủ",
+      "outstandingTuition": "Công nợ học phí",
+      "unreadNotifications": "{{count}} thông báo chưa đọc"
+    },
     "tabs": {
       "reports": "Nhật ký",
       "attendance": "Điểm danh",
+      "leave": "Xin nghỉ",
+      "meals": "Thực đơn",
       "finance": "Học phí",
-      "health": "Sức khỏe"
+      "health": "Sức khỏe",
+      "profile": "Hồ sơ"
     },
     "reports": {
       "empty": "Chưa có nhật ký ngày.",
+      "timelineHint": "Nhật ký mới nhất từ giáo viên, sắp xếp theo ngày.",
       "mood": "Tâm trạng",
       "meals": "Bữa ăn",
       "nap": "Ngủ trưa",
       "activities": "Hoạt động",
+      "learning": "Hoạt động học tập",
+      "hygiene": "Vệ sinh",
       "note": "Ghi chú giáo viên",
       "save": "Lưu nhật ký"
     },
     "attendance": {
-      "empty": "Chưa có dữ liệu điểm danh."
+      "empty": "Chưa có dữ liệu điểm danh.",
+      "checkIn": "Giờ vào",
+      "totalDays": "Tổng ngày",
+      "absentDays": "Ngày vắng"
+    },
+    "leave": {
+      "hint": "Gửi đơn xin nghỉ cho con. Nhà trường sẽ xem xét và phê duyệt.",
+      "empty": "Chưa có đơn xin nghỉ."
+    },
+    "meals": {
+      "today": "Thực đơn hôm nay",
+      "week": "Tuần này",
+      "todayHint": "Thực đơn đã công bố cho hôm nay.",
+      "weekHint": "Thực đơn trong tuần hiện tại.",
+      "emptyToday": "Chưa có thực đơn cho hôm nay.",
+      "allergyNote": "Liên hệ nhà trường nếu con có dị ứng thực phẩm."
+    },
+    "profile": {
+      "student": "Học sinh",
+      "homeroomTeacher": "Giáo viên chủ nhiệm",
+      "homeroomClass": "Lớp",
+      "noHomeroomTeacher": "Chưa có giáo viên chủ nhiệm.",
+      "teacherContactUnavailable": "Chưa có thông tin liên hệ.",
+      "parents": "Phụ huynh / người giám hộ",
+      "emergency": "Liên hệ khẩn cấp",
+      "emptyContacts": "Chưa có thông tin liên hệ."
     },
     "finance": {
-      "empty": "Chưa có hóa đơn."
+      "empty": "Chưa có hóa đơn.",
+      "dueDate": "Hạn thanh toán",
+      "invoices": "Hóa đơn",
+      "payments": "Lịch sử thanh toán"
     },
     "health": {
       "empty": "Chưa có hồ sơ sức khỏe."
@@ -969,6 +1173,18 @@
       "breakfast": "Sáng",
       "lunch": "Trưa",
       "snack": "Phụ"
+    },
+    "remindStaff": "Nhắc giáo viên chủ nhiệm",
+    "exportEmpty": "Không có nhật ký để xuất cho ngày này.",
+    "remindStaffAllComplete": "Tất cả lớp đã gửi nhật ký cho ngày này.",
+    "remindStaffSuccess": "Đã gửi nhắc nhở tới {{count}} lớp."
+  },
+  "menu": {
+    "mealSlots": {
+      "breakfast": "Sáng",
+      "lunch": "Trưa",
+      "snack": "Phụ",
+      "dinner": "Tối"
     }
   },
   "mealMenu": {
@@ -1055,7 +1271,9 @@
     "editDish": "Sửa món ăn",
     "editDishDescription": "Cập nhật tên món, dị ứng và ghi chú khẩu phần.",
     "editIngredient": "Sửa nguyên liệu",
-    "editIngredientDescription": "Cập nhật thông tin nguyên liệu và liên kết kho."
+    "editIngredientDescription": "Cập nhật thông tin nguyên liệu và liên kết kho.",
+    "noInventoryLinkHint": "Chưa liên kết kho — chỉnh sửa để gắn sản phẩm tồn.",
+    "viewInventory": "Xem trong kho"
   },
   "inventory": {
     "title": "Quản lý kho",
@@ -1106,6 +1324,9 @@
       "totalUnits": "Tổng đơn vị tồn"
     },
     "emptyProducts": "Chưa có sản phẩm.",
+    "emptyLowStock": "Không có sản phẩm sắp hết",
+    "emptyLowStockDescription": "Tất cả sản phẩm đều trên mức tồn tối thiểu.",
+    "exportEmpty": "Không có sản phẩm để xuất.",
     "emptyTransactions": "Chưa có giao dịch.",
     "emptySuppliers": "Chưa có nhà cung cấp.",
     "createPo": "Tạo đơn mua",
@@ -1136,7 +1357,17 @@
     "title": "Thông báo",
     "empty": "Không có thông báo mới.",
     "markAllRead": "Đọc tất cả",
-    "dailyReport": "Nhật ký hằng ngày"
+    "close": "Đóng",
+    "yesterday": "Hôm qua",
+    "dailyReport": "Nhật ký hằng ngày",
+    "categories": {
+      "daily_report": "Nhật ký hằng ngày",
+      "communication": "Tin nhắn",
+      "calendar": "Lịch",
+      "menu": "Thực đơn",
+      "inventory": "Kho",
+      "system": "Hệ thống"
+    }
   },
   "ai": {
     "title": "Trợ lý AI",
@@ -1250,6 +1481,15 @@
       "minor": "Nhẹ",
       "moderate": "Trung bình",
       "serious": "Nghiêm trọng"
+    },
+    "exportEmpty": "Không có dữ liệu sức khỏe để xuất cho bộ lọc này.",
+    "exportKinds": {
+      "profiles": "Hồ sơ học sinh",
+      "growth": "Theo dõi phát triển",
+      "vaccinations": "Tiêm chủng",
+      "checkups": "Khám sức khỏe",
+      "medications": "Thuốc",
+      "incidents": "Sự cố"
     }
   },
   "ui": {

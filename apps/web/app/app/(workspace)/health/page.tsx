@@ -14,6 +14,7 @@ import {
   loadStudentHealthSummaries,
   loadVaccinations,
 } from '~/lib/kinder/health/load-health';
+import { loadHealthExportBundle } from '~/lib/kinder/health/load-health-export';
 import { assertModuleAccessFromContext } from '~/lib/kinder/permissions/module-access.server';
 import { requirePackageFeature } from '~/lib/kinder/subscription/features';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
@@ -21,6 +22,7 @@ import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
+import { HealthExport } from './_components/health-export';
 import { HealthOverview } from './_components/health-overview';
 import { HealthWorkspace } from './_components/health-workspace';
 
@@ -60,6 +62,7 @@ async function HealthPage({
     checkups,
     medications,
     incidents,
+    exportBundle,
   ] = await Promise.all([
     loadHealthStudents(schoolId),
     loadHealthDashboardSummary(schoolId),
@@ -69,6 +72,7 @@ async function HealthPage({
     loadMedicalCheckups(schoolId, filterStudentId),
     loadHealthMedications(schoolId, filterStudentId),
     loadHealthIncidents(schoolId, filterStudentId),
+    loadHealthExportBundle(schoolId, filterStudentId),
   ]);
 
   const defaultTab = tab ?? 'profiles';
@@ -76,6 +80,7 @@ async function HealthPage({
   return (
     <>
       <KinderPageHeader
+        actions={students.length > 0 ? <HealthExport bundle={exportBundle} /> : null}
         breadcrumbs={[{ label: <Trans i18nKey="kinder:health.title" /> }]}
         description={<Trans i18nKey="kinder:health.description" />}
         title={<Trans i18nKey="kinder:health.title" />}

@@ -267,13 +267,14 @@ export const loadStudentHealthProfile = cache(
 
 export const loadParentStudentHealth = cache(
   async (schoolId: string, studentId: string) => {
-    const [profile, vaccinations, growth, incidents, medications] =
+    const [profile, vaccinations, growth, incidents, medications, checkups] =
       await Promise.all([
         loadStudentHealthProfile(schoolId, studentId),
         loadVaccinations(schoolId, studentId),
         loadGrowthRecords(schoolId, studentId),
         loadHealthIncidents(schoolId, studentId),
         loadHealthMedications(schoolId, studentId),
+        loadMedicalCheckups(schoolId, studentId),
       ]);
 
     return {
@@ -282,6 +283,7 @@ export const loadParentStudentHealth = cache(
       growth,
       incidents,
       medications: medications.filter((med) => med.is_active),
+      checkups,
     };
   },
 );

@@ -89,7 +89,7 @@ export function EditDishDialog({
       title={<Trans i18nKey="kinder:mealMenu.editDish" />}
       trigger={
         hideTrigger ? undefined : (
-          <Button className="rounded-lg" size="sm" type="button" variant="outline">
+          <Button size="sm" type="button" variant="outline">
             <Pencil className="mr-2 size-4" />
             <Trans i18nKey="kinder:ui.edit" />
           </Button>

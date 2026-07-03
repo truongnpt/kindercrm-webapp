@@ -94,7 +94,7 @@ export function CreateMenuDialog({ schoolId }: { schoolId: string }) {
       size="lg"
       title={<Trans i18nKey="kinder:mealMenu.createMenu" />}
       trigger={
-        <Button className="rounded-lg" type="button">
+        <Button type="button">
           <Plus className="mr-2 size-4" />
           <Trans i18nKey="kinder:mealMenu.createMenu" />
         </Button>

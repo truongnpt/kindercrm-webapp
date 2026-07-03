@@ -114,7 +114,9 @@ export function EditStudentDialog({
         <form className="flex flex-col gap-4">
           <StudentFormFields
             form={form}
+            schoolId={schoolId}
             showCode={student.student_code}
+            studentId={student.id}
           />
         </form>
       </Form>

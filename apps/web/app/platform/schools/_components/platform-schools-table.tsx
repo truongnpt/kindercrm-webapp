@@ -4,11 +4,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 
+import { Building2 } from 'lucide-react';
+
 import { Badge } from '@kit/ui/badge';
 import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
 
-import { PanelEmpty, DataTableShell } from '~/components/kinder-ui';
+import { PlatformDataTable, PlatformEmptyState } from '~/components/platform-console';
 import pathsConfig from '~/config/paths.config';
 import type { PlatformAdminRole } from '~/lib/kinder/platform/types';
 import type { PlatformSchoolListItem } from '~/lib/kinder/platform/types';
@@ -35,11 +37,16 @@ export function PlatformSchoolsTable({
   platformRole: PlatformAdminRole;
 }) {
   if (schools.length === 0) {
-    return <PanelEmpty messageKey="kinder:platform.schools.empty" />;
+    return (
+      <PlatformEmptyState
+        icon={Building2}
+        titleKey="kinder:platform.schools.empty"
+      />
+    );
   }
 
   return (
-    <DataTableShell>
+    <PlatformDataTable>
       <table className="w-full text-sm">
         <thead>
           <tr>
@@ -93,7 +100,7 @@ export function PlatformSchoolsTable({
           ))}
         </tbody>
       </table>
-    </DataTableShell>
+    </PlatformDataTable>
   );
 }
 
@@ -120,8 +127,8 @@ function SchoolQuickActions({
   if (school.status === 'active' && canSuspend) {
     return (
       <Button
-        disabled={pending}
-        onClick={() => run(() => platformSuspendSchoolAction({ schoolId: school.id }))}
+ disabled={pending}
+ onClick={() => run(() => platformSuspendSchoolAction({ schoolId: school.id }))}
         size="sm"
         variant="outline"
         type="button"
@@ -134,8 +141,8 @@ function SchoolQuickActions({
   if (school.status === 'suspended' && canSuspend) {
     return (
       <Button
-        disabled={pending}
-        onClick={() => run(() => platformRestoreSchoolAction({ schoolId: school.id }))}
+ disabled={pending}
+ onClick={() => run(() => platformRestoreSchoolAction({ schoolId: school.id }))}
         size="sm"
         variant="outline"
         type="button"
@@ -148,8 +155,8 @@ function SchoolQuickActions({
   if (school.status !== 'archived' && canArchive) {
     return (
       <Button
-        disabled={pending}
-        onClick={() => run(() => platformArchiveSchoolAction({ schoolId: school.id }))}
+ disabled={pending}
+ onClick={() => run(() => platformArchiveSchoolAction({ schoolId: school.id }))}
         size="sm"
         variant="destructive"
         type="button"

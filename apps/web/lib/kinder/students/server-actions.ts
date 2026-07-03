@@ -26,6 +26,7 @@ import {
   CreatePickupPersonSchema,
   CreateStudentSchema,
   DeleteStudentSchema,
+  SetStudentPhotoSchema,
   UpdateStudentSchema,
   UpdateStudentStatusSchema,
   UpsertMedicalRecordSchema,
@@ -140,9 +141,30 @@ export const createStudentAction = enhanceAction(
     });
 
     revalidateStudentPaths(student.id);
-    redirect(`${pathsConfig.app.studentDetail}/${student.id}`);
+    return { success: true, studentId: student.id };
   },
   { schema: CreateStudentSchema },
+);
+
+/** Set student profile photo URL after storage upload */
+export const setStudentPhotoAction = enhanceAction(
+  async (data) => {
+    const client = getSupabaseServerClient();
+
+    const { error } = await client
+      .from('students')
+      .update({ photo_url: data.photoUrl })
+      .eq('id', data.studentId)
+      .eq('school_id', data.schoolId);
+
+    if (error) {
+      throw error;
+    }
+
+    revalidateStudentPaths(data.studentId);
+    return { success: true };
+  },
+  { schema: SetStudentPhotoSchema },
 );
 
 /** STUDENT-002 Update profile */

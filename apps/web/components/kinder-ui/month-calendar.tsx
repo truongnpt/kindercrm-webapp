@@ -39,13 +39,32 @@ export function MonthCalendar({
   events,
   className,
   onDateSelect,
+  onMonthChange,
+  initialMonth,
 }: {
   events: CalendarEvent[];
   className?: string;
   onDateSelect?: (date: string) => void;
+  onMonthChange?: (monthKey: string) => void;
+  initialMonth?: string;
 }) {
-  const [current, setCurrent] = useState(() => startOfMonth(new Date()));
+  const [current, setCurrent] = useState(() => {
+    if (initialMonth) {
+      const [year, month] = initialMonth.split('-').map(Number);
+
+      return startOfMonth(new Date(year!, month! - 1, 1));
+    }
+
+    return startOfMonth(new Date());
+  });
   const [selected, setSelected] = useState<string | null>(null);
+
+  const shiftMonth = (offset: number) => {
+    const next = new Date(current.getFullYear(), current.getMonth() + offset, 1);
+
+    setCurrent(next);
+    onMonthChange?.(formatMonthKey(next));
+  };
 
   const eventsByDate = useMemo(() => {
     const map = new Map<string, CalendarEvent[]>();
@@ -85,11 +104,7 @@ export function MonthCalendar({
         <h3 className="text-foreground text-base font-semibold">{monthLabel}</h3>
         <div className="flex items-center gap-1">
           <Button
-            onClick={() =>
-              setCurrent(
-                new Date(current.getFullYear(), current.getMonth() - 1, 1),
-              )
-            }
+ onClick={() => shiftMonth(-1)}
             size="icon"
             type="button"
             variant="outline"
@@ -97,11 +112,7 @@ export function MonthCalendar({
             <ChevronLeft className="size-4" />
           </Button>
           <Button
-            onClick={() =>
-              setCurrent(
-                new Date(current.getFullYear(), current.getMonth() + 1, 1),
-              )
-            }
+ onClick={() => shiftMonth(1)}
             size="icon"
             type="button"
             variant="outline"
@@ -142,8 +153,10 @@ export function MonthCalendar({
               )}
               key={cell.dateKey}
               onClick={() => {
-                setSelected(cell.dateKey);
-                onDateSelect?.(cell.dateKey);
+                const dateKey = cell.dateKey!;
+
+                setSelected(dateKey);
+                onDateSelect?.(dateKey);
               }}
               type="button"
             >

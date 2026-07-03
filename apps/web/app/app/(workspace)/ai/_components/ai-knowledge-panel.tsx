@@ -62,7 +62,7 @@ export function AiKnowledgePanel({
                 </p>
               </div>
               <Button
-                onClick={async () => {
+ onClick={async () => {
                   const promise = deleteAiKnowledgeAction({
                     schoolId,
                     articleId: article.id,

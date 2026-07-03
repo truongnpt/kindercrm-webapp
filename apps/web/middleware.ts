@@ -97,8 +97,9 @@ function getPatterns() {
         }
 
         const isVerifyMfa = req.nextUrl.pathname === pathsConfig.auth.verifyMfa;
+        const isPostLogin = req.nextUrl.pathname === pathsConfig.auth.postLogin;
 
-        if (!isVerifyMfa) {
+        if (!isVerifyMfa && !isPostLogin) {
           const client = createMiddlewareClient(req, res);
           const userId = data.claims.sub as string;
 
@@ -169,6 +170,22 @@ function getPatterns() {
           return NextResponse.redirect(
             new URL(pathsConfig.auth.verifyMfa, origin).href,
           );
+        }
+
+        if (next === pathsConfig.app.onboarding) {
+          const { data: platformAdmin } = await supabase
+            .from('platform_admins')
+            .select('id')
+            .eq('user_id', data.claims.sub as string)
+            .eq('is_active', true)
+            .is('revoked_at', null)
+            .maybeSingle();
+
+          if (platformAdmin) {
+            return NextResponse.redirect(
+              new URL(pathsConfig.platform.home, origin).href,
+            );
+          }
         }
 
         await syncActiveSchoolCookie(req, res, data.claims.sub as string);

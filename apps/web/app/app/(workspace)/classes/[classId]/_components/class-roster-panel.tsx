@@ -94,7 +94,7 @@ export function ClassRosterPanel({
                         studentId={row.student_id}
                         studentName={row.student?.full_name ?? ''}
                       />
-                      <Button asChild className="rounded-lg" size="sm" variant="outline">
+                      <Button asChild size="sm" variant="outline">
                         <Link
                           href={`${pathsConfig.app.studentDetail}/${row.student_id}`}
                         >
@@ -150,7 +150,7 @@ export function ClassRosterPanel({
                 </FormItem>
               )}
             />
-            <Button className="rounded-lg" type="submit">
+            <Button type="submit">
               <Trans i18nKey="kinder:classes.enrollStudent" />
             </Button>
           </form>

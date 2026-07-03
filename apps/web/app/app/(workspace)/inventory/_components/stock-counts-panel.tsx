@@ -136,8 +136,8 @@ export function StockCountsPanel({
             <p className="font-medium">{activeCount.title}</p>
             {activeCount.status === 'draft' ? (
               <Button
-                disabled={completeMutation.isPending}
-                onClick={() =>
+ disabled={completeMutation.isPending}
+ onClick={() =>
                   completeMutation.mutate({
                     schoolId,
                     stockCountId: activeCount.id,

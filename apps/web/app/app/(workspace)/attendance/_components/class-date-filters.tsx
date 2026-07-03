@@ -69,7 +69,7 @@ export function ClassDateFilters({ classes }: { classes: ClassGroup[] }) {
 
       <div className="flex items-center gap-1">
         <Button
-          onClick={() => updateParams({ date: shiftDate(date, -1) })}
+ onClick={() => updateParams({ date: shiftDate(date, -1) })}
           size="icon"
           type="button"
           variant="outline"
@@ -85,7 +85,7 @@ export function ClassDateFilters({ classes }: { classes: ClassGroup[] }) {
         />
 
         <Button
-          onClick={() => updateParams({ date: shiftDate(date, 1) })}
+ onClick={() => updateParams({ date: shiftDate(date, 1) })}
           size="icon"
           type="button"
           variant="outline"
@@ -94,7 +94,7 @@ export function ClassDateFilters({ classes }: { classes: ClassGroup[] }) {
         </Button>
 
         <Button
-          onClick={() => updateParams({ date: todayString() })}
+ onClick={() => updateParams({ date: todayString() })}
           size="sm"
           type="button"
           variant="ghost"

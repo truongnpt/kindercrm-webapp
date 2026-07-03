@@ -73,6 +73,18 @@ export const kinderQueryKeys = {
   ai: (schoolId: string) =>
     [...kinderQueryKeys.school(schoolId), 'ai'] as const,
 
+  calendar: {
+    all: (schoolId: string) =>
+      [...kinderQueryKeys.school(schoolId), 'calendar'] as const,
+  },
+
+  communication: {
+    all: (schoolId: string) =>
+      [...kinderQueryKeys.school(schoolId), 'communication'] as const,
+    thread: (schoolId: string, threadId: string) =>
+      [...kinderQueryKeys.communication.all(schoolId), threadId] as const,
+  },
+
   settings: {
     school: (schoolId: string) =>
       [...kinderQueryKeys.school(schoolId), 'settings', 'school'] as const,

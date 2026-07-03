@@ -198,8 +198,8 @@ export function DailyReportMediaPanel({
             type="file"
           />
           <Button
-            disabled={uploading || !reportId}
-            onClick={() => inputRef.current?.click()}
+ disabled={uploading || !reportId}
+ onClick={() => inputRef.current?.click()}
             size="sm"
             type="button"
             variant="outline"
@@ -252,7 +252,7 @@ export function DailyReportMediaPanel({
                   </div>
                   {!readOnly ? (
                     <Button
-                      onClick={async () => {
+ onClick={async () => {
                         if (!reportId) {
                           return;
                         }

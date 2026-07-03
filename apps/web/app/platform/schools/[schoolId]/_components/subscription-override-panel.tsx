@@ -26,7 +26,7 @@ import {
 import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
-import { SectionCard } from '~/components/kinder-ui';
+import { PlatformSectionCard } from '~/components/platform-console';
 import { PlatformOverrideSubscriptionSchema } from '~/lib/kinder/platform/schemas/package.schema';
 import { platformOverrideSubscriptionAction } from '~/lib/kinder/platform/platform-ops-actions';
 import type { PlatformSchoolDetail } from '~/lib/kinder/platform/types';
@@ -56,7 +56,7 @@ export function SubscriptionOverridePanel({
   });
 
   return (
-    <SectionCard title={<Trans i18nKey="kinder:platform.subscription.overrideTitle" />}>
+    <PlatformSectionCard title={<Trans i18nKey="kinder:platform.subscription.overrideTitle" />}>
       <Form {...form}>
         <form
           className="space-y-4"
@@ -151,6 +151,6 @@ export function SubscriptionOverridePanel({
           </Button>
         </form>
       </Form>
-    </SectionCard>
+    </PlatformSectionCard>
   );
 }

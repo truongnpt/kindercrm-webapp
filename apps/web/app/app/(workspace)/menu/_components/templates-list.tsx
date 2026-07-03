@@ -138,7 +138,7 @@ export function TemplatesList({
                           </DropdownMenu>
                         ) : null}
                         <Button
-                          onClick={() => setDeleteTemplate(template)}
+ onClick={() => setDeleteTemplate(template)}
                           size="sm"
                           type="button"
                           variant="ghost"
@@ -178,9 +178,9 @@ export function TemplatesList({
               <div className="flex flex-wrap gap-2">
                 {draftMenus.map((menu) => (
                   <Button
-                    key={menu.id}
-                    disabled={applyMutation.isPending}
-                    onClick={() =>
+ key={menu.id}
+ disabled={applyMutation.isPending}
+ onClick={() =>
                       applyMutation.mutate({
                         schoolId,
                         menuId: menu.id,
@@ -195,7 +195,7 @@ export function TemplatesList({
                   </Button>
                 ))}
                 <Button
-                  onClick={() => setDeleteTemplate(template)}
+ onClick={() => setDeleteTemplate(template)}
                   size="sm"
                   type="button"
                   variant="ghost"

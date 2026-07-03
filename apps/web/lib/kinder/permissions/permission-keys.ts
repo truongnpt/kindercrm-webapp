@@ -45,6 +45,19 @@ export const SETTINGS_PERMISSIONS = {
   SUBSCRIPTION_MANAGE: 'settings.subscription.manage',
 } as const;
 
+export const CALENDAR_PERMISSIONS = {
+  EVENTS_VIEW: 'calendar.events.view',
+  EVENTS_MANAGE: 'calendar.events.manage',
+} as const;
+
+export const COMMUNICATION_PERMISSIONS = {
+  MESSAGES_VIEW: 'communication.messages.view',
+  MESSAGES_MANAGE: 'communication.messages.manage',
+} as const;
+
+export type CommunicationPermission =
+  (typeof COMMUNICATION_PERMISSIONS)[keyof typeof COMMUNICATION_PERMISSIONS];
+
 export type StaffPermission =
   (typeof STAFF_PERMISSIONS)[keyof typeof STAFF_PERMISSIONS];
 
@@ -63,13 +76,18 @@ export type ReportsPermission =
 export type SettingsPermission =
   (typeof SETTINGS_PERMISSIONS)[keyof typeof SETTINGS_PERMISSIONS];
 
+export type CalendarPermission =
+  (typeof CALENDAR_PERMISSIONS)[keyof typeof CALENDAR_PERMISSIONS];
+
 export type KinderPermission =
   | StaffPermission
   | CrmPermission
   | StudentsPermission
   | ClassesPermission
   | ReportsPermission
-  | SettingsPermission;
+  | SettingsPermission
+  | CalendarPermission
+  | CommunicationPermission;
 
 export const ALL_STAFF_PERMISSIONS = Object.values(
   STAFF_PERMISSIONS,
@@ -95,6 +113,14 @@ export const ALL_SETTINGS_PERMISSIONS = Object.values(
   SETTINGS_PERMISSIONS,
 ) as SettingsPermission[];
 
+export const ALL_CALENDAR_PERMISSIONS = Object.values(
+  CALENDAR_PERMISSIONS,
+) as CalendarPermission[];
+
+export const ALL_COMMUNICATION_PERMISSIONS = Object.values(
+  COMMUNICATION_PERMISSIONS,
+) as CommunicationPermission[];
+
 export const ALL_PERMISSIONS = [
   ...ALL_STAFF_PERMISSIONS,
   ...ALL_CRM_PERMISSIONS,
@@ -102,6 +128,8 @@ export const ALL_PERMISSIONS = [
   ...ALL_CLASSES_PERMISSIONS,
   ...ALL_REPORTS_PERMISSIONS,
   ...ALL_SETTINGS_PERMISSIONS,
+  ...ALL_CALENDAR_PERMISSIONS,
+  ...ALL_COMMUNICATION_PERMISSIONS,
 ] as KinderPermission[];
 
 export const PERMISSION_GROUPS = [
@@ -218,6 +246,34 @@ export const PERMISSION_GROUPS = [
       {
         key: SETTINGS_PERMISSIONS.SUBSCRIPTION_MANAGE,
         labelKey: 'kinder:permissions.settings.subscriptionManage',
+      },
+    ],
+  },
+  {
+    id: 'calendar',
+    labelKey: 'kinder:permissions.groups.calendar',
+    permissions: [
+      {
+        key: CALENDAR_PERMISSIONS.EVENTS_VIEW,
+        labelKey: 'kinder:permissions.calendar.eventsView',
+      },
+      {
+        key: CALENDAR_PERMISSIONS.EVENTS_MANAGE,
+        labelKey: 'kinder:permissions.calendar.eventsManage',
+      },
+    ],
+  },
+  {
+    id: 'communication',
+    labelKey: 'kinder:permissions.groups.communication',
+    permissions: [
+      {
+        key: COMMUNICATION_PERMISSIONS.MESSAGES_VIEW,
+        labelKey: 'kinder:permissions.communication.messagesView',
+      },
+      {
+        key: COMMUNICATION_PERMISSIONS.MESSAGES_MANAGE,
+        labelKey: 'kinder:permissions.communication.messagesManage',
       },
     ],
   },

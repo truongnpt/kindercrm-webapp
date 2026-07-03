@@ -14,3 +14,10 @@ export type ParentChildSummary = {
   photoUrl: string | null;
   isPrimary: boolean;
 };
+
+export type ParentHomeroomTeacher = {
+  name: string;
+  phone: string | null;
+  email: string | null;
+  photoUrl: string | null;
+};

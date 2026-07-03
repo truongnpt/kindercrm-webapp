@@ -7,6 +7,7 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import pathsConfig from '~/config/paths.config';
 
+import { checkAndNotifyLowStockProducts } from './low-stock-notifications';
 import {
   CancelPurchaseOrderSchema,
   CreatePurchaseOrderSchema,
@@ -100,6 +101,8 @@ export const receivePurchaseOrderAction = enhanceAction(
       throw itemsError;
     }
 
+    const affectedProductIds: string[] = [];
+
     for (const item of items ?? []) {
       const remaining = Number(item.quantity) - Number(item.received_quantity);
 
@@ -124,6 +127,8 @@ export const receivePurchaseOrderAction = enhanceAction(
         .from('purchase_order_items')
         .update({ received_quantity: item.quantity })
         .eq('id', item.id);
+
+      affectedProductIds.push(item.product_id);
     }
 
     const { error: updateError } = await client
@@ -136,6 +141,12 @@ export const receivePurchaseOrderAction = enhanceAction(
 
     if (updateError) {
       throw updateError;
+    }
+
+    try {
+      await checkAndNotifyLowStockProducts(data.schoolId, affectedProductIds);
+    } catch (notifyError) {
+      console.error('Failed to check low stock notification', notifyError);
     }
 
     revalidatePurchaseOrderPaths();

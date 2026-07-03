@@ -45,8 +45,8 @@ export function AiInsightsPanel({
             <Trans i18nKey="kinder:ai.insightsTitle" />
           </p>
           <Button
-            disabled={pending}
-            onClick={() => {
+ disabled={pending}
+ onClick={() => {
               startTransition(async () => {
                 try {
                   const result = await generateAiInsightsAction({ schoolId });
@@ -126,8 +126,8 @@ export function AiInsightsPanel({
           </SelectContent>
         </Select>
         <Button
-          disabled={pending || !topic.trim()}
-          onClick={() => {
+ disabled={pending || !topic.trim()}
+ onClick={() => {
             startTransition(async () => {
               try {
                 const result = await draftAiNotificationAction({

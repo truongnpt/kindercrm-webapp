@@ -22,6 +22,7 @@ import { deleteStudentAction } from '~/lib/kinder/students/server-actions';
 import type { Student } from '~/lib/kinder/students/types';
 
 import { EditStudentDialog } from './edit-student-dialog';
+import { StudentAvatar } from './student-avatar';
 
 const STATUS_TONE: Record<
   Student['status'],
@@ -72,6 +73,7 @@ export function StudentsList({
           <table className="w-full text-sm">
             <thead>
               <tr>
+                <th className="w-12" />
                 <th>
                   <Trans i18nKey="kinder:students.code" />
                 </th>
@@ -90,6 +92,13 @@ export function StudentsList({
             <tbody>
               {students.map((student) => (
                 <tr key={student.id}>
+                  <td>
+                    <StudentAvatar
+                      name={student.full_name}
+                      photoUrl={student.photo_url}
+                      size="sm"
+                    />
+                  </td>
                   <td className="font-mono text-xs">{student.student_code}</td>
                   <td>
                     <Link
@@ -126,16 +135,23 @@ export function StudentsList({
         {students.map((student) => (
           <article className="kinder-mobile-card" key={student.id}>
             <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <Link
-                  className="text-foreground truncate font-medium hover:text-primary hover:underline"
-                  href={`${pathsConfig.app.studentDetail}/${student.id}`}
-                >
-                  {student.full_name}
-                </Link>
-                <p className="text-muted-foreground mt-0.5 font-mono text-xs">
-                  {student.student_code}
-                </p>
+              <div className="flex min-w-0 items-start gap-3">
+                <StudentAvatar
+                  name={student.full_name}
+                  photoUrl={student.photo_url}
+                  size="md"
+                />
+                <div className="min-w-0">
+                  <Link
+                    className="text-foreground truncate font-medium hover:text-primary hover:underline"
+                    href={`${pathsConfig.app.studentDetail}/${student.id}`}
+                  >
+                    {student.full_name}
+                  </Link>
+                  <p className="text-muted-foreground mt-0.5 font-mono text-xs">
+                    {student.student_code}
+                  </p>
+                </div>
               </div>
               <StatusBadge tone={STATUS_TONE[student.status]}>
                 <Trans

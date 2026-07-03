@@ -2,8 +2,11 @@
 
 import { useState } from 'react';
 
+import Link from 'next/link';
+
 import { ChefHat } from 'lucide-react';
 
+import { Badge } from '@kit/ui/badge';
 import { Trans } from '@kit/ui/trans';
 
 import {
@@ -14,6 +17,7 @@ import {
   kinderQueryKeys,
   useKinderMutation,
 } from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
 import type { InventoryProductWithStock } from '~/lib/kinder/inventory/types';
 import { deleteIngredientAction } from '~/lib/kinder/meal-menu/server-actions';
 import type { Ingredient } from '~/lib/kinder/meal-menu/types';
@@ -96,16 +100,39 @@ export function IngredientsList({
                       : '—'}
                     </td>
                     <td className="text-muted-foreground">
-                      {linkedProduct ?
-                        <Trans
-                          i18nKey="kinder:mealMenu.inventoryStock"
-                          values={{
-                            name: linkedProduct.name,
-                            quantity: linkedProduct.quantity,
-                            unit: linkedProduct.unit,
-                          }}
-                        />
-                      : '—'}
+                      {linkedProduct ? (
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span>
+                            <Trans
+                              i18nKey="kinder:mealMenu.inventoryStock"
+                              values={{
+                                name: linkedProduct.name,
+                                quantity: linkedProduct.quantity,
+                                unit: linkedProduct.unit,
+                              }}
+                            />
+                          </span>
+                          {linkedProduct.isLowStock ? (
+                            <Badge variant="destructive">
+                              <Trans i18nKey="kinder:inventory.lowStock" />
+                            </Badge>
+                          ) : null}
+                          <Link
+                            className="text-primary text-xs font-medium hover:underline"
+                            href={
+                              linkedProduct.isLowStock
+                                ? `${pathsConfig.app.inventory}?tab=products&lowStock=1`
+                                : `${pathsConfig.app.inventory}?tab=products`
+                            }
+                          >
+                            <Trans i18nKey="kinder:mealMenu.viewInventory" />
+                          </Link>
+                        </div>
+                      ) : (
+                        <span className="text-amber-700 dark:text-amber-400">
+                          <Trans i18nKey="kinder:mealMenu.noInventoryLinkHint" />
+                        </span>
+                      )}
                     </td>
                     <td className="text-right">
                       <EntityRowActions
@@ -137,17 +164,28 @@ export function IngredientsList({
                 : ''}
               </p>
               {linkedProduct ? (
-                <p className="text-muted-foreground mt-2 text-xs">
-                  <Trans
-                    i18nKey="kinder:mealMenu.inventoryStock"
-                    values={{
-                      name: linkedProduct.name,
-                      quantity: linkedProduct.quantity,
-                      unit: linkedProduct.unit,
-                    }}
-                  />
+                <div className="mt-2 space-y-1">
+                  <p className="text-muted-foreground text-xs">
+                    <Trans
+                      i18nKey="kinder:mealMenu.inventoryStock"
+                      values={{
+                        name: linkedProduct.name,
+                        quantity: linkedProduct.quantity,
+                        unit: linkedProduct.unit,
+                      }}
+                    />
+                  </p>
+                  {linkedProduct.isLowStock ? (
+                    <Badge variant="destructive">
+                      <Trans i18nKey="kinder:inventory.lowStock" />
+                    </Badge>
+                  ) : null}
+                </div>
+              ) : (
+                <p className="text-amber-700 dark:text-amber-400 mt-2 text-xs">
+                  <Trans i18nKey="kinder:mealMenu.noInventoryLinkHint" />
                 </p>
-              ) : null}
+              )}
               <div className="mt-3">
                 <EntityRowActions
                   onDelete={() => setDeleteIngredient(ingredient)}

@@ -85,9 +85,8 @@ export function StaffSetupPanel({
             description={<Trans i18nKey="kinder:staff.departmentsHint" />}
             title={<Trans i18nKey="kinder:staff.departments" />}
           />
-          <Button
-            className="shrink-0 rounded-full"
-            onClick={() => setDeptOpen(true)}
+          <Button className="shrink-0"
+ onClick={() => setDeptOpen(true)}
             size="sm"
             type="button"
             variant="outline"
@@ -122,9 +121,8 @@ export function StaffSetupPanel({
             description={<Trans i18nKey="kinder:staff.positionsHint" />}
             title={<Trans i18nKey="kinder:staff.positions" />}
           />
-          <Button
-            className="shrink-0 rounded-full"
-            onClick={() => setPosOpen(true)}
+          <Button className="shrink-0"
+ onClick={() => setPosOpen(true)}
             size="sm"
             type="button"
             variant="outline"

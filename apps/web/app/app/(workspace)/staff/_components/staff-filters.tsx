@@ -194,12 +194,12 @@ function StaffFiltersInner({
 
         {hasActiveFilters ? (
           <Button
-            className={cn('h-10 rounded-lg', 'shrink-0')}
-            onClick={clearFilters}
-            size="sm"
-            type="button"
-            variant="ghost"
-          >
+ className={cn('h-10 rounded-lg', 'shrink-0')}
+ onClick={clearFilters}
+ size="sm"
+ type="button"
+ variant="ghost"
+ >
             <X className="mr-1.5 size-4" />
             <Trans i18nKey="kinder:ui.clearFilters" />
           </Button>

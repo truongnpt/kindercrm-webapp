@@ -274,8 +274,8 @@ export function StudentDailyReportDialog({
                           </FormLabel>
                           {aiEnabled ? (
                             <Button
-                              disabled={aiPending}
-                              onClick={() => {
+ disabled={aiPending}
+ onClick={() => {
                                 startAiTransition(async () => {
                                   const values = form.getValues();
                                   const mealSummary = values.mealRecords
@@ -488,7 +488,7 @@ export function StudentDailyReportDialog({
                     <Trans i18nKey="kinder:dailyReports.save" />
                   </Button>
                   <Button
-                    onClick={async () => {
+ onClick={async () => {
                       const values = form.getValues();
                       const savePromise = upsertDailyReportAction(values);
                       await savePromise;

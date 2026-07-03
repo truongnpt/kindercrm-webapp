@@ -7,6 +7,7 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import pathsConfig from '~/config/paths.config';
 
+import { checkAndNotifyLowStockProducts } from './low-stock-notifications';
 import {
   CompleteStockCountSchema,
   CreateStockCountSchema,
@@ -122,6 +123,7 @@ export const completeStockCountAction = enhanceAction(
     }
 
     const today = new Date().toISOString().slice(0, 10);
+    const affectedProductIds: string[] = [];
 
     for (const item of items ?? []) {
       if (item.counted_quantity === null) {
@@ -148,6 +150,8 @@ export const completeStockCountAction = enhanceAction(
       if (error) {
         throw error;
       }
+
+      affectedProductIds.push(item.product_id);
     }
 
     const { error: updateError } = await client
@@ -161,6 +165,12 @@ export const completeStockCountAction = enhanceAction(
 
     if (updateError) {
       throw updateError;
+    }
+
+    try {
+      await checkAndNotifyLowStockProducts(data.schoolId, affectedProductIds);
+    } catch (notifyError) {
+      console.error('Failed to check low stock notification', notifyError);
     }
 
     revalidateInventoryPaths();
@@ -209,6 +219,15 @@ export const transferStockAction = enhanceAction(
 
     if (receiptError) {
       throw receiptError;
+    }
+
+    try {
+      await checkAndNotifyLowStockProducts(data.schoolId, [
+        data.fromProductId,
+        data.toProductId,
+      ]);
+    } catch (notifyError) {
+      console.error('Failed to check low stock notification', notifyError);
     }
 
     revalidateInventoryPaths();

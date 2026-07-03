@@ -84,8 +84,7 @@ export function StaffDetailActions({
         ) : null}
         {permissions.canDelete ? (
           <Button
-            className="rounded-full"
-            onClick={() => setDeleteOpen(true)}
+ onClick={() => setDeleteOpen(true)}
             size="sm"
             type="button"
             variant="destructive"

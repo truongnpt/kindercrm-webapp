@@ -54,6 +54,7 @@ export function InventoryWorkspace({
   purchaseOrders,
   stockCounts,
   activeStockCount,
+  lowStockOnly = false,
 }: {
   schoolId: string;
   defaultTab: string;
@@ -63,10 +64,14 @@ export function InventoryWorkspace({
   purchaseOrders: PurchaseOrder[];
   stockCounts: StockCount[];
   activeStockCount: StockCountWithItems | null;
+  lowStockOnly?: boolean;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') ?? defaultTab;
+  const visibleProducts = lowStockOnly
+    ? products.filter((product) => product.isLowStock)
+    : products;
 
   const setTab = (tab: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -121,7 +126,11 @@ export function InventoryWorkspace({
           <div className="mb-4 flex justify-end">
             <CreateProductDialog schoolId={schoolId} />
           </div>
-          <ProductsList products={products} schoolId={schoolId} />
+          <ProductsList
+            lowStockOnly={lowStockOnly}
+            products={visibleProducts}
+            schoolId={schoolId}
+          />
         </TabbedModuleContent>
 
         <TabbedModuleContent value="transactions">

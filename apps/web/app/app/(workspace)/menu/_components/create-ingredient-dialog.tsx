@@ -97,7 +97,7 @@ export function CreateIngredientDialog({
       open={open}
       title={<Trans i18nKey="kinder:mealMenu.addIngredient" />}
       trigger={
-        <Button className="rounded-lg" size="sm" type="button">
+        <Button size="sm" type="button">
           <Plus className="mr-2 size-4" />
           <Trans i18nKey="kinder:mealMenu.addIngredient" />
         </Button>
@@ -159,7 +159,11 @@ export function CreateIngredientDialog({
                       </SelectItem>
                       {inventoryProducts.map((product) => (
                         <SelectItem key={product.id} value={product.id}>
-                          {product.name}
+                          {product.name} ({product.quantity} {product.unit}
+                          {product.isLowStock
+                            ? ` · ${t('inventory.lowStock')}`
+                            : ''}
+                          )
                         </SelectItem>
                       ))}
                     </SelectContent>

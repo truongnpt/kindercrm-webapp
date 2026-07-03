@@ -209,11 +209,10 @@ export function LeaveRequestsPanel({
                   )}
                 />
 
-                <Button
-                  className="w-full"
-                  disabled={createLeave.isPending}
-                  type="submit"
-                >
+                <Button className="w-full"
+ disabled={createLeave.isPending}
+ type="submit"
+ >
                   <Trans i18nKey="kinder:attendance.leave.submit" />
                 </Button>
               </form>
@@ -296,8 +295,8 @@ export function LeaveRequestsPanel({
                   {request.status === 'pending' ? (
                     <div className="flex justify-end gap-1">
                       <Button
-                        disabled={reviewLeave.isPending}
-                        onClick={() =>
+ disabled={reviewLeave.isPending}
+ onClick={() =>
                           reviewLeave.mutate({
                             schoolId,
                             leaveRequestId: request.id,
@@ -310,8 +309,8 @@ export function LeaveRequestsPanel({
                         <Trans i18nKey="kinder:attendance.leave.approve" />
                       </Button>
                       <Button
-                        disabled={reviewLeave.isPending}
-                        onClick={() =>
+ disabled={reviewLeave.isPending}
+ onClick={() =>
                           reviewLeave.mutate({
                             schoolId,
                             leaveRequestId: request.id,

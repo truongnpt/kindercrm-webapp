@@ -72,7 +72,7 @@ export function CreateLeadDialog({
       size="lg"
       title={<Trans i18nKey="kinder:crm.createLead" />}
       trigger={
-        <Button className="rounded-full px-5">
+        <Button>
           <Plus className="mr-2 size-4" />
           <Trans i18nKey="kinder:crm.createLead" />
         </Button>

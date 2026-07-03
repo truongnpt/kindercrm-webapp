@@ -103,7 +103,7 @@ export function EditClassDialog({
       trigger={
         hideTrigger ? undefined : (
           trigger ?? (
-            <Button className="rounded-lg" size="sm" type="button" variant="outline">
+            <Button size="sm" type="button" variant="outline">
               <Pencil className="mr-2 size-4" />
               <Trans i18nKey="kinder:ui.edit" />
             </Button>

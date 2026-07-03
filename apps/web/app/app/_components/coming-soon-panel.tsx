@@ -1,4 +1,3 @@
-import { AppLogo } from '~/components/app-logo';
 import { Trans } from '@kit/ui/trans';
 
 export function ComingSoonPanel({ moduleKey }: { moduleKey: string }) {
@@ -11,22 +10,6 @@ export function ComingSoonPanel({ moduleKey }: { moduleKey: string }) {
         <Trans i18nKey="kinder:comingSoon.description" />
       </p>
       <p className="text-muted-foreground mt-2 text-xs">{moduleKey}</p>
-    </div>
-  );
-}
-
-export function OnboardingShell({ children }: React.PropsWithChildren) {
-  return (
-    <div className="flex min-h-dvh flex-col bg-background">
-      <header className="sticky top-0 z-30 border-b border-border bg-card px-6 py-4">
-        <AppLogo href={null} />
-      </header>
-
-      <main className="flex flex-1 items-center justify-center p-6">
-        <div className="kinder-surface kinder-empty-glow w-full max-w-lg p-8 sm:p-10">
-          {children}
-        </div>
-      </main>
     </div>
   );
 }

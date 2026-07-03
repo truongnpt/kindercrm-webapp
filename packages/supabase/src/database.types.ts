@@ -359,6 +359,269 @@ export type Database = {
           },
         ]
       }
+      communication_message_reactions: {
+        Row: {
+          created_at: string
+          id: string
+          message_id: string
+          reaction: Database["public"]["Enums"]["communication_reaction"]
+          school_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message_id: string
+          reaction: Database["public"]["Enums"]["communication_reaction"]
+          school_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message_id?: string
+          reaction?: Database["public"]["Enums"]["communication_reaction"]
+          school_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_message_reactions_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "communication_messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_message_reactions_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      communication_messages: {
+        Row: {
+          attachment_file_name: string | null
+          attachment_mime_type: string | null
+          attachment_storage_path: string | null
+          body: string
+          created_at: string
+          id: string
+          reply_to_message_id: string | null
+          school_id: string
+          sender_type: string
+          sender_user_id: string
+          thread_id: string
+        }
+        Insert: {
+          attachment_file_name?: string | null
+          attachment_mime_type?: string | null
+          attachment_storage_path?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          reply_to_message_id?: string | null
+          school_id: string
+          sender_type: string
+          sender_user_id: string
+          thread_id: string
+        }
+        Update: {
+          attachment_file_name?: string | null
+          attachment_mime_type?: string | null
+          attachment_storage_path?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          reply_to_message_id?: string | null
+          school_id?: string
+          sender_type?: string
+          sender_user_id?: string
+          thread_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_messages_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "communication_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      communication_thread_reads: {
+        Row: {
+          last_read_at: string
+          thread_id: string
+          user_id: string
+        }
+        Insert: {
+          last_read_at?: string
+          thread_id: string
+          user_id: string
+        }
+        Update: {
+          last_read_at?: string
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_thread_reads_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "communication_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      communication_threads: {
+        Row: {
+          channel: Database["public"]["Enums"]["communication_channel"]
+          class_id: string | null
+          created_at: string
+          id: string
+          last_message_at: string | null
+          last_message_preview: string | null
+          school_id: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          channel: Database["public"]["Enums"]["communication_channel"]
+          class_id?: string | null
+          created_at?: string
+          id?: string
+          last_message_at?: string | null
+          last_message_preview?: string | null
+          school_id: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          channel?: Database["public"]["Enums"]["communication_channel"]
+          class_id?: string | null
+          created_at?: string
+          id?: string
+          last_message_at?: string | null
+          last_message_preview?: string | null
+          school_id?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_threads_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_threads_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_threads_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      calendar_events: {
+        Row: {
+          all_day: boolean
+          campus_id: string | null
+          category: Database["public"]["Enums"]["calendar_event_category"]
+          class_id: string | null
+          created_at: string
+          created_by: string | null
+          deleted_at: string | null
+          description: string | null
+          ends_at: string
+          id: string
+          school_id: string
+          remind_days_before: number | null
+          notify_on_create: boolean
+          scope_type: Database["public"]["Enums"]["calendar_event_scope"]
+          starts_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          all_day?: boolean
+          campus_id?: string | null
+          category?: Database["public"]["Enums"]["calendar_event_category"]
+          class_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          description?: string | null
+          ends_at: string
+          id?: string
+          school_id: string
+          remind_days_before?: number | null
+          notify_on_create?: boolean
+          scope_type?: Database["public"]["Enums"]["calendar_event_scope"]
+          starts_at: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          all_day?: boolean
+          campus_id?: string | null
+          category?: Database["public"]["Enums"]["calendar_event_category"]
+          class_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          description?: string | null
+          ends_at?: string
+          id?: string
+          school_id?: string
+          scope_type?: Database["public"]["Enums"]["calendar_event_scope"]
+          starts_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_events_campus_id_fkey"
+            columns: ["campus_id"]
+            isOneToOne: false
+            referencedRelation: "campuses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calendar_events_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calendar_events_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       class_enrollments: {
         Row: {
           class_id: string
@@ -3841,6 +4104,16 @@ export type Database = {
         | "excused"
         | "early_leave"
       campus_type: "campus" | "branch"
+      communication_channel: "homeroom" | "school_office"
+      communication_reaction: "like" | "love" | "haha" | "wow" | "sad" | "thanks"
+      calendar_event_category:
+        | "learning_activity"
+        | "event"
+        | "holiday"
+        | "parent_meeting"
+        | "health_checkup"
+        | "other"
+      calendar_event_scope: "school" | "campus" | "class"
       class_status: "active" | "archived"
       daily_report_status: "draft" | "published"
       health_incident_severity: "minor" | "moderate" | "serious"
@@ -3886,7 +4159,7 @@ export type Database = {
       meal_slot: "breakfast" | "lunch" | "snack" | "dinner"
       menu_period_type: "daily" | "weekly" | "monthly"
       menu_status: "draft" | "published"
-      notification_category: "daily_report" | "menu" | "inventory" | "system"
+      notification_category: "daily_report" | "menu" | "inventory" | "system" | "calendar" | "communication"
       payment_method: "cash" | "bank_transfer" | "card" | "other"
       platform_admin_role: "super_admin" | "support" | "billing"
       purchase_order_status: "draft" | "submitted" | "received" | "cancelled"
@@ -4617,6 +4890,17 @@ export const Constants = {
         "early_leave",
       ],
       campus_type: ["campus", "branch"],
+      communication_channel: ["homeroom", "school_office"],
+      communication_reaction: ["like", "love", "haha", "wow", "sad", "thanks"],
+      calendar_event_category: [
+        "learning_activity",
+        "event",
+        "holiday",
+        "parent_meeting",
+        "health_checkup",
+        "other",
+      ],
+      calendar_event_scope: ["school", "campus", "class"],
       class_status: ["active", "archived"],
       daily_report_status: ["draft", "published"],
       health_incident_severity: ["minor", "moderate", "serious"],
@@ -4667,7 +4951,7 @@ export const Constants = {
       meal_slot: ["breakfast", "lunch", "snack", "dinner"],
       menu_period_type: ["daily", "weekly", "monthly"],
       menu_status: ["draft", "published"],
-      notification_category: ["daily_report", "menu", "inventory", "system"],
+      notification_category: ["daily_report", "menu", "inventory", "system", "calendar", "communication"],
       payment_method: ["cash", "bank_transfer", "card", "other"],
       platform_admin_role: ["super_admin", "support", "billing"],
       purchase_order_status: ["draft", "submitted", "received", "cancelled"],

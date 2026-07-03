@@ -120,8 +120,8 @@ export function MenusList({
                       </Button>
                       {menu.status === 'draft' ? (
                         <Button
-                          disabled={publishMutation.isPending}
-                          onClick={() =>
+ disabled={publishMutation.isPending}
+ onClick={() =>
                             publishMutation.mutate({
                               schoolId,
                               menuId: menu.id,
@@ -177,10 +177,9 @@ export function MenusList({
                 </Link>
               </Button>
               {menu.status === 'draft' ? (
-                <Button
-                  className="flex-1"
-                  disabled={publishMutation.isPending}
-                  onClick={() =>
+                <Button className="flex-1"
+ disabled={publishMutation.isPending}
+ onClick={() =>
                     publishMutation.mutate({ schoolId, menuId: menu.id })
                   }
                   size="sm"

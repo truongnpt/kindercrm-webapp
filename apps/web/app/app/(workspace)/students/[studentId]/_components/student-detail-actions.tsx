@@ -38,8 +38,7 @@ export function StudentDetailActions({
       <div className="flex flex-wrap items-center gap-2">
         <EditStudentDialog schoolId={schoolId} student={student} />
         <Button
-          className="rounded-lg"
-          onClick={() => setDeleteOpen(true)}
+ onClick={() => setDeleteOpen(true)}
           size="sm"
           type="button"
           variant="destructive"

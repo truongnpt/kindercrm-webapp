@@ -63,6 +63,7 @@ export function CreateStaffDialog({
   const createStaff = useKinderMutation({
     mutationFn: createStaffEmployeeAction,
     invalidateKeys: [kinderQueryKeys.staff.all(schoolId)],
+    refresh: false,
     onSuccess: () => {
       form.reset({
         schoolId,
@@ -100,7 +101,7 @@ export function CreateStaffDialog({
       size="lg"
       title={<Trans i18nKey="kinder:staff.create" />}
       trigger={
-        <Button className="rounded-lg" type="button">
+        <Button type="button">
           <Plus className="mr-2 size-4" />
           <Trans i18nKey="kinder:staff.create" />
         </Button>

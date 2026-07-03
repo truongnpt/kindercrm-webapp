@@ -54,7 +54,7 @@ export function KinderFormDialog({
             <DialogDescription>{description}</DialogDescription>
           ) : null}
         </DialogHeader>
-        <div className="max-h-[calc(90vh-8rem)] overflow-y-auto px-6 py-5">
+        <div className="max-h-[calc(90vh-12rem)] overflow-y-auto px-6 py-5">
           {children}
         </div>
         {footer ? (

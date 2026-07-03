@@ -10,9 +10,11 @@ import { upsertDailyReportAction } from '~/lib/kinder/daily-reports/server-actio
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
 import { findAccountByEmailForSchool } from '~/lib/kinder/tenant/account-lookup';
 import { resendParentInvite } from './provision-parent-account';
+import { assertParentStudentAccess } from './load-parent';
 
 import {
   LinkParentAccountSchema,
+  ParentCreateLeaveRequestSchema,
   UnlinkParentAccountSchema,
 } from './schemas/parent.schema';
 
@@ -168,6 +170,31 @@ export const unlinkParentAccountAction = enhanceAction(
     return { success: true };
   },
   { schema: UnlinkParentAccountSchema },
+);
+
+/** PARENT-010 Parent submits leave request for linked student */
+export const createParentLeaveRequestAction = enhanceAction(
+  async (data, user) => {
+    const link = await assertParentStudentAccess(user.id, data.studentId);
+    const client = getSupabaseServerClient();
+
+    const { error } = await client.from('leave_requests').insert({
+      school_id: link.school_id,
+      student_id: data.studentId,
+      start_date: data.startDate,
+      end_date: data.endDate,
+      reason: data.reason || null,
+      created_by: user.id,
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    revalidateParentPaths(data.studentId);
+    return { success: true };
+  },
+  { schema: ParentCreateLeaveRequestSchema },
 );
 
 export { upsertDailyReportAction };

@@ -1,5 +1,10 @@
 import { Trans } from '@kit/ui/trans';
 
+import {
+  PlatformPageBody,
+  PlatformPageHeader,
+  PlatformSectionCard,
+} from '~/components/platform-console';
 import { PersonalAccountSettingsPanel } from '~/components/personal-account-settings-panel';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
@@ -17,18 +22,18 @@ async function PlatformAccountPage() {
   const user = await requireUserInServerComponent();
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          <Trans i18nKey="account:accountTabLabel" />
-        </h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          <Trans i18nKey="account:accountTabDescription" />
-        </p>
-      </div>
+    <>
+      <PlatformPageHeader
+        description={<Trans i18nKey="account:accountTabDescription" />}
+        title={<Trans i18nKey="account:accountTabLabel" />}
+      />
 
-      <PersonalAccountSettingsPanel userId={user.id} />
-    </div>
+      <PlatformPageBody>
+        <PlatformSectionCard>
+          <PersonalAccountSettingsPanel userId={user.id} />
+        </PlatformSectionCard>
+      </PlatformPageBody>
+    </>
   );
 }
 

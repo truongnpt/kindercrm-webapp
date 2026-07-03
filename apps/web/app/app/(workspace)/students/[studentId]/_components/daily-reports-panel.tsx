@@ -227,7 +227,7 @@ export function DailyReportsPanel({
                     {!isLocked ? (
                       <div className="flex flex-wrap justify-end gap-1">
                         <Button
-                          onClick={() => loadReportIntoForm(report)}
+ onClick={() => loadReportIntoForm(report)}
                           size="sm"
                           type="button"
                           variant="outline"
@@ -239,8 +239,8 @@ export function DailyReportsPanel({
                         {isDraft ? (
                           <>
                             <Button
-                              disabled={publishReport.isPending}
-                              onClick={() =>
+ disabled={publishReport.isPending}
+ onClick={() =>
                                 publishReport.mutate({
                                   schoolId,
                                   studentId,
@@ -255,7 +255,7 @@ export function DailyReportsPanel({
                             </Button>
 
                             <Button
-                              onClick={() => setDeleteTarget(report)}
+ onClick={() => setDeleteTarget(report)}
                               size="sm"
                               type="button"
                               variant="destructive"
@@ -435,21 +435,21 @@ export function DailyReportsPanel({
                     </KinderSubmitButton>
 
                     <Button
-                      disabled={formPending}
-                      onClick={form.handleSubmit(handleSaveAndPublish)}
-                      type="button"
-                    >
+ disabled={formPending}
+ onClick={form.handleSubmit(handleSaveAndPublish)}
+ type="button"
+ >
                       <Send className="mr-2 size-4" />
                       <Trans i18nKey="kinder:dailyReports.saveAndPublish" />
                     </Button>
 
                     {editingReportId ? (
                       <Button
-                        disabled={formPending}
-                        onClick={resetFormForNewReport}
-                        type="button"
-                        variant="outline"
-                      >
+ disabled={formPending}
+ onClick={resetFormForNewReport}
+ type="button"
+ variant="outline"
+ >
                         <Trans i18nKey="kinder:dailyReports.newReport" />
                       </Button>
                     ) : null}

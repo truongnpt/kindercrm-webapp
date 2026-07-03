@@ -119,9 +119,8 @@ export function IncidentsPanel({
                       <td className="text-right">
                         {!incident.parent_notified_at ? (
                           <Button
-                            className="rounded-lg"
-                            disabled={notifyMutation.isPending}
-                            onClick={() =>
+ disabled={notifyMutation.isPending}
+ onClick={() =>
                               notifyMutation.mutate({
                                 schoolId,
                                 incidentId: incident.id,
@@ -164,10 +163,9 @@ export function IncidentsPanel({
                 </div>
                 <p className="mt-2 text-sm">{incident.description}</p>
                 {!incident.parent_notified_at ? (
-                  <Button
-                    className="mt-3 w-full"
-                    disabled={notifyMutation.isPending}
-                    onClick={() =>
+                  <Button className="mt-3 w-full"
+ disabled={notifyMutation.isPending}
+ onClick={() =>
                       notifyMutation.mutate({
                         schoolId,
                         incidentId: incident.id,

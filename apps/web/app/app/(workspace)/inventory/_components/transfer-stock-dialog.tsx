@@ -101,7 +101,7 @@ export function TransferStockDialog({
       size="lg"
       title={<Trans i18nKey="kinder:inventory.transferStock" />}
       trigger={
-        <Button className="rounded-lg" size="sm" type="button">
+        <Button size="sm" type="button">
           <ArrowRightLeft className="mr-2 size-4" />
           <Trans i18nKey="kinder:inventory.transferStock" />
         </Button>

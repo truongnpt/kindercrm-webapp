@@ -1,12 +1,13 @@
 import { Trans } from '@kit/ui/trans';
 
-import { KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
+import { PlatformPageBody, PlatformPageHeader } from '~/components/platform-console';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { loadPlatformSchools } from '~/lib/kinder/platform/load-platform-schools';
 import { requirePlatformAdminPage } from '~/lib/kinder/platform/require-platform-admin';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
+import { PlatformSchoolsFilter } from './_components/platform-schools-filter';
 import { PlatformSchoolsTable } from './_components/platform-schools-table';
 
 export const generateMetadata = async () => {
@@ -32,40 +33,15 @@ async function PlatformSchoolsPage({
 
   return (
     <>
-      <KinderPageHeader
+      <PlatformPageHeader
         description={<Trans i18nKey="kinder:platform.schools.description" />}
         title={<Trans i18nKey="kinder:platform.schools.title" />}
       />
 
-      <KinderPageBody>
-        <form className="flex flex-wrap gap-2">
-          <input
-            className="border-input bg-background h-10 min-w-[200px] flex-1 rounded-xl border px-3 text-sm"
-            defaultValue={q ?? ''}
-            name="q"
-            placeholder="Search..."
-            type="search"
-          />
-          <select
-            className="border-input bg-background h-10 rounded-xl border px-3 text-sm"
-            defaultValue={status ?? 'all'}
-            name="status"
-          >
-            <option value="all">All</option>
-            <option value="active">Active</option>
-            <option value="suspended">Suspended</option>
-            <option value="archived">Archived</option>
-          </select>
-          <button
-            className="bg-primary text-primary-foreground h-10 rounded-xl px-4 text-sm font-medium"
-            type="submit"
-          >
-            <Trans i18nKey="kinder:platform.schools.filter" />
-          </button>
-        </form>
-
+      <PlatformPageBody>
+        <PlatformSchoolsFilter defaultQuery={q} defaultStatus={status} />
         <PlatformSchoolsTable platformRole={platform.role} schools={schools} />
-      </KinderPageBody>
+      </PlatformPageBody>
     </>
   );
 }

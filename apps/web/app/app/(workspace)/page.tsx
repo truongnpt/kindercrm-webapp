@@ -16,6 +16,8 @@ import {
 import pathsConfig from '~/config/paths.config';
 import { getAiCreditStatus } from '~/lib/kinder/ai/credits';
 import { getAiConfig } from '~/lib/kinder/ai/config';
+import { processDueCalendarReminders } from '~/lib/kinder/calendar/calendar-notifications';
+import { loadUpcomingCalendarEvents } from '~/lib/kinder/calendar/load-calendar';
 import { loadDashboardSummary } from '~/lib/kinder/dashboard/load-dashboard';
 import { hasSchoolFeature } from '~/lib/kinder/subscription/features';
 import { loadSchoolUsageSummary } from '~/lib/kinder/subscription/quotas';
@@ -26,6 +28,7 @@ import { requireUserInServerComponent } from '~/lib/server/require-user-in-serve
 
 import { DashboardOverview } from './_components/dashboard-overview';
 import { QuotaUsageBanner } from './_components/quota-usage-banner';
+import { StaffUpcomingEvents } from './_components/staff-upcoming-events';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -44,10 +47,23 @@ async function DashboardPage() {
   }
 
   const client = getSupabaseServerClient();
-  const [usageSummary, summary] = await Promise.all([
+  const hasCalendar = hasSchoolFeature(context, 'calendar');
+
+  const [usageSummary, summary, upcomingEvents] = await Promise.all([
     loadSchoolUsageSummary(client, context),
     loadDashboardSummary(context.school.id),
+    hasCalendar
+      ? loadUpcomingCalendarEvents(context.school.id, 5)
+      : Promise.resolve([]),
   ]);
+
+  if (hasCalendar) {
+    try {
+      await processDueCalendarReminders(context.school.id);
+    } catch (reminderError) {
+      console.error('Failed to process calendar reminders', reminderError);
+    }
+  }
 
   const hasAi = hasSchoolFeature(context, 'ai_assistant');
   const [aiCredits, aiConfig] = hasAi
@@ -146,6 +162,10 @@ async function DashboardPage() {
             </BentoTile>
           ) : null}
         </BentoGrid>
+
+        {hasCalendar && upcomingEvents.length > 0 ? (
+          <StaffUpcomingEvents events={upcomingEvents} />
+        ) : null}
 
         <DashboardOverview features={features} summary={summary} />
       </KinderPageBody>

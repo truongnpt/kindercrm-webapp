@@ -56,10 +56,10 @@ const GlobalErrorPage = ({
 
                 <div>
                   <Button
-                    className={'w-full'}
-                    variant={'default'}
-                    onClick={reset}
-                  >
+ className={'w-full'}
+ variant={'default'}
+ onClick={reset}
+ >
                     <ArrowLeft className={'mr-2 h-4'} />
 
                     <Trans i18nKey={'common:goBack'} />

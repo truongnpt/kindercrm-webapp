@@ -17,6 +17,7 @@ export type PackageFeature =
   | 'meal_menu'
   | 'inventory'
   | 'health_management'
+  | 'calendar'
   | 'reports'
   | 'ai_assistant';
 
@@ -33,6 +34,7 @@ export const PACKAGE_FEATURE_KEYS: PackageFeature[] = [
   'meal_menu',
   'inventory',
   'health_management',
+  'calendar',
   'reports',
   'ai_assistant',
 ];

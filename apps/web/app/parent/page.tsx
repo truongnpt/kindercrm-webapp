@@ -1,12 +1,11 @@
-import { PageBody, PageHeader } from '@kit/ui/page';
-import { Trans } from '@kit/ui/trans';
-
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
-import { loadParentLinksForUser } from '~/lib/kinder/parent/load-parent';
+import { loadParentDashboardSummaries } from '~/lib/kinder/parent/load-parent-dashboard';
+import { loadParentUpcomingCalendarEvents } from '~/lib/kinder/parent/load-parent-calendar';
+import { loadUnreadNotificationCount } from '~/lib/kinder/notifications/load-notifications';
 
-import { ParentChildCard } from './_components/parent-child-card';
+import { ParentDashboard } from '~/components/parent-portal';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -18,23 +17,18 @@ export const generateMetadata = async () => {
 
 async function ParentHomePage() {
   const user = await requireUserInServerComponent();
-  const children = await loadParentLinksForUser(user.id);
+  const [summaries, unreadCount, upcomingEvents] = await Promise.all([
+    loadParentDashboardSummaries(user.id),
+    loadUnreadNotificationCount(user.id),
+    loadParentUpcomingCalendarEvents(user.id, 5),
+  ]);
 
   return (
-    <>
-      <PageHeader
-        description={<Trans i18nKey="kinder:parent.homeDescription" />}
-        title={<Trans i18nKey="kinder:parent.myChildren" />}
-      />
-
-      <PageBody>
-        <div className="grid gap-4 md:grid-cols-2">
-          {children.map((child) => (
-            <ParentChildCard child={child} key={child.studentId} />
-          ))}
-        </div>
-      </PageBody>
-    </>
+    <ParentDashboard
+      summaries={summaries}
+      upcomingEvents={upcomingEvents}
+      unreadCount={unreadCount}
+    />
   );
 }
 

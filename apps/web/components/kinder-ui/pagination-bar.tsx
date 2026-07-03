@@ -35,8 +35,8 @@ export function PaginationBar({
 
       <div className="flex items-center gap-2">
         <Button
-          disabled={page <= 1}
-          onClick={() => onPageChange?.(page - 1)}
+ disabled={page <= 1}
+ onClick={() => onPageChange?.(page - 1)}
           size="sm"
           type="button"
           variant="outline"
@@ -55,7 +55,7 @@ export function PaginationBar({
         </span>
 
         <Button
-          disabled={page >= totalPages}
+ disabled={page >= totalPages}
           onClick={() => onPageChange?.(page + 1)}
           size="sm"
           type="button"

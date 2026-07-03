@@ -9,7 +9,7 @@ export function SignOutButton() {
 
   return (
     <Button
-      onClick={() => signOut.mutateAsync()}
+ onClick={() => signOut.mutateAsync()}
       type="button"
       variant="outline"
     >

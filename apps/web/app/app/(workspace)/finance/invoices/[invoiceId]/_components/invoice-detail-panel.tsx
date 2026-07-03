@@ -530,7 +530,7 @@ export function InvoiceDetailPanel({
 
       {canCancel ? (
         <Button
-          onClick={async () => {
+ onClick={async () => {
             const promise = cancelInvoiceAction({
               schoolId,
               invoiceId: invoice.id,

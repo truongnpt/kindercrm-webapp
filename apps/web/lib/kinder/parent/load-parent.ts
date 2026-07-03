@@ -8,9 +8,70 @@ import { getSchoolMemberAccounts } from '~/lib/kinder/tenant/account-lookup';
 
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
 
-import type { ParentChildSummary } from './types';
+import type { ParentChildSummary, ParentHomeroomTeacher } from './types';
 
 export type { StudentDailyReport } from '~/lib/kinder/daily-reports/types';
+
+async function loadHomeroomTeacherForClass(
+  schoolId: string,
+  classId: string | null,
+) {
+  if (!classId) {
+    return {
+      homeroomTeacher: null,
+      homeroomClassName: null,
+    };
+  }
+
+  const client = getSupabaseServerClient();
+
+  const { data: cls, error: classError } = await client
+    .from('classes')
+    .select('name, teacher_user_id')
+    .eq('id', classId)
+    .maybeSingle();
+
+  if (classError) {
+    throw classError;
+  }
+
+  if (!cls) {
+    return {
+      homeroomTeacher: null,
+      homeroomClassName: null,
+    };
+  }
+
+  let homeroomTeacher: ParentHomeroomTeacher | null = null;
+
+  if (cls.teacher_user_id) {
+    const { data: employee, error: employeeError } = await client
+      .from('staff_employees')
+      .select('full_name, phone, email, photo_url')
+      .eq('school_id', schoolId)
+      .eq('user_id', cls.teacher_user_id)
+      .is('deleted_at', null)
+      .maybeSingle();
+
+    if (employeeError) {
+      throw employeeError;
+    }
+
+    if (employee) {
+      homeroomTeacher = {
+        name: employee.full_name,
+        phone: employee.phone,
+        email: employee.email,
+        photoUrl: employee.photo_url,
+      };
+    }
+  }
+
+  return {
+    homeroomTeacher,
+    homeroomClassName: cls.name,
+  };
+}
 
 export const loadParentLinksForUser = cache(async (userId: string) => {
   const client = getSupabaseServerClient();
@@ -193,40 +254,126 @@ export const loadParentStudentInvoices = cache(
   },
 );
 
+export const loadParentLeaveRequests = cache(
+  async (userId: string, studentId: string) => {
+    await assertParentStudentAccess(userId, studentId);
+
+    const client = getSupabaseServerClient();
+
+    const { data, error } = await client
+      .from('leave_requests')
+      .select('*')
+      .eq('student_id', studentId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    return data ?? [];
+  },
+);
+
+export const loadParentStudentInvoicePayments = cache(
+  async (userId: string, studentId: string) => {
+    await assertParentStudentAccess(userId, studentId);
+
+    const client = getSupabaseServerClient();
+    const { data: invoices, error: invoicesError } = await client
+      .from('invoices')
+      .select('id')
+      .eq('student_id', studentId);
+
+    if (invoicesError) {
+      throw invoicesError;
+    }
+
+    const invoiceIds = (invoices ?? []).map((invoice) => invoice.id);
+
+    if (invoiceIds.length === 0) {
+      return [];
+    }
+
+    const { data, error } = await client
+      .from('invoice_payments')
+      .select('*')
+      .in('invoice_id', invoiceIds)
+      .order('paid_at', { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    return data ?? [];
+  },
+);
+
+export const loadParentStudentDetail = cache(
+  async (userId: string, studentId: string) => {
+    const link = await assertParentStudentAccess(userId, studentId);
+    const client = getSupabaseServerClient();
+
+    const [pickupPersons, parents, emergencyContacts, student] =
+      await Promise.all([
+        client
+          .from('student_pickup_persons')
+          .select('*')
+          .eq('student_id', studentId)
+          .order('full_name'),
+        client
+          .from('student_parents')
+          .select('*')
+          .eq('student_id', studentId)
+          .order('is_primary', { ascending: false }),
+        client
+          .from('student_emergency_contacts')
+          .select('*')
+          .eq('student_id', studentId),
+        client
+          .from('students')
+          .select('current_class_id, school_id')
+          .eq('id', studentId)
+          .single(),
+      ]);
+
+    if (pickupPersons.error) {
+      throw pickupPersons.error;
+    }
+
+    if (parents.error) {
+      throw parents.error;
+    }
+
+    if (emergencyContacts.error) {
+      throw emergencyContacts.error;
+    }
+
+    if (student.error) {
+      throw student.error;
+    }
+
+    let homeroomTeacher: ParentHomeroomTeacher | null = null;
+    let homeroomClassName: string | null = null;
+
+    const homeroom = await loadHomeroomTeacherForClass(
+      link.school_id,
+      student.data.current_class_id,
+    );
+
+    homeroomTeacher = homeroom.homeroomTeacher;
+    homeroomClassName = homeroom.homeroomClassName;
+
+    return {
+      pickupPersons: pickupPersons.data ?? [],
+      parents: parents.data ?? [],
+      emergencyContacts: emergencyContacts.data ?? [],
+      homeroomTeacher,
+      homeroomClassName,
+    };
+  },
+);
+
 export {
   loadParentDailyReports,
   loadStudentDailyReports,
 } from '~/lib/kinder/daily-reports/load-daily-reports';
-
-export async function resolvePostLoginPath(userId: string) {
-  const client = getSupabaseServerClient();
-
-  const { data: memberships, error } = await client
-    .from('school_members')
-    .select('role')
-    .eq('user_id', userId)
-    .is('deleted_at', null);
-
-  if (error) {
-    throw error;
-  }
-
-  const hasStaffMembership = (memberships ?? []).some(
-    (membership) => membership.role !== 'parent',
-  );
-
-  if (hasStaffMembership) {
-    return '/app';
-  }
-
-  const { count: parentCount } = await client
-    .from('parent_student_links')
-    .select('id', { count: 'exact', head: true })
-    .eq('user_id', userId);
-
-  if ((parentCount ?? 0) > 0) {
-    return '/parent';
-  }
-
-  return '/app';
-}

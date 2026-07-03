@@ -126,7 +126,7 @@ export function EditStaffDialog({
       trigger={
         hideTrigger ? undefined : (
           trigger ?? (
-            <Button className="rounded-full" size="sm" type="button" variant="outline">
+            <Button size="sm" type="button" variant="outline">
               <Pencil className="mr-2 size-4" />
               <Trans i18nKey="kinder:ui.edit" />
             </Button>

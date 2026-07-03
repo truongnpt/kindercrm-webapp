@@ -48,7 +48,7 @@ export function SchoolSwitcher({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          className="w-full justify-between gap-2 rounded-lg border-border bg-muted/30 px-3 shadow-none"
+          className="w-full justify-between gap-2"
           size="sm"
           variant="outline"
         >

@@ -103,7 +103,7 @@ export function CreatePurchaseOrderDialog({
       size="xl"
       title={<Trans i18nKey="kinder:inventory.createPo" />}
       trigger={
-        <Button className="rounded-lg" size="sm" type="button">
+        <Button size="sm" type="button">
           <Plus className="mr-2 size-4" />
           <Trans i18nKey="kinder:inventory.createPo" />
         </Button>
@@ -215,7 +215,7 @@ export function CreatePurchaseOrderDialog({
           ))}
 
           <Button
-            onClick={() =>
+ onClick={() =>
               append({
                 productId: products[0]?.id ?? '',
                 quantity: 1,

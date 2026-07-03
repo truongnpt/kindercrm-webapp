@@ -79,7 +79,7 @@ export function InvoicesList({ invoices }: { invoices: InvoiceWithStudent[] }) {
                     </StatusBadge>
                   </td>
                   <td className="text-right">
-                    <Button asChild className="rounded-lg" size="sm" variant="outline">
+                    <Button asChild size="sm" variant="outline">
                       <Link
                         href={`${pathsConfig.app.financeInvoice}/${invoice.id}`}
                       >

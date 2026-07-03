@@ -10,7 +10,7 @@ import { cn } from '../lib/utils';
 const Tabs = TabsPrimitive.Root;
 
 const tabsListVariants = cva(
-  'inline-flex h-auto flex-wrap items-center gap-0.5 rounded-lg p-0.5',
+  'inline-flex h-auto flex-wrap items-center gap-0.5 rounded-sm p-0.5',
   {
     variants: {
       variant: {
@@ -31,7 +31,7 @@ const tabsListVariants = cva(
 
 const tabsTriggerVariants = cva(
   [
-    'inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium whitespace-nowrap transition-all',
+    'inline-flex items-center justify-center gap-2 rounded-sm px-3 py-2 text-sm font-medium whitespace-nowrap transition-all',
     'focus-visible:ring-ring focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2',
     'disabled:pointer-events-none disabled:opacity-50',
     '[&_svg]:size-4 [&_svg]:shrink-0',

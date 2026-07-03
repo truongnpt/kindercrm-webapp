@@ -7,6 +7,7 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import pathsConfig from '~/config/paths.config';
 
+import { checkAndNotifyLowStockProducts } from './low-stock-notifications';
 import {
   RecordInventoryTransactionSchema,
   UpsertInventoryCategorySchema,
@@ -146,6 +147,12 @@ export const recordInventoryTransactionAction = enhanceAction(
 
     if (error) {
       throw error;
+    }
+
+    try {
+      await checkAndNotifyLowStockProducts(data.schoolId, [data.productId]);
+    } catch (notifyError) {
+      console.error('Failed to check low stock notification', notifyError);
     }
 
     revalidateInventoryPaths();

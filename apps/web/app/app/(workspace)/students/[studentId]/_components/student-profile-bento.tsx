@@ -63,7 +63,11 @@ export function StudentProfileBento({ student }: { student: Student }) {
     <div className="space-y-4 lg:space-y-6">
       <BentoTile className="p-5 sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-          <StudentAvatar name={student.full_name} size="xl" />
+          <StudentAvatar
+            name={student.full_name}
+            photoUrl={student.photo_url}
+            size="xl"
+          />
           <div className="min-w-0 flex-1">
             <h2 className="text-foreground text-xl font-semibold tracking-tight sm:text-2xl">
               {student.full_name}

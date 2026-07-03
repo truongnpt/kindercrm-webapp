@@ -1,11 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+
+import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
+import { useSupabase } from '@kit/supabase/hooks/use-supabase';
 import { Button } from '@kit/ui/button';
 import { Form } from '@kit/ui/form';
 import {
@@ -32,11 +35,21 @@ import {
   kinderQueryKeys,
   useKinderMutation,
 } from '~/components/kinder-ui';
+import pathsConfig from '~/config/paths.config';
 import { CreateStudentSchema } from '~/lib/kinder/students/schemas/student.schema';
-import { createStudentAction } from '~/lib/kinder/students/server-actions';
+import {
+  createStudentAction,
+  setStudentPhotoAction,
+} from '~/lib/kinder/students/server-actions';
+import { uploadStudentPhoto } from '~/lib/kinder/students/upload-student-photo';
+
+import { StudentPhotoField } from './student-photo-field';
 
 export function CreateStudentDialog({ schoolId }: { schoolId: string }) {
+  const router = useRouter();
+  const supabase = useSupabase();
   const [open, setOpen] = useState(false);
+  const pendingPhotoRef = useRef<File | null>(null);
 
   const form = useForm({
     resolver: zodResolver(CreateStudentSchema),
@@ -58,7 +71,28 @@ export function CreateStudentDialog({ schoolId }: { schoolId: string }) {
     mutationFn: createStudentAction,
     invalidateKeys: [kinderQueryKeys.students.list(schoolId)],
     refresh: false,
-    onSuccess: () => {
+    onSuccess: async (result) => {
+      const studentId = result?.studentId;
+
+      if (studentId && pendingPhotoRef.current) {
+        try {
+          const photoUrl = await uploadStudentPhoto(supabase, {
+            schoolId,
+            studentId,
+            file: pendingPhotoRef.current,
+          });
+
+          await setStudentPhotoAction({
+            schoolId,
+            studentId,
+            photoUrl,
+          });
+        } catch {
+          // Student was created; photo can be added later from the profile.
+        }
+      }
+
+      pendingPhotoRef.current = null;
       form.reset({
         schoolId,
         fullName: '',
@@ -72,6 +106,10 @@ export function CreateStudentDialog({ schoolId }: { schoolId: string }) {
         parentEmail: '',
       });
       setOpen(false);
+
+      if (studentId) {
+        router.push(`${pathsConfig.app.studentDetail}/${studentId}`);
+      }
     },
   });
 
@@ -195,6 +233,15 @@ export function CreateStudentDialog({ schoolId }: { schoolId: string }) {
                 <FormMessage />
               </FormItem>
             )}
+          />
+
+          <StudentPhotoField
+            fullName={form.watch('fullName')}
+            onChange={() => undefined}
+            onPendingFileChange={(file) => {
+              pendingPhotoRef.current = file;
+            }}
+            schoolId={schoolId}
           />
 
           <FormField

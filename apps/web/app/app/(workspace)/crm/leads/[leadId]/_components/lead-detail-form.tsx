@@ -252,8 +252,8 @@ export function LeadDetailForm({
               <Trans i18nKey="kinder:crm.save" />
             </Button>
             <Button
-              disabled={convertLead.isPending}
-              onClick={() =>
+ disabled={convertLead.isPending}
+ onClick={() =>
                 convertLead.mutate({
                   leadId: lead.id,
                   schoolId,
@@ -265,8 +265,8 @@ export function LeadDetailForm({
               <Trans i18nKey="kinder:students.convertFromLead" />
             </Button>
             <Button
-              disabled={deleteLead.isPending}
-              onClick={() => deleteLead.mutate({ leadId: lead.id, schoolId })}
+ disabled={deleteLead.isPending}
+ onClick={() => deleteLead.mutate({ leadId: lead.id, schoolId })}
               type="button"
               variant="destructive"
             >

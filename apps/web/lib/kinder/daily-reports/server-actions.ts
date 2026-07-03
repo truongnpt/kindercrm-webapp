@@ -8,6 +8,9 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import pathsConfig from '~/config/paths.config';
+import { assertModuleAccessFromContext } from '~/lib/kinder/permissions/module-access.server';
+import { requirePackageFeature } from '~/lib/kinder/subscription/features';
+import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 import type { Database } from '~/lib/database.types';
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
 
@@ -21,10 +24,18 @@ import {
   FetchDailyReportBundleSchema,
   PublishDailyReportSchema,
   RegisterAttachmentSchema,
+  RemindDailyReportsStaffSchema,
   UpsertDailyReportSchema,
 } from './schemas/daily-report.schema';
-import { loadDailyReportBundle } from './load-daily-reports';
+import {
+  loadDailyReportBundle,
+  loadDailyReportsOverviewForDate,
+} from './load-daily-reports';
 import { notifyParentsOfDailyReport } from '~/lib/kinder/notifications/load-notifications';
+import {
+  notifyStaffOfIncompleteDailyReports,
+  notifyStaffOfParentDailyReportAck,
+} from '~/lib/kinder/notifications/staff-notifications';
 import { DAILY_REPORT_MEDIA_BUCKET } from './storage';
 
 const DAILY_REPORTS_PATH = pathsConfig.app.dailyReports;
@@ -324,7 +335,7 @@ export const acknowledgeDailyReportAction = enhanceAction(
 
     const { data: report, error: fetchError } = await client
       .from('student_daily_reports')
-      .select('id, student_id, status')
+      .select('id, student_id, report_date, status')
       .eq('id', data.reportId)
       .single();
 
@@ -346,6 +357,16 @@ export const acknowledgeDailyReportAction = enhanceAction(
       );
     }
 
+    const { data: student, error: studentError } = await client
+      .from('students')
+      .select('full_name, current_class_id, school_id')
+      .eq('id', report.student_id)
+      .single();
+
+    if (studentError) {
+      throw studentError;
+    }
+
     const { error } = await client
       .from('student_daily_reports')
       .update({ parent_acknowledged_at: new Date().toISOString() })
@@ -355,10 +376,60 @@ export const acknowledgeDailyReportAction = enhanceAction(
       throw error;
     }
 
+    try {
+      await notifyStaffOfParentDailyReportAck({
+        schoolId: student.school_id,
+        studentId: report.student_id,
+        studentName: student.full_name,
+        reportDate: report.report_date,
+        reportId: report.id,
+        classId: student.current_class_id,
+      });
+    } catch (notifyError) {
+      console.error('Failed to notify staff of parent acknowledgment', notifyError);
+    }
+
     revalidateDailyReportPaths(report.student_id);
     return { success: true };
   },
   { schema: AcknowledgeDailyReportSchema },
+);
+
+export const remindDailyReportsStaffAction = enhanceAction(
+  async (data, user) => {
+    const context = await getSchoolContext(user.id);
+
+    if (!context || context.school.id !== data.schoolId) {
+      throw new Error('School context not found');
+    }
+
+    requirePackageFeature(context, 'daily_reports');
+    await assertModuleAccessFromContext(
+      context,
+      pathsConfig.app.dailyReports,
+      'manage',
+    );
+
+    const summaries = await loadDailyReportsOverviewForDate(
+      data.schoolId,
+      normalizeReportDate(data.reportDate),
+    );
+
+    const result = await notifyStaffOfIncompleteDailyReports({
+      schoolId: data.schoolId,
+      reportDate: normalizeReportDate(data.reportDate),
+      classes: summaries.map((summary) => ({
+        classId: summary.classId,
+        className: summary.className,
+        missingCount: summary.missingCount,
+        draftCount: summary.draftCount,
+      })),
+    });
+
+    revalidateDailyReportPaths();
+    return { success: true, notified: result.notified };
+  },
+  { schema: RemindDailyReportsStaffSchema },
 );
 
 /** DAILY-014 Timeline entry */

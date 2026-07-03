@@ -15,4 +15,11 @@ export const UnlinkParentAccountSchema = z.object({
   studentId: z.string().uuid(),
 });
 
+export const ParentCreateLeaveRequestSchema = z.object({
+  studentId: z.string().uuid(),
+  startDate: z.string().min(1),
+  endDate: z.string().min(1),
+  reason: z.string().max(1000).optional().or(z.literal('')),
+});
+
 export { UpsertDailyReportSchema } from '~/lib/kinder/daily-reports/schemas/daily-report.schema';

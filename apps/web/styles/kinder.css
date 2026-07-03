@@ -509,4 +509,130 @@
   .kinder-chat-bubble--assistant {
     @apply bg-muted mr-8 rounded-xl rounded-bl-sm p-3 text-sm;
   }
+
+  /* ── Messages (parent ↔ school chat) ── */
+  .kinder-messages-layout {
+    @apply flex min-h-[32rem] max-h-[calc(100vh-16rem)] flex-col overflow-hidden rounded-2xl border border-border bg-card lg:min-h-[36rem] lg:max-h-[calc(100vh-15rem)] lg:flex-row;
+    box-shadow: var(--kinder-shadow-xs);
+  }
+
+  .kinder-messages-sidebar {
+    @apply flex min-h-0 w-full flex-col border-b border-border bg-muted/20 lg:w-[22rem] lg:shrink-0 lg:border-r lg:border-b-0 xl:w-80;
+  }
+
+  .kinder-messages-sidebar-header {
+    @apply shrink-0 border-b border-border bg-card/80 px-4 py-4 backdrop-blur-sm sm:px-5;
+  }
+
+  .kinder-messages-thread-scroll {
+    @apply min-h-0 flex-1 overflow-y-auto;
+  }
+
+  .kinder-messages-thread {
+    @apply flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition-colors duration-200;
+  }
+
+  .kinder-messages-thread:hover {
+    @apply bg-muted/60;
+  }
+
+  .kinder-messages-thread--active {
+    @apply border-primary/15 bg-primary/5 ring-1 ring-primary/15;
+  }
+
+  .kinder-messages-avatar {
+    @apply flex size-11 shrink-0 items-center justify-center rounded-full text-xs font-semibold tracking-wide;
+  }
+
+  .kinder-messages-avatar--sm {
+    @apply size-8 text-[10px];
+  }
+
+  .kinder-messages-unread {
+    @apply mt-1 flex size-5 shrink-0 items-center justify-center rounded-full bg-destructive text-[10px] font-semibold text-destructive-foreground;
+  }
+
+  .kinder-messages-main {
+    @apply flex min-h-0 min-w-0 flex-1 flex-col bg-background;
+  }
+
+  .kinder-messages-main--empty {
+    @apply items-center justify-center bg-muted/10;
+  }
+
+  .kinder-messages-main-header {
+    @apply shrink-0 border-b border-border bg-card/90 px-4 py-3.5 backdrop-blur-sm sm:px-5 sm:py-3.5;
+  }
+
+  .kinder-messages-scroll {
+    @apply relative min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-5 sm:py-6;
+  }
+
+  .kinder-messages-day-separator {
+    @apply flex items-center justify-center py-4;
+  }
+
+  .kinder-messages-day-separator span {
+    @apply rounded-full bg-muted px-3 py-1 text-[11px] font-medium text-muted-foreground;
+  }
+
+  .kinder-messages-bubble-row {
+    @apply mb-4 flex items-end gap-2.5;
+  }
+
+  .kinder-messages-bubble-row--mine {
+    @apply justify-end;
+  }
+
+  .kinder-messages-bubble {
+    @apply px-4 py-2.5 shadow-sm;
+  }
+
+  .kinder-messages-bubble--mine {
+    @apply rounded-2xl rounded-br-md bg-primary text-primary-foreground;
+  }
+
+  .kinder-messages-bubble--theirs {
+    @apply rounded-2xl rounded-bl-md border border-border/60 bg-card;
+  }
+
+  .kinder-messages-composer {
+    @apply shrink-0 border-t border-border bg-card/90 px-3 py-3 backdrop-blur-sm sm:px-5 sm:py-4;
+  }
+
+  .kinder-messages-composer-inner {
+    @apply mx-auto flex w-full max-w-3xl items-end gap-2 rounded-2xl border border-border bg-background p-2 ;
+  }
+
+  .kinder-messages-input {
+    @apply max-h-32 min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-sm leading-relaxed outline-none placeholder:text-muted-foreground;
+  }
+
+  .kinder-messages-reaction-pill {
+    @apply inline-flex items-center gap-1 rounded-full border border-border/70 bg-card px-2 py-0.5 shadow-sm transition-colors hover:bg-muted;
+  }
+
+  .kinder-messages-reaction-pill--active {
+    @apply border-primary/30 bg-primary/10 text-primary;
+  }
+
+  .kinder-messages-image-preview {
+    @apply relative mx-auto mb-3 h-28 w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-muted;
+  }
+
+  .kinder-messages-reply-quote {
+    @apply mb-2 rounded-lg border-l-2 px-2.5 py-2;
+  }
+
+  .kinder-messages-reply-quote--mine {
+    @apply border-primary-foreground/50 bg-primary-foreground/10;
+  }
+
+  .kinder-messages-reply-quote--theirs {
+    @apply border-primary bg-muted/70;
+  }
+
+  .kinder-messages-composer-reply {
+    @apply mx-auto mb-3 flex w-full max-w-3xl items-start gap-2 rounded-2xl border border-primary/20 bg-primary/5 px-3 py-2.5;
+  }
 }

@@ -318,3 +318,66 @@ export const loadParentDailyReports = cache(
     return (data ?? []) as StudentDailyReport[];
   },
 );
+
+export type DailyReportExportRow = {
+  reportDate: string;
+  className: string;
+  classCode: string;
+  studentCode: string;
+  studentName: string;
+  status: string;
+  mood: string;
+  dailySummary: string;
+  meals: string;
+  nap: string;
+  activities: string;
+  teacherNote: string;
+  publishedAt: string;
+  parentAcknowledged: string;
+};
+
+export const loadDailyReportsExportRows = cache(
+  async (
+    schoolId: string,
+    reportDate: string,
+    classId?: string,
+  ): Promise<DailyReportExportRow[]> => {
+    const classes = await loadActiveClasses(schoolId);
+    const targetClasses = classId
+      ? classes.filter((cls) => cls.id === classId)
+      : classes;
+
+    const rows: DailyReportExportRow[] = [];
+
+    for (const cls of targetClasses) {
+      const roster = await loadDailyReportsForClassDate(
+        schoolId,
+        cls.id,
+        reportDate,
+      );
+
+      for (const student of roster) {
+        const report = student.report;
+
+        rows.push({
+          reportDate,
+          className: cls.name,
+          classCode: cls.code,
+          studentCode: student.studentCode,
+          studentName: student.fullName,
+          status: report?.status ?? 'missing',
+          mood: report?.mood ?? '',
+          dailySummary: report?.daily_summary ?? '',
+          meals: report?.meals ?? '',
+          nap: report?.nap ?? '',
+          activities: report?.activities ?? '',
+          teacherNote: report?.teacher_note ?? '',
+          publishedAt: report?.published_at ?? '',
+          parentAcknowledged: report?.parent_acknowledged_at ?? '',
+        });
+      }
+    }
+
+    return rows;
+  },
+);

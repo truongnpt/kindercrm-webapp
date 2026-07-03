@@ -174,7 +174,7 @@ export function ClassSchedulePanel({
             )}
           />
           <div className="sm:col-span-2">
-            <Button className="rounded-lg" type="submit">
+            <Button type="submit">
               <Trans i18nKey="kinder:classes.addSlot" />
             </Button>
           </div>

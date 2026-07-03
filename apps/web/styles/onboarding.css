@@ -1,0 +1,48 @@
+@layer components {
+  .onboarding-root {
+    @apply bg-background text-foreground min-h-dvh antialiased;
+  }
+
+  .onboarding-layout {
+    @apply flex min-h-dvh flex-col lg:flex-row;
+  }
+
+  .onboarding-hero {
+    @apply relative flex flex-col justify-between overflow-hidden bg-primary/5 px-6 py-8 sm:px-10 lg:w-[42%] lg:px-12 lg:py-10 xl:w-[40%];
+  }
+
+  .onboarding-hero::before {
+    content: '';
+    @apply pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-primary/10 blur-3xl;
+  }
+
+  .onboarding-hero::after {
+    content: '';
+    @apply pointer-events-none absolute -bottom-16 -left-16 size-56 rounded-full bg-primary/10 blur-3xl;
+  }
+
+  .onboarding-form-panel {
+    @apply relative flex flex-1 flex-col bg-background px-6 py-8 sm:px-10 lg:justify-center lg:px-12 lg:py-10;
+  }
+
+  .onboarding-form-card {
+    @apply mx-auto w-full max-w-xl rounded-2xl border border-border bg-card p-6 sm:p-8;
+    box-shadow: 0 1px 3px rgb(15 23 42 / 0.06), 0 12px 32px rgb(15 23 42 / 0.06);
+  }
+
+  .onboarding-step {
+    @apply flex items-start gap-3 rounded-xl border border-border/60 bg-card/70 p-3 backdrop-blur-sm;
+  }
+
+  .onboarding-step-icon {
+    @apply flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary;
+  }
+
+  .onboarding-section-title {
+    @apply text-sm font-semibold tracking-wide text-foreground uppercase;
+  }
+
+  .onboarding-field-grid {
+    @apply grid gap-4 sm:grid-cols-2;
+  }
+}

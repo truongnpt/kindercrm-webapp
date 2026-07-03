@@ -155,7 +155,7 @@ export function PlatformAdminsPanel({
                 <td className="text-right">
                   {admin.is_active && admin.user_id !== currentUserId ? (
                     <Button
-                      onClick={async () => {
+ onClick={async () => {
                         await platformRevokeAdminAction({
                           platformAdminId: admin.id,
                         });

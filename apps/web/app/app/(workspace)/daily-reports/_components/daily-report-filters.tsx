@@ -68,7 +68,7 @@ export function DailyReportFilters({ classes }: { classes: ClassGroup[] }) {
 
       <div className="flex items-center gap-1">
         <Button
-          onClick={() => updateParams({ date: shiftDate(reportDate, -1) })}
+ onClick={() => updateParams({ date: shiftDate(reportDate, -1) })}
           size="icon"
           type="button"
           variant="outline"
@@ -84,7 +84,7 @@ export function DailyReportFilters({ classes }: { classes: ClassGroup[] }) {
         />
 
         <Button
-          onClick={() => updateParams({ date: shiftDate(reportDate, 1) })}
+ onClick={() => updateParams({ date: shiftDate(reportDate, 1) })}
           size="icon"
           type="button"
           variant="outline"
@@ -93,7 +93,7 @@ export function DailyReportFilters({ classes }: { classes: ClassGroup[] }) {
         </Button>
 
         <Button
-          onClick={() => updateParams({ date: todayString() })}
+ onClick={() => updateParams({ date: todayString() })}
           size="sm"
           type="button"
           variant="ghost"

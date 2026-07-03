@@ -132,9 +132,8 @@ export function ClassesSetupPanel({
             description={<Trans i18nKey="kinder:classes.schoolYearsHint" />}
             title={<Trans i18nKey="kinder:classes.schoolYears" />}
           />
-          <Button
-            className="shrink-0 rounded-full"
-            onClick={() => setYearOpen(true)}
+          <Button className="shrink-0"
+ onClick={() => setYearOpen(true)}
             size="sm"
             type="button"
             variant="outline"
@@ -183,9 +182,8 @@ export function ClassesSetupPanel({
             description={<Trans i18nKey="kinder:classes.classroomsHint" />}
             title={<Trans i18nKey="kinder:classes.classrooms" />}
           />
-          <Button
-            className="shrink-0 rounded-full"
-            onClick={() => setRoomOpen(true)}
+          <Button className="shrink-0"
+ onClick={() => setRoomOpen(true)}
             size="sm"
             type="button"
             variant="outline"

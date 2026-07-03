@@ -1,12 +1,14 @@
 import {
   Building2,
   CalendarCheck,
+  CalendarDays,
   ClipboardList,
   CreditCard,
   GraduationCap,
   HeartPulse,
   Home,
   Landmark,
+  MessageSquare,
   Package,
   School,
   Soup,
@@ -64,9 +66,19 @@ const routes = [
         Icon: <CalendarCheck className={iconClasses} />,
       },
       {
+        label: 'common:routes.calendar',
+        path: pathsConfig.app.calendar,
+        Icon: <CalendarDays className={iconClasses} />,
+      },
+      {
         label: 'common:routes.dailyReports',
         path: pathsConfig.app.dailyReports,
         Icon: <ClipboardList className={iconClasses} />,
+      },
+      {
+        label: 'common:routes.messages',
+        path: pathsConfig.app.messages,
+        Icon: <MessageSquare className={iconClasses} />,
       },
       {
         label: 'common:routes.menu',

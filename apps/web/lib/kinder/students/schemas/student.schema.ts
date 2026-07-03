@@ -25,6 +25,12 @@ export const CreateStudentSchema = z.object({
   parentEmail: z.string().email().optional().or(z.literal('')),
 });
 
+export const SetStudentPhotoSchema = z.object({
+  studentId: z.string().uuid(),
+  schoolId: z.string().uuid(),
+  photoUrl: z.string().url().nullable(),
+});
+
 export const UpdateStudentSchema = z.object({
   studentId: z.string().uuid(),
   schoolId: z.string().uuid(),

@@ -138,16 +138,19 @@ Nhận thông báo từ nhà trường.
 
 ---
 
-# PARENT-009 Communication(skip)
+# PARENT-009 Communication ✅
 
-Trao đổi với nhà trường.
+Trao đổi với nhà trường — `/parent/messages`.
 
 ## Chức năng
 
-- Chat với giáo viên
-- Chat với nhà trường
-- Gửi hình ảnh
-- Gửi tệp đính kèm
+- Chat với GVCN (`homeroom` channel) ✅
+- Chat với văn phòng (`school_office` channel) ✅
+- Thông báo in-app khi có tin mới ✅
+- Gửi hình ảnh ✅ (tự nén nếu > 5MB)
+- Gửi tệp đính kèm — schema sẵn, UI chưa
+
+Staff: `/app/messages`
 
 ---
 
@@ -164,9 +167,11 @@ Gửi đơn xin nghỉ học.
 
 ---
 
-# PARENT-011 Calendar(skip)
+# PARENT-011 Calendar
 
 Theo dõi lịch học và sự kiện.
+
+**Trạng thái:** 🟡 MVP — `/parent/calendar` + widget dashboard; chỉ đọc.
 
 ## Chức năng
 

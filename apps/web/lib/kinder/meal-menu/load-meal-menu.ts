@@ -181,3 +181,28 @@ export const loadParentPublishedMenu = cache(
     return loadPublishedMenuForDate(schoolId, menuDate);
   },
 );
+
+function addDays(dateStr: string, days: number) {
+  const date = new Date(`${dateStr}T12:00:00`);
+
+  date.setDate(date.getDate() + days);
+
+  return date.toISOString().slice(0, 10);
+}
+
+export const loadParentPublishedMenuWeek = cache(
+  async (schoolId: string, startDate: string) => {
+    const dates = Array.from({ length: 7 }, (_, index) =>
+      addDays(startDate, index),
+    );
+
+    const menus = await Promise.all(
+      dates.map(async (menuDate) => ({
+        menuDate,
+        menu: await loadParentPublishedMenu(schoolId, menuDate),
+      })),
+    );
+
+    return menus;
+  },
+);

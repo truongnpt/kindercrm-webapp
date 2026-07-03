@@ -3,7 +3,7 @@ import { requirePlatformAdminPage } from '~/lib/kinder/platform/require-platform
 import { loadUserSchools } from '~/lib/kinder/tenant/get-school-context';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
-import { PlatformShell } from './_components/platform-shell';
+import { PlatformShell } from '~/components/platform-console';
 
 async function PlatformLayout({ children }: React.PropsWithChildren) {
   const user = await requireUserInServerComponent();

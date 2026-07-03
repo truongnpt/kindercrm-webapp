@@ -5,6 +5,7 @@ import { getSupabaseServerAdminClient } from '@kit/supabase/server-admin-client'
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import pathsConfig from '~/config/paths.config';
+import { resolvePostLoginPath } from '~/lib/kinder/auth/resolve-post-login-path';
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest) {
   const url = await service.verifyTokenHash(request, {
     redirectPath: isInvite
       ? pathsConfig.auth.passwordUpdate
-      : pathsConfig.app.home,
+      : pathsConfig.auth.postLogin,
   });
 
   if (isInvite && !url.searchParams.get('error')) {
@@ -31,6 +32,15 @@ export async function GET(request: NextRequest) {
         .update({ invite_accepted_at: new Date().toISOString() })
         .eq('user_id', authData.user.id)
         .is('invite_accepted_at', null);
+    }
+  }
+
+  if (!isInvite && !url.searchParams.get('error')) {
+    const { data: authData } = await client.auth.getUser();
+
+    if (authData.user?.id) {
+      url.pathname = await resolvePostLoginPath(authData.user.id);
+      url.search = '';
     }
   }
 

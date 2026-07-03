@@ -28,12 +28,7 @@ export function DetailPageHeader({
       {breadcrumbs?.length ? (
         <PageBreadcrumb items={breadcrumbs} />
       ) : (
-        <Button
-          asChild
-          className="text-muted-foreground hover:text-foreground -ml-2 w-fit"
-          size="sm"
-          variant="ghost"
-        >
+        <Button asChild className="-ml-2 w-fit" size="sm" variant="ghost">
           <Link href={backHref}>
             <ArrowLeft className="size-4" data-icon="inline-start" />
             <Trans i18nKey="kinder:ui.back" />

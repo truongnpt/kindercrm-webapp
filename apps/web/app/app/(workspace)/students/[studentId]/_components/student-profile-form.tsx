@@ -35,6 +35,8 @@ import {
 } from '~/lib/kinder/students/server-actions';
 import type { Student } from '~/lib/kinder/students/types';
 
+import { StudentPhotoField } from '../../_components/student-photo-field';
+
 const STATUSES = [
   'active',
   'inactive',
@@ -208,10 +210,16 @@ export function StudentProfileForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                <Trans i18nKey="kinder:students.photoUrl" />
+                <Trans i18nKey="kinder:students.photo" />
               </FormLabel>
               <FormControl>
-                <Input {...field} />
+                <StudentPhotoField
+                  fullName={form.watch('fullName')}
+                  onChange={field.onChange}
+                  schoolId={schoolId}
+                  studentId={student.id}
+                  value={field.value}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -246,7 +254,7 @@ export function StudentProfileForm({
             </Button>
           ) : null}
           <Button
-            onClick={() =>
+ onClick={() =>
               void deleteStudentAction({
                 studentId: student.id,
                 schoolId,

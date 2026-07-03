@@ -136,3 +136,8 @@ export const FetchDailyReportBundleSchema = z.object({
   studentId: z.string().uuid(),
   reportDate: z.string().min(1),
 });
+
+export const RemindDailyReportsStaffSchema = z.object({
+  schoolId: z.string().uuid(),
+  reportDate: z.string().min(1),
+});

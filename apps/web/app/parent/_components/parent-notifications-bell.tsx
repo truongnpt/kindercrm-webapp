@@ -49,8 +49,8 @@ export function ParentNotificationsBell({
           </p>
           {unreadCount > 0 ? (
             <Button
-              disabled={pending}
-              onClick={() => {
+ disabled={pending}
+ onClick={() => {
                 startTransition(async () => {
                   await markAllNotificationsReadAction({});
                 });

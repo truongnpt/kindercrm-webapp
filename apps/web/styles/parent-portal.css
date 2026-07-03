@@ -1,0 +1,110 @@
+@layer components {
+  .parent-portal {
+    --parent-shadow: 0 1px 3px rgb(15 23 42 / 0.06), 0 8px 24px rgb(15 23 42 / 0.04);
+    --parent-shadow-lg: 0 4px 6px rgb(15 23 42 / 0.05), 0 16px 40px rgb(15 23 42 / 0.08);
+
+    @apply bg-muted/30 text-foreground antialiased;
+  }
+
+  .parent-portal-card {
+    @apply rounded-2xl border border-border bg-card p-4;
+    box-shadow: var(--parent-shadow);
+  }
+
+  .parent-portal-card-lg {
+    @apply rounded-2xl border border-border bg-card p-5 sm:p-6;
+    box-shadow: var(--parent-shadow);
+  }
+
+  .parent-portal-stat {
+    @apply flex flex-col gap-1 rounded-2xl border border-border bg-card p-4;
+    box-shadow: var(--parent-shadow);
+  }
+
+  .parent-portal-pill {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium transition-colors duration-200;
+  }
+
+  .parent-portal-tab {
+    @apply flex min-h-11 shrink-0 items-center gap-2 rounded-xl px-4 text-sm font-medium transition-all duration-200;
+  }
+
+  .parent-portal-tab-active {
+    @apply bg-primary text-primary-foreground shadow-sm;
+  }
+
+  .parent-portal-tab-inactive {
+    @apply text-muted-foreground hover:bg-primary/10 hover:text-foreground;
+  }
+
+  .parent-portal-bottom-nav {
+    @apply fixed inset-x-0 bottom-0 z-50 border-t border-border bg-card/95 backdrop-blur-md;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-shadow: 0 -4px 24px rgb(15 23 42 / 0.06);
+  }
+
+  .parent-portal-nav-item {
+    @apply flex min-h-[56px] min-w-[64px] flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1.5 text-[11px] font-medium transition-colors duration-200;
+  }
+
+  .parent-portal-nav-item-active {
+    @apply text-primary;
+  }
+
+  .parent-portal-nav-item-inactive {
+    @apply text-muted-foreground;
+  }
+
+  .parent-portal-timeline-line {
+    @apply absolute top-0 bottom-0 left-[15px] w-0.5 bg-border;
+  }
+
+  .parent-portal-timeline-dot {
+    @apply relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full border-2 border-background bg-primary/10 text-primary;
+    box-shadow: var(--parent-shadow);
+  }
+
+  .parent-portal-quick-action {
+    @apply flex min-h-[72px] flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-card p-3 text-center text-xs font-medium transition-all duration-200 active:scale-[0.98];
+    box-shadow: var(--parent-shadow);
+  }
+
+  .parent-portal-quick-action:hover {
+    @apply border-primary/30 bg-primary/10;
+  }
+
+  .parent-portal-media-grid img,
+  .parent-portal-media-grid video {
+    @apply rounded-xl object-cover;
+    box-shadow: var(--parent-shadow);
+  }
+
+  .parent-portal-main {
+    @apply mx-auto w-full max-w-lg px-4 pt-4 pb-28 sm:max-w-2xl sm:px-6 lg:max-w-6xl lg:pb-8;
+  }
+
+  .parent-portal-desktop-sidebar {
+    @apply hidden w-64 shrink-0 flex-col gap-1 border-r border-border bg-card p-4 lg:flex lg:min-h-[calc(100vh-64px)];
+  }
+
+  .parent-notifications-sheet {
+    @apply z-[60] max-h-[min(88dvh,100%)] rounded-t-2xl border-t-0 pb-[max(env(safe-area-inset-bottom),0.75rem)];
+    box-shadow: 0 -8px 32px rgb(15 23 42 / 0.12);
+  }
+
+  .parent-notifications-sheet-handle {
+    @apply mx-auto mt-2 mb-1 h-1 w-10 shrink-0 rounded-full bg-border;
+  }
+
+  .parent-notifications-sheet-header {
+    @apply relative border-b border-border px-4 pb-3 pt-1 text-left;
+  }
+
+  .parent-notifications-sheet-row {
+    @apply min-h-[4.5rem];
+  }
+
+  [data-radix-dialog-overlay]:has(+ .parent-notifications-sheet) {
+    @apply z-[55];
+  }
+}

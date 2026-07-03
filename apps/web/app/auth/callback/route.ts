@@ -5,22 +5,28 @@ import { createAuthCallbackService } from '@kit/supabase/auth';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import pathsConfig from '~/config/paths.config';
-import { resolvePostLoginPath } from '~/lib/kinder/parent/load-parent';
+import {
+  isSafeInternalRedirectPath,
+  resolvePostLoginPath,
+} from '~/lib/kinder/auth/resolve-post-login-path';
 
 export async function GET(request: NextRequest) {
   const client = getSupabaseServerClient();
   const service = createAuthCallbackService(client);
+  const explicitNext = request.nextUrl.searchParams.get('next');
 
   const { nextPath } = await service.exchangeCodeForSession(request, {
-    redirectPath: pathsConfig.app.home,
+    redirectPath: pathsConfig.auth.postLogin,
   });
 
   const { data } = await client.auth.getClaims();
 
   if (data?.claims?.sub) {
-    const resolved = await resolvePostLoginPath(data.claims.sub);
+    if (explicitNext && isSafeInternalRedirectPath(explicitNext)) {
+      return redirect(explicitNext);
+    }
 
-    return redirect(resolved);
+    return redirect(await resolvePostLoginPath(data.claims.sub));
   }
 
   return redirect(nextPath);

@@ -27,11 +27,11 @@ export function EmptyState({
   const actionButton =
     actionLabelKey && (onAction || actionHref) ? (
       onAction ? (
-        <Button className="mt-5 rounded-lg" onClick={onAction} type="button">
+        <Button className="mt-5" onClick={onAction} type="button">
           <Trans i18nKey={actionLabelKey} />
         </Button>
       ) : actionHref ? (
-        <Button asChild className="mt-5 rounded-lg">
+        <Button asChild className="mt-5">
           <Link href={actionHref}>
             <Trans i18nKey={actionLabelKey} />
           </Link>

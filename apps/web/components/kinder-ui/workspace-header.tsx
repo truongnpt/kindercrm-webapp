@@ -74,12 +74,7 @@ export function WorkspaceHeader({
           />
 
           {showPlatformLink ? (
-            <Button
-              asChild
-              className="hidden rounded-lg xl:inline-flex"
-              size="sm"
-              variant="outline"
-            >
+            <Button asChild className="hidden xl:inline-flex" size="sm" variant="outline">
               <Link href={pathsConfig.platform.home}>
                 <Shield className="mr-1.5 size-4" />
                 <Trans i18nKey="kinder:platform.nav.short" />

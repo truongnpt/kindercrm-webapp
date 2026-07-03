@@ -227,8 +227,8 @@ export function UpdateSchoolForm({ school }: { school: School }) {
                           />
                           <div className="flex flex-wrap gap-2">
                             <Button
-                              disabled={uploadingLogo}
-                              onClick={() => fileInputRef.current?.click()}
+ disabled={uploadingLogo}
+ onClick={() => fileInputRef.current?.click()}
                               size="sm"
                               type="button"
                               variant="outline"
@@ -241,7 +241,7 @@ export function UpdateSchoolForm({ school }: { school: School }) {
                               <Trans i18nKey="kinder:schoolSettings.changeLogo" />
                             </Button>
                             <Button
-                              onClick={() =>
+ onClick={() =>
                                 form.setValue('logoUrl', '', {
                                   shouldDirty: true,
                                   shouldValidate: true,
@@ -258,8 +258,8 @@ export function UpdateSchoolForm({ school }: { school: School }) {
                         </div>
                       ) : (
                         <Button
-                          disabled={uploadingLogo}
-                          onClick={() => fileInputRef.current?.click()}
+ disabled={uploadingLogo}
+ onClick={() => fileInputRef.current?.click()}
                           type="button"
                           variant="outline"
                         >

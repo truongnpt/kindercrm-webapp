@@ -45,7 +45,7 @@ const InputOTPSlot: React.FC<
   return (
     <div
       className={cn(
-        'border-input relative flex h-9 w-9 items-center justify-center border-y border-r text-sm shadow-xs transition-all first:rounded-l-md first:border-l last:rounded-r-md',
+        'border-input relative flex h-9 w-9 items-center justify-center border-y border-r text-sm shadow-xs transition-all first:rounded-l-sm first:border-l last:rounded-r-sm',
         isActive && 'ring-ring z-10 ring-1',
         className,
       )}

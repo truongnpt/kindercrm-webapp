@@ -1,15 +1,17 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { ArrowLeft } from 'lucide-react';
+
 import { Badge } from '@kit/ui/badge';
 import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
 
 import {
-  KinderPageBody,
-  KinderPageHeader,
-  SectionCard,
-} from '~/components/kinder-ui';
+  PlatformPageBody,
+  PlatformPageHeader,
+  PlatformSectionCard,
+} from '~/components/platform-console';
 import pathsConfig from '~/config/paths.config';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
@@ -57,11 +59,20 @@ async function PlatformSchoolDetailPage({
 
   return (
     <>
-      <KinderPageHeader
+      <div className="mb-4">
+        <Button asChild size="sm" variant="ghost">
+          <Link href={pathsConfig.platform.schools}>
+            <ArrowLeft data-icon="inline-start" />
+            <Trans i18nKey="kinder:platform.schools.back" />
+          </Link>
+        </Button>
+      </div>
+
+      <PlatformPageHeader
         actions={<SchoolStatusActions platformRole={platform.role} school={school} />}
         description={
-          <span className="inline-flex items-center gap-2">
-            <Badge>
+          <span className="inline-flex flex-wrap items-center gap-2">
+            <Badge className="rounded-full">
               <Trans i18nKey={`kinder:platform.schoolStatus.${school.status}`} />
             </Badge>
             <span className="font-mono text-xs">{school.slug}</span>
@@ -70,23 +81,15 @@ async function PlatformSchoolDetailPage({
         title={school.name}
       />
 
-      <KinderPageBody>
-        <div className="mb-4">
-          <Button asChild size="sm" variant="ghost">
-            <Link href={pathsConfig.platform.schools}>
-              <Trans i18nKey="kinder:platform.schools.back" />
-            </Link>
-          </Button>
-        </div>
-
+      <PlatformPageBody>
         <div className="grid gap-4 lg:grid-cols-2">
-          <SectionCard title={<Trans i18nKey="kinder:platform.schools.info" />}>
-            <dl className="space-y-3 text-sm">
+          <PlatformSectionCard title={<Trans i18nKey="kinder:platform.schools.info" />}>
+            <dl className="flex flex-col gap-4 text-sm">
               <div>
                 <dt className="text-muted-foreground">
                   <Trans i18nKey="kinder:platform.schools.owner" />
                 </dt>
-                <dd className="font-medium">
+                <dd className="mt-1 font-medium text-foreground">
                   {school.owner_name ?? '—'}
                   {school.owner_email ? (
                     <span className="text-muted-foreground block text-xs">
@@ -97,35 +100,41 @@ async function PlatformSchoolDetailPage({
               </div>
               <div>
                 <dt className="text-muted-foreground">Email</dt>
-                <dd>{school.email ?? '—'}</dd>
+                <dd className="mt-1 text-foreground">{school.email ?? '—'}</dd>
               </div>
               <div>
                 <dt className="text-muted-foreground">Phone</dt>
-                <dd>{school.phone ?? '—'}</dd>
+                <dd className="mt-1 text-foreground">{school.phone ?? '—'}</dd>
               </div>
               <div>
                 <dt className="text-muted-foreground">Address</dt>
-                <dd>{school.address ?? '—'}</dd>
+                <dd className="mt-1 text-foreground">{school.address ?? '—'}</dd>
               </div>
             </dl>
-          </SectionCard>
+          </PlatformSectionCard>
 
-          <SectionCard title={<Trans i18nKey="kinder:platform.schools.subscription" />}>
-            <dl className="space-y-3 text-sm">
+          <PlatformSectionCard
+            title={<Trans i18nKey="kinder:platform.schools.subscription" />}
+          >
+            <dl className="flex flex-col gap-4 text-sm">
               <div>
                 <dt className="text-muted-foreground">
                   <Trans i18nKey="kinder:platform.schools.package" />
                 </dt>
-                <dd className="font-medium">{school.package_name ?? '—'}</dd>
+                <dd className="mt-1 font-medium text-foreground">
+                  {school.package_name ?? '—'}
+                </dd>
               </div>
               <div>
                 <dt className="text-muted-foreground">Status</dt>
-                <dd>{school.subscription_status ?? '—'}</dd>
+                <dd className="mt-1 text-foreground">
+                  {school.subscription_status ?? '—'}
+                </dd>
               </div>
               {school.trial_ends_at ? (
                 <div>
                   <dt className="text-muted-foreground">Trial ends</dt>
-                  <dd>
+                  <dd className="mt-1 text-foreground">
                     {new Date(school.trial_ends_at).toLocaleDateString('vi-VN')}
                   </dd>
                 </div>
@@ -134,18 +143,18 @@ async function PlatformSchoolDetailPage({
                 <dt className="text-muted-foreground">
                   <Trans i18nKey="kinder:platform.schools.usage" />
                 </dt>
-                <dd>
+                <dd className="mt-1 text-foreground">
                   {school.student_count} HS / {school.campus_count} CS
                 </dd>
               </div>
             </dl>
-          </SectionCard>
+          </PlatformSectionCard>
         </div>
 
         {['super_admin', 'support', 'billing'].includes(platform.role) ? (
           <SubscriptionOverridePanel packages={packages} school={school} />
         ) : null}
-      </KinderPageBody>
+      </PlatformPageBody>
     </>
   );
 }

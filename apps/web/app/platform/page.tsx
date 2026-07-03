@@ -5,7 +5,11 @@ import { Building2, GraduationCap, PauseCircle, Sparkles } from 'lucide-react';
 import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
 
-import { KinderPageBody, KinderPageHeader, StatCard } from '~/components/kinder-ui';
+import {
+  PlatformPageBody,
+  PlatformPageHeader,
+  PlatformStatCard,
+} from '~/components/platform-console';
 import pathsConfig from '~/config/paths.config';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
@@ -28,7 +32,7 @@ async function PlatformDashboardPage() {
 
   return (
     <>
-      <KinderPageHeader
+      <PlatformPageHeader
         description={<Trans i18nKey="kinder:platform.description" />}
         title={<Trans i18nKey="kinder:platform.title" />}
         actions={
@@ -40,37 +44,36 @@ async function PlatformDashboardPage() {
         }
       />
 
-      <KinderPageBody>
+      <PlatformPageBody>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <StatCard
+          <PlatformStatCard
             href={pathsConfig.platform.schools}
             icon={Building2}
             labelKey="kinder:platform.stats.totalSchools"
             tone="info"
             value={String(summary.totalSchools)}
           />
-          <StatCard
+          <PlatformStatCard
             href={`${pathsConfig.platform.schools}?status=active`}
             icon={GraduationCap}
             labelKey="kinder:platform.stats.activeSchools"
             tone="success"
             value={String(summary.activeSchools)}
           />
-          <StatCard
+          <PlatformStatCard
             href={`${pathsConfig.platform.schools}?status=suspended`}
             icon={PauseCircle}
             labelKey="kinder:platform.stats.suspendedSchools"
             tone="warning"
             value={String(summary.suspendedSchools)}
           />
-          <StatCard
+          <PlatformStatCard
             icon={Sparkles}
             labelKey="kinder:platform.stats.trialSchools"
-            tone="default"
             value={String(summary.trialSchools)}
           />
         </div>
-      </KinderPageBody>
+      </PlatformPageBody>
     </>
   );
 }

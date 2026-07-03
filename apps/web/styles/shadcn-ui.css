@@ -29,9 +29,9 @@
         --muted: #f3f4f6;
         --muted-foreground: #6b7280;
 
-        /* Accent #F59E0B tint */
-        --accent: #fffbeb;
-        --accent-foreground: #92400e;
+        /* Accent — green highlight surfaces (harmonized with primary) */
+        --accent: #ecfdf5;
+        --accent-foreground: #166534;
 
         --destructive: #ef4444;
         --destructive-foreground: #ffffff;
@@ -78,8 +78,8 @@
         --muted: #1e293b;
         --muted-foreground: #94a3b8;
 
-        --accent: #422006;
-        --accent-foreground: #fde68a;
+        --accent: #166534;
+        --accent-foreground: #bbf7d0;
 
         --destructive: #f87171;
         --destructive-foreground: #0f172a;

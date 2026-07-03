@@ -190,8 +190,8 @@ export function StudentImportExport({
             type="file"
           />
           <Button
-            disabled={pending}
-            onClick={() => fileRef.current?.click()}
+ disabled={pending}
+ onClick={() => fileRef.current?.click()}
             type="button"
           >
             <Trans i18nKey="kinder:importExport.chooseFile" />

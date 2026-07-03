@@ -38,8 +38,8 @@ export function SchoolStatusActions({
     <div className="flex flex-wrap gap-2">
       {school.status === 'active' && canSuspend ? (
         <Button
-          disabled={pending}
-          onClick={() => run(() => platformSuspendSchoolAction({ schoolId: school.id }))}
+ disabled={pending}
+ onClick={() => run(() => platformSuspendSchoolAction({ schoolId: school.id }))}
           type="button"
           variant="outline"
         >
@@ -49,8 +49,8 @@ export function SchoolStatusActions({
 
       {school.status === 'suspended' && canSuspend ? (
         <Button
-          disabled={pending}
-          onClick={() => run(() => platformRestoreSchoolAction({ schoolId: school.id }))}
+ disabled={pending}
+ onClick={() => run(() => platformRestoreSchoolAction({ schoolId: school.id }))}
           type="button"
         >
           <Trans i18nKey="kinder:platform.actions.restore" />
@@ -59,8 +59,8 @@ export function SchoolStatusActions({
 
       {school.status !== 'archived' && canArchive ? (
         <Button
-          disabled={pending}
-          onClick={() => run(() => platformArchiveSchoolAction({ schoolId: school.id }))}
+ disabled={pending}
+ onClick={() => run(() => platformArchiveSchoolAction({ schoolId: school.id }))}
           type="button"
           variant="destructive"
         >

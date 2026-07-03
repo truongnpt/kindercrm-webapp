@@ -73,6 +73,15 @@ export async function requirePlatformAdminPage(
   return context;
 }
 
+/** Skip school onboarding — platform operators go straight to `/platform`. */
+export async function redirectIfPlatformAdmin(userId: string) {
+  const context = await getPlatformAdminContext(userId);
+
+  if (context) {
+    redirect(pathsConfig.platform.home);
+  }
+}
+
 export function assertPlatformRole(
   context: PlatformAdminContext,
   allowedRoles: PlatformAdminRole[],

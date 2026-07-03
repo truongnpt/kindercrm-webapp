@@ -19,7 +19,7 @@ import {
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
-import { getPlatformAdminContext } from '~/lib/kinder/platform/require-platform-admin';
+import { getPlatformAdminContext, redirectIfPlatformAdmin } from '~/lib/kinder/platform/require-platform-admin';
 
 import {
   WorkspaceHeader,
@@ -33,6 +33,7 @@ function WorkspaceLayout({ children }: React.PropsWithChildren) {
     use(loadWorkspaceData());
 
   if (!context) {
+    await redirectIfPlatformAdmin(user.id);
     redirect(pathsConfig.app.onboarding);
   }
 
@@ -87,9 +88,10 @@ function WorkspaceLayout({ children }: React.PropsWithChildren) {
 
 async function loadWorkspaceData() {
   const user = await requireUserInServerComponent();
-  const [context, memberships] = await Promise.all([
+  const [context, memberships, platformAdmin] = await Promise.all([
     getSchoolContext(user.id),
     loadUserSchools(user.id),
+    getPlatformAdminContext(user.id),
   ]);
 
   if (!context && memberships.length === 0) {
@@ -100,6 +102,10 @@ async function loadWorkspaceData() {
 
     if (parentLinks.length > 0) {
       redirect(pathsConfig.parent.home);
+    }
+
+    if (platformAdmin) {
+      redirect(pathsConfig.platform.home);
     }
   }
 
@@ -118,18 +124,17 @@ async function loadWorkspaceData() {
     }
   }
 
-  const [notifications, unreadCount, platformAdmin, memberPermissions] = context
+  const [notifications, unreadCount, memberPermissions] = context
     ? await Promise.all([
         loadUserNotifications(user.id),
         loadUnreadNotificationCount(user.id),
-        getPlatformAdminContext(user.id),
         loadMemberPermissions(
           context.school.id,
           context.role,
           context.customRoleId,
         ),
       ])
-    : [[], 0, null, undefined];
+    : [[], 0, undefined];
 
   const navigation = context
     ? getKinderNavigationConfig(

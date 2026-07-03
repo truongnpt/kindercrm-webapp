@@ -108,7 +108,7 @@ export function CreateClassDialog({
       size="lg"
       title={<Trans i18nKey="kinder:classes.create" />}
       trigger={
-        <Button className="rounded-lg" type="button">
+        <Button type="button">
           <Plus className="mr-2 size-4" />
           <Trans i18nKey="kinder:classes.create" />
         </Button>

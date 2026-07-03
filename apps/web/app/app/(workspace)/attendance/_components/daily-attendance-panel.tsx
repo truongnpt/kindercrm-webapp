@@ -158,7 +158,7 @@ export function DailyAttendancePanel({
           actions={
             <div className="flex flex-wrap gap-2">
               <Button
-                onClick={() => setAllStatus('present')}
+ onClick={() => setAllStatus('present')}
                 size="sm"
                 type="button"
                 variant="outline"
@@ -167,7 +167,7 @@ export function DailyAttendancePanel({
                 <Trans i18nKey="kinder:attendance.bulk.present" />
               </Button>
               <Button
-                onClick={() => setAllStatus('absent')}
+ onClick={() => setAllStatus('absent')}
                 size="sm"
                 type="button"
                 variant="outline"
@@ -286,8 +286,8 @@ export function DailyAttendancePanel({
                     <td className="px-4 py-3 text-right">
                       <div className="flex justify-end gap-1">
                         <Button
-                          disabled={checkIn.isPending}
-                          onClick={() =>
+ disabled={checkIn.isPending}
+ onClick={() =>
                             checkIn.mutate({
                               schoolId,
                               classId,
@@ -303,8 +303,8 @@ export function DailyAttendancePanel({
                           <Trans i18nKey="kinder:attendance.checkIn" />
                         </Button>
                         <Button
-                          disabled={checkOut.isPending}
-                          onClick={() =>
+ disabled={checkOut.isPending}
+ onClick={() =>
                             checkOut.mutate({
                               schoolId,
                               classId,

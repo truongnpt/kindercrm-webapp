@@ -94,9 +94,8 @@ export function AppMobileNavigation({
   return (
     <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
       <Button
-        aria-label="Search"
-        className="size-9 shrink-0 rounded-xl"
-        onClick={() => {
+ aria-label="Search"className="size-9 shrink-0"
+ onClick={() => {
           document.dispatchEvent(
             new KeyboardEvent('keydown', { key: 'k', metaKey: true }),
           );
@@ -122,12 +121,11 @@ export function AppMobileNavigation({
       <Sheet>
         <SheetTrigger asChild>
           <Button
-            aria-label="Open Menu"
-            className="size-9 rounded-xl"
-            size="icon"
-            type="button"
-            variant="ghost"
-          >
+ aria-label="Open Menu"className="size-9"
+ size="icon"
+ type="button"
+ variant="ghost"
+ >
             <Menu className="size-5" />
           </Button>
         </SheetTrigger>

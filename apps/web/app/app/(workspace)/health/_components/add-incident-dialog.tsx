@@ -95,7 +95,7 @@ export function AddIncidentDialog({
       size="lg"
       title={<Trans i18nKey="kinder:health.addIncident" />}
       trigger={
-        <Button className="rounded-lg" size="sm" type="button">
+        <Button size="sm" type="button">
           <Plus className="mr-2 size-4" />
           <Trans i18nKey="kinder:health.addIncident" />
         </Button>

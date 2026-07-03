@@ -30,3 +30,5 @@ export { WorkspaceHeader } from './workspace-header';
 export { WorkspaceMobileHeader } from './workspace-mobile-header';
 export { WorkspaceSearch } from './workspace-search';
 export { MonthCalendar, type CalendarEvent } from './month-calendar';
+export { WeekCalendar, type WeekCalendarEvent } from './week-calendar';
+export { DayAgenda, type DayAgendaEvent } from './day-agenda';

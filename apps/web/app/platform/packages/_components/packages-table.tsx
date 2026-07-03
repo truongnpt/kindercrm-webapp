@@ -1,9 +1,11 @@
 'use client';
 
+import { Package as PackageIcon } from 'lucide-react';
+
 import { Badge } from '@kit/ui/badge';
 import { Trans } from '@kit/ui/trans';
 
-import { PanelEmpty, DataTableShell } from '~/components/kinder-ui';
+import { PlatformDataTable, PlatformEmptyState } from '~/components/platform-console';
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
 import type { Package } from '~/lib/kinder/types';
 
@@ -11,11 +13,16 @@ import { PackageEditDialog } from './package-edit-dialog';
 
 export function PackagesTable({ packages }: { packages: Package[] }) {
   if (packages.length === 0) {
-    return <PanelEmpty messageKey="kinder:platform.packages.empty" />;
+    return (
+      <PlatformEmptyState
+        icon={PackageIcon}
+        titleKey="kinder:platform.packages.empty"
+      />
+    );
   }
 
   return (
-    <DataTableShell>
+    <PlatformDataTable>
       <table className="w-full text-sm">
         <thead>
           <tr>
@@ -48,6 +55,6 @@ export function PackagesTable({ packages }: { packages: Package[] }) {
           ))}
         </tbody>
       </table>
-    </DataTableShell>
+    </PlatformDataTable>
   );
 }

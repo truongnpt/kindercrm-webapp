@@ -20,6 +20,8 @@ import {
 import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
+import { StudentPhotoField } from './student-photo-field';
+
 const STATUSES = [
   'active',
   'inactive',
@@ -30,11 +32,17 @@ const STATUSES = [
 
 export function StudentFormFields({
   form,
+  schoolId,
+  studentId,
+  onPendingPhotoChange,
   showStatus = true,
   showCode,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: UseFormReturn<any>;
+  schoolId: string;
+  studentId?: string;
+  onPendingPhotoChange?: (file: File | null) => void;
   showStatus?: boolean;
   showCode?: string;
 }) {
@@ -194,10 +202,17 @@ export function StudentFormFields({
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              <Trans i18nKey="kinder:students.photoUrl" />
+              <Trans i18nKey="kinder:students.photo" />
             </FormLabel>
             <FormControl>
-              <Input {...field} value={String(field.value ?? '')} />
+              <StudentPhotoField
+                fullName={String(form.watch('fullName') ?? '')}
+                onChange={field.onChange}
+                onPendingFileChange={onPendingPhotoChange}
+                schoolId={schoolId}
+                studentId={studentId}
+                value={String(field.value ?? '')}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>

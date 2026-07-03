@@ -100,9 +100,8 @@ export function StaffClassesPanel({
           title={<Trans i18nKey="kinder:staff.classes.title" />}
         />
         {canManage ? (
-          <Button
-            className="shrink-0 rounded-full"
-            onClick={() => setOpen(true)}
+          <Button className="shrink-0"
+ onClick={() => setOpen(true)}
             size="sm"
             type="button"
             variant="outline"

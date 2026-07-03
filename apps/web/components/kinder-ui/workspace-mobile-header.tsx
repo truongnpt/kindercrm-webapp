@@ -65,13 +65,12 @@ export function WorkspaceMobileHeader({
   return (
     <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-2 border-b border-border bg-card px-4 lg:hidden">
       <Button
-        aria-label="Open menu"
-        className="size-10 shrink-0 rounded-lg"
-        onClick={toggleSidebar}
-        size="icon"
-        type="button"
-        variant="ghost"
-      >
+ aria-label="Open menu"className="size-10 shrink-0"
+ onClick={toggleSidebar}
+ size="icon"
+ type="button"
+ variant="ghost"
+ >
         <Menu className="size-5" />
       </Button>
 
@@ -85,12 +84,11 @@ export function WorkspaceMobileHeader({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            aria-label="More options"
-            className="size-10 shrink-0 rounded-lg"
-            size="icon"
-            type="button"
-            variant="ghost"
-          >
+ aria-label="More options"className="size-10 shrink-0"
+ size="icon"
+ type="button"
+ variant="ghost"
+ >
             <MoreHorizontal className="size-5" />
           </Button>
         </DropdownMenuTrigger>

@@ -48,7 +48,7 @@ values
     10,
     10240,
     500,
-    '{"crm": true, "students": true, "classes": true, "finance": true, "attendance": true, "staff": true, "reports": true, "parent_portal": true, "daily_reports": true, "meal_menu": true, "inventory": true, "health_management": true, "ai_assistant": true}'::jsonb,
+    '{"crm": true, "students": true, "classes": true, "finance": true, "attendance": true, "staff": true, "reports": true, "parent_portal": true, "daily_reports": true, "meal_menu": true, "inventory": true, "health_management": true, "calendar": true, "ai_assistant": true}'::jsonb,
     2490000,
     true,
     2
@@ -78,7 +78,9 @@ on conflict (code) do update set
   is_active = excluded.is_active,
   sort_order = excluded.sort_order;
 
--- Platform Super Admin (EPIC-035): grant after first user signs up, e.g.:
+-- Platform Super Admin (EPIC-035): seeded by migration 20260732000000
+-- Default login: superadmin@kindercrm.app / SuperAdmin123!
+-- Or grant an existing user:
 -- INSERT INTO public.platform_admins (user_id, role)
 -- SELECT id, 'super_admin' FROM auth.users WHERE email = 'you@example.com' LIMIT 1;
 

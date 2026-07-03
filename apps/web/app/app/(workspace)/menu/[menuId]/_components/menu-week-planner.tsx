@@ -240,7 +240,7 @@ function MenuCellEditor({
               </Button>
               {item ? (
                 <Button
-                  onClick={async () => {
+ onClick={async () => {
                     const promise = deleteMenuItemAction({
                       schoolId,
                       menuItemId: item.id,

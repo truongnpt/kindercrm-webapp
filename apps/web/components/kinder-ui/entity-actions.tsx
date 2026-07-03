@@ -26,12 +26,11 @@ export function EntityRowActions({
       ) : null}
       {onDelete ? (
         <Button
-          onClick={onDelete}
-          size="sm"
-          type="button"
-          variant="ghost"
-          className="text-destructive hover:text-destructive"
-        >
+ onClick={onDelete}
+ size="sm"
+ type="button"
+ variant="ghost"className="text-destructive hover:text-destructive"
+ >
           <Trash2 className="mr-1.5 size-4" />
           {deleteLabel ?? <Trans i18nKey="kinder:ui.delete" />}
         </Button>

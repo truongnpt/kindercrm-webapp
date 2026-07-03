@@ -40,8 +40,7 @@ export function ClassDetailActions({
         <EditClassDialog cls={cls} schoolId={schoolId} teachers={teachers} />
         {cls.status === 'active' ? (
           <Button
-            className="rounded-lg"
-            onClick={() => setArchiveOpen(true)}
+ onClick={() => setArchiveOpen(true)}
             size="sm"
             type="button"
             variant="destructive"

@@ -10,6 +10,8 @@ import { useRouter } from 'next/navigation';
 
 import { useKinderToast } from '~/components/kinder-ui/use-kinder-toast';
 
+import { getRedirectUrlFromError } from './redirect-error';
+
 type ToastMessages = {
   loading?: string;
   success?: string;
@@ -54,7 +56,16 @@ export function useKinderMutation<TData, TVariables, TContext = unknown>(
   return useMutation({
     mutationKey,
     mutationFn: async (variables: TVariables) => {
-      const promise = mutationFn(variables);
+      const promise = mutationFn(variables).catch((error: unknown) => {
+        const redirectUrl = getRedirectUrlFromError(error);
+
+        if (redirectUrl) {
+          router.push(redirectUrl);
+          return undefined as TData;
+        }
+
+        throw error;
+      });
 
       if (toast !== false) {
         const messages = typeof toast === 'object' ? toast : undefined;

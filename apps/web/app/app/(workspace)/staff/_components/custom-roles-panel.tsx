@@ -114,7 +114,7 @@ export function CustomRolesPanel({
 
         <Dialog onOpenChange={setOpen} open={open}>
           <DialogTrigger asChild>
-            <Button className="rounded-full" size="sm" type="button">
+            <Button size="sm" type="button">
               <Plus className="mr-2 size-4" />
               <Trans i18nKey="kinder:permissions.customRoles.add" />
             </Button>
@@ -182,9 +182,9 @@ export function CustomRolesPanel({
 
                 <DialogFooter>
                   <Button
-                    disabled={createRole.isPending}
-                    type="submit"
-                  >
+ disabled={createRole.isPending}
+ type="submit"
+ >
                     <Trans i18nKey="kinder:permissions.customRoles.create" />
                   </Button>
                 </DialogFooter>
@@ -203,7 +203,6 @@ export function CustomRolesPanel({
             >
               <span className="font-medium">{role.name}</span>
               <Button
-                className="size-7 rounded-full"
                 onClick={() => setDeleteRole(role)}
                 size="icon"
                 type="button"
