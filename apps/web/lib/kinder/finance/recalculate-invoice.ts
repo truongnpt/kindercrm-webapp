@@ -40,17 +40,32 @@ export async function recalculateInvoice(
 
   const { data: payments, error: paymentsError } = await client
     .from('invoice_payments')
-    .select('id, amount')
+    .select('id, amount, status')
     .eq('invoice_id', invoiceId);
 
   if (paymentsError) {
     throw paymentsError;
   }
 
-  let paidAmount = (payments ?? []).reduce((sum, payment) => sum + payment.amount, 0);
+  const verifiedPayments = (payments ?? []).filter(
+    (payment) =>
+      !('status' in payment) ||
+      payment.status === 'verified' ||
+      payment.status === undefined,
+  );
 
-  if (payments && payments.length > 0) {
-    const paymentIds = payments.map((payment) => payment.id);
+  let paidAmount = verifiedPayments.reduce(
+    (sum, payment) => sum + payment.amount,
+    0,
+  );
+
+  const hasPendingVerification = (payments ?? []).some(
+    (payment) =>
+      'status' in payment && payment.status === 'waiting_verification',
+  );
+
+  if (verifiedPayments.length > 0) {
+    const paymentIds = verifiedPayments.map((payment) => payment.id);
 
     const { data: refunds, error: refundsError } = await client
       .from('payment_refunds')
@@ -85,6 +100,8 @@ export async function recalculateInvoice(
   if (status !== 'cancelled' && status !== 'draft') {
     if (totalAmount > 0 && paidAmount >= totalAmount) {
       status = 'paid';
+    } else if (hasPendingVerification) {
+      status = 'waiting_verification';
     } else if (paidAmount > 0) {
       status = 'partial';
     } else if (invoice.due_date && new Date(invoice.due_date) < new Date()) {

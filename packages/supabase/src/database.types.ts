@@ -1772,9 +1772,15 @@ export type Database = {
           invoice_id: string
           paid_at: string
           payment_method: Database["public"]["Enums"]["payment_method"]
+          proof_url: string | null
           receipt_number: string
           reference_note: string | null
           school_id: string
+          status: Database["public"]["Enums"]["invoice_payment_status"]
+          submitted_by: string | null
+          verification_note: string | null
+          verified_at: string | null
+          verified_by: string | null
         }
         Insert: {
           amount: number
@@ -1784,9 +1790,15 @@ export type Database = {
           invoice_id: string
           paid_at?: string
           payment_method?: Database["public"]["Enums"]["payment_method"]
+          proof_url?: string | null
           receipt_number: string
           reference_note?: string | null
           school_id: string
+          status?: Database["public"]["Enums"]["invoice_payment_status"]
+          submitted_by?: string | null
+          verification_note?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Update: {
           amount?: number
@@ -1796,9 +1808,15 @@ export type Database = {
           invoice_id?: string
           paid_at?: string
           payment_method?: Database["public"]["Enums"]["payment_method"]
+          proof_url?: string | null
           receipt_number?: string
           reference_note?: string | null
           school_id?: string
+          status?: Database["public"]["Enums"]["invoice_payment_status"]
+          submitted_by?: string | null
+          verification_note?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Relationships: [
           {
@@ -1828,12 +1846,15 @@ export type Database = {
           issue_date: string
           notes: string | null
           paid_amount: number
+          payment_account_id: string | null
+          qr_code_url: string | null
           school_id: string
           status: Database["public"]["Enums"]["invoice_status"]
           student_id: string
           subtotal: number
           title: string
           total_amount: number
+          transfer_content: string | null
           updated_at: string
         }
         Insert: {
@@ -1846,12 +1867,15 @@ export type Database = {
           issue_date?: string
           notes?: string | null
           paid_amount?: number
+          payment_account_id?: string | null
+          qr_code_url?: string | null
           school_id: string
           status?: Database["public"]["Enums"]["invoice_status"]
           student_id: string
           subtotal?: number
           title: string
           total_amount?: number
+          transfer_content?: string | null
           updated_at?: string
         }
         Update: {
@@ -1864,15 +1888,25 @@ export type Database = {
           issue_date?: string
           notes?: string | null
           paid_amount?: number
+          payment_account_id?: string | null
+          qr_code_url?: string | null
           school_id?: string
           status?: Database["public"]["Enums"]["invoice_status"]
           student_id?: string
           subtotal?: number
           title?: string
           total_amount?: number
+          transfer_content?: string | null
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "invoices_payment_account_id_fkey"
+            columns: ["payment_account_id"]
+            isOneToOne: false
+            referencedRelation: "payment_accounts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "invoices_school_id_fkey"
             columns: ["school_id"]
@@ -2467,6 +2501,154 @@ export type Database = {
           },
         ]
       }
+      payment_accounts: {
+        Row: {
+          account_name: string
+          account_number: string
+          bank_code: string
+          bank_name: string
+          branch: string | null
+          campus_id: string | null
+          created_at: string
+          id: string
+          is_default: boolean
+          logo_url: string | null
+          school_id: string
+          status: Database["public"]["Enums"]["payment_account_status"]
+          updated_at: string
+        }
+        Insert: {
+          account_name: string
+          account_number: string
+          bank_code: string
+          bank_name: string
+          branch?: string | null
+          campus_id?: string | null
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          logo_url?: string | null
+          school_id: string
+          status?: Database["public"]["Enums"]["payment_account_status"]
+          updated_at?: string
+        }
+        Update: {
+          account_name?: string
+          account_number?: string
+          bank_code?: string
+          bank_name?: string
+          branch?: string | null
+          campus_id?: string | null
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          logo_url?: string | null
+          school_id?: string
+          status?: Database["public"]["Enums"]["payment_account_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_accounts_campus_id_fkey"
+            columns: ["campus_id"]
+            isOneToOne: false
+            referencedRelation: "campuses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_accounts_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_audit_logs: {
+        Row: {
+          action: Database["public"]["Enums"]["payment_audit_action"]
+          created_at: string
+          created_by: string | null
+          details: Json | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          school_id: string
+        }
+        Insert: {
+          action: Database["public"]["Enums"]["payment_audit_action"]
+          created_at?: string
+          created_by?: string | null
+          details?: Json | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          school_id: string
+        }
+        Update: {
+          action?: Database["public"]["Enums"]["payment_audit_action"]
+          created_at?: string
+          created_by?: string | null
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          school_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_audit_logs_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_instructions: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          notes: string | null
+          school_id: string
+          title: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          notes?: string | null
+          school_id: string
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          notes?: string | null
+          school_id?: string
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_instructions_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: true
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payment_refunds: {
         Row: {
           amount: number
@@ -2787,6 +2969,44 @@ export type Database = {
           },
           {
             foreignKeyName: "school_members_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      school_payment_methods: {
+        Row: {
+          created_at: string
+          id: string
+          is_default: boolean
+          is_enabled: boolean
+          method: Database["public"]["Enums"]["school_payment_method_type"]
+          school_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          is_enabled?: boolean
+          method: Database["public"]["Enums"]["school_payment_method_type"]
+          school_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          is_enabled?: boolean
+          method?: Database["public"]["Enums"]["school_payment_method_type"]
+          school_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "school_payment_methods_school_id_fkey"
             columns: ["school_id"]
             isOneToOne: false
             referencedRelation: "schools"
@@ -4319,6 +4539,7 @@ export type Database = {
         Row: {
           amount: number
           billing_cycle: Database["public"]["Enums"]["tuition_billing_cycle"]
+          category: Database["public"]["Enums"]["tuition_fee_category"]
           created_at: string
           description: string | null
           id: string
@@ -4331,6 +4552,7 @@ export type Database = {
         Insert: {
           amount: number
           billing_cycle?: Database["public"]["Enums"]["tuition_billing_cycle"]
+          category?: Database["public"]["Enums"]["tuition_fee_category"]
           created_at?: string
           description?: string | null
           id?: string
@@ -4343,6 +4565,7 @@ export type Database = {
         Update: {
           amount?: number
           billing_cycle?: Database["public"]["Enums"]["tuition_billing_cycle"]
+          category?: Database["public"]["Enums"]["tuition_fee_category"]
           created_at?: string
           description?: string | null
           id?: string
@@ -4358,6 +4581,122 @@ export type Database = {
             columns: ["school_id"]
             isOneToOne: false
             referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tuition_fee_plan_items: {
+        Row: {
+          amount_override: number | null
+          created_at: string
+          id: string
+          plan_id: string
+          school_id: string
+          sort_order: number
+          tuition_fee_item_id: string
+        }
+        Insert: {
+          amount_override?: number | null
+          created_at?: string
+          id?: string
+          plan_id: string
+          school_id: string
+          sort_order?: number
+          tuition_fee_item_id: string
+        }
+        Update: {
+          amount_override?: number | null
+          created_at?: string
+          id?: string
+          plan_id?: string
+          school_id?: string
+          sort_order?: number
+          tuition_fee_item_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tuition_fee_plan_items_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "tuition_fee_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tuition_fee_plan_items_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tuition_fee_plan_items_tuition_fee_item_id_fkey"
+            columns: ["tuition_fee_item_id"]
+            isOneToOne: false
+            referencedRelation: "tuition_fee_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tuition_fee_plans: {
+        Row: {
+          academic_year: string | null
+          class_id: string | null
+          created_at: string
+          effective_from: string
+          effective_to: string | null
+          id: string
+          is_active: boolean
+          name: string
+          school_id: string
+          student_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          academic_year?: string | null
+          class_id?: string | null
+          created_at?: string
+          effective_from?: string
+          effective_to?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          school_id: string
+          student_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          academic_year?: string | null
+          class_id?: string | null
+          created_at?: string
+          effective_from?: string
+          effective_to?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          school_id?: string
+          student_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tuition_fee_plans_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tuition_fee_plans_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tuition_fee_plans_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
             referencedColumns: ["id"]
           },
         ]
@@ -4547,6 +4886,11 @@ export type Database = {
         | "adjustment"
         | "transfer"
       invoice_adjustment_type: "discount" | "scholarship"
+      invoice_payment_status:
+        | "pending"
+        | "waiting_verification"
+        | "verified"
+        | "rejected"
       invoice_status:
         | "draft"
         | "issued"
@@ -4554,6 +4898,7 @@ export type Database = {
         | "paid"
         | "overdue"
         | "cancelled"
+        | "waiting_verification"
       lead_activity_type:
         | "created"
         | "stage_changed"
@@ -4584,7 +4929,18 @@ export type Database = {
         | "system"
         | "calendar"
         | "communication"
-      payment_method: "cash" | "bank_transfer" | "card" | "other"
+        | "finance"
+      payment_account_status: "active" | "inactive"
+      payment_audit_action:
+        | "account_created"
+        | "account_updated"
+        | "account_deactivated"
+        | "account_default_changed"
+        | "method_enabled"
+        | "method_disabled"
+        | "method_default_changed"
+        | "instructions_updated"
+      payment_method: "cash" | "bank_transfer" | "card" | "other" | "qr_banking"
       platform_admin_role: "super_admin" | "support" | "billing"
       purchase_order_status: "draft" | "submitted" | "received" | "cancelled"
       school_member_role:
@@ -4595,6 +4951,7 @@ export type Database = {
         | "accountant"
         | "parent"
         | "manager"
+      school_payment_method_type: "cash" | "bank_transfer" | "qr_banking"
       school_status: "active" | "suspended" | "archived"
       staff_access_role: "staff" | "admin" | "accountant" | "manager"
       staff_attendance_source: "check_in" | "manual"
@@ -4643,6 +5000,15 @@ export type Database = {
         | "semester"
         | "yearly"
         | "one_time"
+      tuition_fee_category:
+        | "tuition"
+        | "meals"
+        | "bus"
+        | "uniform"
+        | "extracurricular"
+        | "club"
+        | "insurance"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -5363,6 +5729,12 @@ export const Constants = {
         "transfer",
       ],
       invoice_adjustment_type: ["discount", "scholarship"],
+      invoice_payment_status: [
+        "pending",
+        "waiting_verification",
+        "verified",
+        "rejected",
+      ],
       invoice_status: [
         "draft",
         "issued",
@@ -5370,6 +5742,7 @@ export const Constants = {
         "paid",
         "overdue",
         "cancelled",
+        "waiting_verification",
       ],
       lead_activity_type: [
         "created",
@@ -5403,8 +5776,20 @@ export const Constants = {
         "system",
         "calendar",
         "communication",
+        "finance",
       ],
-      payment_method: ["cash", "bank_transfer", "card", "other"],
+      payment_account_status: ["active", "inactive"],
+      payment_audit_action: [
+        "account_created",
+        "account_updated",
+        "account_deactivated",
+        "account_default_changed",
+        "method_enabled",
+        "method_disabled",
+        "method_default_changed",
+        "instructions_updated",
+      ],
+      payment_method: ["cash", "bank_transfer", "card", "other", "qr_banking"],
       platform_admin_role: ["super_admin", "support", "billing"],
       purchase_order_status: ["draft", "submitted", "received", "cancelled"],
       school_member_role: [
@@ -5416,6 +5801,7 @@ export const Constants = {
         "parent",
         "manager",
       ],
+      school_payment_method_type: ["cash", "bank_transfer", "qr_banking"],
       school_status: ["active", "suspended", "archived"],
       staff_access_role: ["staff", "admin", "accountant", "manager"],
       staff_attendance_source: ["check_in", "manual"],
@@ -5469,6 +5855,16 @@ export const Constants = {
         "semester",
         "yearly",
         "one_time",
+      ],
+      tuition_fee_category: [
+        "tuition",
+        "meals",
+        "bus",
+        "uniform",
+        "extracurricular",
+        "club",
+        "insurance",
+        "other",
       ],
     },
   },

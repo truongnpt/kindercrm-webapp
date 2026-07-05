@@ -15,7 +15,7 @@ type MarketingButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
 
 const variantClasses: Record<MarketingButtonVariant, string> = {
   primary:
-    'bg-[var(--marketing-primary)] text-white shadow-lg shadow-[#3fae40]/20 hover:bg-[var(--marketing-primary-hover)] hover:shadow-[#3fae40]/30',
+    'bg-[var(--marketing-primary)] text-white shadow-lg shadow-[#034cf8]/20 hover:bg-[var(--marketing-primary-hover)] hover:shadow-[#034cf8]/30',
   secondary:
     'bg-[var(--marketing-secondary)] text-white shadow-lg shadow-green-500/20 hover:bg-[#16a34a]',
   outline:

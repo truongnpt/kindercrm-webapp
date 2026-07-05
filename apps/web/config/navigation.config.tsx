@@ -151,6 +151,11 @@ const routes = [
         path: pathsConfig.app.settingsSubscription,
         Icon: <CreditCard className={iconClasses} />,
       },
+      {
+        label: 'common:routes.paymentSettings',
+        path: pathsConfig.app.settingsPayment,
+        Icon: <Wallet className={iconClasses} />,
+      },
     ],
   },
 ] satisfies z.infer<typeof NavigationConfigSchema>['routes'];

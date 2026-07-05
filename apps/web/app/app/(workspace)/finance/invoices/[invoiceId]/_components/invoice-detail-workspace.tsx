@@ -39,6 +39,8 @@ export function InvoiceDetailWorkspace({
   balance,
   showQr,
   vietQrConfig,
+  vietQrUrl,
+  transferContent,
   defaultTab,
   linkedContract,
 }: {
@@ -51,6 +53,8 @@ export function InvoiceDetailWorkspace({
   balance: number;
   showQr: boolean;
   vietQrConfig: VietQrConfig | null;
+  vietQrUrl?: string | null;
+  transferContent?: string | null;
   defaultTab: string;
   linkedContract?: StudentContractWithInvoice | null;
 }) {
@@ -122,13 +126,15 @@ export function InvoiceDetailWorkspace({
           <InvoiceDetailPanel {...panelProps} view="payments" />
         </TabbedModuleContent>
 
-        {showQr && vietQrConfig ? (
+        {showQr ? (
           <TabbedModuleContent value="qr">
             <InvoiceVietQrPanel
               amount={balance}
               config={vietQrConfig}
               invoiceNumber={invoice.invoice_number}
+              qrUrl={vietQrUrl}
               studentName={invoice.student?.full_name ?? ''}
+              transferContent={transferContent}
             />
           </TabbedModuleContent>
         ) : null}

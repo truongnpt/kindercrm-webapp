@@ -1,6 +1,6 @@
 'use client';
 
-import { BarChart3, FileText, Receipt, Wallet } from 'lucide-react';
+import { BarChart3, ClipboardCheck, FileText, Layers, Receipt, Wallet } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { Trans } from '@kit/ui/trans';
@@ -15,14 +15,20 @@ import {
 } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import type {
+  FinanceReportSummary,
   FinanceSummary,
+  InvoicePaymentWithStudent,
   InvoiceWithStudent,
   TuitionFeeItem,
+  TuitionFeePlan,
 } from '~/lib/kinder/finance/types';
 
 import { DebtsList } from './debts-list';
+import { FeePlansPanel } from './fee-plans-panel';
 import { FinanceDashboard } from './finance-dashboard';
+import { FinanceReportsPanel } from './finance-reports-panel';
 import { InvoicesList } from './invoices-list';
+import { PaymentVerificationPanel } from './payment-verification-panel';
 import { TuitionFeesPanel } from './tuition-fees-panel';
 
 export function FinanceWorkspace({
@@ -31,6 +37,11 @@ export function FinanceWorkspace({
   invoices,
   debts,
   feeItems,
+  feePlans,
+  pendingPayments,
+  report,
+  classes,
+  students,
   schoolId,
 }: {
   defaultTab: string;
@@ -38,6 +49,11 @@ export function FinanceWorkspace({
   invoices: InvoiceWithStudent[];
   debts: InvoiceWithStudent[];
   feeItems: TuitionFeeItem[];
+  feePlans: TuitionFeePlan[];
+  pendingPayments: InvoicePaymentWithStudent[];
+  report: FinanceReportSummary;
+  classes: Array<{ id: string; name: string; code: string | null }>;
+  students: Array<{ id: string; full_name: string; student_code: string }>;
   schoolId: string;
 }) {
   const router = useRouter();
@@ -83,6 +99,23 @@ export function FinanceWorkspace({
             <Wallet className="mr-2 size-4" />
             <Trans i18nKey="kinder:finance.tabs.debts" />
           </TabbedModuleTrigger>
+          <TabbedModuleTrigger value="plans">
+            <Layers className="mr-2 size-4 shrink-0" />
+            <Trans i18nKey="kinder:finance.tabs.feePlans" />
+          </TabbedModuleTrigger>
+          <TabbedModuleTrigger value="verification">
+            <ClipboardCheck className="mr-2 size-4 shrink-0" />
+            <Trans i18nKey="kinder:finance.tabs.verification" />
+            {pendingPayments.length > 0 ? (
+              <span className="bg-primary text-primary-foreground ml-2 rounded-full px-2 py-0.5 text-xs">
+                {pendingPayments.length}
+              </span>
+            ) : null}
+          </TabbedModuleTrigger>
+          <TabbedModuleTrigger value="reports">
+            <BarChart3 className="mr-2 size-4 shrink-0" />
+            <Trans i18nKey="kinder:finance.tabs.reports" />
+          </TabbedModuleTrigger>
         </TabbedModuleList>
 
         <TabbedModuleContent value="overview">
@@ -99,6 +132,27 @@ export function FinanceWorkspace({
 
         <TabbedModuleContent value="debts">
           <DebtsList debts={debts} />
+        </TabbedModuleContent>
+
+        <TabbedModuleContent value="plans">
+          <FeePlansPanel
+            classes={classes}
+            feeItems={feeItems}
+            plans={feePlans}
+            schoolId={schoolId}
+            students={students}
+          />
+        </TabbedModuleContent>
+
+        <TabbedModuleContent value="verification">
+          <PaymentVerificationPanel
+            payments={pendingPayments}
+            schoolId={schoolId}
+          />
+        </TabbedModuleContent>
+
+        <TabbedModuleContent value="reports">
+          <FinanceReportsPanel report={report} />
         </TabbedModuleContent>
       </TabbedModule>
     </BentoTile>

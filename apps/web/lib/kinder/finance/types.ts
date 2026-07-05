@@ -32,3 +32,56 @@ export type FinanceSummary = {
   invoicesThisMonth: number;
   paidInvoicesThisMonth: number;
 };
+
+export type TuitionFeeCategory =
+  | 'tuition'
+  | 'meals'
+  | 'bus'
+  | 'uniform'
+  | 'extracurricular'
+  | 'club'
+  | 'insurance'
+  | 'other';
+
+export type TuitionFeePlan = {
+  id: string;
+  school_id: string;
+  name: string;
+  class_id: string | null;
+  student_id: string | null;
+  academic_year: string | null;
+  effective_from: string;
+  effective_to: string | null;
+  is_active: boolean;
+  created_at: string;
+  items?: Array<{
+    id: string;
+    tuition_fee_item_id: string;
+    amount_override: number | null;
+    fee_item?: TuitionFeeItem | null;
+  }>;
+};
+
+export type InvoicePaymentWithStudent = InvoicePayment & {
+  invoice: {
+    id: string;
+    invoice_number: string;
+    title: string;
+    student: {
+      id: string;
+      full_name: string;
+      student_code: string;
+      class_name: string | null;
+    };
+  };
+};
+
+export type FinanceReportSummary = {
+  totalRevenue: number;
+  totalOutstanding: number;
+  paidCount: number;
+  unpaidCount: number;
+  overdueCount: number;
+  byClass: Array<{ name: string; outstanding: number; paid: number }>;
+  byMonth: Array<{ period: string; revenue: number; invoices: number }>;
+};

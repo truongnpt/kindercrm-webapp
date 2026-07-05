@@ -153,6 +153,14 @@ export const KINDER_MODULE_REGISTRY: KinderModuleDefinition[] = [
     managePermission: SETTINGS_PERMISSIONS.SCHOOL_MANAGE,
   },
   {
+    id: 'settings_payment',
+    labelKey: 'kinder:paymentSettings.title',
+    path: pathsConfig.app.settingsPayment,
+    packageFeature: 'finance',
+    viewPermission: SETTINGS_PERMISSIONS.SCHOOL_MANAGE,
+    managePermission: SETTINGS_PERMISSIONS.SCHOOL_MANAGE,
+  },
+  {
     id: 'settings_subscription',
     labelKey: 'kinder:subscription.title',
     path: pathsConfig.app.settingsSubscription,

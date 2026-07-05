@@ -551,7 +551,10 @@
       "overview": "Tổng quan",
       "invoices": "Hóa đơn",
       "tuition": "Khoản phí",
-      "debts": "Công nợ"
+      "debts": "Công nợ",
+      "feePlans": "Bảng giá",
+      "verification": "Xác nhận TT",
+      "reports": "Báo cáo"
     },
     "summary": {
       "revenueThisMonth": "Doanh thu tháng này",
@@ -573,6 +576,7 @@
       "billingCycle": "Chu kỳ",
       "description": "Mô tả",
       "status": "Trạng thái",
+      "category": "Danh mục",
       "active": "Đang áp dụng",
       "inactive": "Ngừng áp dụng",
       "cycles": {
@@ -581,10 +585,22 @@
         "semester": "Học kỳ",
         "yearly": "Hàng năm",
         "one_time": "Một lần"
+      },
+      "categories": {
+        "tuition": "Học phí",
+        "meals": "Tiền ăn",
+        "bus": "Xe đưa đón",
+        "uniform": "Đồng phục",
+        "extracurricular": "Ngoại khóa",
+        "club": "Câu lạc bộ",
+        "insurance": "Bảo hiểm",
+        "other": "Khác"
       }
     },
     "invoices": {
       "create": "Tạo hóa đơn",
+      "batchCreate": "Tạo hàng loạt",
+      "allStudents": "Tất cả học sinh đang học",
       "empty": "Chưa có hóa đơn nào.",
       "recent": "Hóa đơn gần đây",
       "listDescription": "Theo dõi trạng thái thanh toán và mở chi tiết hóa đơn.",
@@ -604,6 +620,7 @@
       "lineItems": "Chi tiết khoản thu",
       "quantity": "SL",
       "cancel": "Hủy hóa đơn",
+      "downloadPdf": "Tải PDF",
       "statuses": {
         "all": "Tất cả",
         "draft": "Nháp",
@@ -611,7 +628,8 @@
         "partial": "Thanh toán một phần",
         "paid": "Đã thanh toán",
         "overdue": "Quá hạn",
-        "cancelled": "Đã hủy"
+        "cancelled": "Đã hủy",
+        "waiting_verification": "Chờ xác nhận"
       }
     },
     "debts": {
@@ -644,7 +662,8 @@
         "cash": "Tiền mặt",
         "bank_transfer": "Chuyển khoản",
         "card": "Thẻ",
-        "other": "Khác"
+        "other": "Khác",
+        "qr_banking": "QR Banking"
       }
     },
     "refunds": {
@@ -657,7 +676,104 @@
     },
     "qr": {
       "title": "Thanh toán QR (VietQR)",
-      "amount": "Số tiền: {{amount}}"
+      "amount": "Số tiền: {{amount}}",
+      "transferContent": "Nội dung chuyển khoản"
+    },
+    "verification": {
+      "empty": "Không có thanh toán chờ xác nhận.",
+      "waiting": "Chờ xác nhận",
+      "approve": "Xác nhận",
+      "reject": "Từ chối",
+      "approveTitle": "Xác nhận thanh toán",
+      "rejectTitle": "Từ chối thanh toán",
+      "note": "Ghi chú xác nhận",
+      "viewProof": "Xem biên lai"
+    },
+    "feePlans": {
+      "add": "Thêm bảng giá",
+      "empty": "Chưa có bảng giá.",
+      "name": "Tên bảng giá",
+      "class": "Lớp",
+      "student": "Học sinh",
+      "allClasses": "Tất cả lớp",
+      "allStudents": "Tất cả học sinh",
+      "effectiveFrom": "Hiệu lực từ",
+      "effectiveTo": "Hiệu lực đến",
+      "feeItems": "Khoản phí"
+    },
+    "reports": {
+      "totalRevenue": "Tổng doanh thu",
+      "totalOutstanding": "Công nợ",
+      "paidCount": "Hóa đơn đã thu",
+      "unpaidCount": "Hóa đơn chưa thu",
+      "byClass": "Theo lớp",
+      "byMonth": "Theo tháng",
+      "class": "Lớp",
+      "outstanding": "Còn nợ",
+      "collected": "Đã thu",
+      "invoices": "Hóa đơn"
+    },
+    "receipt": {
+      "title": "Phiếu thu",
+      "number": "Số phiếu thu",
+      "paidAt": "Thời gian thu",
+      "download": "Tải PDF"
+    }
+  },
+  "paymentSettings": {
+    "title": "Cài đặt thanh toán",
+    "description": "Cấu hình phương thức thanh toán, tài khoản ngân hàng và hướng dẫn cho phụ huynh.",
+    "workspaceTitle": "Cấu hình thanh toán",
+    "workspaceHint": "Quản lý cách phụ huynh thanh toán học phí và thông tin ngân hàng trên hóa đơn.",
+    "tabs": {
+      "methods": "Phương thức",
+      "accounts": "Tài khoản NH",
+      "instructions": "Hướng dẫn",
+      "audit": "Nhật ký"
+    },
+    "methodsHint": "Bật ít nhất một phương thức. Nên bật chuyển khoản hoặc QR cho thanh toán online.",
+    "method": "Phương thức",
+    "enabled": "Bật",
+    "default": "Mặc định",
+    "methodTypes": {
+      "cash": "Tiền mặt",
+      "bank_transfer": "Chuyển khoản",
+      "qr_banking": "QR Banking"
+    },
+    "addAccount": "Thêm tài khoản",
+    "editAccount": "Sửa tài khoản",
+    "accountsEmpty": "Chưa có tài khoản ngân hàng.",
+    "bankName": "Ngân hàng",
+    "bankCode": "Mã ngân hàng (BIN)",
+    "accountNumber": "Số tài khoản",
+    "accountName": "Chủ tài khoản",
+    "branch": "Chi nhánh",
+    "campus": "Cơ sở",
+    "allCampuses": "Tất cả cơ sở",
+    "setDefault": "Đặt làm mặc định",
+    "makeDefault": "Đặt mặc định",
+    "accountStatus": {
+      "active": "Hoạt động",
+      "inactive": "Ngừng"
+    },
+    "instructionsTitle": "Tiêu đề",
+    "instructionsBody": "Nội dung hướng dẫn",
+    "imageUrl": "URL ảnh hướng dẫn",
+    "videoUrl": "URL video hướng dẫn",
+    "notes": "Ghi chú",
+    "auditEmpty": "Chưa có nhật ký.",
+    "auditAction": "Hành động",
+    "auditEntity": "Đối tượng",
+    "auditTime": "Thời gian",
+    "auditActions": {
+      "account_created": "Thêm tài khoản",
+      "account_updated": "Cập nhật tài khoản",
+      "account_deactivated": "Khóa tài khoản",
+      "account_default_changed": "Đổi TK mặc định",
+      "method_enabled": "Bật phương thức",
+      "method_disabled": "Tắt phương thức",
+      "method_default_changed": "Đổi PT mặc định",
+      "instructions_updated": "Cập nhật hướng dẫn"
     }
   },
   "importExport": {
@@ -1326,7 +1442,15 @@
       "empty": "Chưa có hóa đơn.",
       "dueDate": "Hạn thanh toán",
       "invoices": "Hóa đơn",
-      "payments": "Lịch sử thanh toán"
+      "payments": "Lịch sử thanh toán",
+      "markPaid": "Đã thanh toán",
+      "submitPayment": "Gửi xác nhận thanh toán",
+      "uploadProof": "Tải biên lai (tuỳ chọn)",
+      "transferContent": "Nội dung chuyển khoản",
+      "downloadInvoice": "Tải hóa đơn PDF",
+      "paymentSubmitted": "Đã gửi xác nhận thanh toán. Nhà trường sẽ kiểm tra và xác nhận.",
+      "paymentSubmitFailed": "Không thể gửi xác nhận thanh toán. Vui lòng thử lại.",
+      "paymentExceedsBalance": "Số tiền vượt quá số dư còn lại của hóa đơn."
     },
     "contracts": {
       "empty": "Chưa có hợp đồng",

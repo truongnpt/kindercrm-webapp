@@ -1,6 +1,6 @@
 /*
  * Kinder Admin — TailAdmin-inspired layout
- * Clean sidebar, bordered cards, flat surfaces — brand green #3fae40 unchanged
+ * Clean sidebar, bordered cards, flat surfaces — brand blue #034cf8
  */
 
 @layer base {
@@ -17,7 +17,7 @@
     --kinder-success: #16a34a;
     --kinder-warning: #f59e0b;
     --kinder-info: #3b82f6;
-    --kinder-primary-light: #ecfdf5;
+    --kinder-primary-light: #eff6ff;
     --kinder-page-bg: #f8fafc;
     --kinder-sidebar-width: 16rem;
   }
@@ -27,7 +27,7 @@
     --kinder-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.2);
     --kinder-shadow-sm: 0 1px 3px rgb(0 0 0 / 0.25);
     --kinder-shadow-md: 0 4px 8px rgb(0 0 0 / 0.3);
-    --kinder-primary-light: rgb(63 174 64 / 0.12);
+    --kinder-primary-light: rgb(3 76 248 / 0.12);
   }
 }
 
@@ -225,7 +225,7 @@
   }
 
   .kinder-panel-empty {
-    @apply flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/20 px-6 py-10 text-center;
+    @apply flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-white px-6 py-10 text-center;
   }
 
   .kinder-pipeline-column {

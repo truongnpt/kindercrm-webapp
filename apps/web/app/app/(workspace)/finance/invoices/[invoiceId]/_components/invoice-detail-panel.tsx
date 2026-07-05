@@ -46,7 +46,7 @@ import type {
   PaymentRefund,
 } from '~/lib/kinder/finance/types';
 
-const PAYMENT_METHODS = ['cash', 'bank_transfer', 'card', 'other'] as const;
+const PAYMENT_METHODS = ['cash', 'bank_transfer', 'card', 'other', 'qr_banking'] as const;
 
 export function InvoiceDetailPanel({
   invoice,

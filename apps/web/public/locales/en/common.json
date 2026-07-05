@@ -16,6 +16,9 @@
   "modalConfirmationQuestion": "Are you sure you want to continue?",
   "imageInputLabel": "Click here to upload an image",
   "cancel": "Cancel",
+  "save": "Save",
+  "edit": "Edit",
+  "confirm": "Confirm",
   "delete": "Delete",
   "clear": "Clear",
   "notFound": "Not Found",
@@ -100,7 +103,8 @@
     "ai": "AI Assistant",
     "school": "School",
     "campuses": "Campuses",
-    "subscription": "Subscription"
+    "subscription": "Subscription",
+    "paymentSettings": "Payment settings"
   },
   "roles": {
     "owner": {

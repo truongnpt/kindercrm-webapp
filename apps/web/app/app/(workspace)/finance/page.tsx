@@ -5,11 +5,15 @@ import { Trans } from '@kit/ui/trans';
 import { KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import {
+  loadActiveClassesForFinance,
   loadActiveStudentsForFinance,
   loadActiveTuitionFeeItems,
   loadDebts,
+  loadFeePlans,
+  loadFinanceReportSummary,
   loadFinanceSummary,
   loadInvoices,
+  loadPendingVerificationPayments,
   loadTuitionFeeItems,
 } from '~/lib/kinder/finance/load-finance';
 import { assertModuleAccessFromContext } from '~/lib/kinder/permissions/module-access.server';
@@ -19,6 +23,7 @@ import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
+import { BatchCreateInvoicesDialog } from './_components/batch-create-invoices-dialog';
 import { CreateInvoiceDialog } from './_components/create-invoice-dialog';
 import { FinanceOverview } from './_components/finance-overview';
 import { FinanceWorkspace } from './_components/finance-workspace';
@@ -55,6 +60,10 @@ async function FinancePage({
     feeItems,
     activeFeeItems,
     students,
+    feePlans,
+    pendingPayments,
+    report,
+    classes,
   ] = await Promise.all([
     loadFinanceSummary(context.school.id),
     loadInvoices(context.school.id, status),
@@ -62,6 +71,10 @@ async function FinancePage({
     loadTuitionFeeItems(context.school.id),
     loadActiveTuitionFeeItems(context.school.id),
     loadActiveStudentsForFinance(context.school.id),
+    loadFeePlans(context.school.id),
+    loadPendingVerificationPayments(context.school.id),
+    loadFinanceReportSummary(context.school.id),
+    loadActiveClassesForFinance(context.school.id),
   ]);
 
   const defaultTab = tab ?? 'overview';
@@ -74,6 +87,11 @@ async function FinancePage({
             <Suspense>
               <InvoiceStatusFilter />
             </Suspense>
+            <BatchCreateInvoicesDialog
+              classes={classes}
+              feeItems={activeFeeItems}
+              schoolId={context.school.id}
+            />
             <CreateInvoiceDialog
               feeItems={activeFeeItems}
               schoolId={context.school.id}
@@ -89,11 +107,16 @@ async function FinancePage({
       <KinderPageBody>
         <FinanceOverview summary={summary} />
         <FinanceWorkspace
+          classes={classes}
           debts={debts}
           defaultTab={defaultTab}
           feeItems={feeItems}
+          feePlans={feePlans}
           invoices={invoices}
+          pendingPayments={pendingPayments}
+          report={report}
           schoolId={context.school.id}
+          students={students}
           summary={summary}
         />
       </KinderPageBody>

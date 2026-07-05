@@ -551,7 +551,10 @@
       "overview": "Overview",
       "invoices": "Invoices",
       "tuition": "Fee items",
-      "debts": "Debts"
+      "debts": "Debts",
+      "feePlans": "Fee plans",
+      "verification": "Verification",
+      "reports": "Reports"
     },
     "summary": {
       "revenueThisMonth": "Revenue this month",
@@ -573,6 +576,7 @@
       "billingCycle": "Billing cycle",
       "description": "Description",
       "status": "Status",
+      "category": "Category",
       "active": "Active",
       "inactive": "Inactive",
       "cycles": {
@@ -581,10 +585,22 @@
         "semester": "Semester",
         "yearly": "Yearly",
         "one_time": "One-time"
+      },
+      "categories": {
+        "tuition": "Tuition",
+        "meals": "Meals",
+        "bus": "School bus",
+        "uniform": "Uniform",
+        "extracurricular": "Extracurricular",
+        "club": "Club",
+        "insurance": "Insurance",
+        "other": "Other"
       }
     },
     "invoices": {
       "create": "Create invoice",
+      "batchCreate": "Batch create invoices",
+      "allStudents": "All active students",
       "empty": "No invoices yet.",
       "recent": "Recent invoices",
       "listDescription": "Track billing status and open invoice details.",
@@ -604,6 +620,7 @@
       "lineItems": "Line items",
       "quantity": "Qty",
       "cancel": "Cancel invoice",
+      "downloadPdf": "Download PDF",
       "statuses": {
         "all": "All",
         "draft": "Draft",
@@ -611,7 +628,8 @@
         "partial": "Partially paid",
         "paid": "Paid",
         "overdue": "Overdue",
-        "cancelled": "Cancelled"
+        "cancelled": "Cancelled",
+        "waiting_verification": "Waiting verification"
       }
     },
     "debts": {
@@ -644,7 +662,8 @@
         "cash": "Cash",
         "bank_transfer": "Bank transfer",
         "card": "Card",
-        "other": "Other"
+        "other": "Other",
+        "qr_banking": "QR Banking"
       }
     },
     "refunds": {
@@ -657,7 +676,104 @@
     },
     "qr": {
       "title": "QR payment (VietQR)",
-      "amount": "Amount: {{amount}}"
+      "amount": "Amount: {{amount}}",
+      "transferContent": "Transfer content"
+    },
+    "verification": {
+      "empty": "No payments awaiting verification.",
+      "waiting": "Waiting verification",
+      "approve": "Approve",
+      "reject": "Reject",
+      "approveTitle": "Approve payment",
+      "rejectTitle": "Reject payment",
+      "note": "Verification note",
+      "viewProof": "View proof"
+    },
+    "feePlans": {
+      "add": "Add fee plan",
+      "empty": "No fee plans yet.",
+      "name": "Plan name",
+      "class": "Class",
+      "student": "Student",
+      "allClasses": "All classes",
+      "allStudents": "All students",
+      "effectiveFrom": "Effective from",
+      "effectiveTo": "Effective to",
+      "feeItems": "Fee items"
+    },
+    "reports": {
+      "totalRevenue": "Total revenue",
+      "totalOutstanding": "Outstanding",
+      "paidCount": "Paid invoices",
+      "unpaidCount": "Unpaid invoices",
+      "byClass": "By class",
+      "byMonth": "By month",
+      "class": "Class",
+      "outstanding": "Outstanding",
+      "collected": "Collected",
+      "invoices": "Invoices"
+    },
+    "receipt": {
+      "title": "Payment receipt",
+      "number": "Receipt #",
+      "paidAt": "Paid at",
+      "download": "Download PDF"
+    }
+  },
+  "paymentSettings": {
+    "title": "Payment settings",
+    "description": "Configure payment methods, bank accounts, and parent payment instructions.",
+    "workspaceTitle": "Payment configuration",
+    "workspaceHint": "Manage how parents pay tuition and how invoices display bank details.",
+    "tabs": {
+      "methods": "Methods",
+      "accounts": "Bank accounts",
+      "instructions": "Instructions",
+      "audit": "Audit log"
+    },
+    "methodsHint": "Enable at least one payment method. Bank transfer or QR is recommended for online payments.",
+    "method": "Method",
+    "enabled": "Enabled",
+    "default": "Default",
+    "methodTypes": {
+      "cash": "Cash",
+      "bank_transfer": "Bank transfer",
+      "qr_banking": "QR Banking"
+    },
+    "addAccount": "Add bank account",
+    "editAccount": "Edit bank account",
+    "accountsEmpty": "No bank accounts configured yet.",
+    "bankName": "Bank name",
+    "bankCode": "Bank code (BIN)",
+    "accountNumber": "Account number",
+    "accountName": "Account holder",
+    "branch": "Branch",
+    "campus": "Campus",
+    "allCampuses": "All campuses",
+    "setDefault": "Set as default account",
+    "makeDefault": "Make default",
+    "accountStatus": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "instructionsTitle": "Title",
+    "instructionsBody": "Instructions",
+    "imageUrl": "Guide image URL",
+    "videoUrl": "Guide video URL",
+    "notes": "Notes",
+    "auditEmpty": "No audit entries yet.",
+    "auditAction": "Action",
+    "auditEntity": "Entity",
+    "auditTime": "Time",
+    "auditActions": {
+      "account_created": "Account created",
+      "account_updated": "Account updated",
+      "account_deactivated": "Account deactivated",
+      "account_default_changed": "Default account changed",
+      "method_enabled": "Method enabled",
+      "method_disabled": "Method disabled",
+      "method_default_changed": "Default method changed",
+      "instructions_updated": "Instructions updated"
     }
   },
   "importExport": {
@@ -1326,7 +1442,15 @@
       "empty": "No invoices yet.",
       "dueDate": "Due date",
       "invoices": "Invoices",
-      "payments": "Payment history"
+      "payments": "Payment history",
+      "markPaid": "I've paid",
+      "submitPayment": "Submit payment",
+      "uploadProof": "Upload receipt (optional)",
+      "transferContent": "Transfer content",
+      "downloadInvoice": "Download invoice PDF",
+      "paymentSubmitted": "Payment submitted for verification. The school will review and confirm.",
+      "paymentSubmitFailed": "Could not submit payment. Please try again.",
+      "paymentExceedsBalance": "The amount exceeds the remaining invoice balance."
     },
     "contracts": {
       "empty": "No contracts yet",

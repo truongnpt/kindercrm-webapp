@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 import {
   loadParentLeaveRequests,
@@ -16,6 +17,7 @@ import { loadParentDailyReports } from '~/lib/kinder/daily-reports/load-daily-re
 import { loadParentDailyReportAttachments } from '~/lib/kinder/daily-reports/load-daily-reports';
 import { loadParentStudentHealth } from '~/lib/kinder/health/load-health';
 import { getVietQrConfig } from '~/lib/kinder/finance/vietqr';
+import { loadPaymentSettings } from '~/lib/kinder/payment-settings/load-payment-settings';
 import {
   loadParentPublishedMenu,
   loadParentPublishedMenuWeek,
@@ -93,6 +95,28 @@ async function ParentChildPage({
     })),
   );
 
+  const paymentSettings = await loadPaymentSettings(student.school_id);
+
+  const { data: schoolRow } = await getSupabaseServerClient()
+    .from('schools')
+    .select('name')
+    .eq('id', student.school_id)
+    .single();
+
+  const defaultAccount =
+    paymentSettings.accounts.find(
+      (account) => account.is_default && account.status === 'active',
+    ) ?? paymentSettings.accounts.find((account) => account.status === 'active');
+
+  const vietQrConfig =
+    defaultAccount ?
+      {
+        bankBin: defaultAccount.bank_code,
+        accountNo: defaultAccount.account_number,
+        accountName: defaultAccount.account_name,
+      }
+    : getVietQrConfig();
+
   return (
     <ParentChildDetailPanel
       attendance={attendance}
@@ -102,11 +126,14 @@ async function ParentChildPage({
       health={health}
       invoices={invoices}
       leaveRequests={leaveRequests}
+      paymentInstructions={paymentSettings.instructions}
       payments={payments}
+      schoolId={student.school_id}
+      schoolName={schoolRow?.name ?? ''}
       student={student}
       studentDetail={studentDetail}
       todayMenu={todayMenu}
-      vietQrConfig={getVietQrConfig()}
+      vietQrConfig={vietQrConfig}
       weekMenus={weekMenus}
     />
   );

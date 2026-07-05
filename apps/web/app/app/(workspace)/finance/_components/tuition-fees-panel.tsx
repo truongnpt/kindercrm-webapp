@@ -47,6 +47,17 @@ const BILLING_CYCLES = [
   'one_time',
 ] as const;
 
+const FEE_CATEGORIES = [
+  'tuition',
+  'meals',
+  'bus',
+  'uniform',
+  'extracurricular',
+  'club',
+  'insurance',
+  'other',
+] as const;
+
 export function TuitionFeesPanel({
   schoolId,
   feeItems,
@@ -64,6 +75,7 @@ export function TuitionFeesPanel({
       description: '',
       amount: 0,
       billingCycle: 'monthly' as const,
+      category: 'tuition' as const,
     },
   });
 
@@ -121,6 +133,35 @@ export function TuitionFeesPanel({
                       <FormControl>
                         <Input min={0} step={1000} type="number" {...field} />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <Trans i18nKey="kinder:finance.tuition.category" />
+                      </FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {FEE_CATEGORIES.map((category) => (
+                            <SelectItem key={category} value={category}>
+                              <Trans
+                                i18nKey={`kinder:finance.tuition.categories.${category}`}
+                              />
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -194,6 +235,9 @@ export function TuitionFeesPanel({
                   <Trans i18nKey="kinder:finance.tuition.amount" />
                 </th>
                 <th className="px-4 py-3 text-left font-medium">
+                  <Trans i18nKey="kinder:finance.tuition.category" />
+                </th>
+                <th className="px-4 py-3 text-left font-medium">
                   <Trans i18nKey="kinder:finance.tuition.billingCycle" />
                 </th>
                 <th className="px-4 py-3 text-left font-medium">
@@ -207,6 +251,11 @@ export function TuitionFeesPanel({
                   <td className="px-4 py-3">{item.name}</td>
                   <td className="px-4 py-3 text-right">
                     {formatVnd(item.amount)}
+                  </td>
+                  <td className="px-4 py-3">
+                    <Trans
+                      i18nKey={`kinder:finance.tuition.categories.${(item as { category?: string }).category ?? 'other'}`}
+                    />
                   </td>
                   <td className="px-4 py-3">
                     <Trans

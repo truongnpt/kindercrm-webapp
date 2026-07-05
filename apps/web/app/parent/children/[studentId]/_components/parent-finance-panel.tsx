@@ -14,14 +14,25 @@ import {
   type VietQrConfig,
 } from '~/lib/kinder/finance/vietqr';
 
+import { ParentInvoiceDownloadButton } from './parent-invoice-download-button';
+import { ParentSubmitPaymentDialog } from './parent-submit-payment-dialog';
+
 type InvoiceRow = {
   id: string;
   invoice_number: string;
   billing_period: string;
+  title?: string;
   total_amount: number;
   paid_amount: number;
   status: string;
   due_date: string;
+  transfer_content?: string | null;
+  qr_code_url?: string | null;
+  subtotal?: number;
+  discount_amount?: number;
+  notes?: string | null;
+  issue_date?: string;
+  created_at?: string;
 };
 
 type PaymentRow = {
@@ -32,6 +43,7 @@ type PaymentRow = {
   paid_at: string;
   reference_note: string | null;
   receipt_number: string;
+  status?: string;
 };
 
 type ContractRow = {
@@ -59,16 +71,34 @@ export function ParentFinancePanel({
   payments,
   contracts,
   studentName,
+  studentCode,
+  studentId,
+  schoolId,
+  schoolName,
   vietQrConfig,
+  paymentInstructions,
 }: {
   invoices: InvoiceRow[];
   payments: PaymentRow[];
   contracts: ContractRow[];
   studentName: string;
+  studentCode: string;
+  studentId: string;
+  schoolId: string;
+  schoolName: string;
   vietQrConfig: VietQrConfig | null;
+  paymentInstructions: {
+    title: string;
+    description: string | null;
+    image_url: string | null;
+    video_url: string | null;
+    notes: string | null;
+  } | null;
 }) {
   const unpaidInvoices = invoices.filter(
-    (invoice) => invoice.total_amount > invoice.paid_amount,
+    (invoice) =>
+      invoice.total_amount > invoice.paid_amount &&
+      invoice.status !== 'waiting_verification',
   );
   const unpaidBalance = unpaidInvoices.reduce(
     (sum, invoice) => sum + (invoice.total_amount - invoice.paid_amount),
@@ -118,33 +148,13 @@ export function ParentFinancePanel({
         </div>
       )}
 
-      {vietQrConfig && unpaidInvoices.length > 0 ? (
+      {paymentInstructions?.description ? (
         <div className="rounded-2xl border border-border bg-card p-4">
           <p className="font-medium text-foreground">
-            <Trans i18nKey="kinder:finance.qr.title" />
+            {paymentInstructions.title}
           </p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            <Trans
-              i18nKey="kinder:finance.qr.amount"
-              values={{ amount: formatVnd(unpaidBalance) }}
-            />
-          </p>
-          <div className="mt-4 flex justify-center">
-            <Image
-              alt="VietQR"
-              className="rounded-xl border border-border"
-              height={220}
-              src={buildVietQrImageUrl({
-                config: vietQrConfig,
-                amount: unpaidBalance,
-                description: unpaidInvoices[0]!.invoice_number,
-              })}
-              unoptimized
-              width={220}
-            />
-          </div>
-          <p className="mt-3 text-center text-xs text-muted-foreground">
-            {vietQrConfig.accountName} · {vietQrConfig.accountNo}
+          <p className="text-muted-foreground mt-2 whitespace-pre-line text-sm">
+            {paymentInstructions.description}
           </p>
         </div>
       ) : null}
@@ -157,14 +167,28 @@ export function ParentFinancePanel({
         {invoices.map((invoice) => {
           const balance = invoice.total_amount - invoice.paid_amount;
           const invoicePayments = paymentsByInvoice.get(invoice.id) ?? [];
+          const pendingAmount = invoicePayments
+            .filter((payment) => payment.status === 'waiting_verification')
+            .reduce((sum, payment) => sum + payment.amount, 0);
+          const availableBalance = Math.max(0, balance - pendingAmount);
           const linkedContract = contractByInvoiceId.get(invoice.id);
+          const qrUrl =
+            invoice.qr_code_url ??
+            (vietQrConfig && availableBalance > 0 ?
+              buildVietQrImageUrl({
+                config: vietQrConfig,
+                amount: availableBalance,
+                description:
+                  invoice.transfer_content ?? invoice.invoice_number,
+              })
+            : null);
 
           return (
             <div
               className="rounded-xl border border-border bg-muted/40 p-4"
               key={invoice.id}
             >
-              <div className="flex items-start justify-between gap-2">
+              <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <p className="font-mono text-xs text-muted-foreground">
                     {invoice.invoice_number}
@@ -182,16 +206,59 @@ export function ParentFinancePanel({
               <p className="mt-2 text-base font-bold text-foreground">
                 {formatVnd(invoice.total_amount)}
               </p>
-              {balance > 0 ? (
+              {availableBalance > 0 ? (
                 <p className="mt-1 text-sm text-amber-700">
                   <Trans i18nKey="kinder:finance.debts.balance" />:{' '}
-                  {formatVnd(balance)}
+                  {formatVnd(availableBalance)}
                 </p>
               ) : null}
               <p className="mt-1 text-xs text-muted-foreground">
                 <Trans i18nKey="kinder:parent.finance.dueDate" />:{' '}
                 {invoice.due_date}
               </p>
+
+              {invoice.transfer_content ? (
+                <p className="mt-2 rounded-lg bg-background px-3 py-2 font-mono text-xs">
+                  <Trans i18nKey="kinder:parent.finance.transferContent" />:{' '}
+                  {invoice.transfer_content}
+                </p>
+              ) : null}
+
+              {qrUrl && availableBalance > 0 ? (
+                <div className="mt-4 flex flex-col items-center">
+                  <Image
+                    alt="VietQR"
+                    className="rounded-xl border border-border"
+                    height={200}
+                    src={qrUrl}
+                    unoptimized
+                    width={200}
+                  />
+                  {vietQrConfig ? (
+                    <p className="mt-2 text-center text-xs text-muted-foreground">
+                      {vietQrConfig.accountName} · {vietQrConfig.accountNo}
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
+
+              {availableBalance > 0 &&
+              invoice.status !== 'waiting_verification' &&
+              invoice.status !== 'paid' ? (
+                <ParentSubmitPaymentDialog
+                  availableBalance={availableBalance}
+                  invoice={invoice}
+                  schoolId={schoolId}
+                  studentId={studentId}
+                />
+              ) : null}
+
+              <ParentInvoiceDownloadButton
+                invoice={invoice}
+                schoolName={schoolName}
+                studentCode={studentCode}
+                studentName={studentName}
+              />
 
               {linkedContract ? (
                 <div className="mt-3 rounded-xl border border-primary/15 bg-primary/5 p-3">
@@ -226,6 +293,13 @@ export function ParentFinancePanel({
                           i18nKey={`kinder:finance.payments.methods.${payment.payment_method}`}
                         />{' '}
                         · {new Date(payment.paid_at).toLocaleDateString()}
+                        {payment.status === 'waiting_verification' ? (
+                          <span className="text-amber-700">
+                            {' '}
+                            ·{' '}
+                            <Trans i18nKey="kinder:finance.verification.waiting" />
+                          </span>
+                        ) : null}
                       </li>
                     ))}
                   </ul>

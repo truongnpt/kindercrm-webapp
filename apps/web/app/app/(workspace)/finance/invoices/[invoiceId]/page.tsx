@@ -9,6 +9,7 @@ import {
 } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import { getVietQrConfig } from '~/lib/kinder/finance/vietqr';
+import type { InvoiceWithStudent } from '~/lib/kinder/finance/types';
 import {
   loadInvoiceAdjustments,
   loadInvoiceById,
@@ -25,6 +26,7 @@ import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
 import { InvoiceDetailWorkspace } from './_components/invoice-detail-workspace';
+import { InvoiceExportActions } from './_components/invoice-export-actions';
 import { InvoiceOverview } from './_components/invoice-overview';
 
 const INVOICE_STATUS_TONE: Record<
@@ -37,6 +39,7 @@ const INVOICE_STATUS_TONE: Record<
   paid: 'success',
   cancelled: 'danger',
   overdue: 'danger',
+  waiting_verification: 'warning',
 };
 
 export const generateMetadata = async () => {
@@ -85,18 +88,30 @@ async function InvoiceDetailPage({
   );
 
   const balance = Math.max(0, invoice.total_amount - invoice.paid_amount);
-  const vietQrConfig = getVietQrConfig();
+  const invoiceWithPayment = invoice as InvoiceWithStudent & {
+    transfer_content?: string | null;
+    qr_code_url?: string | null;
+  };
   const showQr =
-    Boolean(vietQrConfig) &&
     balance > 0 &&
     invoice.status !== 'cancelled' &&
-    invoice.status !== 'paid';
+    invoice.status !== 'paid' &&
+    Boolean(invoiceWithPayment.qr_code_url || getVietQrConfig());
 
   const defaultTab = tab ?? (showQr ? 'qr' : 'overview');
 
   return (
     <>
       <DetailPageHeader
+        actions={
+          <InvoiceExportActions
+            adjustments={adjustments}
+            invoice={invoiceWithPayment}
+            lineItems={lineItems}
+            payments={payments}
+            schoolName={context.school.name}
+          />
+        }
         backHref={pathsConfig.app.finance}
         breadcrumbs={[
           {
@@ -131,7 +146,9 @@ async function InvoiceDetailPage({
           refunds={refunds}
           schoolId={context.school.id}
           showQr={showQr}
-          vietQrConfig={vietQrConfig}
+          transferContent={invoiceWithPayment.transfer_content}
+          vietQrConfig={getVietQrConfig()}
+          vietQrUrl={invoiceWithPayment.qr_code_url}
         />
       </KinderPageBody>
     </>

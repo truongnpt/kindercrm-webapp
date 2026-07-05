@@ -68,6 +68,8 @@ type InvoiceRow = {
   paid_amount: number;
   status: string;
   due_date: string;
+  transfer_content?: string | null;
+  qr_code_url?: string | null;
 };
 
 type PaymentRow = {
@@ -78,6 +80,7 @@ type PaymentRow = {
   paid_at: string;
   reference_note: string | null;
   receipt_number: string;
+  status?: string;
 };
 
 type ContractRow = {
@@ -147,6 +150,9 @@ export function ParentChildDetailPanel({
   weekMenus,
   studentDetail,
   vietQrConfig,
+  paymentInstructions,
+  schoolId,
+  schoolName,
   defaultTab,
 }: {
   student: {
@@ -219,6 +225,15 @@ export function ParentChildDetailPanel({
     }>;
   };
   vietQrConfig: VietQrConfig | null;
+  paymentInstructions: {
+    title: string;
+    description: string | null;
+    image_url: string | null;
+    video_url: string | null;
+    notes: string | null;
+  } | null;
+  schoolId: string;
+  schoolName: string;
   defaultTab: string;
 }) {
   const router = useRouter();
@@ -353,7 +368,12 @@ export function ParentChildDetailPanel({
           <ParentFinancePanel
             contracts={contracts}
             invoices={invoices}
+            paymentInstructions={paymentInstructions}
             payments={payments}
+            schoolId={schoolId}
+            schoolName={schoolName}
+            studentCode={student.student_code}
+            studentId={student.id}
             studentName={student.full_name}
             vietQrConfig={vietQrConfig}
           />

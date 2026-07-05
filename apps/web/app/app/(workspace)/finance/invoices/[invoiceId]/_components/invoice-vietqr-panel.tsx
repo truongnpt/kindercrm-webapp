@@ -15,17 +15,29 @@ export function InvoiceVietQrPanel({
   amount,
   invoiceNumber,
   studentName,
+  transferContent,
+  qrUrl,
 }: {
-  config: VietQrConfig;
+  config: VietQrConfig | null;
   amount: number;
   invoiceNumber: string;
   studentName: string;
+  transferContent?: string | null;
+  qrUrl?: string | null;
 }) {
-  const qrUrl = buildVietQrImageUrl({
-    config,
-    amount,
-    description: `${invoiceNumber} ${studentName}`.slice(0, 100),
-  });
+  const resolvedQrUrl =
+    qrUrl ??
+    (config ?
+      buildVietQrImageUrl({
+        config,
+        amount,
+        description: transferContent ?? `${invoiceNumber} ${studentName}`.slice(0, 100),
+      })
+    : null);
+
+  if (!resolvedQrUrl) {
+    return null;
+  }
 
   return (
     <div className="kinder-mobile-card">
@@ -38,19 +50,26 @@ export function InvoiceVietQrPanel({
           values={{ amount: formatVnd(amount) }}
         />
       </p>
+      {transferContent ? (
+        <p className="mt-2 rounded-md bg-muted px-3 py-2 font-mono text-xs">
+          <Trans i18nKey="kinder:finance.qr.transferContent" />: {transferContent}
+        </p>
+      ) : null}
       <div className="mt-4 flex justify-center">
         <Image
           alt="VietQR"
           className="rounded-md border"
           height={220}
-          src={qrUrl}
+          src={resolvedQrUrl}
           unoptimized
           width={220}
         />
       </div>
-      <p className="text-muted-foreground mt-3 text-center text-xs">
-        {config.accountName} · {config.accountNo}
-      </p>
+      {config ? (
+        <p className="text-muted-foreground mt-3 text-center text-xs">
+          {config.accountName} · {config.accountNo}
+        </p>
+      ) : null}
     </div>
   );
 }
