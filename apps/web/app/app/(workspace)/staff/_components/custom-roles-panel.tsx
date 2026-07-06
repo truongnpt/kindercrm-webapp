@@ -38,7 +38,7 @@ import {
   createSchoolCustomRoleAction,
   deleteSchoolCustomRoleAction,
   type SchoolCustomRole,
-} from '~/lib/kinder/permissions';
+} from '~/lib/kinder/permissions/client';
 
 const CreateCustomRoleSchema = z.object({
   name: z.string().min(2).max(100),

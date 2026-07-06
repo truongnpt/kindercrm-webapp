@@ -17,7 +17,7 @@ import {
   useKinderMutation,
 } from '~/components/kinder-ui';
 import type { Campus } from '~/lib/kinder/types';
-import { toAccessRoleKey, type SchoolCustomRole } from '~/lib/kinder/permissions';
+import { toAccessRoleKey, type SchoolCustomRole } from '~/lib/kinder/permissions/client';
 import type { z } from 'zod';
 
 import { UpdateStaffEmployeeSchema } from '~/lib/kinder/staff/schemas/staff.schema';

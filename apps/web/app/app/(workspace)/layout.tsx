@@ -32,11 +32,6 @@ function WorkspaceLayout({ children }: React.PropsWithChildren) {
   const { user, context, schools, navigation, notifications, unreadCount, showPlatformLink } =
     use(loadWorkspaceData());
 
-  if (!context) {
-    await redirectIfPlatformAdmin(user.id);
-    redirect(pathsConfig.app.onboarding);
-  }
-
   if (context.school.status === 'suspended') {
     redirect(pathsConfig.app.suspended);
   }
@@ -143,6 +138,11 @@ async function loadWorkspaceData() {
         memberPermissions,
       )
     : navigationConfig;
+
+  if (!context) {
+    await redirectIfPlatformAdmin(user.id);
+    redirect(pathsConfig.app.onboarding);
+  }
 
   return {
     user,

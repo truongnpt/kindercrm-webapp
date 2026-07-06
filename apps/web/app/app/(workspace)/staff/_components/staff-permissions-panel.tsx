@@ -25,7 +25,7 @@ import {
   type SchoolCustomRole,
   type SchoolRolePermissionRow,
   updateSchoolPermissionsAction,
-} from '~/lib/kinder/permissions';
+} from '~/lib/kinder/permissions/client';
 
 import { CustomRolesPanel } from './custom-roles-panel';
 
