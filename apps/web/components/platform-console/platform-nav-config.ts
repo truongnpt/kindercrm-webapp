@@ -56,6 +56,13 @@ export const PLATFORM_NAV_ITEMS = [
     roles: ['super_admin', 'support', 'billing'] as PlatformAdminRole[],
   },
   {
+    href: pathsConfig.platform.demoRequests,
+    labelKey: 'kinder:platform.nav.demoRequests',
+    icon: Mail,
+    end: false,
+    roles: ['super_admin', 'support', 'billing'] as PlatformAdminRole[],
+  },
+  {
     href: pathsConfig.platform.auditLogs,
     labelKey: 'kinder:platform.nav.audit',
     icon: ClipboardList,

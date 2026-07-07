@@ -22,7 +22,7 @@ async function TermsOfServicePage() {
         subtitle={t('marketing:termsOfServiceDescription')}
       />
 
-      <div className="container mx-auto py-8">
+      <div className="container mx-auto px-4 py-8 sm:px-6">
         <TermsOfServiceContent />
       </div>
     </div>

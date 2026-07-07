@@ -30,7 +30,7 @@ const plans = [
   },
   {
     nameKey: 'marketing:pricingStarter',
-    price: '₫990K',
+    price: '₫990.000',
     descKey: 'marketing:pricingStarterDesc',
     features: [
       'marketing:pricingPage.plans.starter.featureAllModules',
@@ -41,7 +41,7 @@ const plans = [
   },
   {
     nameKey: 'marketing:pricingPro',
-    price: '₫2.49M',
+    price: '₫2.490.000',
     descKey: 'marketing:pricingProDesc',
     features: [
       'marketing:pricingPage.plans.pro.featureAllModules',
@@ -88,7 +88,7 @@ export function PricingPreviewSection() {
                 {plan.price}
                 {plan.price !== 'Free' ? (
                   <span className="text-base font-normal text-[var(--marketing-text-muted)]">
-                    /mo
+                    <Trans i18nKey="marketing:pricingPage.perMonth" />
                   </span>
                 ) : null}
               </p>

@@ -74,6 +74,7 @@
       "admins": "Admins",
       "audit": "Audit",
       "enterpriseInquiries": "Enterprise",
+      "demoRequests": "Demo Requests",
       "coupons": "Coupons",
       "account": "Account"
     },
@@ -184,6 +185,27 @@
         "new": "New",
         "contacted": "Contacted",
         "closed": "Closed"
+      }
+    },
+    "demoRequests": {
+      "title": "Demo requests",
+      "description": "Demo requests submitted from the marketing website.",
+      "empty": "No demo requests yet.",
+      "time": "Time",
+      "school": "School",
+      "contact": "Contact",
+      "message": "Message",
+      "status": "Status",
+      "actions": "Actions",
+      "approve": "Approve",
+      "reject": "Reject",
+      "reviewed": "Reviewed",
+      "updated": "Demo request status updated.",
+      "updateError": "Unable to update demo request.",
+      "statuses": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
       }
     },
     "coupons": {

@@ -26,6 +26,7 @@ const navLinks = [
   { href: '/#features', label: 'marketing:navFeatures', match: 'hash' as const },
   { href: '/#solutions', label: 'marketing:navSolutions', match: 'hash' as const },
   { href: '/pricing', label: 'marketing:pricing', match: 'path' as const },
+  { href: '/faq', label: 'marketing:faq', match: 'path' as const },
 ] as const;
 
 function useNavActive() {
@@ -67,8 +68,8 @@ export function MarketingHeader({ user }: { user?: JwtPayload | null }) {
         className={cn(
           'sticky top-0 z-50 w-full transition-all duration-300',
           scrolled ?
-            'marketing-glass border-b border-[var(--marketing-border)] py-0 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]'
-          : 'bg-white/60 py-1 backdrop-blur-sm',
+            'marketing-glass backdrop-blur-sm border-b border-[var(--marketing-border)] py-0 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]'
+          : 'bg-white/60 py-1 ',
         )}
       >
         <div className="container mx-auto px-4 sm:px-6">
@@ -121,7 +122,16 @@ export function MarketingHeader({ user }: { user?: JwtPayload | null }) {
               <LanguageToggle />
 
               {user ?
-                <MarketingAccountMenu user={user} />
+                <>
+                  <MarketingButton
+                    href={pathsConfig.app.home}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <Trans i18nKey="marketing:ctaGoToDashboard" />
+                  </MarketingButton>
+                  <MarketingAccountMenu user={user} />
+                </>
               : <>
                   <MarketingButton
                     href={pathsConfig.auth.signIn}
@@ -146,7 +156,7 @@ export function MarketingHeader({ user }: { user?: JwtPayload | null }) {
             {/* Mobile toggle */}
             <button
               type="button"
-              className="inline-flex size-9 items-center justify-center rounded-lg text-[var(--marketing-text)] transition-colors hover:bg-[var(--marketing-section)] lg:hidden"
+              className="inline-flex size-9 ml-auto lg:ml-unset items-center justify-center rounded-lg text-[var(--marketing-text)] transition-colors hover:bg-[var(--marketing-section)] lg:hidden"
               aria-expanded={mobileOpen}
               aria-controls="marketing-mobile-menu"
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
@@ -164,7 +174,7 @@ export function MarketingHeader({ user }: { user?: JwtPayload | null }) {
       <div
         id="marketing-mobile-menu"
         className={cn(
-          'fixed inset-0 z-40 lg:hidden',
+          'fixed inset-0 z-100 lg:hidden',
           mobileOpen ? 'pointer-events-auto' : 'pointer-events-none',
         )}
         aria-hidden={!mobileOpen}
@@ -228,7 +238,18 @@ export function MarketingHeader({ user }: { user?: JwtPayload | null }) {
             </div>
 
             {user ?
-              <MarketingAccountMenu user={user} />
+              <div className="space-y-2">
+                <MarketingButton
+                  href={pathsConfig.app.home}
+                  variant="outline"
+                  className="w-full justify-center"
+                >
+                  <Trans i18nKey="marketing:ctaGoToDashboard" />
+                </MarketingButton>
+                <div className="flex justify-center">
+                  <MarketingAccountMenu user={user} />
+                </div>
+              </div>
             : <div className="flex flex-col gap-2">
                 <RequestDemoButton
                   size="default"

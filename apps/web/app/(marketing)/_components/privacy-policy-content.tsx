@@ -78,7 +78,7 @@ export function PrivacyPolicyContent() {
       <LegalParagraph className="text-foreground text-sm">
         <Trans
           i18nKey="marketing:privacyPolicyPage.lastUpdated"
-          values={{ date: '30/05/2026' }}
+          values={{ date: '07/07/2026' }}
         />
       </LegalParagraph>
 

@@ -86,10 +86,10 @@ export function TrustedBySection() {
   ] as const;
 
   const stats = [
-    { value: '500+', labelKey: 'marketing:trustedStatSchools' },
-    { value: '50K+', labelKey: 'marketing:trustedStatStudents' },
-    { value: '99.9%', labelKey: 'marketing:trustedStatUptime' },
-    { value: '4.9/5', labelKey: 'marketing:trustedStatRating' },
+    { value: 'Cloud SaaS', labelKey: 'marketing:trustedStatSchools' },
+    { value: 'Role-based', labelKey: 'marketing:trustedStatStudents' },
+    { value: 'Stripe Billing', labelKey: 'marketing:trustedStatUptime' },
+    { value: 'Parent Portal', labelKey: 'marketing:trustedStatRating' },
   ] as const;
 
   return (

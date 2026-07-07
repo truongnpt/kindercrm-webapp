@@ -33,6 +33,12 @@ const cookieRows = [
     durationKey: 'marketing:cookiePolicyPage.cookies.csrf.duration',
   },
   {
+    nameKey: 'marketing:cookiePolicyPage.cookies.org.name',
+    purposeKey: 'marketing:cookiePolicyPage.cookies.org.purpose',
+    typeKey: 'marketing:cookiePolicyPage.cookies.org.type',
+    durationKey: 'marketing:cookiePolicyPage.cookies.org.duration',
+  },
+  {
     nameKey: 'marketing:cookiePolicyPage.cookies.lang.name',
     purposeKey: 'marketing:cookiePolicyPage.cookies.lang.purpose',
     typeKey: 'marketing:cookiePolicyPage.cookies.lang.type',
@@ -44,6 +50,12 @@ const cookieRows = [
     typeKey: 'marketing:cookiePolicyPage.cookies.theme.type',
     durationKey: 'marketing:cookiePolicyPage.cookies.theme.duration',
   },
+  {
+    nameKey: 'marketing:cookiePolicyPage.cookies.layout.name',
+    purposeKey: 'marketing:cookiePolicyPage.cookies.layout.purpose',
+    typeKey: 'marketing:cookiePolicyPage.cookies.layout.type',
+    durationKey: 'marketing:cookiePolicyPage.cookies.layout.duration',
+  },
 ] as const;
 
 export function CookiePolicyContent() {
@@ -52,7 +64,7 @@ export function CookiePolicyContent() {
       <LegalParagraph className="text-foreground text-sm">
         <Trans
           i18nKey="marketing:cookiePolicyPage.lastUpdated"
-          values={{ date: '30/05/2026' }}
+          values={{ date: '07/07/2026' }}
         />
       </LegalParagraph>
 

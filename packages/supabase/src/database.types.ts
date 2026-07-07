@@ -974,6 +974,48 @@ export type Database = {
           },
         ]
       }
+      demo_requests: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          phone: string
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by_user_id: string | null
+          school_name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          phone: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by_user_id?: string | null
+          school_name: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          phone?: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by_user_id?: string | null
+          school_name?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       dishes: {
         Row: {
           allergen_tags: string[]

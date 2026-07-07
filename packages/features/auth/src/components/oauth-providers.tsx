@@ -63,7 +63,7 @@ export function OauthProviders(props: {
         <LoadingOverlay />
       </If>
 
-      <div className={'flex w-full flex-1 flex-col space-y-3'}>
+      <div className={'flex w-full flex-1 flex-col space-y-3 mt-4'}>
         <div className={'flex-col space-y-2'}>
           {enabledProviders.map((provider) => {
             return (

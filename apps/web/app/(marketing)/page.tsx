@@ -12,6 +12,7 @@ import {
 import { ModulesSection } from '~/(marketing)/_components/home/modules-section';
 import { PricingPreviewSection } from '~/(marketing)/_components/home/pricing-preview-section';
 import { ProductShowcaseSection } from '~/(marketing)/_components/home/product-showcase-section';
+import { RequestDemoFormSection } from '~/(marketing)/_components/home/request-demo-form-section';
 import { RolesExperienceSection } from '~/(marketing)/_components/home/roles-experience-section';
 import { TestimonialsSection } from '~/(marketing)/_components/home/testimonials-section';
 import appConfig from '~/config/app.config';
@@ -66,6 +67,7 @@ async function Home() {
       <HowItWorksSection />
       <TestimonialsSection />
       <PricingPreviewSection />
+      <RequestDemoFormSection />
       <FaqPreviewSection />
       <FinalCtaSection />
     </>

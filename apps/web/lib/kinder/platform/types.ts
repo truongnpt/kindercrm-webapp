@@ -76,3 +76,16 @@ export interface EnterpriseInquiryListItem {
   submitter_email: string | null;
   created_at: string;
 }
+
+export interface DemoRequestListItem {
+  id: string;
+  school_name: string;
+  email: string;
+  phone: string;
+  message: string;
+  status: 'pending' | 'approved' | 'rejected';
+  reviewed_at: string | null;
+  reviewed_by_user_id: string | null;
+  review_note: string | null;
+  created_at: string;
+}

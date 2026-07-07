@@ -229,6 +229,9 @@ export function PricingPlans({ isLoggedIn, locale }: PricingPlansProps) {
         <p className="text-muted-foreground text-sm leading-relaxed">
           <Trans i18nKey="marketing:pricingPage.paymentNoteContact" />
         </p>
+        <p className="text-muted-foreground text-sm leading-relaxed">
+          <Trans i18nKey="marketing:pricingPage.billingIntervalNote" />
+        </p>
         <p className="text-muted-foreground text-sm">
           <Trans
             components={{

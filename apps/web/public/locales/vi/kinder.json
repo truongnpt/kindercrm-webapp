@@ -74,6 +74,7 @@
       "admins": "Quản trị",
       "audit": "Nhật ký",
       "enterpriseInquiries": "Enterprise",
+      "demoRequests": "Request Demo",
       "coupons": "Mã giảm giá",
       "account": "Tài khoản"
     },
@@ -184,6 +185,27 @@
         "new": "Mới",
         "contacted": "Đã liên hệ",
         "closed": "Đã đóng"
+      }
+    },
+    "demoRequests": {
+      "title": "Yêu cầu demo",
+      "description": "Yêu cầu demo được gửi từ trang marketing.",
+      "empty": "Chưa có yêu cầu demo.",
+      "time": "Thời gian",
+      "school": "Trường",
+      "contact": "Liên hệ",
+      "message": "Nội dung",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "approve": "Duyệt",
+      "reject": "Từ chối",
+      "reviewed": "Đã xử lý",
+      "updated": "Cập nhật trạng thái yêu cầu demo thành công.",
+      "updateError": "Không thể cập nhật yêu cầu demo.",
+      "statuses": {
+        "pending": "Chờ duyệt",
+        "approved": "Đã duyệt",
+        "rejected": "Từ chối"
       }
     },
     "coupons": {

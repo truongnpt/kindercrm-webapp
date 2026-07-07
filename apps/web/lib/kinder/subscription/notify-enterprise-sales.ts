@@ -2,6 +2,7 @@ import 'server-only';
 
 import { isSmtpConfigured } from '~/lib/kinder/mail/smtp-config';
 import { sendMail } from '~/lib/kinder/mail/send-mail';
+import { buildEnterpriseInquiryNotificationEmail } from '~/lib/kinder/mail/templates/enterprise-inquiry-notification-email';
 
 export function getEnterpriseSalesEmail() {
   return process.env.ENTERPRISE_SALES_EMAIL?.trim() ?? null;
@@ -23,22 +24,22 @@ export async function notifyEnterpriseSalesTeam(input: {
     return { sent: false as const };
   }
 
-  const lines = [
-    `Trường: ${input.schoolName} (${input.schoolSlug})`,
-    `Người liên hệ: ${input.contactName}`,
-    `SĐT: ${input.phone}`,
-    `Số cơ sở dự kiến: ${input.campusCount}`,
-    input.submitterName || input.submitterEmail
-      ? `Owner: ${input.submitterName ?? '—'}${input.submitterEmail ? ` <${input.submitterEmail}>` : ''}`
-      : null,
-    input.notes ? `Ghi chú: ${input.notes}` : null,
-  ].filter(Boolean);
+  const template = buildEnterpriseInquiryNotificationEmail({
+    schoolName: input.schoolName,
+    schoolSlug: input.schoolSlug,
+    contactName: input.contactName,
+    phone: input.phone,
+    campusCount: input.campusCount,
+    notes: input.notes,
+    submitterName: input.submitterName,
+    submitterEmail: input.submitterEmail,
+  });
 
   await sendMail({
     to: salesEmail,
-    subject: `[Kinder CRM] Yêu cầu Enterprise — ${input.schoolName}`,
-    text: lines.join('\n'),
-    html: `<pre style="font-family:system-ui,sans-serif;font-size:14px;line-height:1.5">${lines.join('\n')}</pre>`,
+    subject: template.subject,
+    text: template.text,
+    html: template.html,
   });
 
   return { sent: true as const };

@@ -67,7 +67,7 @@ export function HowItWorksSection() {
 export function FinalCtaSection() {
   return (
     <section
-      id="request-demo"
+      id="request-demo-cta"
       className="marketing-gradient-cta relative overflow-hidden py-20 md:py-28"
     >
       <div

@@ -54,6 +54,7 @@ const PathsSchema = z.object({
     admins: z.string().min(1),
     auditLogs: z.string().min(1),
     enterpriseInquiries: z.string().min(1),
+    demoRequests: z.string().min(1),
     account: z.string().min(1),
   }),
   parent: z.object({
@@ -119,6 +120,7 @@ const pathsConfig = PathsSchema.parse({
     admins: '/platform/admins',
     auditLogs: '/platform/audit-logs',
     enterpriseInquiries: '/platform/enterprise-inquiries',
+    demoRequests: '/platform/demo-requests',
     account: '/platform/account',
   },
   parent: {
