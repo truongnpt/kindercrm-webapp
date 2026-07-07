@@ -18,7 +18,6 @@ import { AppLogo } from '~/components/app-logo';
 import {
   MarketingButton,
   RequestDemoButton,
-  StartTrialButton,
 } from '~/components/marketing';
 import pathsConfig from '~/config/paths.config';
 
@@ -147,7 +146,6 @@ export function MarketingHeader({ user }: { user?: JwtPayload | null }) {
                     className="mx-1 hidden h-5 w-px bg-[var(--marketing-border)] xl:block"
                   />
 
-                  <StartTrialButton size="sm" className="hidden md:inline-flex" />
                   <RequestDemoButton size="sm" showArrow={false} />
                 </>
               }
@@ -252,10 +250,6 @@ export function MarketingHeader({ user }: { user?: JwtPayload | null }) {
               </div>
             : <div className="flex flex-col gap-2">
                 <RequestDemoButton
-                  size="default"
-                  className="w-full justify-center"
-                />
-                <StartTrialButton
                   size="default"
                   className="w-full justify-center"
                 />
