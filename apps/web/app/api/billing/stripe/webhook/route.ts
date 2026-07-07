@@ -10,7 +10,7 @@ import {
   syncFromStripeSubscription,
 } from '~/lib/kinder/billing/stripe-subscription-sync';
 import { issueSaasInvoiceFromStripe } from '~/lib/kinder/subscription/issue-saas-invoice';
-import { revalidateSubscriptionBillingPaths } from '~/lib/kinder/subscription/checkout-actions';
+import { revalidateSubscriptionBillingPaths } from '~/lib/kinder/subscription/subscription-billing-revalidate.server';
 import { recordSubscriptionCouponRedemption } from '~/lib/kinder/subscription/validate-subscription-coupon';
 
 export const runtime = 'nodejs';

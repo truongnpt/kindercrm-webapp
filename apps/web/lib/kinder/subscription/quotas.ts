@@ -4,12 +4,9 @@ import type { Database } from '~/lib/database.types';
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
 import {
   isActiveTrialSubscription,
+  resolveEffectivePackage,
   TRIAL_AI_CREDITS_MONTHLY,
 } from '~/lib/kinder/subscription/package-features';
-import {
-  loadFreePackage,
-  resolveSchoolEffectivePackage,
-} from '~/lib/kinder/subscription/subscription-access.server';
 import { suggestUpgradePackage } from '~/lib/kinder/subscription/quota-suggestions';
 import type { Package, SchoolContext, SchoolSubscription } from '~/lib/kinder/types';
 
@@ -253,7 +250,15 @@ export async function loadSchoolPackageForQuota(
   }
 
   const sub = data as SchoolSubscription & { package: Package | null };
-  const freePackage = await loadFreePackage(client);
+  const { data: freePackage, error: freePackageError } = await client
+    .from('packages')
+    .select('*')
+    .eq('code', 'free')
+    .maybeSingle();
 
-  return resolveSchoolEffectivePackage(sub.package, sub, freePackage);
+  if (freePackageError) {
+    throw freePackageError;
+  }
+
+  return resolveEffectivePackage(sub.package, sub, freePackage as Package | null);
 }

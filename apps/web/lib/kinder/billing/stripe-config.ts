@@ -1,5 +1,3 @@
-import 'server-only';
-
 import type { Package } from '~/lib/kinder/types';
 
 import { isPaidCheckoutPackage } from './stripe-billing-shared';

@@ -1,8 +1,6 @@
-import 'server-only';
+'use server';
 
 import type Stripe from 'stripe';
-
-import { revalidatePath } from 'next/cache';
 
 import { enhanceAction } from '@kit/next/actions';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
@@ -286,12 +284,3 @@ export const createBillingPortalAction = enhanceAction(
   },
   { schema: BillingPortalSchema },
 );
-
-export function revalidateSubscriptionBillingPaths(schoolId?: string) {
-  revalidatePath(pathsConfig.app.home);
-  revalidatePath(SUBSCRIPTION_PATH);
-
-  if (schoolId) {
-    revalidatePath(`${pathsConfig.platform.schoolDetail}/${schoolId}`);
-  }
-}
