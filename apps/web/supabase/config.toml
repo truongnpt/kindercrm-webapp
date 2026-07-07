@@ -96,23 +96,23 @@ redirect_uri = "http://127.0.0.1:55521/auth/v1/callback"
 url = ""
 
 [auth.email.template.invite]
-subject = "You are invited to Kinder CRM"
+subject = "Lời mời tham gia Kinder CRM"
 content_path = "./supabase/templates/invite-user.html"
 
 [auth.email.template.confirmation]
-subject = "Confirm your email"
+subject = "Xác nhận email — Kinder CRM"
 content_path = "./supabase/templates/confirm-email.html"
 
 [auth.email.template.recovery]
-subject = "Reset your password"
+subject = "Đặt lại mật khẩu — Kinder CRM"
 content_path = "./supabase/templates/reset-password.html"
 
 [auth.email.template.email_change]
-subject = "Confirm your email change"
+subject = "Xác nhận đổi email — Kinder CRM"
 content_path = "./supabase/templates/change-email-address.html"
 
 [auth.email.template.magic_link]
-subject = "Sign in to Makerkit"
+subject = "Đăng nhập — Kinder CRM"
 content_path = "./supabase/templates/magic-link.html"
 
 [analytics]
