@@ -7,7 +7,6 @@ import { loadPlatformPackages } from '~/lib/kinder/platform/load-platform-ops';
 import { requirePlatformAdminPage } from '~/lib/kinder/platform/require-platform-admin';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
-import { PackageCreateDialog } from './_components/package-create-dialog';
 import { PackagesTable } from './_components/packages-table';
 
 export const generateMetadata = async () => {
@@ -26,7 +25,6 @@ async function PlatformPackagesPage() {
   return (
     <>
       <PlatformPageHeader
-        actions={<PackageCreateDialog />}
         description={<Trans i18nKey="kinder:platform.packages.description" />}
         title={<Trans i18nKey="kinder:platform.packages.title" />}
       />

@@ -36,6 +36,7 @@
     "welcome": "Welcome to Kinder CRM",
     "packageLabel": "Current plan",
     "trialEnds": "Trial ends {{date}}",
+    "trialExpired": "Trial expired on {{date}}",
     "sections": {
       "quickStats": "Quick stats"
     },
@@ -72,6 +73,8 @@
       "packages": "Packages",
       "admins": "Admins",
       "audit": "Audit",
+      "enterpriseInquiries": "Enterprise",
+      "coupons": "Coupons",
       "account": "Account"
     },
     "roles": {
@@ -83,7 +86,19 @@
       "totalSchools": "Total schools",
       "activeSchools": "Active schools",
       "suspendedSchools": "Suspended schools",
-      "trialSchools": "Trial subscriptions"
+      "trialSchools": "Trial subscriptions",
+      "activePaidSchools": "Paid schools"
+    },
+    "analytics": {
+      "title": "Subscription analytics",
+      "hint": "Estimated MRR from active plans; SaaS invoice revenue; trial/churn from subscription history.",
+      "estimatedMrr": "Estimated MRR",
+      "trialConversion": "Trial conversion",
+      "churn30d": "30-day churn",
+      "activePaid": "Paid schools",
+      "revenueChart": "Monthly SaaS revenue",
+      "funnelChart": "Trial · conversion · churn",
+      "exportCsv": "Export CSV"
     },
     "schoolStatus": {
       "active": "Active",
@@ -110,6 +125,7 @@
       "search": "Search",
       "searchPlaceholder": "School name or slug…",
       "statusAll": "All statuses",
+      "missingSubscriptionOnly": "Missing subscription only",
       "back": "Back to schools",
       "info": "School information",
       "owner": "Owner",
@@ -117,17 +133,30 @@
     },
     "packages": {
       "title": "Packages",
-      "description": "Manage subscription plans and feature flags.",
+      "description": "Edit quotas, pricing, and Stripe Price IDs for the fixed Free, Starter, and Pro catalog.",
       "create": "New package",
+      "createDisabled": "Fixed 3-plan catalog — cannot add packages",
       "createTitle": "Create package",
       "editTitle": "Edit package",
       "save": "Save package",
       "active": "Active on catalog",
+      "stripePriceId": "Stripe Price ID (monthly, optional)",
+      "stripePriceYearlyId": "Stripe Price ID (yearly, optional)",
+      "priceMonthlyHint": "Display price in VND — converted to USD on Stripe checkout",
+      "priceYearlyHint": "Yearly display price in VND — converted to USD on Stripe checkout",
       "empty": "No packages yet."
     },
     "subscription": {
       "overrideTitle": "Override subscription",
-      "save": "Apply subscription"
+      "save": "Apply subscription",
+      "missingBadge": "This school has no subscription — owners cannot access full features.",
+      "missingShort": "No plan",
+      "repairTitle": "Repair subscription",
+      "repairAlertTitle": "No subscription found",
+      "repairAlertDescription": "Create a 14-day Free trial for this school. Use when production onboarding ran before packages were seeded.",
+      "repairAction": "Create Free trial (14 days)",
+      "repairing": "Creating subscription...",
+      "repaired": "Trial subscription created successfully"
     },
     "admins": {
       "title": "Platform admins",
@@ -140,6 +169,48 @@
       "title": "Audit logs",
       "description": "Platform operations history.",
       "empty": "No audit entries yet."
+    },
+    "enterpriseInquiries": {
+      "title": "Enterprise inquiries",
+      "description": "Sales contact requests from school owners on the subscription page.",
+      "empty": "No Enterprise inquiries yet.",
+      "time": "Time",
+      "school": "School",
+      "contact": "Contact",
+      "campuses": "Campuses",
+      "status": "Status",
+      "notes": "Notes",
+      "statuses": {
+        "new": "New",
+        "contacted": "Contacted",
+        "closed": "Closed"
+      }
+    },
+    "coupons": {
+      "title": "Discount codes",
+      "description": "Create and manage promo codes for paid subscription checkout.",
+      "create": "Create code",
+      "createTitle": "Create discount code",
+      "save": "Save code",
+      "listTitle": "All codes",
+      "emptyTitle": "No discount codes yet",
+      "empty": "Create percent-off or free-month codes for Stripe checkout.",
+      "code": "Code",
+      "descriptionField": "Description",
+      "discount": "Discount",
+      "discountType": "Discount type",
+      "typePercent": "Percent off",
+      "typeFreeMonths": "Free months",
+      "percentValue": "Percent off",
+      "monthsValue": "Free months",
+      "percentOff": "{{value}}% off",
+      "freeMonths": "{{count}} free months",
+      "maxRedemptions": "Max redemptions (optional)",
+      "usage": "Used",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "deactivate": "Deactivate"
     }
   },
   "suspended": {
@@ -159,13 +230,77 @@
     "currentPlan": "Current plan",
     "trialBadge": "Trial",
     "trialFullAccess": "Your trial includes full access to all modules until {{date}}.",
+    "trialBanner": {
+      "title": "Trial plan active",
+      "message": "{{count}} days left with full feature access (until {{date}}).",
+      "messageOneDay": "1 day left on your trial — ends {{date}}.",
+      "messageToday": "Your trial ends today. Upgrade to keep full access.",
+      "messageOpenEnded": "You are on a trial with full access to all features.",
+      "upgradeCta": "Upgrade plan"
+    },
     "activeBadge": "Active",
+    "status": {
+      "trial": "Trial",
+      "trial_expired": "Trial expired",
+      "active": "Active",
+      "past_due": "Past due",
+      "cancelled": "Cancelled"
+    },
+    "billingBanner": {
+      "pastDueTitle": "Payment failed",
+      "pastDueMessage": "Your plan is past due. You have {{count}} days to update payment before read-only mode.",
+      "pastDueMessageOneDay": "1 day left to update payment before read-only mode.",
+      "pastDueMessageToday": "Today is the last day to update payment before read-only mode.",
+      "pastDueExpiredTitle": "Read-only account",
+      "pastDueExpiredMessage": "Payment is overdue. Features are limited to the Free plan until you pay again.",
+      "cancelledTitle": "Subscription cancelled",
+      "cancelledMessage": "Your subscription was cancelled. Features and limits follow the Free plan.",
+      "manageCta": "Manage billing"
+    },
+    "pastDueGraceHint": "{{count}} days left to update payment before read-only mode.",
+    "effectivePlanNote": "Features and limits currently follow the {{plan}} plan.",
+    "readOnlyError": "This account is read-only due to overdue payment or a cancelled subscription.",
+    "quotaLimit": {
+      "studentsTitle": "Student limit reached",
+      "studentsNearTitle": "Approaching student limit",
+      "studentsMessage": "The {{plan}} plan allows up to {{max}} students (currently {{used}}).",
+      "studentsNearMessage": "Using {{used}}/{{max}} students on the {{plan}} plan.",
+      "studentsSuggested": "Upgrade to {{suggested}} to add more students.",
+      "campusesTitle": "Campus limit reached",
+      "campusesNearTitle": "Approaching campus limit",
+      "campusesMessage": "The {{plan}} plan allows up to {{max}} campuses (currently {{used}}).",
+      "campusesNearMessage": "Using {{used}}/{{max}} campuses on the {{plan}} plan.",
+      "campusesSuggested": "Upgrade to {{suggested}} to add more campuses.",
+      "upgradeCta": "Upgrade plan",
+      "toastStudents": "You reached the {{max}}-student limit on {{plan}}.{{suggested}}",
+      "toastCampuses": "You reached the {{max}}-campus limit on {{plan}}.{{suggested}}",
+      "toastSuggestedSuffix": " Upgrade to {{plan}} to continue."
+    },
     "perMonth": "/ month",
+    "perYear": "/ year",
+    "billingInterval": {
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "hint": "Choose a billing cycle before upgrading.",
+      "savePercent": "Save {{percent}}%",
+      "equivalentMonthly": "≈ {{price}} / month"
+    },
     "selectPlan": "Select plan",
     "current": "Current",
     "upgrade": "Upgrade",
     "downgrade": "Downgrade",
     "enterpriseContact": "Contact sales",
+    "enterpriseInquiry": {
+      "title": "Contact us for Enterprise",
+      "description": "Our sales team will reach out within 1–2 business days with a plan tailored to your school.",
+      "contactName": "Full name",
+      "phone": "Phone number",
+      "campusCount": "Expected number of campuses",
+      "notes": "Additional notes (optional)",
+      "submit": "Submit request",
+      "submitting": "Submitting...",
+      "submitted": "Request sent — our sales team will contact you soon."
+    },
     "recommended": "Recommended",
     "freeForever": "Free forever",
     "limits": "Limits",
@@ -175,8 +310,99 @@
     "aiCredits": "{{count}} AI credits/month",
     "history": "Plan history",
     "historyEmpty": "No plan changes yet.",
+    "history.changedBy": "Changed by {{name}}",
+    "history.changedByStripe": "Synced from Stripe",
+    "history.changedBySystem": "Automatic system update",
+    "history.planChange": "{{from}} → {{to}}",
+    "history.initialPlan": "Initial plan: {{plan}}",
+    "history.invoiceLink": "View Stripe invoice",
+    "history.invoiceId": "Invoice: {{id}}",
+    "saasInvoices": {
+      "title": "Software invoices",
+      "hint": "VAT invoices for Kinder CRM subscription fees — separate from student tuition.",
+      "empty": "No SaaS invoices yet",
+      "emptyDescription": "Invoices are created and emailed after each successful Stripe payment.",
+      "downloadPdf": "Download PDF",
+      "vatIncluded": "incl. {{rate}}% VAT",
+      "issuedAt": "Issued {{date}}",
+      "statuses": {
+        "issued": "Issued",
+        "sent": "Emailed",
+        "failed": "Email failed"
+      }
+    },
+    "coupon": {
+      "title": "Discount code",
+      "hint": "Enter a code before paying for a paid plan via Stripe.",
+      "selectPlan": "Plan to apply",
+      "placeholder": "Enter code (e.g. SUMMER25)",
+      "apply": "Apply",
+      "clear": "Clear",
+      "validating": "Checking code...",
+      "applied": "Discount code applied",
+      "invalid": "Invalid or expired code",
+      "summaryPercent": "{{value}}% off on checkout for the selected plan",
+      "summaryFreeMonths": "{{count}} free months on the selected plan"
+    },
     "changed": "Plan updated",
-    "changing": "Updating plan..."
+    "changing": "Updating plan...",
+    "checkout": "Pay & subscribe",
+    "stripeUsdHint": "Stripe charge: ~{{usd}}",
+    "checkoutLoading": "Creating checkout session...",
+    "checkoutRedirect": "Redirecting to Stripe...",
+    "checkoutSuccess": "Payment successful! Your plan has been updated.",
+    "checkoutCancelled": "Checkout cancelled. You can try again anytime.",
+    "manageBilling": "Manage billing",
+    "portalLoading": "Opening billing portal...",
+    "portalReady": "Redirecting...",
+    "portalHint": "Update your card, view invoices, or cancel via the Stripe Customer Portal.",
+    "portalPastDueHint": "Payment failed — update your payment method to keep your current plan.",
+    "portalUpdatePayment": "Update payment",
+    "portalCheckoutFirst": "Complete your first paid checkout to unlock the billing portal.",
+    "portalOwnerOnly": "Only the school owner can manage billing.",
+    "portalNoCustomer": "No Stripe customer yet — complete a paid checkout first.",
+    "portalNotConfigured": "Stripe billing is not configured on this environment.",
+    "billingOwnerOnly": "Only the school owner can manage billing and change plans.",
+    "storageUsed": "Storage: {{used}} / {{max}} MB ({{percent}}%)",
+    "storageLimitReached": "Storage limit reached for your plan. Upgrade under Settings → Subscription.",
+    "storageUpgradeCta": "Upgrade for more storage",
+    "featureLabels": {
+      "crm": "Enrollment CRM",
+      "students": "Student management",
+      "classes": "Class management",
+      "finance": "Advanced tuition & finance",
+      "finance_basic": "Basic tuition",
+      "attendance": "Attendance",
+      "staff": "Staff management",
+      "parent_portal": "Parent portal",
+      "daily_reports": "Daily learning reports",
+      "meal_menu": "Meals & nutrition",
+      "inventory": "Inventory & supplies",
+      "health_management": "Health management",
+      "calendar": "Calendar & events",
+      "reports": "Reports & dashboard",
+      "ai_assistant": "AI assistant"
+    },
+    "comparison": {
+      "title": "Compare plans",
+      "hint": "Limits and modules included in each subscription plan.",
+      "feature": "Feature / limit",
+      "unlimited": "Unlimited",
+      "quotaStudentsValue": "{{count}} students",
+      "quotaCampusesValue": "{{count}} campuses",
+      "quotaStorageValue": "{{count}} MB",
+      "quotaAiValue": "{{count}} credits/month",
+      "quotaStudentsUnlimited": "Unlimited students",
+      "quotaCampusesUnlimited": "Unlimited campuses",
+      "quotaStorageUnlimited": "Unlimited storage",
+      "quotaAiUnlimited": "Unlimited AI credits",
+      "quotas": {
+        "students": "Students",
+        "campuses": "Campuses",
+        "storage": "Storage",
+        "ai_credits": "AI credits"
+      }
+    }
   },
   "schoolSettings": {
     "title": "School profile",
@@ -1742,7 +1968,8 @@
       "calendar": "Calendar",
       "menu": "Menu",
       "inventory": "Inventory",
-      "system": "System"
+      "system": "System",
+      "subscription": "Subscription"
     }
   },
   "ai": {

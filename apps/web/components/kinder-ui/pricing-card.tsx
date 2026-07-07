@@ -23,6 +23,7 @@ export function PricingCard({
   description,
   price,
   priceSuffix,
+  subPrice,
   features,
   badge,
   highlighted = false,
@@ -33,6 +34,7 @@ export function PricingCard({
   description?: React.ReactNode;
   price: React.ReactNode;
   priceSuffix?: React.ReactNode;
+  subPrice?: React.ReactNode;
   features: React.ReactNode[];
   badge?: React.ReactNode;
   highlighted?: boolean;
@@ -63,6 +65,9 @@ export function PricingCard({
         </p>
         {priceSuffix ? (
           <p className="text-muted-foreground mt-1 text-sm">{priceSuffix}</p>
+        ) : null}
+        {subPrice ? (
+          <p className="text-muted-foreground mt-0.5 text-xs">{subPrice}</p>
         ) : null}
       </div>
 

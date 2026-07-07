@@ -18,9 +18,11 @@ import {
   CreatePackageSchema,
   GrantPlatformAdminSchema,
   PlatformOverrideSubscriptionSchema,
+  RepairSchoolSubscriptionSchema,
   RevokePlatformAdminSchema,
   UpdatePackageSchema,
 } from './schemas/package.schema';
+import { isFixedPackageCode } from '~/lib/kinder/subscription/fixed-packages';
 
 function revalidatePlatformPaths() {
   revalidatePath(pathsConfig.platform.home);
@@ -42,57 +44,11 @@ function buildFeatures(data: {
 }
 
 export const platformCreatePackageAction = enhanceAction(
-  async (data, user) => {
-    const platform = await requirePlatformAdmin(user.sub, ['super_admin', 'billing']);
-    assertPlatformRole(platform, ['super_admin', 'billing']);
-
-    const client = getPlatformDataClient();
-
-    const { data: existing } = await client
-      .from('packages')
-      .select('id')
-      .eq('code', data.code)
-      .maybeSingle();
-
-    if (existing) {
-      throw new KinderError(
-        KINDER_ERROR_CODES.PACKAGE_NOT_FOUND,
-        'Package code already exists',
-      );
-    }
-
-    const { data: pkg, error } = await client
-      .from('packages')
-      .insert({
-        code: data.code,
-        name: data.name,
-        description: data.description || null,
-        max_students: data.maxStudents,
-        max_campuses: data.maxCampuses,
-        max_storage_mb: data.maxStorageMb,
-        ai_credits_monthly: data.aiCreditsMonthly,
-        price_monthly: data.priceMonthly,
-        sort_order: data.sortOrder,
-        is_active: data.isActive,
-        features: buildFeatures(data),
-      })
-      .select('id')
-      .single();
-
-    if (error) {
-      throw error;
-    }
-
-    await logPlatformAction({
-      actorUserId: user.sub,
-      action: 'package.create',
-      targetType: 'package',
-      targetId: pkg?.id,
-      metadata: { code: data.code },
-    });
-
-    revalidatePlatformPaths();
-    return { success: true };
+  async () => {
+    throw new KinderError(
+      KINDER_ERROR_CODES.PERMISSION_DENIED,
+      'Package catalog is fixed to Free, Starter, and Pro',
+    );
   },
   { schema: CreatePackageSchema },
 );
@@ -104,6 +60,19 @@ export const platformUpdatePackageAction = enhanceAction(
 
     const client = getPlatformDataClient();
 
+    const { data: existing } = await client
+      .from('packages')
+      .select('code')
+      .eq('id', data.packageId)
+      .single();
+
+    if (!existing || !isFixedPackageCode(existing.code)) {
+      throw new KinderError(
+        KINDER_ERROR_CODES.PACKAGE_NOT_FOUND,
+        'Package not found',
+      );
+    }
+
     const { error } = await client
       .from('packages')
       .update({
@@ -114,8 +83,11 @@ export const platformUpdatePackageAction = enhanceAction(
         max_storage_mb: data.maxStorageMb,
         ai_credits_monthly: data.aiCreditsMonthly,
         price_monthly: data.priceMonthly,
+        price_yearly: data.priceYearly,
         sort_order: data.sortOrder,
-        is_active: data.isActive,
+        is_active: true,
+        stripe_price_id: data.stripePriceId || null,
+        stripe_price_yearly_id: data.stripePriceYearlyId || null,
         features: buildFeatures(data),
       })
       .eq('id', data.packageId);
@@ -154,7 +126,7 @@ export const platformOverrideSubscriptionAction = enhanceAction(
       .eq('id', data.packageId)
       .single();
 
-    if (packageError || !targetPackage) {
+    if (packageError || !targetPackage || !isFixedPackageCode(targetPackage.code)) {
       throw new KinderError(
         KINDER_ERROR_CODES.PACKAGE_NOT_FOUND,
         'Package not found',
@@ -241,6 +213,116 @@ export const platformOverrideSubscriptionAction = enhanceAction(
     return { success: true };
   },
   { schema: PlatformOverrideSubscriptionSchema },
+);
+
+/** SUB-005: Create missing free trial subscription for a school (platform repair). */
+export const platformRepairSchoolSubscriptionAction = enhanceAction(
+  async (data, user) => {
+    const platform = await requirePlatformAdmin(user.sub, [
+      'super_admin',
+      'support',
+      'billing',
+    ]);
+    assertPlatformRole(platform, ['super_admin', 'support', 'billing']);
+
+    const client = getPlatformDataClient();
+
+    const { data: school, error: schoolError } = await client
+      .from('schools')
+      .select('id, name')
+      .eq('id', data.schoolId)
+      .is('deleted_at', null)
+      .maybeSingle();
+
+    if (schoolError) {
+      throw schoolError;
+    }
+
+    if (!school) {
+      throw new KinderError(
+        KINDER_ERROR_CODES.SCHOOL_NOT_FOUND,
+        'School not found',
+      );
+    }
+
+    const { data: existingSub, error: subError } = await client
+      .from('school_subscriptions')
+      .select('id')
+      .eq('school_id', data.schoolId)
+      .maybeSingle();
+
+    if (subError) {
+      throw subError;
+    }
+
+    if (existingSub) {
+      throw new KinderError(
+        KINDER_ERROR_CODES.SUBSCRIPTION_ALREADY_EXISTS,
+        'School already has a subscription',
+      );
+    }
+
+    const { data: freePackage, error: packageError } = await client
+      .from('packages')
+      .select('id, code')
+      .eq('code', 'free')
+      .eq('is_active', true)
+      .maybeSingle();
+
+    if (packageError) {
+      throw packageError;
+    }
+
+    if (!freePackage) {
+      throw new KinderError(
+        KINDER_ERROR_CODES.PACKAGE_NOT_FOUND,
+        'Free package is not configured. Run packages seed migration on production.',
+      );
+    }
+
+    const now = new Date();
+    const trialEnds = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+
+    const { error: insertError } = await client.from('school_subscriptions').insert({
+      school_id: data.schoolId,
+      package_id: freePackage.id,
+      status: 'trial',
+      trial_ends_at: trialEnds.toISOString(),
+      current_period_start: now.toISOString(),
+      current_period_end: trialEnds.toISOString(),
+    });
+
+    if (insertError) {
+      throw insertError;
+    }
+
+    await client.from('school_subscription_history').insert({
+      school_id: data.schoolId,
+      package_id: freePackage.id,
+      status: 'trial',
+      changed_by: user.sub,
+      note: 'Platform repair: initial free trial subscription',
+    });
+
+    await logPlatformAction({
+      actorUserId: user.sub,
+      action: 'subscription.repair',
+      targetType: 'school',
+      targetId: data.schoolId,
+      metadata: {
+        packageCode: freePackage.code,
+        trialEndsAt: trialEnds.toISOString(),
+      },
+    });
+
+    revalidatePlatformPaths();
+    revalidatePath(`${pathsConfig.platform.schoolDetail}/${data.schoolId}`);
+    revalidatePath(pathsConfig.app.settingsSubscription);
+    revalidatePath(pathsConfig.app.home);
+
+    return { success: true };
+  },
+  { schema: RepairSchoolSubscriptionSchema },
 );
 
 export const platformGrantAdminAction = enhanceAction(

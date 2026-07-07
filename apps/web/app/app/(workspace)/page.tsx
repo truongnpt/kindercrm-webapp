@@ -12,6 +12,7 @@ import {
   BentoTileHeader,
   KinderPageBody,
   KinderPageHeader,
+  SubscriptionStatusBadge,
 } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import { getAiCreditStatus } from '~/lib/kinder/ai/credits';
@@ -19,7 +20,7 @@ import { getAiConfig } from '~/lib/kinder/ai/config';
 import { processDueCalendarReminders } from '~/lib/kinder/calendar/calendar-notifications';
 import { loadUpcomingCalendarEvents } from '~/lib/kinder/calendar/load-calendar';
 import { loadDashboardSummary } from '~/lib/kinder/dashboard/load-dashboard';
-import { hasSchoolFeature } from '~/lib/kinder/subscription/features';
+import { getSubscriptionDisplayStatus, hasSchoolFeature } from '~/lib/kinder/subscription/features';
 import { loadSchoolUsageSummary } from '~/lib/kinder/subscription/quotas';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
@@ -80,6 +81,7 @@ async function DashboardPage() {
   const trialEnds = context.subscription?.trial_ends_at
     ? new Date(context.subscription.trial_ends_at).toLocaleDateString('vi-VN')
     : null;
+  const displayStatus = getSubscriptionDisplayStatus(context.subscription);
 
   const features = {
     crm: hasSchoolFeature(context, 'crm'),
@@ -119,13 +121,26 @@ async function DashboardPage() {
               }
               title={<Trans i18nKey="kinder:dashboard.packageLabel" />}
             />
-            <p className="text-foreground text-2xl font-semibold tracking-tight">
-              {context.package?.name ?? '—'}
-            </p>
-            {trialEnds ? (
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-foreground text-2xl font-semibold tracking-tight">
+                {context.package?.name ?? '—'}
+              </p>
+              {displayStatus ? (
+                <SubscriptionStatusBadge status={displayStatus} />
+              ) : null}
+            </div>
+            {displayStatus === 'trial' && trialEnds ? (
               <p className="text-muted-foreground mt-2 text-sm">
                 <Trans
                   i18nKey="kinder:dashboard.trialEnds"
+                  values={{ date: trialEnds }}
+                />
+              </p>
+            ) : null}
+            {displayStatus === 'trial_expired' && trialEnds ? (
+              <p className="text-muted-foreground mt-2 text-sm">
+                <Trans
+                  i18nKey="kinder:dashboard.trialExpired"
                   values={{ date: trialEnds }}
                 />
               </p>

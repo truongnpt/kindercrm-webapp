@@ -50,8 +50,10 @@ const PathsSchema = z.object({
     schools: z.string().min(1),
     schoolDetail: z.string().min(1),
     packages: z.string().min(1),
+    coupons: z.string().min(1),
     admins: z.string().min(1),
     auditLogs: z.string().min(1),
+    enterpriseInquiries: z.string().min(1),
     account: z.string().min(1),
   }),
   parent: z.object({
@@ -113,8 +115,10 @@ const pathsConfig = PathsSchema.parse({
     schools: '/platform/schools',
     schoolDetail: '/platform/schools',
     packages: '/platform/packages',
+    coupons: '/platform/coupons',
     admins: '/platform/admins',
     auditLogs: '/platform/audit-logs',
+    enterpriseInquiries: '/platform/enterprise-inquiries',
     account: '/platform/account',
   },
   parent: {

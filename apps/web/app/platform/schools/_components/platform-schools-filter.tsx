@@ -9,9 +9,11 @@ import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 export async function PlatformSchoolsFilter({
   defaultQuery,
   defaultStatus,
+  defaultMissingSubscription,
 }: {
   defaultQuery?: string;
   defaultStatus?: string;
+  defaultMissingSubscription?: boolean;
 }) {
   const i18n = await createI18nServerInstance();
 
@@ -57,6 +59,23 @@ export async function PlatformSchoolsFilter({
             {i18n.t('kinder:platform.schoolStatus.archived')}
           </option>
         </select>
+      </div>
+
+      <div className="flex w-full items-center gap-2 sm:w-auto sm:self-end">
+        <input
+          className="border-input size-4 rounded border"
+          defaultChecked={defaultMissingSubscription}
+          id="platform-missing-subscription"
+          name="missing_subscription"
+          type="checkbox"
+          value="1"
+        />
+        <label
+          className="text-sm text-foreground"
+          htmlFor="platform-missing-subscription"
+        >
+          <Trans i18nKey="kinder:platform.schools.missingSubscriptionOnly" />
+        </label>
       </div>
 
       <Button className="min-h-10 sm:self-end" type="submit">

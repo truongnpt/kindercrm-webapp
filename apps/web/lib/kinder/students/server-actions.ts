@@ -9,9 +9,11 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import pathsConfig from '~/config/paths.config';
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
 import {
+  assertStorageQuota,
   assertStudentQuota,
   getPackageLimits,
   getSchoolUsage,
+  loadSchoolPackageForQuota,
 } from '~/lib/kinder/subscription/quotas';
 import type { Json } from '~/lib/database.types';
 import type { Package } from '~/lib/kinder/types';
@@ -76,14 +78,7 @@ async function logStudentTimeline(
 
 async function getPackageForSchool(schoolId: string) {
   const client = getSupabaseServerClient();
-
-  const { data } = await client
-    .from('school_subscriptions')
-    .select('package:packages (*)')
-    .eq('school_id', schoolId)
-    .maybeSingle();
-
-  return (data?.package as Package | null) ?? null;
+  return loadSchoolPackageForQuota(client, schoolId);
 }
 
 /** STUDENT-001 Create student */
@@ -150,6 +145,9 @@ export const createStudentAction = enhanceAction(
 export const setStudentPhotoAction = enhanceAction(
   async (data) => {
     const client = getSupabaseServerClient();
+
+    const pkg = await loadSchoolPackageForQuota(client, data.schoolId);
+    await assertStorageQuota(client, data.schoolId, pkg, 0);
 
     const { error } = await client
       .from('students')
@@ -542,7 +540,7 @@ export const importStudentsAction = enhanceAction(
     if (usage.students + data.students.length > limits.maxStudents) {
       throw new KinderError(
         KINDER_ERROR_CODES.STUDENT_LIMIT_REACHED,
-        'Student limit reached for current package',
+        KINDER_ERROR_CODES.STUDENT_LIMIT_REACHED,
       );
     }
 

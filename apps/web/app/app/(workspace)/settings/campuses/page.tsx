@@ -9,6 +9,8 @@ import {
 } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import { assertModuleAccessFromContext } from '~/lib/kinder/permissions/module-access.server';
+import { loadPublicPackages } from '~/lib/kinder/subscription/features';
+import { loadQuotaFormSummary } from '~/lib/kinder/subscription/quotas';
 import {
   getSchoolContext,
   loadCampuses,
@@ -16,6 +18,7 @@ import {
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import { CampusesWorkspace } from './_components/campuses-workspace';
 import { CreateCampusDialog } from './_components/create-campus-dialog';
@@ -43,6 +46,9 @@ async function CampusesPage() {
   );
 
   const campuses = await loadCampuses(context.school.id);
+  const client = getSupabaseServerClient();
+  const packages = await loadPublicPackages(client);
+  const quotaSummary = await loadQuotaFormSummary(client, context, packages);
 
   return (
     <>
@@ -50,6 +56,7 @@ async function CampusesPage() {
         actions={
           <CreateCampusDialog
             campuses={campuses}
+            quotaSummary={quotaSummary}
             schoolId={context.school.id}
           />
         }

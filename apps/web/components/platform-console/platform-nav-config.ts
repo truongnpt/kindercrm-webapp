@@ -2,8 +2,10 @@ import {
   Building2,
   ClipboardList,
   LayoutDashboard,
+  Mail,
   Package,
   Shield,
+  Tag,
   User,
 } from 'lucide-react';
 
@@ -33,11 +35,25 @@ export const PLATFORM_NAV_ITEMS = [
     roles: ['super_admin', 'billing'] as PlatformAdminRole[],
   },
   {
+    href: pathsConfig.platform.coupons,
+    labelKey: 'kinder:platform.nav.coupons',
+    icon: Tag,
+    end: false,
+    roles: ['super_admin', 'billing'] as PlatformAdminRole[],
+  },
+  {
     href: pathsConfig.platform.admins,
     labelKey: 'kinder:platform.nav.admins',
     icon: Shield,
     end: false,
     roles: ['super_admin'] as PlatformAdminRole[],
+  },
+  {
+    href: pathsConfig.platform.enterpriseInquiries,
+    labelKey: 'kinder:platform.nav.enterpriseInquiries',
+    icon: Mail,
+    end: false,
+    roles: ['super_admin', 'support', 'billing'] as PlatformAdminRole[],
   },
   {
     href: pathsConfig.platform.auditLogs,

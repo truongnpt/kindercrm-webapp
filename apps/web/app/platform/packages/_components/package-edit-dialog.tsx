@@ -60,6 +60,9 @@ export function PackageEditDialog({ pkg }: { pkg: Package }) {
       priceMonthly: pkg.price_monthly,
       sortOrder: pkg.sort_order,
       isActive: pkg.is_active,
+      stripePriceId: pkg.stripe_price_id ?? '',
+      stripePriceYearlyId: pkg.stripe_price_yearly_id ?? '',
+      priceYearly: pkg.price_yearly ?? 0,
       ...featuresFromPackage(pkg),
     },
   });
@@ -77,6 +80,9 @@ export function PackageEditDialog({ pkg }: { pkg: Package }) {
         priceMonthly: pkg.price_monthly,
         sortOrder: pkg.sort_order,
         isActive: pkg.is_active,
+        stripePriceId: pkg.stripe_price_id ?? '',
+        stripePriceYearlyId: pkg.stripe_price_yearly_id ?? '',
+        priceYearly: pkg.price_yearly ?? 0,
         ...featuresFromPackage(pkg),
       });
     }

@@ -15,6 +15,11 @@ import {
   deleteDailyReportAttachmentAction,
   registerDailyReportAttachmentAction,
 } from '~/lib/kinder/daily-reports/server-actions';
+import { ensureStorageQuotaBeforeUpload } from '~/lib/kinder/subscription/ensure-storage-quota-before-upload';
+import {
+  isStorageLimitError,
+  storageLimitMessage,
+} from '~/lib/kinder/subscription/storage-quota-messages';
 import {
   buildDailyReportStoragePath,
   DAILY_REPORT_MEDIA_BUCKET,
@@ -111,6 +116,9 @@ export function DailyReportMediaPanel({
       );
 
       const bytes = await file.arrayBuffer();
+
+      await ensureStorageQuotaBeforeUpload(schoolId, file.size);
+
       const uploadResult = await client.storage
         .from(DAILY_REPORT_MEDIA_BUCKET)
         .upload(storagePath, bytes, {
@@ -170,7 +178,11 @@ export function DailyReportMediaPanel({
       router.refresh();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : t('common:genericServerError', { ns: 'common' }),
+        isStorageLimitError(error)
+          ? storageLimitMessage(t)
+          : error instanceof Error
+            ? error.message
+            : t('common:genericServerError', { ns: 'common' }),
       );
     } finally {
       setUploading(false);

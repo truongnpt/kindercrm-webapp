@@ -33,6 +33,10 @@ import {
 } from './load-daily-reports';
 import { notifyParentsOfDailyReport } from '~/lib/kinder/notifications/load-notifications';
 import {
+  assertStorageQuota,
+  loadSchoolPackageForQuota,
+} from '~/lib/kinder/subscription/quotas';
+import {
   notifyStaffOfIncompleteDailyReports,
   notifyStaffOfParentDailyReportAck,
 } from '~/lib/kinder/notifications/staff-notifications';
@@ -507,6 +511,9 @@ export const registerDailyReportAttachmentAction = enhanceAction(
   async (data, user) => {
     const client = getSupabaseServerClient();
     await assertReportEditable(client, data.schoolId, data.reportId);
+
+    const pkg = await loadSchoolPackageForQuota(client, data.schoolId);
+    await assertStorageQuota(client, data.schoolId, pkg, 0);
 
     const { data: attachment, error } = await client
       .from('daily_report_attachments')

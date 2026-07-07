@@ -17,7 +17,7 @@ values
   (
     'free',
     'Free',
-    'Dùng thử 14 ngày — trải nghiệm đầy đủ mọi tính năng',
+    'Dùng thử và bắt đầu với trường mầm non quy mô nhỏ.',
     50,
     1,
     512,
@@ -30,12 +30,12 @@ values
   (
     'starter',
     'Starter',
-    'Cho trường mầm non đang phát triển',
-    150,
-    3,
-    2048,
-    100,
-    '{"crm": true, "students": true, "classes": true, "finance": true, "attendance": true, "staff": true, "parent_portal": true, "daily_reports": true, "meal_menu": true}'::jsonb,
+    'Cho trường mầm non đang mở rộng quy mô và nhiều lớp.',
+    500,
+    10,
+    10240,
+    500,
+    '{"crm": true, "students": true, "classes": true, "finance": true, "attendance": true, "staff": true, "reports": true, "parent_portal": true, "daily_reports": true, "meal_menu": true, "inventory": true, "health_management": true, "calendar": true, "ai_assistant": true}'::jsonb,
     990000,
     true,
     1
@@ -43,28 +43,15 @@ values
   (
     'pro',
     'Pro',
-    'Đa cơ sở, đầy đủ phân hệ Phase 1',
-    500,
-    10,
-    10240,
-    500,
-    '{"crm": true, "students": true, "classes": true, "finance": true, "attendance": true, "staff": true, "reports": true, "parent_portal": true, "daily_reports": true, "meal_menu": true, "inventory": true, "health_management": true, "calendar": true, "ai_assistant": true}'::jsonb,
-    2490000,
-    true,
-    2
-  ),
-  (
-    'enterprise',
-    'Enterprise',
-    'Hệ thống nhiều chi nhánh, không giới hạn cơ bản',
+    'Hệ thống trường nhiều chi nhánh, quota cao.',
     999999,
     999,
     102400,
     5000,
     '{"all": true}'::jsonb,
-    0,
+    2490000,
     true,
-    3
+    2
   )
 on conflict (code) do update set
   name = excluded.name,

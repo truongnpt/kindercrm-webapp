@@ -12,6 +12,7 @@ import {
   PlatformPageHeader,
   PlatformSectionCard,
 } from '~/components/platform-console';
+import { SubscriptionStatusBadge } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
@@ -22,6 +23,7 @@ import { requireUserInServerComponent } from '~/lib/server/require-user-in-serve
 
 import { SchoolStatusActions } from './_components/school-status-actions';
 import { SubscriptionOverridePanel } from './_components/subscription-override-panel';
+import { SubscriptionRepairPanel } from './_components/subscription-repair-panel';
 
 export const generateMetadata = async ({
   params,
@@ -117,6 +119,11 @@ async function PlatformSchoolDetailPage({
             title={<Trans i18nKey="kinder:platform.schools.subscription" />}
           >
             <dl className="flex flex-col gap-4 text-sm">
+              {!school.has_subscription ? (
+                <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-amber-800 dark:text-amber-200">
+                  <Trans i18nKey="kinder:platform.subscription.missingBadge" />
+                </div>
+              ) : null}
               <div>
                 <dt className="text-muted-foreground">
                   <Trans i18nKey="kinder:platform.schools.package" />
@@ -127,8 +134,12 @@ async function PlatformSchoolDetailPage({
               </div>
               <div>
                 <dt className="text-muted-foreground">Status</dt>
-                <dd className="mt-1 text-foreground">
-                  {school.subscription_status ?? '—'}
+                <dd className="mt-1">
+                  {school.subscription_status ? (
+                    <SubscriptionStatusBadge status={school.subscription_status} />
+                  ) : (
+                    '—'
+                  )}
                 </dd>
               </div>
               {school.trial_ends_at ? (
@@ -152,7 +163,13 @@ async function PlatformSchoolDetailPage({
         </div>
 
         {['super_admin', 'support', 'billing'].includes(platform.role) ? (
-          <SubscriptionOverridePanel packages={packages} school={school} />
+          <>
+            {!school.has_subscription ? (
+              <SubscriptionRepairPanel school={school} />
+            ) : (
+              <SubscriptionOverridePanel packages={packages} school={school} />
+            )}
+          </>
         ) : null}
       </PlatformPageBody>
     </>

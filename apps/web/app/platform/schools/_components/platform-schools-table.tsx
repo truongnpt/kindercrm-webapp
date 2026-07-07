@@ -11,6 +11,7 @@ import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
 
 import { PlatformDataTable, PlatformEmptyState } from '~/components/platform-console';
+import { SubscriptionStatusBadge } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import type { PlatformAdminRole } from '~/lib/kinder/platform/types';
 import type { PlatformSchoolListItem } from '~/lib/kinder/platform/types';
@@ -80,8 +81,23 @@ export function PlatformSchoolsTable({
                   <Trans i18nKey={`kinder:platform.schoolStatus.${school.status}`} />
                 </Badge>
               </td>
-              <td className="text-muted-foreground">
-                {school.package_name ?? '—'}
+              <td>
+                <div className="flex flex-wrap items-center gap-2">
+                  {!school.has_subscription ? (
+                    <Badge
+                      className="rounded-full border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300"
+                      variant="outline"
+                    >
+                      <Trans i18nKey="kinder:platform.subscription.missingShort" />
+                    </Badge>
+                  ) : null}
+                  {school.subscription_status ? (
+                    <SubscriptionStatusBadge status={school.subscription_status} />
+                  ) : null}
+                  <span className="text-muted-foreground">
+                    {school.package_name ?? '—'}
+                  </span>
+                </div>
               </td>
               <td className="text-muted-foreground">
                 {school.student_count} HS / {school.campus_count} CS

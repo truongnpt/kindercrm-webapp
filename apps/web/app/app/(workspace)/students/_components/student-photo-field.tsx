@@ -12,6 +12,11 @@ import { cn } from '@kit/ui/utils';
 import { Trans } from '@kit/ui/trans';
 
 import { optimizeStudentPhoto } from '~/lib/kinder/students/optimize-student-photo';
+import { ensureStorageQuotaBeforeUpload } from '~/lib/kinder/subscription/ensure-storage-quota-before-upload';
+import {
+  isStorageLimitError,
+  storageLimitMessage,
+} from '~/lib/kinder/subscription/storage-quota-messages';
 import { uploadStudentPhoto } from '~/lib/kinder/students/upload-student-photo';
 
 function mapPhotoError(error: unknown, t: (key: string) => string) {
@@ -31,6 +36,10 @@ function mapPhotoError(error: unknown, t: (key: string) => string) {
     code === 'IMAGE_CANVAS_FAILED'
   ) {
     return t('students.photoProcessFailed');
+  }
+
+  if (isStorageLimitError(error)) {
+    return storageLimitMessage(t);
   }
 
   return error instanceof Error ? error.message : t('students.photoUploadFailed');
@@ -122,6 +131,8 @@ export function StudentPhotoField({
         onPendingFileChange?.(prepared);
         return;
       }
+
+      await ensureStorageQuotaBeforeUpload(schoolId, prepared.size);
 
       const publicUrl = await uploadStudentPhoto(supabase, {
         schoolId,

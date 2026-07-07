@@ -15,7 +15,7 @@ import { getRedirectUrlFromError } from './redirect-error';
 type ToastMessages = {
   loading?: string;
   success?: string;
-  error?: string;
+  error?: string | ((error: unknown) => string);
 };
 
 export type UseKinderMutationOptions<TData, TVariables, TContext = unknown> = {

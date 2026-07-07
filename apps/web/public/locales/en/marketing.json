@@ -220,12 +220,12 @@
   "testimonial3Role": "Principal",
   "testimonial3School": "Bright Future Group",
   "pricingPreviewTitle": "Simple, transparent pricing",
+  "pricingFree": "Free",
+  "pricingFreeDesc": "Try the platform and start with a small preschool.",
   "pricingStarter": "Starter",
-  "pricingStarterDesc": "Perfect for small preschools getting started.",
-  "pricingProfessional": "Professional",
-  "pricingProfessionalDesc": "For growing schools with multiple classes.",
-  "pricingEnterprise": "Enterprise",
-  "pricingEnterpriseDesc": "Multi-branch systems with custom needs.",
+  "pricingStarterDesc": "For growing preschools expanding classes and enrollment.",
+  "pricingPro": "Pro",
+  "pricingProDesc": "Multi-branch school systems with high quotas.",
   "pricingPopular": "Most popular",
   "pricingViewPlan": "View plan",
   "pricingCompareAll": "Compare all features →",
@@ -444,7 +444,7 @@
     "useContent": "Upload content that infringes copyright, is offensive, or harmful",
     "section5Title": "Subscriptions and billing",
     "section5Body": "Some features and quotas (students, campuses) depend on your subscription plan:",
-    "billingPlans": "Free, Pro, and/or Enterprise — details shown in the school's billing area",
+    "billingPlans": "Free, Starter, and Pro — details in the school's subscription settings",
     "billingQuota": "When quota is exceeded, some create actions may be limited until you upgrade",
     "billingStripe": "Stripe payments are subject to Stripe's terms",
     "billingTransfer": "Bank transfer payments (if available) must be verified per our internal process",
@@ -481,6 +481,7 @@
     "popular": "Popular",
     "quotaStudents": "Up to {{count}} students",
     "quotaStudentsUnlimited": "Unlimited students",
+    "quotaCampuses": "Up to {{count}} campuses",
     "ctaFree": "Start for free",
     "ctaSignUp": "Sign up",
     "ctaUpgrade": "Upgrade plan",
@@ -494,17 +495,17 @@
         "featureAttendance": "Attendance & student management",
         "featureParents": "Basic parent connection"
       },
-      "pro": {
-        "description": "For growing preschools with multiple classes.",
-        "featureAllModules": "Full operations modules",
+      "starter": {
+        "description": "For growing preschools expanding classes and enrollment.",
+        "featureAllModules": "Full Phase 1 operations modules",
         "featureReports": "Full reports & dashboard",
-        "featureMultiBranch": "Multi-campus support"
+        "featureMultiBranch": "Multi-campus (up to 10)"
       },
-      "enterprise": {
+      "pro": {
         "description": "Multi-branch school systems with high quotas.",
-        "featureAllModules": "All modules + extended customization",
-        "featurePriority": "High quotas and priority resources",
-        "featureSupport": "Priority support and onboarding"
+        "featureAllModules": "All modules + extended access",
+        "featureMultiBranch": "Multi-branch, high quotas",
+        "featureHighQuota": "High AI credits & priority resources"
       }
     }
   },
@@ -547,7 +548,7 @@
         "q1": "What payment methods do you accept?",
         "a1": "Prices are shown in VND. Contact the Kinder CRM team for plan recommendations and payment support.",
         "q2": "How do I upgrade my plan?",
-        "a2": "Sign up for an account and contact our support team for Pro or Enterprise plan recommendations based on your school's size.",
+        "a2": "Sign up and upgrade to Starter or Pro under Settings → Subscription.",
         "q3": "What are quotas?",
         "a3": "Each plan limits the maximum number of students per school/campus. When you're near the limit (≥80%), the dashboard shows a warning. Upgrade your plan to increase quota and unlock more modules."
       }

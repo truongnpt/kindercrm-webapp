@@ -3,11 +3,14 @@ import { Trans } from '@kit/ui/trans';
 import { KinderPageBody, KinderPageHeader } from '~/components/kinder-ui';
 import pathsConfig from '~/config/paths.config';
 import { assertModuleAccessFromContext } from '~/lib/kinder/permissions/module-access.server';
+import { loadPublicPackages } from '~/lib/kinder/subscription/features';
+import { loadQuotaFormSummary } from '~/lib/kinder/subscription/quotas';
 import { loadStudents } from '~/lib/kinder/students/load-students';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
+import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import { CreateStudentDialog } from './_components/create-student-dialog';
 import { StudentsOverview } from './_components/students-overview';
@@ -36,16 +39,22 @@ async function StudentsPage({
 
   await assertModuleAccessFromContext(context, pathsConfig.app.students, 'view');
 
-  const [students, allStudents] = await Promise.all([
+  const client = getSupabaseServerClient();
+  const [students, allStudents, packages] = await Promise.all([
     loadStudents(context.school.id, status),
     loadStudents(context.school.id),
+    loadPublicPackages(client),
   ]);
+  const quotaSummary = await loadQuotaFormSummary(client, context, packages);
 
   return (
     <>
       <KinderPageHeader
         actions={
-          <CreateStudentDialog schoolId={context.school.id} />
+          <CreateStudentDialog
+            quotaSummary={quotaSummary}
+            schoolId={context.school.id}
+          />
         }
         breadcrumbs={[{ label: <Trans i18nKey="kinder:students.title" /> }]}
         description={<Trans i18nKey="kinder:students.description" />}

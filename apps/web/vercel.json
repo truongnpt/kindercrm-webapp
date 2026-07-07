@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "cd ../.. && pnpm install",
+  "buildCommand": "next build",
+  "crons": [
+    {
+      "path": "/api/cron/trial-reminder-emails",
+      "schedule": "30 1 * * *"
+    },
+    {
+      "path": "/api/cron/expire-trials",
+      "schedule": "0 2 * * *"
+    }
+  ]
+}

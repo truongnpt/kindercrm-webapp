@@ -75,6 +75,7 @@ const CATEGORY_KEYS: Partial<Record<NotificationCategory, string>> = {
   daily_report: 'notifications.categories.daily_report',
   inventory: 'notifications.categories.inventory',
   menu: 'notifications.categories.menu',
+  subscription: 'notifications.categories.subscription',
   system: 'notifications.categories.system',
 };
 

@@ -84,6 +84,7 @@ function mapSchoolRow(
     created_at: school.created_at,
     package_name: subscription?.package?.name ?? null,
     subscription_status: subscription?.status ?? null,
+    has_subscription: Boolean(subscription),
     student_count: counts.students,
     campus_count: counts.campuses,
   };
@@ -92,6 +93,7 @@ function mapSchoolRow(
 export async function loadPlatformSchools(filters?: {
   status?: string;
   search?: string;
+  missingSubscription?: boolean;
 }): Promise<PlatformSchoolListItem[]> {
   const client = getPlatformDataClient();
 
@@ -139,9 +141,15 @@ export async function loadPlatformSchools(filters?: {
   const schools = data ?? [];
   const counts = await countForSchools(schools.map((school) => school.id));
 
-  return schools.map((school) =>
+  const rows = schools.map((school) =>
     mapSchoolRow(school, counts.get(school.id) ?? { students: 0, campuses: 0 }),
   );
+
+  if (filters?.missingSubscription) {
+    return rows.filter((school) => !school.has_subscription);
+  }
+
+  return rows;
 }
 
 export async function loadPlatformSchoolDetail(

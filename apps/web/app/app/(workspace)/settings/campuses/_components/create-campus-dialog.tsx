@@ -35,14 +35,20 @@ import {
 } from '~/components/kinder-ui';
 import { CreateCampusSchema } from '~/lib/kinder/tenant/schemas/campus.schema';
 import { createCampusAction } from '~/lib/kinder/tenant/server-actions';
+import { formatQuotaMutationError } from '~/lib/kinder/subscription/quota-limit-messages';
+import type { QuotaFormSummary } from '~/lib/kinder/subscription/quotas';
 import type { Campus } from '~/lib/kinder/types';
+
+import { QuotaLimitBanner } from '../../../_components/quota-limit-banner';
 
 export function CreateCampusDialog({
   schoolId,
   campuses,
+  quotaSummary,
 }: {
   schoolId: string;
   campuses: Campus[];
+  quotaSummary: QuotaFormSummary;
 }) {
   const { t } = useTranslation('kinder');
   const [open, setOpen] = useState(false);
@@ -69,7 +75,8 @@ export function CreateCampusDialog({
     toast: {
       loading: t('campuses.creating'),
       success: t('campuses.created'),
-      error: t('ui.toast.error'),
+      error: (error) =>
+        formatQuotaMutationError(t, error, quotaSummary) ?? t('ui.toast.error'),
     },
     onSuccess: () => {
       form.reset({
@@ -93,13 +100,14 @@ export function CreateCampusDialog({
       size="md"
       title={<Trans i18nKey="kinder:campuses.addCampus" />}
       trigger={
-        <Button>
+        <Button disabled={quotaSummary.campuses.atLimit}>
           <Plus className="mr-2 size-4" />
           <Trans i18nKey="kinder:campuses.addCampus" />
         </Button>
       }
       footer={
         <KinderSubmitButton
+          disabled={quotaSummary.campuses.atLimit}
           loading={createCampus.isPending}
           onClick={form.handleSubmit((data) => createCampus.mutate(data))}
           type="button"
@@ -108,6 +116,15 @@ export function CreateCampusDialog({
         </KinderSubmitButton>
       }
     >
+      <QuotaLimitBanner
+        atLimit={quotaSummary.campuses.atLimit}
+        currentPackageName={quotaSummary.currentPackageName}
+        kind="campuses"
+        max={quotaSummary.limits.maxCampuses}
+        nearLimit={quotaSummary.campuses.nearLimit}
+        suggestedPackageName={quotaSummary.campuses.suggestedPackageName}
+        used={quotaSummary.usage.campuses}
+      />
       <Form {...form}>
         <form className="flex flex-col gap-4">
           <FormField

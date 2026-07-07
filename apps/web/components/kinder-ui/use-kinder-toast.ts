@@ -11,13 +11,19 @@ export function useKinderToast() {
     messages?: {
       loading?: string;
       success?: string;
-      error?: string;
+      error?: string | ((error: unknown) => string);
     },
   ) {
     return toast.promise(action, {
       loading: messages?.loading ?? t('ui.toast.saving'),
       success: messages?.success ?? t('ui.toast.saved'),
-      error: messages?.error ?? t('ui.toast.error'),
+      error: (error) => {
+        if (typeof messages?.error === 'function') {
+          return messages.error(error);
+        }
+
+        return messages?.error ?? t('ui.toast.error');
+      },
     });
   }
 

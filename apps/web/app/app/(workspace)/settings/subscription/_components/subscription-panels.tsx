@@ -1,74 +1,35 @@
-import { History } from 'lucide-react';
-
-import { Badge } from '@kit/ui/badge';
 import { Trans } from '@kit/ui/trans';
 
-import { EmptyState, SectionCard } from '~/components/kinder-ui';
-import type { Package } from '~/lib/kinder/types';
+import { SectionCard, SubscriptionStatusBadge } from '~/components/kinder-ui';
+import type {
+  SubscriptionDisplayStatus,
+  SubscriptionStatus,
+} from '~/lib/kinder/types';
 
-type HistoryItem = {
-  id: string;
-  package_id: string;
-  previous_package_id: string | null;
-  created_at: string;
-  note: string | null;
-};
-
-export function SubscriptionHistoryPanel({
-  history,
-  packageMap,
-}: {
-  history: HistoryItem[];
-  packageMap: Map<string, Package>;
-}) {
-  if (history.length === 0) {
-    return (
-      <EmptyState
-        compact
-        descriptionKey="kinder:ui.emptyDefaultDescription"
-        icon={History}
-        titleKey="kinder:subscription.historyEmpty"
-      />
-    );
-  }
-
-  return (
-    <ul className="flex flex-col gap-3">
-      {history.map((item) => (
-        <li className="kinder-mobile-card text-sm" key={item.id}>
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <span className="font-medium">
-              {packageMap.get(item.package_id)?.name ?? item.package_id}
-            </span>
-            <span className="text-muted-foreground">
-              {new Date(item.created_at).toLocaleString()}
-            </span>
-          </div>
-          {item.previous_package_id ? (
-            <p className="text-muted-foreground mt-1">
-              {packageMap.get(item.previous_package_id)?.name ??
-                item.previous_package_id}{' '}
-              → {packageMap.get(item.package_id)?.name}
-            </p>
-          ) : null}
-          {item.note ? (
-            <p className="text-muted-foreground mt-1">{item.note}</p>
-          ) : null}
-        </li>
-      ))}
-    </ul>
-  );
-}
+export { SubscriptionHistoryPanel } from './subscription-history-panel';
 
 export function SubscriptionPlanPanel({
   currentPackageName,
-  isTrial,
+  subscriptionStatus,
+  displayStatus,
   trialEnds,
+  effectivePackageName,
+  pastDueGraceDaysRemaining,
+  isPastDueGraceExpired,
 }: {
   currentPackageName: string;
-  isTrial: boolean;
+  subscriptionStatus: SubscriptionStatus | null;
+  displayStatus: SubscriptionDisplayStatus | null;
   trialEnds: string | null;
+  effectivePackageName?: string | null;
+  pastDueGraceDaysRemaining?: number | null;
+  isPastDueGraceExpired?: boolean;
 }) {
+  const showEffectiveNote =
+    effectivePackageName &&
+    effectivePackageName !== currentPackageName &&
+    (subscriptionStatus === 'cancelled' || isPastDueGraceExpired);
+
   return (
     <SectionCard>
       <div className="flex flex-wrap items-center gap-3">
@@ -80,21 +41,41 @@ export function SubscriptionPlanPanel({
             {currentPackageName}
           </p>
         </div>
-        {isTrial ? (
-          <Badge variant="secondary">
-            <Trans i18nKey="kinder:subscription.trialBadge" />
-          </Badge>
+        {displayStatus ? (
+          <SubscriptionStatusBadge status={displayStatus} />
         ) : (
-          <Badge>
-            <Trans i18nKey="kinder:subscription.activeBadge" />
-          </Badge>
+          <SubscriptionStatusBadge status="active" />
         )}
       </div>
-      {isTrial && trialEnds ? (
+      {displayStatus === 'trial' && trialEnds ? (
         <p className="text-muted-foreground mt-3 text-sm">
           <Trans
             i18nKey="kinder:subscription.trialFullAccess"
             values={{ date: trialEnds }}
+          />
+        </p>
+      ) : null}
+      {displayStatus === 'trial_expired' && trialEnds ? (
+        <p className="text-muted-foreground mt-3 text-sm">
+          <Trans
+            i18nKey="kinder:dashboard.trialExpired"
+            values={{ date: trialEnds }}
+          />
+        </p>
+      ) : null}
+      {subscriptionStatus === 'past_due' && !isPastDueGraceExpired ? (
+        <p className="text-muted-foreground mt-3 text-sm">
+          <Trans
+            i18nKey="kinder:subscription.pastDueGraceHint"
+            values={{ count: pastDueGraceDaysRemaining ?? 0 }}
+          />
+        </p>
+      ) : null}
+      {showEffectiveNote ? (
+        <p className="text-muted-foreground mt-3 text-sm">
+          <Trans
+            i18nKey="kinder:subscription.effectivePlanNote"
+            values={{ plan: effectivePackageName }}
           />
         </p>
       ) : null}

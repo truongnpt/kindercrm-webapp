@@ -21,15 +21,19 @@ export const generateMetadata = async () => {
 async function PlatformSchoolsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; q?: string }>;
+  searchParams: Promise<{ status?: string; q?: string; missing_subscription?: string }>;
 }) {
-  const { status, q } = await searchParams;
+  const { status, q, missing_subscription } = await searchParams;
   const user = await requireUserInServerComponent();
   const platform = await requirePlatformAdminPage(user.id, [
     'super_admin',
     'support',
   ]);
-  const schools = await loadPlatformSchools({ status, search: q });
+  const schools = await loadPlatformSchools({
+    status,
+    search: q,
+    missingSubscription: missing_subscription === '1',
+  });
 
   return (
     <>
@@ -39,7 +43,11 @@ async function PlatformSchoolsPage({
       />
 
       <PlatformPageBody>
-        <PlatformSchoolsFilter defaultQuery={q} defaultStatus={status} />
+        <PlatformSchoolsFilter
+          defaultMissingSubscription={missing_subscription === '1'}
+          defaultQuery={q}
+          defaultStatus={status}
+        />
         <PlatformSchoolsTable platformRole={platform.role} schools={schools} />
       </PlatformPageBody>
     </>

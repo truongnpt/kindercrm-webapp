@@ -24,6 +24,11 @@ import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
 
 import { SectionCard } from '~/components/kinder-ui';
+import { ensureStorageQuotaBeforeUpload } from '~/lib/kinder/subscription/ensure-storage-quota-before-upload';
+import {
+  isStorageLimitError,
+  storageLimitMessage,
+} from '~/lib/kinder/subscription/storage-quota-messages';
 import { UpdateSchoolSchema } from '~/lib/kinder/tenant/schemas/school.schema';
 import { updateSchoolAction } from '~/lib/kinder/tenant/server-actions';
 import type { School } from '~/lib/kinder/types';
@@ -84,6 +89,8 @@ export function UpdateSchoolForm({ school }: { school: School }) {
       const path = `${school.id}/school-logos/${fileName}`;
       const bytes = await file.arrayBuffer();
 
+      await ensureStorageQuotaBeforeUpload(school.id, bytes.byteLength);
+
       const upload = await supabase.storage
         .from(SCHOOL_LOGO_BUCKET)
         .upload(path, bytes, {
@@ -103,9 +110,11 @@ export function UpdateSchoolForm({ school }: { school: School }) {
       toast.success(t('schoolSettings.logoUploaded'));
     } catch (error) {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : t('common:genericServerError', { ns: 'common' }),
+        isStorageLimitError(error)
+          ? storageLimitMessage(t)
+          : error instanceof Error
+            ? error.message
+            : t('common:genericServerError', { ns: 'common' }),
       );
     } finally {
       setUploadingLogo(false);

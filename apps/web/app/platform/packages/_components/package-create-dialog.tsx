@@ -33,7 +33,6 @@ import {
   type PackageFeature,
 } from '~/lib/kinder/subscription/package-features';
 import { CreatePackageSchema } from '~/lib/kinder/platform/schemas/package.schema';
-import type { z } from 'zod';
 import { platformCreatePackageAction } from '~/lib/kinder/platform/platform-ops-actions';
 
 const defaultFeatures = PACKAGE_FEATURE_KEYS.reduce(
@@ -59,8 +58,11 @@ export function PackageCreateDialog() {
       maxStorageMb: 512,
       aiCreditsMonthly: 0,
       priceMonthly: 0,
+      priceYearly: 0,
       sortOrder: 0,
       isActive: true,
+      stripePriceId: '',
+      stripePriceYearlyId: '',
       featuresAll: false,
       features: defaultFeatures,
     },
@@ -109,7 +111,7 @@ export function PackageFormFields({
   featuresAll,
   showCode = false,
 }: {
-  control: Control<z.infer<typeof CreatePackageSchema>>;
+  control: Control<any>;
   featuresAll: boolean;
   showCode?: boolean;
 }) {
@@ -166,7 +168,8 @@ export function PackageFormFields({
             ['maxCampuses', 'Max campuses'],
             ['maxStorageMb', 'Storage (MB)'],
             ['aiCreditsMonthly', 'AI credits/mo'],
-            ['priceMonthly', 'Price (VND)'],
+            ['priceMonthly', 'Price monthly (VND)'],
+            ['priceYearly', 'Price yearly (VND)'],
             ['sortOrder', 'Sort order'],
           ] as const
         ).map(([name, label]) => (
@@ -189,15 +192,32 @@ export function PackageFormFields({
 
       <FormField
         control={control}
-        name="isActive"
+        name="stripePriceId"
         render={({ field }) => (
-          <FormItem className="flex items-center gap-2 space-y-0">
-            <FormControl>
-              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-            </FormControl>
-            <FormLabel className="font-normal">
-              <Trans i18nKey="kinder:platform.packages.active" />
+          <FormItem>
+            <FormLabel>
+              <Trans i18nKey="kinder:platform.packages.stripePriceId" />
             </FormLabel>
+            <FormControl>
+              <Input {...field} className="font-mono text-sm" placeholder="price_..." />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={control}
+        name="stripePriceYearlyId"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>
+              <Trans i18nKey="kinder:platform.packages.stripePriceYearlyId" />
+            </FormLabel>
+            <FormControl>
+              <Input {...field} className="font-mono text-sm" placeholder="price_..." />
+            </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />

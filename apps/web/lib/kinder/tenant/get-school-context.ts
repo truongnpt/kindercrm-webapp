@@ -15,6 +15,10 @@ import type {
 } from '~/lib/kinder/types';
 
 import { getActiveSchoolIdFromCookie } from './active-school-cookie';
+import {
+  loadFreePackage,
+  resolveSchoolEffectivePackage,
+} from '~/lib/kinder/subscription/subscription-access.server';
 
 export const loadUserSchools = cache(async (userId: string) => {
   const client = getSupabaseServerClient();
@@ -102,12 +106,21 @@ export const getSchoolContext = cache(
       | (SchoolSubscription & { package: Package | null })
       | null;
 
+    const billedPackage = sub?.package ?? null;
+    const freePackage = await loadFreePackage(client);
+    const effectivePackage = resolveSchoolEffectivePackage(
+      billedPackage,
+      sub,
+      freePackage,
+    );
+
     return {
       school: school as School,
       role: active.role,
       customRoleId: active.customRoleId,
       subscription: sub,
-      package: sub?.package ?? null,
+      package: billedPackage,
+      effectivePackage,
     };
   },
 );

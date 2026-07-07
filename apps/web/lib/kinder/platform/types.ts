@@ -24,6 +24,7 @@ export interface PlatformSchoolListItem {
   created_at: string;
   package_name: string | null;
   subscription_status: string | null;
+  has_subscription: boolean;
   student_count: number;
   campus_count: number;
 }
@@ -58,5 +59,20 @@ export interface PlatformAuditLogItem {
   target_type: string;
   target_id: string | null;
   metadata: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface EnterpriseInquiryListItem {
+  id: string;
+  school_id: string;
+  school_name: string;
+  school_slug: string;
+  contact_name: string;
+  phone: string;
+  campus_count: number;
+  notes: string | null;
+  status: string;
+  submitter_name: string | null;
+  submitter_email: string | null;
   created_at: string;
 }

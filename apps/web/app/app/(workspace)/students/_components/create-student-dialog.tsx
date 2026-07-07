@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 import { useSupabase } from '@kit/supabase/hooks/use-supabase';
 import { Button } from '@kit/ui/button';
@@ -42,10 +43,21 @@ import {
   setStudentPhotoAction,
 } from '~/lib/kinder/students/server-actions';
 import { uploadStudentPhoto } from '~/lib/kinder/students/upload-student-photo';
+import { ensureStorageQuotaBeforeUpload } from '~/lib/kinder/subscription/ensure-storage-quota-before-upload';
+import { formatQuotaMutationError } from '~/lib/kinder/subscription/quota-limit-messages';
+import type { QuotaFormSummary } from '~/lib/kinder/subscription/quotas';
 
+import { QuotaLimitBanner } from '../../_components/quota-limit-banner';
 import { StudentPhotoField } from './student-photo-field';
 
-export function CreateStudentDialog({ schoolId }: { schoolId: string }) {
+export function CreateStudentDialog({
+  schoolId,
+  quotaSummary,
+}: {
+  schoolId: string;
+  quotaSummary: QuotaFormSummary;
+}) {
+  const { t } = useTranslation('kinder');
   const router = useRouter();
   const supabase = useSupabase();
   const [open, setOpen] = useState(false);
@@ -71,11 +83,20 @@ export function CreateStudentDialog({ schoolId }: { schoolId: string }) {
     mutationFn: createStudentAction,
     invalidateKeys: [kinderQueryKeys.students.list(schoolId)],
     refresh: false,
+    toast: {
+      error: (error) =>
+        formatQuotaMutationError(t, error, quotaSummary) ?? t('ui.toast.error'),
+    },
     onSuccess: async (result) => {
       const studentId = result?.studentId;
 
       if (studentId && pendingPhotoRef.current) {
         try {
+          await ensureStorageQuotaBeforeUpload(
+            schoolId,
+            pendingPhotoRef.current.size,
+          );
+
           const photoUrl = await uploadStudentPhoto(supabase, {
             schoolId,
             studentId,
@@ -121,13 +142,14 @@ export function CreateStudentDialog({ schoolId }: { schoolId: string }) {
       size="lg"
       title={<Trans i18nKey="kinder:students.create" />}
       trigger={
-        <Button>
+        <Button disabled={quotaSummary.students.atLimit}>
           <Plus className="mr-2 size-4" />
           <Trans i18nKey="kinder:students.create" />
         </Button>
       }
       footer={
         <KinderSubmitButton
+          disabled={quotaSummary.students.atLimit}
           loading={createStudent.isPending}
           onClick={form.handleSubmit((data) => createStudent.mutate(data))}
           type="button"
@@ -136,6 +158,15 @@ export function CreateStudentDialog({ schoolId }: { schoolId: string }) {
         </KinderSubmitButton>
       }
     >
+      <QuotaLimitBanner
+        atLimit={quotaSummary.students.atLimit}
+        currentPackageName={quotaSummary.currentPackageName}
+        kind="students"
+        max={quotaSummary.limits.maxStudents}
+        nearLimit={quotaSummary.students.nearLimit}
+        suggestedPackageName={quotaSummary.students.suggestedPackageName}
+        used={quotaSummary.usage.students}
+      />
       <Form {...form}>
         <form className="flex flex-col gap-4">
           <FormField

@@ -8,8 +8,7 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import pathsConfig from '~/config/paths.config';
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
-import { assertCampusQuota } from '~/lib/kinder/subscription/quotas';
-import type { Package } from '~/lib/kinder/types';
+import { assertCampusQuota, loadSchoolPackageForQuota } from '~/lib/kinder/subscription/quotas';
 
 import { setActiveSchoolIdCookie } from './active-school-cookie';
 import { CreateCampusSchema } from './schemas/campus.schema';
@@ -161,17 +160,9 @@ export const createCampusAction = enhanceAction(
   async (data) => {
     const client = getSupabaseServerClient();
 
-    const { data: subscription } = await client
-      .from('school_subscriptions')
-      .select('package:packages (*)')
-      .eq('school_id', data.schoolId)
-      .maybeSingle();
+    const pkg = await loadSchoolPackageForQuota(client, data.schoolId);
 
-    await assertCampusQuota(
-      client,
-      data.schoolId,
-      (subscription?.package as Package | null) ?? null,
-    );
+    await assertCampusQuota(client, data.schoolId, pkg);
 
     if (data.isMain) {
       await client

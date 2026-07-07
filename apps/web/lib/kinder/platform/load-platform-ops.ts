@@ -4,6 +4,8 @@ import { getPlatformDataClient } from './platform-data-client';
 
 import type { Package } from '~/lib/kinder/types';
 
+import { FIXED_PACKAGE_CODES } from '~/lib/kinder/subscription/fixed-packages';
+
 import type { PlatformAdminListItem, PlatformAuditLogItem } from './types';
 
 export async function loadPlatformPackages(): Promise<Package[]> {
@@ -12,6 +14,7 @@ export async function loadPlatformPackages(): Promise<Package[]> {
   const { data, error } = await client
     .from('packages')
     .select('*')
+    .in('code', [...FIXED_PACKAGE_CODES])
     .order('sort_order');
 
   if (error) {

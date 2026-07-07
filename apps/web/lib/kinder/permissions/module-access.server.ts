@@ -8,6 +8,7 @@ import { hasPermission } from './check-permission';
 import { getModuleByPath } from './module-registry';
 import type { KinderPermission } from './permission-keys';
 import { requirePackageFeature } from '~/lib/kinder/subscription/features';
+import { assertSubscriptionWritable } from '~/lib/kinder/subscription/subscription-access.server';
 
 export async function assertModuleAccessFromContext(
   context: SchoolContext,
@@ -21,6 +22,10 @@ export async function assertModuleAccessFromContext(
   }
 
   requirePackageFeature(context, module.packageFeature);
+
+  if (mode === 'manage') {
+    assertSubscriptionWritable(context);
+  }
 
   const permission =
     mode === 'manage' && module.managePermission ?

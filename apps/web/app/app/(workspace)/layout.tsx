@@ -20,6 +20,7 @@ import { withI18n } from '~/lib/i18n/with-i18n';
 import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
 
 import { getPlatformAdminContext, redirectIfPlatformAdmin } from '~/lib/kinder/platform/require-platform-admin';
+import { isStripeBillingEnabled } from '~/lib/kinder/billing/stripe-config';
 
 import {
   WorkspaceHeader,
@@ -27,6 +28,8 @@ import {
 } from '~/components/kinder-ui';
 
 import { AppSidebar } from '../_components/app-sidebar';
+import { BillingStatusBanner } from './_components/billing-status-banner';
+import { TrialBanner } from './_components/trial-banner';
 
 function WorkspaceLayout({ children }: React.PropsWithChildren) {
   const { user, context, schools, navigation, notifications, unreadCount, showPlatformLink } =
@@ -73,6 +76,17 @@ function WorkspaceLayout({ children }: React.PropsWithChildren) {
 
         <main className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto bg-muted/30">
           <div className="mx-auto w-full max-w-[1536px] px-4 py-6 sm:px-6 lg:px-8">
+            <BillingStatusBanner
+              isOwner={context.role === 'owner'}
+              schoolId={context.school.id}
+              stripeCustomerId={context.subscription?.stripe_customer_id ?? null}
+              stripeEnabled={isStripeBillingEnabled()}
+              subscription={context.subscription}
+            />
+            <TrialBanner
+              package={context.package}
+              subscription={context.subscription}
+            />
             {children}
           </div>
         </main>
@@ -133,7 +147,7 @@ async function loadWorkspaceData() {
 
   const navigation = context
     ? getKinderNavigationConfig(
-        context.package,
+        context.effectivePackage ?? context.package,
         context.subscription,
         memberPermissions,
       )

@@ -1031,6 +1031,53 @@ export type Database = {
           },
         ]
       }
+      enterprise_inquiries: {
+        Row: {
+          campus_count: number
+          contact_name: string
+          created_at: string
+          id: string
+          notes: string | null
+          phone: string
+          school_id: string
+          status: string
+          submitted_by_user_id: string
+          updated_at: string
+        }
+        Insert: {
+          campus_count: number
+          contact_name: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          phone: string
+          school_id: string
+          status?: string
+          submitted_by_user_id: string
+          updated_at?: string
+        }
+        Update: {
+          campus_count?: number
+          contact_name?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          phone?: string
+          school_id?: string
+          status?: string
+          submitted_by_user_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enterprise_inquiries_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       health_growth_records: {
         Row: {
           bmi: number | null
@@ -2406,7 +2453,10 @@ export type Database = {
           max_students: number
           name: string
           price_monthly: number
+          price_yearly: number
           sort_order: number
+          stripe_price_id: string | null
+          stripe_price_yearly_id: string | null
           updated_at: string
         }
         Insert: {
@@ -2422,7 +2472,10 @@ export type Database = {
           max_students?: number
           name: string
           price_monthly?: number
+          price_yearly?: number
           sort_order?: number
+          stripe_price_id?: string | null
+          stripe_price_yearly_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -2438,7 +2491,10 @@ export type Database = {
           max_students?: number
           name?: string
           price_monthly?: number
+          price_yearly?: number
           sort_order?: number
+          stripe_price_id?: string | null
+          stripe_price_yearly_id?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -3072,6 +3128,8 @@ export type Database = {
           previous_package_id: string | null
           school_id: string
           status: Database["public"]["Enums"]["subscription_status"]
+          stripe_invoice_id: string | null
+          stripe_invoice_url: string | null
         }
         Insert: {
           changed_by?: string | null
@@ -3082,6 +3140,8 @@ export type Database = {
           previous_package_id?: string | null
           school_id: string
           status: Database["public"]["Enums"]["subscription_status"]
+          stripe_invoice_id?: string | null
+          stripe_invoice_url?: string | null
         }
         Update: {
           changed_by?: string | null
@@ -3092,6 +3152,8 @@ export type Database = {
           previous_package_id?: string | null
           school_id?: string
           status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_invoice_id?: string | null
+          stripe_invoice_url?: string | null
         }
         Relationships: [
           {
@@ -3117,6 +3179,180 @@ export type Database = {
           },
         ]
       }
+      saas_billing_invoices: {
+        Row: {
+          billing_period_end: string | null
+          billing_period_start: string | null
+          buyer_email: string | null
+          created_at: string
+          currency: string
+          emailed_at: string | null
+          id: string
+          invoice_number: string
+          issued_at: string
+          package_id: string | null
+          package_name: string
+          school_id: string
+          school_name: string
+          status: string
+          stripe_invoice_id: string
+          subtotal: number
+          total_amount: number
+          vat_amount: number
+          vat_rate: number
+        }
+        Insert: {
+          billing_period_end?: string | null
+          billing_period_start?: string | null
+          buyer_email?: string | null
+          created_at?: string
+          currency?: string
+          emailed_at?: string | null
+          id?: string
+          invoice_number: string
+          issued_at?: string
+          package_id?: string | null
+          package_name: string
+          school_id: string
+          school_name: string
+          status?: string
+          stripe_invoice_id: string
+          subtotal: number
+          total_amount: number
+          vat_amount: number
+          vat_rate?: number
+        }
+        Update: {
+          billing_period_end?: string | null
+          billing_period_start?: string | null
+          buyer_email?: string | null
+          created_at?: string
+          currency?: string
+          emailed_at?: string | null
+          id?: string
+          invoice_number?: string
+          issued_at?: string
+          package_id?: string | null
+          package_name?: string
+          school_id?: string
+          school_name?: string
+          status?: string
+          stripe_invoice_id?: string
+          subtotal?: number
+          total_amount?: number
+          vat_amount?: number
+          vat_rate?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saas_billing_invoices_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "packages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "saas_billing_invoices_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscription_coupon_redemptions: {
+        Row: {
+          coupon_id: string
+          created_at: string
+          id: string
+          school_id: string
+          stripe_checkout_session_id: string | null
+        }
+        Insert: {
+          coupon_id: string
+          created_at?: string
+          id?: string
+          school_id: string
+          stripe_checkout_session_id?: string | null
+        }
+        Update: {
+          coupon_id?: string
+          created_at?: string
+          id?: string
+          school_id?: string
+          stripe_checkout_session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_coupon_redemptions_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscription_coupon_redemptions_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscription_coupons: {
+        Row: {
+          applicable_package_codes: string[]
+          code: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          discount_type: string
+          discount_value: number
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          max_redemptions: number | null
+          redemption_count: number
+          stripe_coupon_id: string | null
+          stripe_promotion_code_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          applicable_package_codes?: string[]
+          code: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          discount_type: string
+          discount_value: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_redemptions?: number | null
+          redemption_count?: number
+          stripe_coupon_id?: string | null
+          stripe_promotion_code_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          applicable_package_codes?: string[]
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_redemptions?: number | null
+          redemption_count?: number
+          stripe_coupon_id?: string | null
+          stripe_promotion_code_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       school_subscriptions: {
         Row: {
           created_at: string
@@ -3126,7 +3362,10 @@ export type Database = {
           package_id: string
           school_id: string
           status: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
           trial_ends_at: string | null
+          past_due_at: string | null
           updated_at: string
         }
         Insert: {
@@ -3137,7 +3376,10 @@ export type Database = {
           package_id: string
           school_id: string
           status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           trial_ends_at?: string | null
+          past_due_at?: string | null
           updated_at?: string
         }
         Update: {
@@ -3148,7 +3390,10 @@ export type Database = {
           package_id?: string
           school_id?: string
           status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           trial_ends_at?: string | null
+          past_due_at?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -3163,6 +3408,56 @@ export type Database = {
             foreignKeyName: "school_subscriptions_school_id_fkey"
             columns: ["school_id"]
             isOneToOne: true
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stripe_webhook_events: {
+        Row: {
+          event_type: string
+          id: string
+          processed_at: string
+        }
+        Insert: {
+          event_type: string
+          id: string
+          processed_at?: string
+        }
+        Update: {
+          event_type?: string
+          id?: string
+          processed_at?: string
+        }
+        Relationships: []
+      }
+      trial_email_reminders: {
+        Row: {
+          id: string
+          recipient_email: string
+          reminder_kind: string
+          school_id: string
+          sent_at: string
+        }
+        Insert: {
+          id?: string
+          recipient_email: string
+          reminder_kind: string
+          school_id: string
+          sent_at?: string
+        }
+        Update: {
+          id?: string
+          recipient_email?: string
+          reminder_kind?: string
+          school_id?: string
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trial_email_reminders_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
             referencedRelation: "schools"
             referencedColumns: ["id"]
           },
@@ -4771,6 +5066,21 @@ export type Database = {
         }
         Returns: string
       }
+      expire_expired_trial_subscriptions: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          school_id: string
+          subscription_id: string
+        }[]
+      }
+      next_saas_invoice_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      get_school_storage_usage_bytes: {
+        Args: { p_school_id: string }
+        Returns: number
+      }
       default_role_has_permission: {
         Args: {
           p_permission: string
@@ -4930,6 +5240,7 @@ export type Database = {
         | "calendar"
         | "communication"
         | "finance"
+        | "subscription"
       payment_account_status: "active" | "inactive"
       payment_audit_action:
         | "account_created"
@@ -5777,6 +6088,7 @@ export const Constants = {
         "calendar",
         "communication",
         "finance",
+        "subscription",
       ],
       payment_account_status: ["active", "inactive"],
       payment_audit_action: [

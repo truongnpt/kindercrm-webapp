@@ -45,6 +45,12 @@ pnpm --filter web supabase db push
 
 (sau khi đã `link` trong `apps/web`.)
 
+**Checklist sau `db push` (bắt buộc cho subscription):**
+
+1. Vào **Table Editor → `packages`** — phải có 3 gói active: `free`, `starter`, `pro`.
+2. Nếu thiếu, migration `20260747000000_kinder_packages_seed.sql` chưa chạy — chạy lại `pnpm supabase db push` hoặc paste SQL migration trong SQL Editor.
+3. Trường tạo trước khi có packages: vào **Platform → Trường học**, lọc *Chỉ trường thiếu gói*, mở chi tiết → **Tạo gói dùng thử Free (14 ngày)**.
+
 ### 2.3 URL và redirect (Auth)
 
 **Authentication → URL configuration:**
@@ -131,13 +137,16 @@ Script build của `web` dùng `dotenv -e ./.env.local`; trên CI nếu thiếu 
 |------|---------|
 | `STRIPE_SECRET_KEY` | Secret key (`sk_test_…` / `sk_live_…`). **Không** public. |
 | `STRIPE_WEBHOOK_SECRET` | Signing secret webhook (`whsec_…`). |
-| `STRIPE_PRICE_PRO` | Price ID gói Pro (`price_…`), hoặc set `plans.stripe_price_id` trong DB. |
-| `STRIPE_PRICE_ENTERPRISE` | Price ID gói Enterprise. |
+| `STRIPE_VND_PER_USD` | Tỷ giá VND/USD cho checkout (vd. `25000`). Mặc định `25000`. |
+
+Giá **hiển thị** VND tại **Platform → Gói** (`price_monthly`, `price_yearly`). Stripe charge **USD** sau quy đổi. Tuỳ chọn override bằng `stripe_price_id` / `stripe_price_yearly_id` (Price USD trên Stripe).
 
 **Webhook production:** Stripe Dashboard → Developers → Webhooks → Add endpoint:
 
 - URL: `https://<domain>/api/billing/stripe/webhook`
-- Events: `checkout.session.completed`, `customer.subscription.deleted`
+- Events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
+
+Chi tiết: [docs/stripe-integration.md](../docs/stripe-integration.md)
 
 **Webhook local:** cài [Stripe CLI](https://stripe.com/docs/stripe-cli), chạy:
 
@@ -164,6 +173,21 @@ Trên **Vercel → Project → Settings → General**:
 Nếu **Root Directory** để trống hoặc là `.` (repo gốc), Vercel báo lỗi *No Next.js version detected* vì `package.json` ở root không có dependency `next`.
 
 Đảm bảo `NEXT_PUBLIC_*` và secret có trong **Environment Variables** của Vercel (Production / Preview) — biến phải có **lúc build**.
+
+| Biến | Mô tả |
+|------|--------|
+| `CRON_SECRET` | Chuỗi bí mật ngẫu nhiên; Vercel Cron gửi `Authorization: Bearer <CRON_SECRET>` khi gọi `/api/cron/expire-trials` (02:00 UTC hàng ngày). |
+
+**Cron hết hạn trial (SUB-003):** `apps/web/vercel.json` đăng ký job `0 2 * * *` → `GET /api/cron/expire-trials`. Sau deploy, kiểm tra **Vercel → Cron Jobs** và log nếu cần. Test thủ công:
+
+```bash
+curl -s -H "Authorization: Bearer $CRON_SECRET" \
+  https://<domain>/api/cron/expire-trials
+```
+
+Kỳ vọng: `{"ok":true,"processed":0,"schoolIds":[]}` hoặc danh sách trường vừa hết trial.
+
+**Email nhắc trial (SUB-007):** Cron `30 1 * * *` → `GET /api/cron/trial-reminder-emails` (trước job hết hạn trial). Cần cấu hình SMTP trên hosting — xem [docs/trial-email-reminders.md](../docs/trial-email-reminders.md).
 
 ### 3.3 Kiểm tra trước khi deploy
 

@@ -36,6 +36,7 @@
     "welcome": "Chào mừng đến Kinder CRM",
     "packageLabel": "Gói hiện tại",
     "trialEnds": "Dùng thử đến {{date}}",
+    "trialExpired": "Hết hạn dùng thử vào {{date}}",
     "sections": {
       "quickStats": "Thống kê nhanh"
     },
@@ -72,6 +73,8 @@
       "packages": "Gói",
       "admins": "Quản trị",
       "audit": "Nhật ký",
+      "enterpriseInquiries": "Enterprise",
+      "coupons": "Mã giảm giá",
       "account": "Tài khoản"
     },
     "roles": {
@@ -83,7 +86,19 @@
       "totalSchools": "Tổng trường",
       "activeSchools": "Trường hoạt động",
       "suspendedSchools": "Trường tạm ngưng",
-      "trialSchools": "Gói dùng thử"
+      "trialSchools": "Gói dùng thử",
+      "activePaidSchools": "Trường trả phí"
+    },
+    "analytics": {
+      "title": "Phân tích đăng ký",
+      "hint": "MRR ước tính từ gói đang active; doanh thu theo hóa đơn SaaS; trial/churn theo lịch sử thay đổi gói.",
+      "estimatedMrr": "MRR ước tính",
+      "trialConversion": "Chuyển đổi trial",
+      "churn30d": "Churn 30 ngày",
+      "activePaid": "Trường trả phí",
+      "revenueChart": "Doanh thu SaaS theo tháng",
+      "funnelChart": "Trial · chuyển đổi · churn",
+      "exportCsv": "Xuất CSV"
     },
     "schoolStatus": {
       "active": "Hoạt động",
@@ -110,6 +125,7 @@
       "search": "Tìm kiếm",
       "searchPlaceholder": "Tên trường hoặc slug…",
       "statusAll": "Tất cả trạng thái",
+      "missingSubscriptionOnly": "Chỉ trường thiếu gói",
       "back": "Về danh sách",
       "info": "Thông tin trường",
       "owner": "Chủ sở hữu",
@@ -117,17 +133,30 @@
     },
     "packages": {
       "title": "Gói đăng ký",
-      "description": "Quản lý gói và feature flags.",
+      "description": "Chỉnh quota, giá và Stripe Price ID cho 3 gói cố định: Free, Starter, Pro.",
       "create": "Tạo gói",
+      "createDisabled": "Catalog cố định 3 gói — không thể tạo thêm",
       "createTitle": "Tạo gói mới",
       "editTitle": "Sửa gói",
       "save": "Lưu gói",
       "active": "Hiển thị trên catalog",
+      "stripePriceId": "Stripe Price ID (tháng, tuỳ chọn)",
+      "stripePriceYearlyId": "Stripe Price ID (năm, tuỳ chọn)",
+      "priceMonthlyHint": "Giá hiển thị VND — Stripe quy đổi sang USD khi thanh toán",
+      "priceYearlyHint": "Giá hiển thị VND/năm — Stripe quy đổi sang USD khi thanh toán",
       "empty": "Chưa có gói nào."
     },
     "subscription": {
       "overrideTitle": "Ghi đè đăng ký",
-      "save": "Áp dụng"
+      "save": "Áp dụng",
+      "missingBadge": "Trường này chưa có gói đăng ký — chủ trường không thể dùng đầy đủ tính năng.",
+      "missingShort": "Thiếu gói",
+      "repairTitle": "Sửa đăng ký",
+      "repairAlertTitle": "Chưa có gói đăng ký",
+      "repairAlertDescription": "Tạo gói Free dùng thử 14 ngày cho trường này. Thao tác an toàn khi onboarding production thiếu dữ liệu packages.",
+      "repairAction": "Tạo gói dùng thử Free (14 ngày)",
+      "repairing": "Đang tạo gói...",
+      "repaired": "Đã tạo gói dùng thử thành công"
     },
     "admins": {
       "title": "Quản trị nền tảng",
@@ -140,6 +169,48 @@
       "title": "Nhật ký audit",
       "description": "Lịch sử thao tác platform.",
       "empty": "Chưa có bản ghi audit."
+    },
+    "enterpriseInquiries": {
+      "title": "Yêu cầu Enterprise",
+      "description": "Form liên hệ sales từ chủ trường trên trang Gói đăng ký.",
+      "empty": "Chưa có yêu cầu Enterprise.",
+      "time": "Thời gian",
+      "school": "Trường",
+      "contact": "Liên hệ",
+      "campuses": "Số cơ sở",
+      "status": "Trạng thái",
+      "notes": "Ghi chú",
+      "statuses": {
+        "new": "Mới",
+        "contacted": "Đã liên hệ",
+        "closed": "Đã đóng"
+      }
+    },
+    "coupons": {
+      "title": "Mã giảm giá",
+      "description": "Tạo và quản lý mã giảm giá khi đăng ký gói trả phí.",
+      "create": "Tạo mã",
+      "createTitle": "Tạo mã giảm giá",
+      "save": "Lưu mã",
+      "listTitle": "Danh sách mã",
+      "emptyTitle": "Chưa có mã giảm giá",
+      "empty": "Tạo mã giảm % hoặc tháng miễn phí cho checkout Stripe.",
+      "code": "Mã",
+      "descriptionField": "Mô tả",
+      "discount": "Ưu đãi",
+      "discountType": "Loại ưu đãi",
+      "typePercent": "Giảm %",
+      "typeFreeMonths": "Tháng miễn phí",
+      "percentValue": "Phần trăm giảm",
+      "monthsValue": "Số tháng miễn phí",
+      "percentOff": "Giảm {{value}}%",
+      "freeMonths": "{{count}} tháng miễn phí",
+      "maxRedemptions": "Giới hạn lượt dùng (tuỳ chọn)",
+      "usage": "Đã dùng",
+      "status": "Trạng thái",
+      "active": "Đang hoạt động",
+      "inactive": "Đã tắt",
+      "deactivate": "Tắt mã"
     }
   },
   "suspended": {
@@ -159,13 +230,77 @@
     "currentPlan": "Gói hiện tại",
     "trialBadge": "Dùng thử",
     "trialFullAccess": "Gói dùng thử bao gồm đầy đủ mọi tính năng đến {{date}}.",
+    "trialBanner": {
+      "title": "Gói dùng thử đang hoạt động",
+      "message": "Còn {{count}} ngày truy cập đầy đủ tính năng (đến {{date}}).",
+      "messageOneDay": "Còn 1 ngày dùng thử — hết hạn vào {{date}}.",
+      "messageToday": "Gói dùng thử kết thúc hôm nay. Nâng cấp để giữ đầy đủ tính năng.",
+      "messageOpenEnded": "Bạn đang dùng thử với quyền truy cập đầy đủ tính năng.",
+      "upgradeCta": "Nâng cấp gói"
+    },
     "activeBadge": "Đang dùng",
+    "status": {
+      "trial": "Dùng thử",
+      "trial_expired": "Hết hạn dùng thử",
+      "active": "Đang hoạt động",
+      "past_due": "Quá hạn thanh toán",
+      "cancelled": "Đã hủy"
+    },
+    "billingBanner": {
+      "pastDueTitle": "Thanh toán thất bại",
+      "pastDueMessage": "Gói của bạn quá hạn thanh toán. Còn {{count}} ngày để cập nhật phương thức thanh toán trước khi bị giới hạn chỉ đọc.",
+      "pastDueMessageOneDay": "Còn 1 ngày để cập nhật thanh toán trước khi bị giới hạn chỉ đọc.",
+      "pastDueMessageToday": "Hôm nay là ngày cuối để cập nhật thanh toán trước khi bị giới hạn chỉ đọc.",
+      "pastDueExpiredTitle": "Tài khoản chỉ đọc",
+      "pastDueExpiredMessage": "Gói đã quá hạn thanh toán. Tính năng bị giới hạn theo gói Free cho đến khi thanh toán lại.",
+      "cancelledTitle": "Gói đã hủy",
+      "cancelledMessage": "Đăng ký đã hủy. Tính năng và hạn mức hiện theo gói Free.",
+      "manageCta": "Quản lý thanh toán"
+    },
+    "pastDueGraceHint": "Còn {{count}} ngày để cập nhật thanh toán trước khi bị giới hạn chỉ đọc.",
+    "effectivePlanNote": "Tính năng và hạn mức hiện theo gói {{plan}}.",
+    "readOnlyError": "Tài khoản đang ở chế độ chỉ đọc do thanh toán quá hạn hoặc gói đã hủy.",
+    "quotaLimit": {
+      "studentsTitle": "Đã đạt hạn mức học sinh",
+      "studentsNearTitle": "Sắp đạt hạn mức học sinh",
+      "studentsMessage": "Gói {{plan}} cho phép tối đa {{max}} học sinh (đang dùng {{used}}).",
+      "studentsNearMessage": "Đang dùng {{used}}/{{max}} học sinh trên gói {{plan}}.",
+      "studentsSuggested": "Nâng cấp lên gói {{suggested}} để thêm học sinh.",
+      "campusesTitle": "Đã đạt hạn mức cơ sở",
+      "campusesNearTitle": "Sắp đạt hạn mức cơ sở",
+      "campusesMessage": "Gói {{plan}} cho phép tối đa {{max}} cơ sở (đang dùng {{used}}).",
+      "campusesNearMessage": "Đang dùng {{used}}/{{max}} cơ sở trên gói {{plan}}.",
+      "campusesSuggested": "Nâng cấp lên gói {{suggested}} để thêm cơ sở.",
+      "upgradeCta": "Nâng cấp gói",
+      "toastStudents": "Đã đạt giới hạn {{max}} học sinh của gói {{plan}}.{{suggested}}",
+      "toastCampuses": "Đã đạt giới hạn {{max}} cơ sở của gói {{plan}}.{{suggested}}",
+      "toastSuggestedSuffix": " Nâng cấp lên {{plan}} để tiếp tục."
+    },
     "perMonth": "/ tháng",
+    "perYear": "/ năm",
+    "billingInterval": {
+      "monthly": "Thanh toán tháng",
+      "yearly": "Thanh toán năm",
+      "hint": "Chọn chu kỳ thanh toán trước khi nâng cấp gói.",
+      "savePercent": "Tiết kiệm {{percent}}%",
+      "equivalentMonthly": "≈ {{price}} / tháng"
+    },
     "selectPlan": "Chọn gói",
     "current": "Đang dùng",
     "upgrade": "Nâng cấp",
     "downgrade": "Hạ gói",
     "enterpriseContact": "Liên hệ sales",
+    "enterpriseInquiry": {
+      "title": "Liên hệ gói Enterprise",
+      "description": "Đội ngũ sales sẽ liên hệ trong 1–2 ngày làm việc để tư vấn gói phù hợp quy mô trường.",
+      "contactName": "Họ và tên",
+      "phone": "Số điện thoại",
+      "campusCount": "Số cơ sở dự kiến",
+      "notes": "Ghi chú thêm (tuỳ chọn)",
+      "submit": "Gửi yêu cầu",
+      "submitting": "Đang gửi...",
+      "submitted": "Đã gửi yêu cầu — đội sales sẽ liên hệ sớm."
+    },
     "recommended": "Đề xuất",
     "freeForever": "Miễn phí vĩnh viễn",
     "limits": "Hạn mức",
@@ -175,8 +310,99 @@
     "aiCredits": "{{count}} AI credits/tháng",
     "history": "Lịch sử gói",
     "historyEmpty": "Chưa có lịch sử thay đổi.",
+    "history.changedBy": "Thực hiện bởi {{name}}",
+    "history.changedByStripe": "Đồng bộ từ Stripe",
+    "history.changedBySystem": "Hệ thống tự động",
+    "history.planChange": "{{from}} → {{to}}",
+    "history.initialPlan": "Khởi tạo gói {{plan}}",
+    "history.invoiceLink": "Xem hóa đơn Stripe",
+    "history.invoiceId": "Hóa đơn: {{id}}",
+    "saasInvoices": {
+      "title": "Hóa đơn phí phần mềm",
+      "hint": "Hóa đơn GTGT cho phí đăng ký Kinder CRM — tách biệt với học phí học sinh.",
+      "empty": "Chưa có hóa đơn SaaS",
+      "emptyDescription": "Hóa đơn sẽ được tạo và gửi email sau mỗi lần thanh toán Stripe thành công.",
+      "downloadPdf": "Tải PDF",
+      "vatIncluded": "đã gồm VAT {{rate}}%",
+      "issuedAt": "Phát hành {{date}}",
+      "statuses": {
+        "issued": "Đã phát hành",
+        "sent": "Đã gửi email",
+        "failed": "Gửi email thất bại"
+      }
+    },
+    "coupon": {
+      "title": "Mã giảm giá",
+      "hint": "Nhập mã trước khi thanh toán gói trả phí qua Stripe.",
+      "selectPlan": "Chọn gói áp dụng",
+      "placeholder": "Nhập mã (VD: SUMMER25)",
+      "apply": "Áp dụng",
+      "clear": "Xóa",
+      "validating": "Đang kiểm tra mã...",
+      "applied": "Đã áp dụng mã giảm giá",
+      "invalid": "Mã không hợp lệ hoặc đã hết hạn",
+      "summaryPercent": "Giảm {{value}}% khi thanh toán gói đã chọn",
+      "summaryFreeMonths": "Miễn phí {{count}} tháng đầu khi thanh toán gói đã chọn"
+    },
     "changed": "Đã đổi gói",
-    "changing": "Đang đổi gói..."
+    "changing": "Đang đổi gói...",
+    "checkout": "Thanh toán & đăng ký",
+    "stripeUsdHint": "Thanh toán Stripe: ~{{usd}}",
+    "checkoutLoading": "Đang tạo phiên thanh toán...",
+    "checkoutRedirect": "Đang chuyển tới Stripe...",
+    "checkoutSuccess": "Thanh toán thành công! Gói của bạn đã được cập nhật.",
+    "checkoutCancelled": "Đã hủy thanh toán. Bạn có thể thử lại bất cứ lúc nào.",
+    "manageBilling": "Quản lý thanh toán",
+    "portalLoading": "Đang mở cổng thanh toán...",
+    "portalReady": "Đang chuyển hướng...",
+    "portalHint": "Đổi thẻ, xem hóa đơn hoặc hủy gói qua Stripe Customer Portal.",
+    "portalPastDueHint": "Thanh toán thất bại — cập nhật phương thức thanh toán để giữ gói hiện tại.",
+    "portalUpdatePayment": "Cập nhật thanh toán",
+    "portalCheckoutFirst": "Hoàn tất thanh toán gói trả phí lần đầu để mở cổng quản lý thanh toán.",
+    "portalOwnerOnly": "Chỉ chủ trường mới được quản lý thanh toán.",
+    "portalNoCustomer": "Chưa có tài khoản Stripe — vui lòng thanh toán gói trả phí trước.",
+    "portalNotConfigured": "Thanh toán Stripe chưa được cấu hình trên hệ thống.",
+    "billingOwnerOnly": "Chỉ chủ trường (owner) mới có thể quản lý thanh toán và đổi gói.",
+    "storageUsed": "Lưu trữ: {{used}} / {{max}} MB ({{percent}}%)",
+    "storageLimitReached": "Đã đạt giới hạn lưu trữ của gói. Vui lòng nâng cấp tại Cài đặt → Gói đăng ký.",
+    "storageUpgradeCta": "Nâng cấp để tăng dung lượng",
+    "featureLabels": {
+      "crm": "CRM tuyển sinh",
+      "students": "Quản lý học sinh",
+      "classes": "Quản lý lớp học",
+      "finance": "Học phí & tài chính nâng cao",
+      "finance_basic": "Học phí cơ bản",
+      "attendance": "Điểm danh",
+      "staff": "Quản lý nhân sự",
+      "parent_portal": "Cổng phụ huynh",
+      "daily_reports": "Nhật ký học tập",
+      "meal_menu": "Thực đơn & dinh dưỡng",
+      "inventory": "Kho & vật tư",
+      "health_management": "Quản lý sức khỏe",
+      "calendar": "Lịch & sự kiện",
+      "reports": "Báo cáo & dashboard",
+      "ai_assistant": "Trợ lý AI"
+    },
+    "comparison": {
+      "title": "So sánh gói",
+      "hint": "Hạn mức và phân hệ theo từng gói đăng ký.",
+      "feature": "Tính năng / Hạn mức",
+      "unlimited": "Không giới hạn",
+      "quotaStudentsValue": "{{count}} học sinh",
+      "quotaCampusesValue": "{{count}} cơ sở",
+      "quotaStorageValue": "{{count}} MB",
+      "quotaAiValue": "{{count}} credits/tháng",
+      "quotaStudentsUnlimited": "Không giới hạn học sinh",
+      "quotaCampusesUnlimited": "Không giới hạn cơ sở",
+      "quotaStorageUnlimited": "Lưu trữ không giới hạn",
+      "quotaAiUnlimited": "AI credits không giới hạn",
+      "quotas": {
+        "students": "Học sinh",
+        "campuses": "Cơ sở",
+        "storage": "Lưu trữ",
+        "ai_credits": "AI credits"
+      }
+    }
   },
   "schoolSettings": {
     "title": "Thông tin trường",
@@ -1742,7 +1968,8 @@
       "calendar": "Lịch",
       "menu": "Thực đơn",
       "inventory": "Kho",
-      "system": "Hệ thống"
+      "system": "Hệ thống",
+      "subscription": "Gói đăng ký"
     }
   },
   "ai": {

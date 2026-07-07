@@ -8,7 +8,10 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import pathsConfig from '~/config/paths.config';
 import { KINDER_ERROR_CODES, KinderError } from '~/lib/kinder/errors';
 
+import { isFixedPackageCode } from '~/lib/kinder/subscription/fixed-packages';
 import { ChangePackageSchema } from './schemas/change-package.schema';
+import { isPaidCheckoutPackage } from '../billing/stripe-billing-shared';
+import { isStripeBillingEnabled } from '../billing/stripe-config';
 
 const SUBSCRIPTION_PATH = pathsConfig.app.settingsSubscription;
 
@@ -24,7 +27,7 @@ export const changePackageAction = enhanceAction(
 
     const { data: targetPackage, error: packageError } = await client
       .from('packages')
-      .select('id, code')
+      .select('id, code, price_monthly')
       .eq('id', data.packageId)
       .eq('is_active', true)
       .single();
@@ -36,10 +39,23 @@ export const changePackageAction = enhanceAction(
       );
     }
 
-    if (targetPackage.code === 'enterprise') {
+    if (!isFixedPackageCode(targetPackage.code)) {
       throw new KinderError(
         KINDER_ERROR_CODES.PACKAGE_NOT_AVAILABLE,
-        'Contact sales for Enterprise plan',
+        'Package is not available',
+      );
+    }
+
+    if (
+      isStripeBillingEnabled() &&
+      isPaidCheckoutPackage({
+        code: targetPackage.code,
+        price_monthly: targetPackage.price_monthly,
+      })
+    ) {
+      throw new KinderError(
+        KINDER_ERROR_CODES.PACKAGE_NOT_AVAILABLE,
+        'Paid plans must be purchased through Stripe Checkout',
       );
     }
 

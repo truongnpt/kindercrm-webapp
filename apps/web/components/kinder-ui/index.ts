@@ -14,6 +14,7 @@ export { PricingCard, PricingGrid } from './pricing-card';
 export { StatusBadge } from './status-badge';
 export { EmptyState } from './empty-state';
 export { InlineAlert } from './inline-alert';
+export { SubscriptionStatusBadge } from './subscription-status-badge';
 export { KinderPageBody, KinderPageHeader } from './page-header';
 export { PageError } from './page-error';
 export { PageLoading, TableLoading } from './page-loading';

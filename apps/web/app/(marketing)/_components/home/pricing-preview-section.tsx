@@ -18,9 +18,9 @@ import {
 
 const plans = [
   {
-    nameKey: 'marketing:pricingStarter',
+    nameKey: 'marketing:pricingFree',
     price: 'Free',
-    descKey: 'marketing:pricingStarterDesc',
+    descKey: 'marketing:pricingFreeDesc',
     features: [
       'marketing:pricingPage.plans.free.featureCrm',
       'marketing:pricingPage.plans.free.featureAttendance',
@@ -29,26 +29,26 @@ const plans = [
     highlighted: false,
   },
   {
-    nameKey: 'marketing:pricingProfessional',
+    nameKey: 'marketing:pricingStarter',
     price: '₫990K',
-    descKey: 'marketing:pricingProfessionalDesc',
+    descKey: 'marketing:pricingStarterDesc',
     features: [
-      'marketing:pricingPage.plans.pro.featureAllModules',
-      'marketing:pricingPage.plans.pro.featureReports',
-      'marketing:pricingPage.plans.pro.featureMultiBranch',
-    ],
-    highlighted: true,
-  },
-  {
-    nameKey: 'marketing:pricingEnterprise',
-    price: 'Custom',
-    descKey: 'marketing:pricingEnterpriseDesc',
-    features: [
-      'marketing:pricingPage.plans.enterprise.featureAllModules',
-      'marketing:pricingPage.plans.enterprise.featurePriority',
-      'marketing:pricingPage.plans.enterprise.featureSupport',
+      'marketing:pricingPage.plans.starter.featureAllModules',
+      'marketing:pricingPage.plans.starter.featureReports',
+      'marketing:pricingPage.plans.starter.featureMultiBranch',
     ],
     highlighted: false,
+  },
+  {
+    nameKey: 'marketing:pricingPro',
+    price: '₫2.49M',
+    descKey: 'marketing:pricingProDesc',
+    features: [
+      'marketing:pricingPage.plans.pro.featureAllModules',
+      'marketing:pricingPage.plans.pro.featureMultiBranch',
+      'marketing:pricingPage.plans.pro.featureHighQuota',
+    ],
+    highlighted: true,
   },
 ] as const;
 
@@ -56,10 +56,10 @@ export function PricingPreviewSection() {
   return (
     <MarketingSection id="pricing-preview">
       <SectionHeader
-        eyebrow={<Trans i18nKey="marketing:pricing" />}
-        title={<Trans i18nKey="marketing:pricingPreviewTitle" />}
-        subtitle={<Trans i18nKey="marketing:pricingSubtitle" />}
         className="mb-14"
+        eyebrow={<Trans i18nKey="marketing:pricing" />}
+        subtitle={<Trans i18nKey="marketing:pricingSubtitle" />}
+        title={<Trans i18nKey="marketing:pricingPreviewTitle" />}
       />
 
       <Stagger className="grid gap-6 lg:grid-cols-3">
@@ -86,7 +86,7 @@ export function PricingPreviewSection() {
               </p>
               <p className="mt-4 text-4xl font-bold text-[var(--marketing-text)]">
                 {plan.price}
-                {plan.price !== 'Custom' && plan.price !== 'Free' ? (
+                {plan.price !== 'Free' ? (
                   <span className="text-base font-normal text-[var(--marketing-text-muted)]">
                     /mo
                   </span>
@@ -95,7 +95,7 @@ export function PricingPreviewSection() {
 
               <ul className="mt-6 flex flex-1 flex-col gap-3">
                 {plan.features.map((key) => (
-                  <li key={key} className="flex items-start gap-2 text-sm">
+                  <li className="flex items-start gap-2 text-sm" key={key}>
                     <Check className="mt-0.5 size-4 shrink-0 text-[var(--marketing-secondary)]" />
                     <Trans i18nKey={key} />
                   </li>
@@ -104,9 +104,9 @@ export function PricingPreviewSection() {
 
               <div className="mt-8">
                 <MarketingButton
+                  className="w-full justify-center"
                   href="/pricing"
                   variant={plan.highlighted ? 'primary' : 'outline'}
-                  className="w-full justify-center"
                 >
                   <Trans i18nKey="marketing:pricingViewPlan" />
                 </MarketingButton>
@@ -119,8 +119,8 @@ export function PricingPreviewSection() {
       <FadeIn className="mt-10 flex flex-wrap items-center justify-center gap-4">
         <RequestDemoButton />
         <Link
-          href="/pricing"
           className="text-sm font-medium text-[var(--marketing-primary)] hover:underline"
+          href="/pricing"
         >
           <Trans i18nKey="marketing:pricingCompareAll" />
         </Link>

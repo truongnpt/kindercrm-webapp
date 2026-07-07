@@ -220,12 +220,12 @@
   "testimonial3Role": "Hiệu trưởng",
   "testimonial3School": "Tập đoàn Bright Future",
   "pricingPreviewTitle": "Bảng giá đơn giản, minh bạch",
+  "pricingFree": "Free",
+  "pricingFreeDesc": "Dùng thử và bắt đầu với trường mầm non quy mô nhỏ.",
   "pricingStarter": "Starter",
-  "pricingStarterDesc": "Phù hợp trường nhỏ mới bắt đầu.",
-  "pricingProfessional": "Professional",
-  "pricingProfessionalDesc": "Cho trường đang phát triển nhiều lớp.",
-  "pricingEnterprise": "Enterprise",
-  "pricingEnterpriseDesc": "Hệ thống đa chi nhánh, nhu cầu tùy chỉnh.",
+  "pricingStarterDesc": "Cho trường mầm non đang mở rộng quy mô và nhiều lớp.",
+  "pricingPro": "Pro",
+  "pricingProDesc": "Hệ thống trường nhiều chi nhánh, quota cao.",
   "pricingPopular": "Phổ biến nhất",
   "pricingViewPlan": "Xem gói",
   "pricingCompareAll": "So sánh đầy đủ tính năng →",
@@ -481,6 +481,7 @@
     "popular": "Phổ biến",
     "quotaStudents": "Tối đa {{count}} học sinh",
     "quotaStudentsUnlimited": "Không giới hạn học sinh",
+    "quotaCampuses": "Tối đa {{count}} cơ sở",
     "ctaFree": "Bắt đầu miễn phí",
     "ctaSignUp": "Đăng ký ngay",
     "ctaUpgrade": "Nâng cấp gói",
@@ -494,17 +495,17 @@
         "featureAttendance": "Điểm danh & quản lý học sinh",
         "featureParents": "Kết nối phụ huynh cơ bản"
       },
-      "pro": {
+      "starter": {
         "description": "Cho trường mầm non đang mở rộng quy mô và nhiều lớp.",
-        "featureAllModules": "Đầy đủ phân hệ vận hành",
+        "featureAllModules": "Đầy đủ phân hệ vận hành Phase 1",
         "featureReports": "Báo cáo & dashboard đầy đủ",
-        "featureMultiBranch": "Hỗ trợ đa cơ sở"
+        "featureMultiBranch": "Đa cơ sở (tối đa 10)"
       },
-      "enterprise": {
+      "pro": {
         "description": "Hệ thống trường nhiều chi nhánh, quota cao.",
-        "featureAllModules": "Toàn bộ phân hệ + tùy biến mở rộng",
-        "featurePriority": "Quota cao và ưu tiên tài nguyên",
-        "featureSupport": "Ưu tiên hỗ trợ và triển khai"
+        "featureAllModules": "Toàn bộ phân hệ + mở rộng",
+        "featureMultiBranch": "Đa chi nhánh, quota cao",
+        "featureHighQuota": "AI credits cao & ưu tiên tài nguyên"
       }
     }
   },
@@ -547,7 +548,7 @@
         "q1": "Thanh toán bằng gì?",
         "a1": "Giá hiển thị bằng VND. Liên hệ đội ngũ Kinder CRM để được tư vấn gói phù hợp và hỗ trợ thanh toán.",
         "q2": "Làm sao nâng cấp gói?",
-        "a2": "Đăng ký tài khoản và liên hệ đội ngũ hỗ trợ để được tư vấn gói Pro hoặc Enterprise phù hợp quy mô trường.",
+        "a2": "Đăng ký tài khoản và nâng cấp gói Starter hoặc Pro trong mục Cài đặt → Gói đăng ký.",
         "q3": "Quota là gì?",
         "a3": "Mỗi gói giới hạn số học sinh tối đa trong trường/cơ sở. Khi gần đạt giới hạn (≥80%), hệ thống cảnh báo trên dashboard. Nâng cấp gói để tăng quota và mở khóa thêm phân hệ."
       }
