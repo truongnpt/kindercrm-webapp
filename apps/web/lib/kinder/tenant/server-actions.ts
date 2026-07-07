@@ -52,6 +52,13 @@ export const createSchoolAction = enhanceAction(
         );
       }
 
+      if (message.includes('PACKAGE_NOT_FOUND')) {
+        throw new KinderError(
+          KINDER_ERROR_CODES.PACKAGE_NOT_FOUND,
+          'Subscription package is not configured',
+        );
+      }
+
       throw error;
     }
 

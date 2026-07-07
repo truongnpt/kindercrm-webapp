@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Building2, MapPin, Phone } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -26,6 +27,7 @@ import { Trans } from '@kit/ui/trans';
 import { CreateSchoolSchema } from '~/lib/kinder/tenant/schemas/school.schema';
 import { createSchoolAction } from '~/lib/kinder/tenant/server-actions';
 import { slugifySchoolName } from '~/lib/kinder/tenant/slugify';
+import { getRedirectUrlFromError } from '~/lib/kinder/react-query/redirect-error';
 
 export function CreateSchoolForm({
   defaultEmail,
@@ -33,6 +35,7 @@ export function CreateSchoolForm({
   defaultEmail?: string | null;
 }) {
   const { t } = useTranslation(['kinder', 'common']);
+  const router = useRouter();
   const [slugTouched, setSlugTouched] = useState(false);
   const [pending, startTransition] = useTransition();
 
@@ -64,7 +67,17 @@ export function CreateSchoolForm({
           className="flex flex-col gap-6"
           onSubmit={form.handleSubmit((data) => {
             startTransition(async () => {
-              const promise = createSchoolAction(data);
+              const promise = createSchoolAction(data).catch((error: unknown) => {
+                const redirectUrl = getRedirectUrlFromError(error);
+
+                if (redirectUrl) {
+                  router.push(redirectUrl);
+                  router.refresh();
+                  return;
+                }
+
+                throw error;
+              });
 
               toast.promise(promise, {
                 loading: t('kinder:onboarding.creating'),
@@ -73,6 +86,8 @@ export function CreateSchoolForm({
               });
 
               await promise;
+
+              router.refresh();
             });
           })}
         >
