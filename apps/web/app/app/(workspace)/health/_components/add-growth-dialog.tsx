@@ -14,6 +14,7 @@ import {
   FormItem,
   FormLabel,
 } from '@kit/ui/form';
+import { DatePicker } from '@kit/ui/date-picker';
 import { Input } from '@kit/ui/input';
 import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
@@ -126,7 +127,12 @@ export function AddGrowthDialog({
                   <Trans i18nKey="kinder:health.recordDate" />
                 </FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} required />
+                  <DatePicker
+                    className="w-full"
+                    onBlur={field.onBlur}
+                    onChange={field.onChange}
+                    value={field.value}
+                  />
                 </FormControl>
               </FormItem>
             )}

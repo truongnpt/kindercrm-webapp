@@ -21,7 +21,7 @@ import {
   FormItem,
   FormLabel,
 } from '@kit/ui/form';
-import { Input } from '@kit/ui/input';
+import { DatePicker } from '@kit/ui/date-picker';
 import {
   Select,
   SelectContent,
@@ -172,7 +172,12 @@ export function LeaveRequestsPanel({
                           <Trans i18nKey="kinder:attendance.leave.startDate" />
                         </FormLabel>
                         <FormControl>
-                          <Input type="date" {...field} required />
+                          <DatePicker
+                            className="w-full"
+                            onBlur={field.onBlur}
+                            onChange={field.onChange}
+                            value={field.value}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
@@ -187,7 +192,12 @@ export function LeaveRequestsPanel({
                           <Trans i18nKey="kinder:attendance.leave.endDate" />
                         </FormLabel>
                         <FormControl>
-                          <Input type="date" {...field} required />
+                          <DatePicker
+                            className="w-full"
+                            onBlur={field.onBlur}
+                            onChange={field.onChange}
+                            value={field.value}
+                          />
                         </FormControl>
                       </FormItem>
                     )}

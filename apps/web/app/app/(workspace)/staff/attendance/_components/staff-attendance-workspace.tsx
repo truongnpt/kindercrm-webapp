@@ -17,6 +17,7 @@ import {
   FormItem,
   FormLabel,
 } from '@kit/ui/form';
+import { DatePicker } from '@kit/ui/date-picker';
 import { Input } from '@kit/ui/input';
 import {
   Select,
@@ -127,14 +128,13 @@ export function StaffAttendanceWorkspace({
           title={<Trans i18nKey="kinder:staff.attendance.title" />}
         />
         <div className="flex flex-wrap items-center gap-2">
-          <Input
+          <DatePicker
             className="w-full sm:w-auto"
-            onChange={(event) => {
+            onChange={(value) => {
               const params = new URLSearchParams(window.location.search);
-              params.set('date', event.target.value);
+              params.set('date', value);
               router.push(`?${params.toString()}`);
             }}
-            type="date"
             value={selectedDate}
           />
           {permissions.canManageAttendance ? (

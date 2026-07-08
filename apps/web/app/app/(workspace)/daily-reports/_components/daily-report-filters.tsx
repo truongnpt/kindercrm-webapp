@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { Button } from '@kit/ui/button';
-import { Input } from '@kit/ui/input';
+import { DatePicker } from '@kit/ui/date-picker';
 import {
   Select,
   SelectContent,
@@ -76,10 +76,9 @@ export function DailyReportFilters({ classes }: { classes: ClassGroup[] }) {
           <ChevronLeft className="size-4" />
         </Button>
 
-        <Input
+        <DatePicker
           className="w-[160px]"
-          onChange={(event) => updateParams({ date: event.target.value })}
-          type="date"
+          onChange={(value) => updateParams({ date: value })}
           value={reportDate}
         />
 

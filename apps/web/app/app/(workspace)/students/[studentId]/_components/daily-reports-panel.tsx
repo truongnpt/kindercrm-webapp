@@ -4,7 +4,6 @@ import { useRef, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  CalendarDays,
   FileText,
   ImageIcon,
   Pencil,
@@ -24,6 +23,7 @@ import {
   FormMessage,
   FormLabel,
 } from '@kit/ui/form';
+import { DatePicker } from '@kit/ui/date-picker';
 import { Input } from '@kit/ui/input';
 import { Textarea } from '@kit/ui/textarea';
 import { Trans } from '@kit/ui/trans';
@@ -315,16 +315,13 @@ export function DailyReportsPanel({
                         <Trans i18nKey="kinder:attendance.date" />
                       </FormLabel>
                       <FormControl>
-                        <div className="relative">
-                          <CalendarDays className="text-muted-foreground absolute left-3 top-1/2 size-4 -translate-y-1/2" />
-                          <Input
-                            className="pl-9"
-                            disabled={isEditingLocked}
-                            type="date"
-                            {...field}
-                            required
-                          />
-                        </div>
+                        <DatePicker
+                          className="w-full"
+                          disabled={isEditingLocked}
+                          onBlur={field.onBlur}
+                          onChange={field.onChange}
+                          value={field.value}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

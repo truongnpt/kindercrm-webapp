@@ -9,6 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@kit/ui/form';
+import { DatePicker } from '@kit/ui/date-picker';
 import { Input } from '@kit/ui/input';
 import {
   Select,
@@ -78,9 +79,10 @@ export function StudentFormFields({
                 <Trans i18nKey="kinder:students.dateOfBirth" />
               </FormLabel>
               <FormControl>
-                <Input
-                  type="date"
-                  {...field}
+                <DatePicker
+                  className="w-full"
+                  onBlur={field.onBlur}
+                  onChange={field.onChange}
                   value={String(field.value ?? '')}
                 />
               </FormControl>
@@ -185,9 +187,10 @@ export function StudentFormFields({
               <Trans i18nKey="kinder:students.enrollmentDate" />
             </FormLabel>
             <FormControl>
-              <Input
-                type="date"
-                {...field}
+              <DatePicker
+                className="w-full"
+                onBlur={field.onBlur}
+                onChange={field.onChange}
                 value={String(field.value ?? '')}
               />
             </FormControl>

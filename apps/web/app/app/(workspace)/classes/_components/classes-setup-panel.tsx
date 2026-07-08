@@ -18,6 +18,7 @@ import {
   FormItem,
   FormLabel,
 } from '@kit/ui/form';
+import { DatePicker } from '@kit/ui/date-picker';
 import { Input } from '@kit/ui/input';
 import { Trans } from '@kit/ui/trans';
 
@@ -264,7 +265,12 @@ export function ClassesSetupPanel({
                       <Trans i18nKey="kinder:classes.startDate" />
                     </FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} required />
+                      <DatePicker
+                        className="w-full"
+                        onBlur={field.onBlur}
+                        onChange={field.onChange}
+                        value={field.value}
+                      />
                     </FormControl>
                   </FormItem>
                 )}
@@ -278,7 +284,12 @@ export function ClassesSetupPanel({
                       <Trans i18nKey="kinder:classes.endDate" />
                     </FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} required />
+                      <DatePicker
+                        className="w-full"
+                        onBlur={field.onBlur}
+                        onChange={field.onChange}
+                        value={field.value}
+                      />
                     </FormControl>
                   </FormItem>
                 )}

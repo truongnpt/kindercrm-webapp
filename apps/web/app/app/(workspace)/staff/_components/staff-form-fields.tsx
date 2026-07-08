@@ -11,6 +11,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@kit/ui/form';
+import { DatePicker } from '@kit/ui/date-picker';
 import { Input } from '@kit/ui/input';
 import {
   Select,
@@ -119,7 +120,12 @@ export function StaffFormFields({
                 <Trans i18nKey="kinder:staff.dateOfBirth" />
               </FormLabel>
               <FormControl>
-                <Input type="date" {...field} />
+                <DatePicker
+                  className="w-full"
+                  onBlur={field.onBlur}
+                  onChange={field.onChange}
+                  value={field.value}
+                />
               </FormControl>
             </FormItem>
           )}
@@ -255,7 +261,12 @@ export function StaffFormFields({
                 <Trans i18nKey="kinder:staff.dateOfBirth" />
               </FormLabel>
               <FormControl>
-                <Input type="date" {...field} />
+                <DatePicker
+                  className="w-full"
+                  onBlur={field.onBlur}
+                  onChange={field.onChange}
+                  value={field.value}
+                />
               </FormControl>
             </FormItem>
           )}
@@ -538,7 +549,12 @@ export function StaffFormFields({
                     <Trans i18nKey="kinder:staff.terminationDate" />
                   </FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <DatePicker
+                  className="w-full"
+                  onBlur={field.onBlur}
+                  onChange={field.onChange}
+                  value={field.value}
+                />
                   </FormControl>
                 </FormItem>
               )}
@@ -554,7 +570,12 @@ export function StaffFormFields({
                   <Trans i18nKey="kinder:staff.hireDate" />
                 </FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <DatePicker
+                  className="w-full"
+                  onBlur={field.onBlur}
+                  onChange={field.onChange}
+                  value={field.value}
+                />
                 </FormControl>
               </FormItem>
             )}

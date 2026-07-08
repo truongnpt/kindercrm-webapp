@@ -16,7 +16,7 @@ import {
   FormItem,
   FormLabel,
 } from '@kit/ui/form';
-import { Input } from '@kit/ui/input';
+import { DatePicker } from '@kit/ui/date-picker';
 import {
   Select,
   SelectContent,
@@ -301,7 +301,12 @@ export function StaffLeaveWorkspace({
                       <Trans i18nKey="kinder:staff.leave.startDate" />
                     </FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <DatePicker
+                        className="w-full"
+                        onBlur={field.onBlur}
+                        onChange={field.onChange}
+                        value={field.value}
+                      />
                     </FormControl>
                   </FormItem>
                 )}
@@ -315,7 +320,12 @@ export function StaffLeaveWorkspace({
                       <Trans i18nKey="kinder:staff.leave.endDate" />
                     </FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <DatePicker
+                        className="w-full"
+                        onBlur={field.onBlur}
+                        onChange={field.onChange}
+                        value={field.value}
+                      />
                     </FormControl>
                   </FormItem>
                 )}

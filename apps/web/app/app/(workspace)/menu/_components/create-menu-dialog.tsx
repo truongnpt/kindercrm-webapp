@@ -14,6 +14,7 @@ import {
   FormItem,
   FormLabel,
 } from '@kit/ui/form';
+import { DatePicker } from '@kit/ui/date-picker';
 import { Input } from '@kit/ui/input';
 import {
   Select,
@@ -157,7 +158,12 @@ export function CreateMenuDialog({ schoolId }: { schoolId: string }) {
                     <Trans i18nKey="kinder:mealMenu.startDate" />
                   </FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} required />
+                    <DatePicker
+                      className="w-full"
+                      onBlur={field.onBlur}
+                      onChange={field.onChange}
+                      value={field.value}
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -171,7 +177,12 @@ export function CreateMenuDialog({ schoolId }: { schoolId: string }) {
                     <Trans i18nKey="kinder:mealMenu.endDate" />
                   </FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} required />
+                    <DatePicker
+                      className="w-full"
+                      onBlur={field.onBlur}
+                      onChange={field.onChange}
+                      value={field.value}
+                    />
                   </FormControl>
                 </FormItem>
               )}

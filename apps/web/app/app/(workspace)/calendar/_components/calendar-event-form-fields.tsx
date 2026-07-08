@@ -11,6 +11,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@kit/ui/form';
+import { DatePicker } from '@kit/ui/date-picker';
 import { Input } from '@kit/ui/input';
 import {
   Select,
@@ -220,7 +221,12 @@ export function CalendarEventFormFields({
                 <Trans i18nKey="kinder:calendar.startDate" />
               </FormLabel>
               <FormControl>
-                <Input type="date" {...field} required />
+                <DatePicker
+                  className="w-full"
+                  onBlur={field.onBlur}
+                  onChange={field.onChange}
+                  value={field.value}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -236,7 +242,12 @@ export function CalendarEventFormFields({
                 <Trans i18nKey="kinder:calendar.endDate" />
               </FormLabel>
               <FormControl>
-                <Input type="date" {...field} required />
+                <DatePicker
+                  className="w-full"
+                  onBlur={field.onBlur}
+                  onChange={field.onChange}
+                  value={field.value}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

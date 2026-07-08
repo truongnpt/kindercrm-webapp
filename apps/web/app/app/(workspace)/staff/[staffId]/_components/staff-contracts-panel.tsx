@@ -15,6 +15,7 @@ import {
   FormItem,
   FormLabel,
 } from '@kit/ui/form';
+import { DatePicker } from '@kit/ui/date-picker';
 import { Input } from '@kit/ui/input';
 import {
   Select,
@@ -290,7 +291,12 @@ export function StaffContractsPanel({
                       <Trans i18nKey="kinder:staff.contracts.startDate" />
                     </FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} required />
+                      <DatePicker
+                        className="w-full"
+                        onBlur={field.onBlur}
+                        onChange={field.onChange}
+                        value={field.value}
+                      />
                     </FormControl>
                   </FormItem>
                 )}
@@ -304,7 +310,12 @@ export function StaffContractsPanel({
                       <Trans i18nKey="kinder:staff.contracts.endDate" />
                     </FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <DatePicker
+                        className="w-full"
+                        onBlur={field.onBlur}
+                        onChange={field.onChange}
+                        value={field.value}
+                      />
                     </FormControl>
                   </FormItem>
                 )}

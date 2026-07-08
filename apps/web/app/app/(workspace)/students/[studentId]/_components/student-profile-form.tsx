@@ -16,6 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@kit/ui/form';
+import { DatePicker } from '@kit/ui/date-picker';
 import { Input } from '@kit/ui/input';
 import {
   Select,
@@ -115,7 +116,12 @@ export function StudentProfileForm({
                   <Trans i18nKey="kinder:students.dateOfBirth" />
                 </FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <DatePicker
+                    className="w-full"
+                    onBlur={field.onBlur}
+                    onChange={field.onChange}
+                    value={field.value}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

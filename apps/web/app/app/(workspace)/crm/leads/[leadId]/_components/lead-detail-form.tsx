@@ -12,6 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@kit/ui/form';
+import { DatePicker } from '@kit/ui/date-picker';
 import { Input } from '@kit/ui/input';
 import {
   Select,
@@ -170,7 +171,12 @@ export function LeadDetailForm({
                   <Trans i18nKey="kinder:crm.childDob" />
                 </FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <DatePicker
+                    className="w-full"
+                    onBlur={field.onBlur}
+                    onChange={field.onChange}
+                    value={field.value}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
