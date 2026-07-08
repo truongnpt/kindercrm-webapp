@@ -14,18 +14,24 @@ export function AuthShell({ children }: React.PropsWithChildren) {
   const isSignUp = pathname === '/auth/sign-up';
   const isSignIn = pathname === '/auth/sign-in';
   const isPasswordReset = pathname === '/auth/password-reset';
+  const isUpdatePassword = pathname === '/update-password';
   const headingKey =
     isSignUp ?
       'auth:signUpHeading'
     : isPasswordReset ?
       'auth:passwordResetLabel'
+    : isUpdatePassword ?
+      'auth:updatePasswordHeading'
     : 'auth:signInHeading';
   const subtitleKey =
     isSignUp ?
       'auth:signUpSubheading'
     : isPasswordReset ?
       'auth:passwordResetSubheading'
+    : isUpdatePassword ?
+      'auth:updatePasswordSubheading'
     : 'auth:signInSubheading';
+  const showAccountToggle = !isPasswordReset && !isUpdatePassword;
 
   function AuthLogo({ className }: { className?: string }) {
     return (
@@ -69,20 +75,22 @@ export function AuthShell({ children }: React.PropsWithChildren) {
           {children}
         </div>
 
-        <div className="mt-4 flex justify-center">
-          <Link
-            href={isSignIn ? pathsConfig.auth.signUp : pathsConfig.auth.signIn}
-            className="text-sm font-medium text-[var(--marketing-primary)] hover:underline"
-          >
-            <Trans
-              i18nKey={
-                isSignIn ?
-                  'auth:doNotHaveAccountYet'
-                : 'auth:alreadyHaveAnAccount'
-              }
-            />
-          </Link>
-        </div>
+        {showAccountToggle ? (
+          <div className="mt-4 flex justify-center">
+            <Link
+              href={isSignIn ? pathsConfig.auth.signUp : pathsConfig.auth.signIn}
+              className="text-sm font-medium text-[var(--marketing-primary)] hover:underline"
+            >
+              <Trans
+                i18nKey={
+                  isSignIn ?
+                    'auth:doNotHaveAccountYet'
+                  : 'auth:alreadyHaveAnAccount'
+                }
+              />
+            </Link>
+          </div>
+        ) : null}
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons';
-import { ArrowRightIcon } from 'lucide-react';
+import { ArrowRight, ArrowRightIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import type { z } from 'zod';
 
@@ -19,7 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@kit/ui/form';
-import { Heading } from '@kit/ui/heading';
+import { If } from '@kit/ui/if';
 import { Input } from '@kit/ui/input';
 import { Trans } from '@kit/ui/trans';
 
@@ -45,69 +45,86 @@ export function UpdatePasswordForm(params: { redirectTo: string }) {
   }
 
   return (
-    <div className={'flex w-full flex-col space-y-6'}>
-      <div className={'flex justify-center'}>
-        <Heading level={5} className={'tracking-tight'}>
-          <Trans i18nKey={'auth:passwordResetLabel'} />
-        </Heading>
-      </div>
+    <Form {...form}>
+      <form
+        className="w-full space-y-2.5"
+        onSubmit={form.handleSubmit(({ password }) => {
+          return updateUser.mutateAsync({
+            password,
+            redirectTo: params.redirectTo,
+          });
+        })}
+      >
+        <FormField
+          name={'password'}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <Trans i18nKey={'common:password'} />
+              </FormLabel>
 
-      <Form {...form}>
-        <form
-          className={'flex w-full flex-1 flex-col'}
-          onSubmit={form.handleSubmit(({ password }) => {
-            return updateUser.mutateAsync({
-              password,
-              redirectTo: params.redirectTo,
-            });
-          })}
+              <FormControl>
+                <Input
+                  required
+                  data-test="password-input"
+                  type="password"
+                  placeholder=""
+                  {...field}
+                />
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          name={'repeatPassword'}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <Trans i18nKey={'common:repeatPassword'} />
+              </FormLabel>
+
+              <FormControl>
+                <Input
+                  required
+                  data-test="repeat-password-input"
+                  type="password"
+                  placeholder=""
+                  {...field}
+                />
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button
+          disabled={updateUser.isPending}
+          type="submit"
+          className="group w-full"
         >
-          <div className={'flex-col space-y-4'}>
-            <FormField
-              name={'password'}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey={'common:password'} />
-                  </FormLabel>
+          <If
+            condition={updateUser.isPending}
+            fallback={
+              <>
+                <Trans i18nKey={'auth:updatePassword'} />
 
-                  <FormControl>
-                    <Input required type="password" {...field} />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name={'repeatPassword'}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey={'common:repeatPassword'} />
-                  </FormLabel>
-
-                  <FormControl>
-                    <Input required type="password" {...field} />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button
-              disabled={updateUser.isPending}
-              type="submit"
-              className={'w-full'}
-            >
-              <Trans i18nKey={'auth:passwordResetLabel'} />
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+                <ArrowRight
+                  className={
+                    'zoom-in animate-in slide-in-from-left-2 fill-mode-both h-4 delay-500 duration-500'
+                  }
+                />
+              </>
+            }
+          >
+            <Trans i18nKey={'auth:updatingPassword'} />
+          </If>
+        </Button>
+      </form>
+    </Form>
   );
 }
 
