@@ -384,8 +384,6 @@ export function InvoiceDetailPanel({
                     <FormControl>
                       <Input
                         max={balance}
-                        min={1}
-                        step={1000}
                         type="number"
                         {...field}
                       />

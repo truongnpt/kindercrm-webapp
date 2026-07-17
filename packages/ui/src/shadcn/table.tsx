@@ -43,18 +43,19 @@ const TableFooter: React.FC<React.HTMLAttributes<HTMLTableSectionElement>> = ({
 );
 TableFooter.displayName = 'TableFooter';
 
-const TableRow: React.FC<React.HTMLAttributes<HTMLTableRowElement>> = ({
-  className,
-  ...props
-}) => (
+const TableRow = React.forwardRef<
+  HTMLTableRowElement,
+  React.HTMLAttributes<HTMLTableRowElement>
+>(({ className, ...props }, ref) => (
   <tr
+    ref={ref}
     className={cn(
       'hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors',
       className,
     )}
     {...props}
   />
-);
+));
 TableRow.displayName = 'TableRow';
 
 const TableHead: React.FC<React.ThHTMLAttributes<HTMLTableCellElement>> = ({

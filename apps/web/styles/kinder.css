@@ -1,48 +1,52 @@
 /*
- * Kinder Admin — TailAdmin-inspired layout
- * Clean sidebar, bordered cards, flat surfaces — brand blue #034cf8
+ * Kinder Admin — Premium SaaS Layout & Design System
+ * Brand color: blue #034cf8 (Vibrant & Deep Indigo-blue)
+ * Modern border radiuses, soft ambient shadows, glassmorphism layers.
  */
 
 @layer base {
   :root {
-    --kinder-radius: 0.75rem;
-    --kinder-radius-lg: 1rem;
-    --kinder-radius-xl: 1.25rem;
-    --kinder-shadow-xs: 0 1px 2px rgb(15 23 42 / 0.04);
-    --kinder-shadow-sm: 0 1px 3px rgb(15 23 42 / 0.08),
-      0 1px 2px rgb(15 23 42 / 0.04);
-    --kinder-shadow-md: 0 4px 8px rgb(15 23 42 / 0.06),
-      0 2px 4px rgb(15 23 42 / 0.04);
-    --kinder-transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    --kinder-success: #16a34a;
+    --kinder-radius: 0.875rem;
+    --kinder-radius-lg: 1.25rem;
+    --kinder-radius-xl: 1.5rem;
+    
+    /* Smooth ambient shadows */
+    --kinder-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.03);
+    --kinder-shadow-sm: 0 2px 8px -2px rgba(15, 23, 42, 0.05),
+      0 4px 12px -4px rgba(15, 23, 42, 0.03);
+    --kinder-shadow-md: 0 12px 24px -8px rgba(15, 23, 42, 0.08),
+      0 4px 12px -4px rgba(15, 23, 42, 0.03);
+      
+    --kinder-transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --kinder-success: #10b981;
     --kinder-warning: #f59e0b;
     --kinder-info: #3b82f6;
-    --kinder-primary-light: #eff6ff;
+    --kinder-primary-light: rgba(3, 76, 248, 0.06);
     --kinder-page-bg: #f8fafc;
     --kinder-sidebar-width: 16rem;
   }
 
   .dark {
     --kinder-page-bg: var(--background);
-    --kinder-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.2);
-    --kinder-shadow-sm: 0 1px 3px rgb(0 0 0 / 0.25);
-    --kinder-shadow-md: 0 4px 8px rgb(0 0 0 / 0.3);
-    --kinder-primary-light: rgb(3 76 248 / 0.12);
+    --kinder-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.15);
+    --kinder-shadow-sm: 0 4px 12px -2px rgba(0, 0, 0, 0.25);
+    --kinder-shadow-md: 0 16px 32px -8px rgba(0, 0, 0, 0.35);
+    --kinder-primary-light: rgba(59, 130, 246, 0.12);
   }
 }
 
 @layer components {
-  /* ── Sidebar menu (TailAdmin) ── */
+  /* ── Sidebar menu ── */
   [data-sidebar='menu-button'] {
-    @apply text-muted-foreground h-11 rounded-lg px-3 text-sm font-medium transition-colors duration-150;
+    @apply text-muted-foreground h-10 rounded-xl px-3 text-sm font-medium transition-all duration-200 ease-out;
   }
 
   [data-sidebar='menu-button']:hover {
-    @apply bg-muted text-foreground;
+    @apply bg-muted text-foreground translate-x-1;
   }
 
   [data-sidebar='menu-button'][data-active='true'] {
-    @apply bg-primary/10 text-primary font-medium;
+    @apply bg-primary/10 text-primary font-semibold shadow-sm border-l-2 border-primary rounded-l-none pl-2.5;
   }
 
   [data-sidebar='menu-button'][data-active='true'] svg {
@@ -50,58 +54,61 @@
   }
 
   [data-sidebar='menu-button'] svg {
-    @apply text-muted-foreground size-[18px];
+    @apply text-muted-foreground/80 size-[18px] transition-transform duration-200;
+  }
+  
+  [data-sidebar='menu-button']:hover svg {
+    @apply scale-105;
   }
 
   [data-sidebar='group-label'] {
-    @apply text-muted-foreground mb-1 px-3 pt-3 text-xs font-semibold tracking-wide uppercase;
+    @apply text-muted-foreground/60 mb-1.5 px-3 pt-4 text-[10px] font-bold tracking-wider uppercase;
   }
 
-  /* ── Surfaces (TailAdmin card) ── */
+  /* ── Surfaces (Premium SaaS card) ── */
   .kinder-surface,
   .kinder-bento-tile {
-    @apply relative min-w-0 overflow-hidden rounded-xl border border-border bg-card;
+    @apply relative min-w-0 overflow-hidden rounded-2xl border border-border bg-card/90 backdrop-blur-sm;
     box-shadow: var(--kinder-shadow-xs);
   }
 
   .kinder-surface-interactive,
   .kinder-bento-tile-interactive {
-    @apply transition-[border-color,box-shadow] duration-150;
+    @apply transition-all duration-200 ease-out;
   }
 
   .kinder-surface-interactive:hover,
   .kinder-bento-tile-interactive:hover {
-    @apply border-primary/25;
+    @apply border-primary/20 -translate-y-0.5;
     box-shadow: var(--kinder-shadow-sm);
   }
 
   /* ── Typography ── */
   .kinder-page-title {
-    @apply font-heading text-foreground text-xl font-semibold tracking-tight sm:text-2xl;
+    @apply font-heading text-foreground text-2xl font-bold tracking-tight sm:text-3xl;
   }
 
   .kinder-page-description {
-    @apply text-muted-foreground mt-1 max-w-3xl text-sm;
+    @apply text-muted-foreground/80 mt-1 max-w-3xl text-sm leading-relaxed;
   }
 
   .kinder-section-title {
-    @apply text-foreground text-base font-semibold;
+    @apply text-foreground text-base font-bold tracking-tight;
   }
 
   .kinder-sticky-header {
-    @apply bg-card;
+    @apply bg-card/95 backdrop-blur-md;
   }
 
   .kinder-page-actions > button,
   .kinder-page-actions > a[role='button'],
   .kinder-page-actions a:has(button) button {
-    @apply rounded-lg;
+    @apply rounded-xl font-medium shadow-sm transition-all duration-200 active:scale-95;
   }
 
   /* ── Data table ── */
   .kinder-data-table {
-    @apply w-full overflow-hidden rounded-xl border border-border bg-card text-sm;
-    box-shadow: var(--kinder-shadow-xs);
+    @apply w-full overflow-hidden rounded-2xl border border-border bg-card text-sm shadow-sm;
   }
 
   .kinder-data-table thead {
@@ -109,11 +116,11 @@
   }
 
   .kinder-data-table th {
-    @apply text-muted-foreground px-5 py-3.5 text-left text-xs font-medium;
+    @apply text-muted-foreground/90 px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider;
   }
 
   .kinder-data-table td {
-    @apply border-b border-border/60 px-5 py-4 align-middle last:border-0;
+    @apply border-b border-border/50 px-6 py-4.5 align-middle last:border-0;
   }
 
   .kinder-data-table tbody tr {
@@ -121,7 +128,7 @@
   }
 
   .kinder-data-table tbody tr:hover {
-    @apply bg-muted/30;
+    @apply bg-muted/40;
   }
 
   .kinder-data-table tbody tr:last-child td {
@@ -129,17 +136,17 @@
   }
 
   .kinder-mobile-card {
-    @apply flex flex-col gap-3 rounded-xl border border-border bg-card p-4;
-    box-shadow: var(--kinder-shadow-xs);
+    @apply flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5;
+    box-shadow: var(--kinder-shadow-sm);
   }
 
   .kinder-card-grid-item {
-    @apply flex flex-col gap-3 rounded-xl border border-border bg-card p-5 transition-colors duration-150;
+    @apply flex flex-col gap-3 rounded-2xl border border-border bg-card p-5 transition-all duration-200 ease-out;
     box-shadow: var(--kinder-shadow-xs);
   }
 
   .kinder-card-grid-item:hover {
-    @apply border-primary/20 bg-card;
+    @apply border-primary/25 bg-card/95 -translate-y-0.5;
     box-shadow: var(--kinder-shadow-sm);
   }
 
@@ -153,12 +160,11 @@
   }
 
   .kinder-tab-list {
-    @apply inline-flex h-auto w-full flex-wrap gap-1 rounded-lg border border-border bg-muted/50 p-1 sm:w-auto;
-    box-shadow: none;
+    @apply inline-flex h-auto w-full flex-wrap gap-1 rounded-xl border border-border bg-muted/30 p-1 sm:w-auto shadow-none;
   }
 
   .kinder-tab-trigger {
-    @apply text-muted-foreground inline-flex items-center justify-center gap-2 rounded-md border-0 bg-transparent px-4 py-2 text-sm font-medium transition-colors duration-150;
+    @apply text-muted-foreground inline-flex items-center justify-center gap-2 rounded-lg border-0 bg-transparent px-4 py-2 text-sm font-medium transition-all duration-200 ease-out;
   }
 
   .kinder-tab-trigger svg {
@@ -166,11 +172,11 @@
   }
 
   .kinder-tab-trigger:hover:not([data-state='active']) {
-    @apply bg-card/70 text-foreground;
+    @apply bg-card/50 text-foreground;
   }
 
   .kinder-tab-trigger[data-state='active'] {
-    @apply bg-card text-foreground font-semibold shadow-sm;
+    @apply bg-card text-foreground font-semibold shadow-sm scale-[1.02];
   }
 
   .kinder-tab-trigger[data-state='active'] svg {
@@ -179,87 +185,87 @@
 
   .kinder-tab-content {
     @apply outline-none;
-    animation: kinder-tab-fade-in 150ms ease-out;
+    animation: kinder-tab-fade-in 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .kinder-tab-panel {
-    @apply rounded-xl border border-border bg-card p-4 sm:p-5;
+    @apply rounded-2xl border border-border bg-card p-5 sm:p-6;
     box-shadow: var(--kinder-shadow-xs);
   }
 
   @keyframes kinder-tab-fade-in {
     from {
       opacity: 0;
+      transform: translateY(2px);
     }
-
     to {
       opacity: 1;
+      transform: translateY(0);
     }
   }
 
   .kinder-toolbar {
-    @apply flex flex-col gap-3 rounded-xl border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between;
+    @apply flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between;
     box-shadow: var(--kinder-shadow-xs);
   }
 
   .kinder-empty-glow {
-    background: none;
+    background: radial-gradient(circle at center, rgba(3, 76, 248, 0.03) 0%, transparent 70%);
   }
 
   .kinder-form-panel {
-    @apply grid gap-4 rounded-xl border border-border bg-muted/20 p-4 sm:p-5;
+    @apply grid gap-4 rounded-2xl border border-border bg-muted/20 p-5 sm:p-6;
   }
 
   .kinder-list-panel {
-    @apply flex flex-col gap-2;
+    @apply flex flex-col gap-2.5;
   }
 
   .kinder-list-panel > li {
-    @apply flex flex-col gap-3 rounded-lg border border-border bg-card p-4;
+    @apply flex flex-col gap-3 rounded-xl border border-border bg-card p-4.5 transition-all duration-200 hover:-translate-y-0.5;
     box-shadow: var(--kinder-shadow-xs);
   }
 
   .kinder-stat-inline {
-    @apply rounded-xl border border-border bg-card p-4 sm:p-5;
-    box-shadow: var(--kinder-shadow-xs);
+    @apply rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-sm;
   }
 
   .kinder-panel-empty {
-    @apply flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-white px-6 py-10 text-center;
+    @apply flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card/40 px-6 py-12 text-center backdrop-blur-sm;
   }
 
   .kinder-pipeline-column {
-    @apply min-w-[220px] rounded-xl border border-border bg-muted/20 p-3;
+    @apply min-w-[240px] rounded-2xl border border-border bg-muted/15 p-4;
   }
 
   .kinder-pipeline-card {
-    @apply flex flex-col gap-2 rounded-lg border border-border bg-card p-3;
+    @apply flex flex-col gap-2 rounded-xl border border-border bg-card p-3.5 transition-all duration-200 hover:-translate-y-0.5;
     box-shadow: var(--kinder-shadow-xs);
   }
 
   /* ── Bento grid (admin cards) ── */
   .kinder-bento-grid {
-    @apply grid auto-rows-min gap-4 sm:gap-5;
+    @apply grid auto-rows-min gap-5 sm:gap-6;
   }
 
   .kinder-bento-dialog {
-    @apply overflow-hidden rounded-xl border border-border bg-card p-0;
+    @apply overflow-hidden rounded-2xl border border-border bg-card p-0;
     box-shadow: var(--kinder-shadow-md);
   }
 
   .kinder-bento-tile-header {
-    @apply border-border/60 mb-4 flex flex-col gap-2 border-b pb-4 sm:flex-row sm:items-start sm:justify-between;
+    @apply border-border/50 mb-5 flex flex-col gap-2.5 border-b pb-4 sm:flex-row sm:items-start sm:justify-between;
   }
 
-  /* ── CRM kanban (TailAdmin horizontal scroll) ── */
+  /* ── CRM kanban ── */
   .kinder-crm-kanban {
-    @apply flex min-w-0 gap-4 overflow-x-auto pb-2;
+    @apply flex min-w-0 gap-4 overflow-x-auto pb-3;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
   }
 
   .kinder-crm-kanban-toolbar {
-    @apply mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between;
+    @apply mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between;
   }
 
   .kinder-crm-stage-pills {
@@ -267,16 +273,16 @@
   }
 
   .kinder-crm-stage-pill {
-    @apply text-muted-foreground inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium transition-colors;
+    @apply text-muted-foreground inline-flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2.5 text-sm font-medium transition-all duration-200 hover:-translate-y-0.5;
     box-shadow: var(--kinder-shadow-xs);
   }
 
   .kinder-crm-stage-pill--active {
-    @apply border-primary/30 bg-primary/10 text-primary;
+    @apply border-primary/25 bg-primary/5 text-primary ring-1 ring-primary/10;
   }
 
   .kinder-crm-stage-pill__count {
-    @apply bg-muted text-muted-foreground rounded-md px-1.5 py-0.5 text-xs font-semibold tabular-nums;
+    @apply bg-muted text-muted-foreground rounded-md px-2 py-0.5 text-xs font-bold tabular-nums;
   }
 
   .kinder-crm-stage-pill--active .kinder-crm-stage-pill__count {
@@ -284,25 +290,25 @@
   }
 
   .kinder-crm-column {
-    @apply flex w-[min(100%,280px)] shrink-0 flex-col rounded-xl border border-border bg-muted/15 p-3 transition-colors duration-150 sm:w-[300px] lg:w-[320px];
-    min-height: min(70vh, 520px);
+    @apply flex w-[min(100%,290px)] shrink-0 flex-col rounded-2xl border border-border bg-muted/10 p-3.5 transition-colors duration-200 sm:w-[310px] lg:w-[330px];
+    min-height: min(75vh, 560px);
   }
 
   .kinder-crm-column--over {
-    @apply border-primary/30 bg-primary/5;
+    @apply border-primary/25 bg-primary/5;
   }
 
   .kinder-crm-lead-card {
-    @apply min-w-0 rounded-lg border border-border bg-card p-4 transition-colors duration-150;
+    @apply min-w-0 rounded-xl border border-border bg-card p-4.5 transition-all duration-200 hover:-translate-y-0.5;
     box-shadow: var(--kinder-shadow-xs);
   }
 
   .kinder-crm-lead-card--dragging {
-    @apply opacity-40;
+    @apply opacity-30 scale-95;
   }
 
   .kinder-crm-lead-card--overlay {
-    @apply cursor-grabbing border-primary/30;
+    @apply cursor-grabbing border-primary/25 scale-[1.02];
     box-shadow: var(--kinder-shadow-md);
   }
 
@@ -311,53 +317,59 @@
     box-shadow: var(--kinder-shadow-sm);
   }
 
-  /* ── Stat card (TailAdmin metric) ── */
+  /* ── Stat card ── */
   .kinder-stat-card {
-    @apply rounded-xl border border-border bg-card p-5 sm:p-6;
-    box-shadow: var(--kinder-shadow-xs);
+    @apply rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-200 ease-out relative;
+  }
+
+  .kinder-stat-card:hover {
+    @apply -translate-y-0.5 border-primary/20 shadow-md;
   }
 
   .kinder-stat-card__icon {
-    @apply flex size-12 shrink-0 items-center justify-center rounded-xl;
+    @apply flex size-12 shrink-0 items-center justify-center rounded-xl transition-all duration-300;
+  }
+  
+  .kinder-stat-card:hover .kinder-stat-card__icon {
+    @apply scale-105;
   }
 
   .kinder-stat-card__value {
-    @apply text-foreground mt-4 text-2xl font-bold tracking-tight sm:text-[28px];
+    @apply text-foreground mt-4 text-3xl font-bold tracking-tight sm:text-[32px] font-sans;
   }
 
   .kinder-stat-card__label {
-    @apply text-muted-foreground text-sm font-medium;
+    @apply text-muted-foreground/80 text-sm font-semibold tracking-tight;
   }
 
   /* ── Workspace search trigger ── */
   .kinder-search-trigger {
-    @apply text-muted-foreground hover:text-foreground flex h-11 w-full max-w-xl items-center gap-3 rounded-lg border border-border bg-muted/30 px-4 text-sm transition-colors;
+    @apply text-muted-foreground hover:text-foreground flex h-10 w-full max-w-xl items-center gap-3 rounded-xl border border-border bg-muted/20 px-4 text-sm transition-all duration-200 ease-out;
   }
 
   .kinder-search-trigger:hover {
-    @apply border-primary/20 bg-card;
+    @apply border-primary/20 bg-card shadow-sm;
   }
 
   .kinder-search-kbd {
-    @apply text-muted-foreground hidden rounded border border-border bg-card px-1.5 py-0.5 text-[10px] font-medium lg:inline;
+    @apply text-muted-foreground/80 hidden rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-medium lg:inline;
   }
 
-  /* ── Data table card (TailAdmin) ── */
+  /* ── Data table card ── */
   .kinder-data-table-card {
-    @apply overflow-hidden rounded-xl border border-border bg-card;
-    box-shadow: var(--kinder-shadow-xs);
+    @apply overflow-hidden rounded-2xl border border-border bg-card shadow-sm;
   }
 
   .kinder-data-table-card__header {
-    @apply flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-start sm:justify-between sm:px-6;
+    @apply flex flex-col gap-3 border-b border-border px-5 py-4.5 sm:flex-row sm:items-start sm:justify-between sm:px-6;
   }
 
   .kinder-data-table-card__title {
-    @apply text-foreground text-base font-semibold;
+    @apply text-foreground text-base font-bold;
   }
 
   .kinder-data-table-card__description {
-    @apply text-muted-foreground mt-1 text-sm;
+    @apply text-muted-foreground/80 mt-1 text-sm;
   }
 
   .kinder-data-table-card__toolbar {
@@ -368,22 +380,22 @@
     @apply border-t border-border px-5 py-4 sm:px-6;
   }
 
-  /* ── Form section (TailAdmin form-layout) ── */
+  /* ── Form section ── */
   .kinder-form-section {
-    @apply overflow-hidden rounded-xl border border-border bg-card;
+    @apply overflow-hidden rounded-2xl border border-border bg-card;
     box-shadow: var(--kinder-shadow-xs);
   }
 
   .kinder-form-section__header {
-    @apply border-b border-border px-5 py-4 sm:px-6;
+    @apply border-b border-border px-5 py-4.5 sm:px-6;
   }
 
   .kinder-form-section__title {
-    @apply text-foreground text-base font-semibold;
+    @apply text-foreground text-base font-bold;
   }
 
   .kinder-form-section__description {
-    @apply text-muted-foreground mt-1 text-sm;
+    @apply text-muted-foreground/80 mt-1 text-sm;
   }
 
   .kinder-form-section__body {
@@ -393,18 +405,24 @@
   .kinder-form-field input,
   .kinder-form-field textarea,
   .kinder-form-field [data-slot='select-trigger'] {
-    @apply h-11 rounded-lg border-border bg-muted/30 shadow-none;
+    @apply h-10.5 rounded-xl border border-border bg-muted/20 px-3.5 text-sm transition-all duration-200 shadow-none outline-none;
+  }
+  
+  .kinder-form-field input:focus,
+  .kinder-form-field textarea:focus,
+  .kinder-form-field [data-slot='select-trigger']:focus {
+    @apply border-primary/45 bg-card ring-2 ring-primary/10;
   }
 
   /* ── Pricing card ── */
   .kinder-pricing-card {
-    @apply flex h-full flex-col rounded-xl border border-border bg-card p-5 sm:p-6;
+    @apply flex h-full flex-col rounded-2xl border border-border bg-card p-6 transition-all duration-200 hover:-translate-y-0.5;
     box-shadow: var(--kinder-shadow-xs);
   }
 
   .kinder-pricing-card--highlighted {
-    @apply border-primary ring-1 ring-primary/20;
-    box-shadow: var(--kinder-shadow-sm);
+    @apply border-primary ring-1 ring-primary/20 bg-card/95;
+    box-shadow: var(--kinder-shadow-md);
   }
 
   /* ── Pagination ── */
@@ -419,37 +437,36 @@
 
   /* ── Profile layout ── */
   .kinder-profile-grid {
-    @apply grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6;
+    @apply grid grid-cols-1 gap-5 lg:grid-cols-3 lg:gap-6;
   }
 
   .kinder-profile-main {
-    @apply space-y-4 lg:col-span-2 lg:space-y-6;
+    @apply space-y-5 lg:col-span-2 lg:space-y-6;
   }
 
   .kinder-profile-aside {
-    @apply space-y-4 lg:space-y-6;
+    @apply space-y-5 lg:space-y-6;
   }
 
-  /* ── Month calendar (TailAdmin) ── */
+  /* ── Month calendar ── */
   .kinder-month-calendar {
-    @apply overflow-hidden rounded-xl border border-border bg-card;
-    box-shadow: var(--kinder-shadow-xs);
+    @apply overflow-hidden rounded-2xl border border-border bg-card shadow-sm;
   }
 
   .kinder-month-calendar__header {
-    @apply flex items-center justify-between gap-3 border-b border-border px-5 py-4 sm:px-6;
+    @apply flex items-center justify-between gap-3 border-b border-border px-5 py-4.5 sm:px-6;
   }
 
   .kinder-month-calendar__grid {
-    @apply grid grid-cols-7 gap-px border-b border-border bg-border;
+    @apply grid grid-cols-7 gap-px border-b border-border bg-border/50;
   }
 
   .kinder-month-calendar__weekday {
-    @apply bg-muted/40 text-muted-foreground px-1 py-2 text-center text-xs font-medium;
+    @apply bg-muted/30 text-muted-foreground/90 px-1 py-3 text-center text-xs font-semibold tracking-wider uppercase;
   }
 
   .kinder-month-calendar__cell {
-    @apply bg-card flex min-h-[72px] flex-col items-start p-2 text-left transition-colors sm:min-h-[88px];
+    @apply bg-card flex min-h-[72px] flex-col items-start p-2.5 text-left transition-colors sm:min-h-[92px];
   }
 
   .kinder-month-calendar__cell--empty {
@@ -457,7 +474,7 @@
   }
 
   .kinder-month-calendar__cell--today {
-    @apply ring-primary/30 ring-1 ring-inset;
+    @apply ring-primary/25 ring-1 ring-inset bg-primary/[0.02];
   }
 
   .kinder-month-calendar__cell--selected {
@@ -469,7 +486,7 @@
   }
 
   .kinder-month-calendar__day {
-    @apply text-foreground text-sm font-medium;
+    @apply text-foreground text-sm font-semibold;
   }
 
   .kinder-month-calendar__dot {
@@ -477,13 +494,12 @@
   }
 
   .kinder-month-calendar__events {
-    @apply px-5 py-4 sm:px-6;
+    @apply px-5 py-4.5 sm:px-6;
   }
 
-  /* ── Chat layout (TailAdmin) ── */
+  /* ── Chat layout ── */
   .kinder-chat-layout {
-    @apply flex min-h-[32rem] flex-col overflow-hidden rounded-xl border border-border bg-card lg:min-h-[36rem] lg:flex-row;
-    box-shadow: var(--kinder-shadow-xs);
+    @apply flex min-h-[32rem] flex-col overflow-hidden rounded-2xl border border-border bg-card lg:min-h-[36rem] lg:flex-row shadow-sm;
   }
 
   .kinder-chat-sidebar {
@@ -495,7 +511,7 @@
   }
 
   .kinder-chat-messages {
-    @apply flex-1 space-y-3 overflow-y-auto p-4 sm:p-5;
+    @apply flex-1 space-y-3.5 overflow-y-auto p-4 sm:p-5;
   }
 
   .kinder-chat-composer {
@@ -503,25 +519,24 @@
   }
 
   .kinder-chat-bubble--user {
-    @apply bg-primary/10 ml-8 rounded-xl rounded-br-sm p-3 text-sm;
+    @apply bg-primary/10 ml-8 rounded-2xl rounded-br-sm p-3 text-sm leading-relaxed;
   }
 
   .kinder-chat-bubble--assistant {
-    @apply bg-muted mr-8 rounded-xl rounded-bl-sm p-3 text-sm;
+    @apply bg-muted mr-8 rounded-2xl rounded-bl-sm p-3 text-sm leading-relaxed;
   }
 
-  /* ── Messages (parent ↔ school chat) ── */
+  /* ── Messages ── */
   .kinder-messages-layout {
-    @apply flex min-h-[32rem] max-h-[calc(100vh-16rem)] flex-col overflow-hidden rounded-2xl border border-border bg-card lg:min-h-[36rem] lg:max-h-[calc(100vh-15rem)] lg:flex-row;
-    box-shadow: var(--kinder-shadow-xs);
+    @apply flex min-h-[32rem] max-h-[calc(100vh-16rem)] flex-col overflow-hidden rounded-2xl border border-border bg-card lg:min-h-[36rem] lg:max-h-[calc(100vh-15rem)] lg:flex-row shadow-sm;
   }
 
   .kinder-messages-sidebar {
-    @apply flex min-h-0 w-full flex-col border-b border-border bg-muted/20 lg:w-[22rem] lg:shrink-0 lg:border-r lg:border-b-0 xl:w-80;
+    @apply flex min-h-0 w-full flex-col border-b border-border bg-muted/10 lg:w-[22rem] lg:shrink-0 lg:border-r lg:border-b-0 xl:w-80;
   }
 
   .kinder-messages-sidebar-header {
-    @apply shrink-0 border-b border-border bg-card/80 px-4 py-4 backdrop-blur-sm sm:px-5;
+    @apply shrink-0 border-b border-border bg-card/85 px-4 py-4 backdrop-blur-sm sm:px-5;
   }
 
   .kinder-messages-thread-scroll {
@@ -529,11 +544,11 @@
   }
 
   .kinder-messages-thread {
-    @apply flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition-colors duration-200;
+    @apply flex w-full items-start gap-3 rounded-xl px-3.5 py-3.5 text-left transition-colors duration-200;
   }
 
   .kinder-messages-thread:hover {
-    @apply bg-muted/60;
+    @apply bg-muted/40;
   }
 
   .kinder-messages-thread--active {
@@ -541,7 +556,7 @@
   }
 
   .kinder-messages-avatar {
-    @apply flex size-11 shrink-0 items-center justify-center rounded-full text-xs font-semibold tracking-wide;
+    @apply flex size-11 shrink-0 items-center justify-center rounded-full text-xs font-bold tracking-wide shadow-inner;
   }
 
   .kinder-messages-avatar--sm {
@@ -549,15 +564,15 @@
   }
 
   .kinder-messages-unread {
-    @apply mt-1 flex size-5 shrink-0 items-center justify-center rounded-full bg-destructive text-[10px] font-semibold text-destructive-foreground;
+    @apply mt-1 flex size-5 shrink-0 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground;
   }
 
   .kinder-messages-main {
-    @apply flex min-h-0 min-w-0 flex-1 flex-col bg-background;
+    @apply flex min-h-0 min-w-0 flex-1 flex-col bg-background/50;
   }
 
   .kinder-messages-main--empty {
-    @apply items-center justify-center bg-muted/10;
+    @apply items-center justify-center bg-muted/5;
   }
 
   .kinder-messages-main-header {
@@ -565,7 +580,7 @@
   }
 
   .kinder-messages-scroll {
-    @apply relative min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-5 sm:py-6;
+    @apply relative min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6;
   }
 
   .kinder-messages-day-separator {
@@ -573,11 +588,11 @@
   }
 
   .kinder-messages-day-separator span {
-    @apply rounded-full bg-muted px-3 py-1 text-[11px] font-medium text-muted-foreground;
+    @apply rounded-full bg-muted/65 px-3 py-1 text-[11px] font-semibold text-muted-foreground;
   }
 
   .kinder-messages-bubble-row {
-    @apply mb-4 flex items-end gap-2.5;
+    @apply mb-4 flex items-end gap-3;
   }
 
   .kinder-messages-bubble-row--mine {
@@ -585,35 +600,35 @@
   }
 
   .kinder-messages-bubble {
-    @apply px-4 py-2.5 shadow-sm;
+    @apply px-4 py-3 shadow-sm leading-relaxed;
   }
 
   .kinder-messages-bubble--mine {
-    @apply rounded-2xl rounded-br-md bg-primary text-primary-foreground;
+    @apply rounded-2xl rounded-br-md bg-primary text-primary-foreground font-medium;
   }
 
   .kinder-messages-bubble--theirs {
-    @apply rounded-2xl rounded-bl-md border border-border/60 bg-card;
+    @apply rounded-2xl rounded-bl-md border border-border/75 bg-card text-foreground;
   }
 
   .kinder-messages-composer {
-    @apply shrink-0 border-t border-border bg-card/90 px-3 py-3 backdrop-blur-sm sm:px-5 sm:py-4;
+    @apply shrink-0 border-t border-border bg-card/85 px-3 py-3 backdrop-blur-sm sm:px-5 sm:py-4;
   }
 
   .kinder-messages-composer-inner {
-    @apply mx-auto flex w-full max-w-3xl items-end gap-2 rounded-2xl border border-border bg-background p-2 ;
+    @apply mx-auto flex w-full max-w-3xl items-end gap-2 rounded-2xl border border-border bg-background p-2 transition-all duration-200 focus-within:border-primary/25 focus-within:ring-2 focus-within:ring-primary/5;
   }
 
   .kinder-messages-input {
-    @apply max-h-32 min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-sm leading-relaxed outline-none placeholder:text-muted-foreground;
+    @apply max-h-32 min-h-10 flex-1 resize-none bg-transparent px-2.5 py-2.5 text-sm leading-relaxed outline-none placeholder:text-muted-foreground/80;
   }
 
   .kinder-messages-reaction-pill {
-    @apply inline-flex items-center gap-1 rounded-full border border-border/70 bg-card px-2 py-0.5 shadow-sm transition-colors hover:bg-muted;
+    @apply inline-flex items-center gap-1 rounded-full border border-border/80 bg-card px-2 py-0.5 shadow-sm transition-colors hover:bg-muted;
   }
 
   .kinder-messages-reaction-pill--active {
-    @apply border-primary/30 bg-primary/10 text-primary;
+    @apply border-primary/25 bg-primary/5 text-primary;
   }
 
   .kinder-messages-image-preview {
@@ -629,10 +644,10 @@
   }
 
   .kinder-messages-reply-quote--theirs {
-    @apply border-primary bg-muted/70;
+    @apply border-primary bg-muted/65;
   }
 
   .kinder-messages-composer-reply {
-    @apply mx-auto mb-3 flex w-full max-w-3xl items-start gap-2 rounded-2xl border border-primary/20 bg-primary/5 px-3 py-2.5;
+    @apply mx-auto mb-3 flex w-full max-w-3xl items-start gap-2 rounded-2xl border border-primary/15 bg-primary/5 px-3 py-2.5;
   }
 }

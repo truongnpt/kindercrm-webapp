@@ -166,8 +166,6 @@ export function ParentSubmitPaymentDialog({
                   <FormControl>
                     <Input
                       inputMode="numeric"
-                      min={1}
-                      step={1}
                       type="number"
                       value={field.value}
                       onBlur={field.onBlur}

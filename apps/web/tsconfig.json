@@ -3,10 +3,21 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./app/*"],
-      "~/config/*": ["./config/*"],
-      "~/components/*": ["./components/*"],
-      "~/lib/*": ["./lib/*"]
+      "@/*": [
+        "./*"
+      ],
+      "~/*": [
+        "./app/*"
+      ],
+      "~/config/*": [
+        "./config/*"
+      ],
+      "~/components/*": [
+        "./components/*"
+      ],
+      "~/lib/*": [
+        "./lib/*"
+      ]
     },
     "plugins": [
       {
@@ -26,5 +37,8 @@
     "lib/**/*.tsx",
     "app"
   ],
-  "exclude": ["node_modules", ".next"]
+  "exclude": [
+    "node_modules",
+    ".next"
+  ]
 }

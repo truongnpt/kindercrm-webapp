@@ -7,6 +7,14 @@ import Link from 'next/link';
 import { GraduationCap } from 'lucide-react';
 
 import { Trans } from '@kit/ui/trans';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@kit/ui/table';
 
 import {
   DataTableCard,
@@ -65,72 +73,77 @@ export function StudentsList({
 
   return (
     <>
+      {/* ── Desktop Table ── */}
       <div className="hidden md:block">
         <DataTableCard
           description={<Trans i18nKey="kinder:students.listDescription" />}
           title={<Trans i18nKey="kinder:students.directory" />}
         >
-          <table className="w-full text-sm">
-            <thead>
-              <tr>
-                <th className="w-12" />
-                <th>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-12" />
+                <TableHead>
                   <Trans i18nKey="kinder:students.code" />
-                </th>
-                <th>
+                </TableHead>
+                <TableHead>
                   <Trans i18nKey="kinder:students.fullName" />
-                </th>
-                <th>
+                </TableHead>
+                <TableHead>
                   <Trans i18nKey="kinder:students.className" />
-                </th>
-                <th>
+                </TableHead>
+                <TableHead>
                   <Trans i18nKey="kinder:students.status" />
-                </th>
-                <th className="text-right" />
-              </tr>
-            </thead>
-            <tbody>
+                </TableHead>
+                <TableHead className="text-right" />
+              </TableRow>
+            </TableHeader>
+
+            <TableBody>
               {students.map((student) => (
-                <tr key={student.id}>
-                  <td>
+                <TableRow key={student.id}>
+                  <TableCell>
                     <StudentAvatar
                       name={student.full_name}
                       photoUrl={student.photo_url}
                       size="sm"
                     />
-                  </td>
-                  <td className="font-mono text-xs">{student.student_code}</td>
-                  <td>
+                  </TableCell>
+                  <TableCell className="font-mono text-xs">
+                    {student.student_code}
+                  </TableCell>
+                  <TableCell>
                     <Link
                       className="font-medium hover:text-primary hover:underline"
                       href={`${pathsConfig.app.studentDetail}/${student.id}`}
                     >
                       {student.full_name}
                     </Link>
-                  </td>
-                  <td className="text-muted-foreground">
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
                     {student.class_name ?? '—'}
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     <StatusBadge tone={STATUS_TONE[student.status]}>
                       <Trans
                         i18nKey={`kinder:students.statuses.${student.status}`}
                       />
                     </StatusBadge>
-                  </td>
-                  <td className="text-right">
+                  </TableCell>
+                  <TableCell className="text-right">
                     <EntityRowActions
                       onDelete={() => setDeleteStudent(student)}
                       onEdit={() => setEditStudent(student)}
                     />
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </DataTableCard>
       </div>
 
+      {/* ── Mobile Cards ── */}
       <div className="space-y-3 md:hidden">
         {students.map((student) => (
           <article className="kinder-mobile-card" key={student.id}>

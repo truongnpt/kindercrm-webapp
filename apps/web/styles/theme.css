@@ -119,3 +119,25 @@
     }
   }
 }
+
+/* Premium micro-interaction utilities */
+@utility hover-card {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(3, 76, 248, 0.2);
+    box-shadow: 0 10px 20px -5px rgb(15 23 42 / 0.05), 
+                0 4px 6px -2px rgb(15 23 42 / 0.02);
+  }
+}
+
+@utility glass-panel {
+  backdrop-filter: blur(12px);
+  background-color: rgba(var(--card), 0.85);
+  border: 1px solid rgba(var(--border), 0.5);
+}
+
+@utility glow-primary {
+  box-shadow: 0 0 15px -3px rgba(3, 76, 248, 0.15);
+}

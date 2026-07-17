@@ -37,7 +37,8 @@
     "lucide-react": "^0.545.0",
     "react-top-loading-bar": "3.0.2",
     "recharts": "2.15.3",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "vaul": "^1.1.2"
   },
   "devDependencies": {
     "@kit/eslint-config": "workspace:*",
@@ -75,6 +76,7 @@
     "./command": "./src/shadcn/command.tsx",
     "./data-table": "./src/shadcn/data-table.tsx",
     "./dialog": "./src/shadcn/dialog.tsx",
+    "./drawer": "./src/shadcn/drawer.tsx",
     "./dropdown-menu": "./src/shadcn/dropdown-menu.tsx",
     "./navigation-menu": "./src/shadcn/navigation-menu.tsx",
     "./form": "./src/shadcn/form.tsx",

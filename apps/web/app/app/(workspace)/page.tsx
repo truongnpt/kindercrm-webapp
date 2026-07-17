@@ -50,13 +50,42 @@ async function DashboardPage() {
   const client = getSupabaseServerClient();
   const hasCalendar = hasSchoolFeature(context, 'calendar');
 
-  const [usageSummary, summary, upcomingEvents] = await Promise.all([
+  const [usageSummary, summary, upcomingEvents, recentLeadsData, recentStudentsData] = await Promise.all([
     loadSchoolUsageSummary(client, context),
     loadDashboardSummary(context.school.id),
     hasCalendar
       ? loadUpcomingCalendarEvents(context.school.id, 5)
       : Promise.resolve([]),
+    client
+      .from('leads')
+      .select('id, parent_name, child_name, stage, created_at')
+      .eq('school_id', context.school.id)
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false })
+      .limit(3),
+    client
+      .from('students')
+      .select('id, full_name, status, created_at')
+      .eq('school_id', context.school.id)
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false })
+      .limit(3),
   ]);
+
+  const recentLeads = (recentLeadsData.data ?? []) as Array<{
+    id: string;
+    parent_name: string;
+    child_name: string | null;
+    stage: string;
+    created_at: string;
+  }>;
+
+  const recentStudents = (recentStudentsData.data ?? []) as Array<{
+    id: string;
+    full_name: string;
+    status: string;
+    created_at: string;
+  }>;
 
   if (hasCalendar) {
     try {
@@ -182,7 +211,12 @@ async function DashboardPage() {
           <StaffUpcomingEvents events={upcomingEvents} />
         ) : null}
 
-        <DashboardOverview features={features} summary={summary} />
+        <DashboardOverview
+          features={features}
+          recentLeads={recentLeads}
+          recentStudents={recentStudents}
+          summary={summary}
+        />
       </KinderPageBody>
     </>
   );
