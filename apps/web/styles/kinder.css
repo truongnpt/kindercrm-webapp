@@ -1,52 +1,48 @@
 /*
- * Kinder Admin — Premium SaaS Layout & Design System
- * Brand color: blue #034cf8 (Vibrant & Deep Indigo-blue)
- * Modern border radiuses, soft ambient shadows, glassmorphism layers.
+ * Kinder Admin — TailAdmin-inspired layout
+ * Clean sidebar, bordered cards, flat surfaces — brand blue #034cf8
  */
 
 @layer base {
   :root {
-    --kinder-radius: 0.875rem;
-    --kinder-radius-lg: 1.25rem;
-    --kinder-radius-xl: 1.5rem;
-    
-    /* Smooth ambient shadows */
-    --kinder-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.03);
-    --kinder-shadow-sm: 0 2px 8px -2px rgba(15, 23, 42, 0.05),
-      0 4px 12px -4px rgba(15, 23, 42, 0.03);
-    --kinder-shadow-md: 0 12px 24px -8px rgba(15, 23, 42, 0.08),
-      0 4px 12px -4px rgba(15, 23, 42, 0.03);
-      
-    --kinder-transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
-    --kinder-success: #10b981;
+    --kinder-radius: 0.75rem;
+    --kinder-radius-lg: 1rem;
+    --kinder-radius-xl: 1.25rem;
+    --kinder-shadow-xs: 0 1px 2px rgb(15 23 42 / 0.04);
+    --kinder-shadow-sm: 0 1px 3px rgb(15 23 42 / 0.08),
+      0 1px 2px rgb(15 23 42 / 0.04);
+    --kinder-shadow-md: 0 4px 8px rgb(15 23 42 / 0.06),
+      0 2px 4px rgb(15 23 42 / 0.04);
+    --kinder-transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --kinder-success: #16a34a;
     --kinder-warning: #f59e0b;
     --kinder-info: #3b82f6;
-    --kinder-primary-light: rgba(3, 76, 248, 0.06);
+    --kinder-primary-light: #eff6ff;
     --kinder-page-bg: #f8fafc;
     --kinder-sidebar-width: 16rem;
   }
 
   .dark {
     --kinder-page-bg: var(--background);
-    --kinder-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.15);
-    --kinder-shadow-sm: 0 4px 12px -2px rgba(0, 0, 0, 0.25);
-    --kinder-shadow-md: 0 16px 32px -8px rgba(0, 0, 0, 0.35);
-    --kinder-primary-light: rgba(59, 130, 246, 0.12);
+    --kinder-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.2);
+    --kinder-shadow-sm: 0 1px 3px rgb(0 0 0 / 0.25);
+    --kinder-shadow-md: 0 4px 8px rgb(0 0 0 / 0.3);
+    --kinder-primary-light: rgb(3 76 248 / 0.12);
   }
 }
 
 @layer components {
-  /* ── Sidebar menu ── */
+  /* ── Sidebar menu (TailAdmin) ── */
   [data-sidebar='menu-button'] {
-    @apply text-muted-foreground h-10 rounded-xl px-3 text-sm font-medium transition-all duration-200 ease-out;
+    @apply text-muted-foreground h-11 rounded-lg px-3 text-sm font-medium transition-colors duration-150;
   }
 
   [data-sidebar='menu-button']:hover {
-    @apply bg-muted text-foreground translate-x-1;
+    @apply bg-muted text-foreground;
   }
 
   [data-sidebar='menu-button'][data-active='true'] {
-    @apply bg-primary/10 text-primary font-semibold shadow-sm border-l-2 border-primary rounded-l-none pl-2.5;
+    @apply bg-primary/10 text-primary font-medium;
   }
 
   [data-sidebar='menu-button'][data-active='true'] svg {
