@@ -1,4 +1,5 @@
 import type { Database } from '~/lib/database.types';
+import { PaginationParams } from '~/lib/kinder/types/pagination';
 
 export type StudentContract =
   Database['public']['Tables']['student_contracts']['Row'];
@@ -34,4 +35,11 @@ export type StudentContractsSummary = {
   active: number;
   draft: number;
   expiringSoon: number;
+};
+
+export type StudentContractFilters = PaginationParams & {
+  search?: string;
+  status?: string;
+  type?: string;
+  studentId?: string;
 };

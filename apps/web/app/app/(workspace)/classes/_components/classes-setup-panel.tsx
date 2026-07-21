@@ -6,7 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CalendarRange, DoorOpen, Plus, Users } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-
+import {
+  formatDate,
+} from '~/lib/utils/date';
 import { Badge } from '@kit/ui/badge';
 import { Button } from '@kit/ui/button';
 import { Checkbox } from '@kit/ui/checkbox';
@@ -41,20 +43,6 @@ import {
   createSchoolYearAction,
 } from '~/lib/kinder/classes/server-actions';
 import type { Classroom, SchoolYear } from '~/lib/kinder/classes/types';
-
-function formatDateLabel(value: string) {
-  const date = new Date(`${value}T00:00:00`);
-
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return date.toLocaleDateString(undefined, {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
-}
 
 function buildSchoolYearDefaults(schoolId: string, name: string) {
   const year = new Date().getFullYear();
@@ -156,9 +144,9 @@ export function ClassesSetupPanel({
                   <div className="min-w-0">
                     <p className="font-medium">{schoolYear.name}</p>
                     <p className="text-muted-foreground mt-0.5 text-xs">
-                      {formatDateLabel(schoolYear.start_date)}
+                      {formatDate(schoolYear.start_date)}
                       {' → '}
-                      {formatDateLabel(schoolYear.end_date)}
+                      {formatDate(schoolYear.end_date)}
                     </p>
                   </div>
                 </div>

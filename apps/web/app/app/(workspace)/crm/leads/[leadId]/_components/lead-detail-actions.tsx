@@ -66,7 +66,6 @@ export function LeadDetailActions({
           onClick={() =>
             convertLead.mutate({ leadId: lead.id, schoolId })
           }
-          size="sm"
           type="button"
           variant="secondary"
         >
@@ -75,7 +74,6 @@ export function LeadDetailActions({
         </KinderSubmitButton>
         <Button
  onClick={() => setDeleteOpen(true)}
-          size="sm"
           type="button"
           variant="destructive"
         >

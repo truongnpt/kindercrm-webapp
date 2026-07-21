@@ -2,6 +2,8 @@
 
 import { useMemo } from 'react';
 
+import { useSidebar } from '@kit/ui/shadcn-sidebar';
+
 import Link from 'next/link';
 
 import type { JwtPayload } from '@supabase/supabase-js';
@@ -56,6 +58,7 @@ export function PersonalAccountDropdown({
   className?: string;
 }) {
   const personalAccountData = usePersonalAccountData(user.id, account);
+  const {isMobile} = useSidebar();
 
   const signedInAsLabel = useMemo(() => {
     const email = user?.email ?? undefined;
@@ -165,7 +168,7 @@ export function PersonalAccountDropdown({
 
         <DropdownMenuSeparator />
 
-        <If condition={features.enableThemeToggle}>
+        <If condition={features.enableThemeToggle && !isMobile}>
           <SubMenuModeToggle />
         </If>
 

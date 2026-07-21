@@ -64,7 +64,7 @@ export function WorkspaceSearch({
   return (
     <>
       <Button
- className={cn('kinder-search-trigger hidden md:flex', className)}
+ className={cn('kinder-search-trigger max-w-100 hover:shadow-none border-none bg-muted hidden md:flex', className)}
  onClick={() => setOpen(true)}
         type="button"
         variant="ghost"

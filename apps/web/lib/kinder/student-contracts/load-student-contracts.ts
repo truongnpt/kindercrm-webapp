@@ -6,11 +6,12 @@ import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import type { Database } from '~/lib/database.types';
 
+import { createPagination } from '@/lib/pagination';
+import type { PaginatedResponse } from '~/lib/kinder/types/pagination';
+
 import type {
-  StudentContract,
-  StudentContractsSummary,
+  StudentContractFilters,
   StudentContractWithInvoice,
-  StudentContractWithStudent,
 } from './types';
 
 const CONTRACT_SELECT = `
@@ -31,42 +32,54 @@ const CONTRACT_SELECT = `
   )
 `;
 
-export type StudentContractFilters = {
-  type?: string;
-  status?: string;
-  studentId?: string;
-  query?: string;
-};
-
 export const loadStudentContracts = cache(
-  async (schoolId: string, filters: StudentContractFilters = {}) => {
+  async (
+    schoolId: string,
+    {
+      page = 1,
+      limit = 10,
+      status,
+      type,
+      studentId,
+      search,
+    }: StudentContractFilters = {},
+  ): Promise<PaginatedResponse<StudentContractWithInvoice>> => {
     const client = getSupabaseServerClient();
+
+    const { from, to } = createPagination(page, limit);
 
     let query = client
       .from('student_contracts')
-      .select(CONTRACT_SELECT)
-      .eq('school_id', schoolId)
-      .order('created_at', { ascending: false });
+      .select(CONTRACT_SELECT, {
+        count: 'exact',
+      })
+      .eq('school_id', schoolId);
 
-    if (filters.type && filters.type !== 'all') {
+    if (type && type !== 'all') {
       query = query.eq(
         'contract_type',
-        filters.type as Database['public']['Enums']['student_contract_type'],
+        type as Database['public']['Enums']['student_contract_type'],
       );
     }
 
-    if (filters.status && filters.status !== 'all') {
+    if (status && status !== 'all') {
       query = query.eq(
         'status',
-        filters.status as Database['public']['Enums']['student_contract_status'],
+        status as Database['public']['Enums']['student_contract_status'],
       );
     }
 
-    if (filters.studentId) {
-      query = query.eq('student_id', filters.studentId);
+    if (studentId) {
+      query = query.eq('student_id', studentId);
     }
 
-    const { data, error } = await query;
+    const {
+      data,
+      count,
+      error,
+    } = await query
+      .order('created_at', { ascending: false })
+      .range(from, to);
 
     if (error) {
       throw error;
@@ -74,8 +87,9 @@ export const loadStudentContracts = cache(
 
     let contracts = (data ?? []) as StudentContractWithInvoice[];
 
-    if (filters.query?.trim()) {
-      const q = filters.query.trim().toLowerCase();
+    // Giữ nguyên logic search của code cũ
+    if (search?.trim()) {
+      const q = search.trim().toLowerCase();
 
       contracts = contracts.filter(
         (contract) =>
@@ -86,89 +100,19 @@ export const loadStudentContracts = cache(
       );
     }
 
-    return contracts;
-  },
-);
-
-export const loadStudentContractsForStudent = cache(
-  async (schoolId: string, studentId: string) => {
-    return loadStudentContracts(schoolId, { studentId });
-  },
-);
-
-export const loadStudentContractById = cache(
-  async (schoolId: string, contractId: string) => {
-    const client = getSupabaseServerClient();
-
-    const { data, error } = await client
-      .from('student_contracts')
-      .select(CONTRACT_SELECT)
-      .eq('school_id', schoolId)
-      .eq('id', contractId)
-      .maybeSingle();
-
-    if (error) {
-      throw error;
-    }
-
-    return (data as StudentContractWithInvoice | null) ?? null;
-  },
-);
-
-export const loadStudentContractByInvoiceId = cache(
-  async (schoolId: string, invoiceId: string) => {
-    const client = getSupabaseServerClient();
-
-    const { data, error } = await client
-      .from('student_contracts')
-      .select(CONTRACT_SELECT)
-      .eq('school_id', schoolId)
-      .eq('invoice_id', invoiceId)
-      .maybeSingle();
-
-    if (error) {
-      throw error;
-    }
-
-    return (data as StudentContractWithInvoice | null) ?? null;
-  },
-);
-
-export const loadStudentContractsSummary = cache(
-  async (schoolId: string): Promise<StudentContractsSummary> => {
-    const client = getSupabaseServerClient();
-
-    const { data, error } = await client
-      .from('student_contracts')
-      .select('status, end_date')
-      .eq('school_id', schoolId);
-
-    if (error) {
-      throw error;
-    }
-
-    const rows = data ?? [];
-    const today = new Date();
-    const soon = new Date(today);
-    soon.setDate(soon.getDate() + 30);
-
-    const expiringSoon = rows.filter((row) => {
-      if (row.status !== 'active' || !row.end_date) {
-        return false;
-      }
-
-      const end = new Date(`${row.end_date}T00:00:00`);
-
-      return end >= today && end <= soon;
-    }).length;
+    const totalItems = count ?? 0;
+    const totalPages = Math.ceil(totalItems / limit);
 
     return {
-      total: rows.length,
-      active: rows.filter((row) => row.status === 'active').length,
-      draft: rows.filter((row) => row.status === 'draft').length,
-      expiringSoon,
+      data: contracts,
+      pagination: {
+        page,
+        limit,
+        totalItems,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrevious: page > 1,
+      },
     };
   },
 );
-
-export type { StudentContract, StudentContractWithStudent };

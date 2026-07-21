@@ -38,7 +38,7 @@ export function CrmWorkspace({
         />
       </div>
 
-      <TabbedModule className="min-w-0 p-4 gap-0" defaultValue="pipeline">
+      <TabbedModule className="min-w-0 p-5 gap-0" defaultValue="pipeline">
         <TabbedModuleList className=" mb-4">
           <TabbedModuleTrigger value="pipeline">
             <Kanban className="mr-2 size-4" />

@@ -52,7 +52,7 @@ export function WorkspaceHeader({
   return (
     <header
       className={cn(
-        'sticky top-0 z-30 hidden h-16 shrink-0 border-b border-border bg-card lg:flex',
+        'sticky top-0 z-30 hidden h-16 shrink-0 bg-card lg:flex',
         className,
       )}
     >
@@ -64,9 +64,6 @@ export function WorkspaceHeader({
         </div>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          <div className="hidden min-w-[148px] xl:block">
-            <SchoolSwitcher activeSchoolId={activeSchoolId} schools={schools} />
-          </div>
 
           <ParentNotificationsBell
             notifications={notifications}

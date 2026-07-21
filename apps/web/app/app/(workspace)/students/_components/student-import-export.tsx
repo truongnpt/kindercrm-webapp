@@ -25,36 +25,18 @@ import {
 } from '~/lib/kinder/export/csv';
 import { importStudentsAction } from '~/lib/kinder/students/server-actions';
 import type { Student } from '~/lib/kinder/students/types';
+import { Spinner } from '@kit/ui/spinner';
 
 const STUDENT_CSV_HEADERS = {
-  'họ tên': 'fullName',
-  'ho ten': 'fullName',
-  fullname: 'fullName',
-  'mã hs': 'studentCode',
-  'ma hs': 'studentCode',
-  studentcode: 'studentCode',
-  'ngày sinh': 'dateOfBirth',
-  'ngay sinh': 'dateOfBirth',
-  dateofbirth: 'dateOfBirth',
-  'giới tính': 'gender',
-  'gioi tinh': 'gender',
+  student_code: 'student_code',
+  full_name: 'full_name',
+  date_of_birth: 'date_of_birth',
   gender: 'gender',
-  'lớp': 'className',
-  lop: 'className',
-  classname: 'className',
-  'ngày nhập học': 'enrollmentDate',
-  'ngay nhap hoc': 'enrollmentDate',
-  enrollmentdate: 'enrollmentDate',
-  'phụ huynh': 'parentName',
-  'phu huynh': 'parentName',
-  parentname: 'parentName',
-  'sđt ph': 'parentPhone',
-  'sdt ph': 'parentPhone',
-  parentphone: 'parentPhone',
-  'email ph': 'parentEmail',
-  parentemail: 'parentEmail',
-  'ghi chú': 'notes',
-  'ghi chu': 'notes',
+  class_name: 'class_name',
+  enrollment_date: 'enrollment_date',
+  parent_name: 'parent_name',
+  parent_phone: 'parent_phone',
+  parent_email: 'parent_email',
   notes: 'notes',
 };
 
@@ -98,6 +80,27 @@ export function StudentImportExport({
     downloadCsv(`students-${new Date().toISOString().slice(0, 10)}.csv`, csv);
   };
 
+  const handleDownloadTemplate = () => {
+    const csv = buildCsv(
+      [
+        'student_code',
+        'full_name',
+        'date_of_birth',
+        'gender',
+        'class_name',
+        'status',
+        'enrollment_date',
+        'parent_name',
+        'parent_phone',
+        'parent_email',
+        'notes',
+      ],
+      [],
+    );
+
+    downloadCsv(`students-template.csv`, csv);
+  };
+
   const handleImport = (file: File) => {
     const reader = new FileReader();
 
@@ -105,6 +108,7 @@ export function StudentImportExport({
       const text = String(reader.result ?? '');
       const rows = parseCsv(text);
       const mapped = mapCsvRowsByHeader(rows, STUDENT_CSV_HEADERS);
+      console.log(mapped);
 
       if (mapped.length === 0) {
         toast.error(t('importExport.invalidFile'));
@@ -115,17 +119,17 @@ export function StudentImportExport({
         const result = await importStudentsAction({
           schoolId,
           students: mapped.map((row) => ({
-            fullName: row.fullName ?? '',
-            studentCode: row.studentCode,
-            dateOfBirth: row.dateOfBirth,
+            fullName: row.full_name ?? '',
+            studentCode: row.student_code,
+            dateOfBirth: row.date_of_birth,
             gender: ['male', 'female', 'other'].includes(row.gender ?? '')
               ? (row.gender as 'male' | 'female' | 'other')
               : undefined,
-            className: row.className,
-            enrollmentDate: row.enrollmentDate,
-            parentName: row.parentName,
-            parentPhone: row.parentPhone,
-            parentEmail: row.parentEmail,
+            className: row.class_name,
+            enrollmentDate: row.enrollment_date,
+            parentName: row.parent_name,
+            parentPhone: row.parent_phone,
+            parentEmail: row.parent_email,
             notes: row.notes,
           })),
         });
@@ -153,14 +157,14 @@ export function StudentImportExport({
 
   return (
     <div className="flex items-center gap-2">
-      <Button onClick={handleExport} size="sm" type="button" variant="outline">
+      <Button onClick={handleExport} type="button" variant="outline">
         <Download className="mr-2 h-4 w-4" />
         <Trans i18nKey="kinder:importExport.export" />
       </Button>
 
       <Dialog onOpenChange={setOpen} open={open}>
         <DialogTrigger asChild>
-          <Button size="sm" type="button" variant="outline">
+          <Button type="button" variant="outline">
             <Upload className="mr-2 h-4 w-4" />
             <Trans i18nKey="kinder:importExport.import" />
           </Button>
@@ -190,14 +194,22 @@ export function StudentImportExport({
             type="file"
           />
           <Button
- disabled={pending}
- onClick={() => fileRef.current?.click()}
+          disabled={pending}
+          onClick={() => fileRef.current?.click()}
             type="button"
           >
+            {pending && <Spinner className="mr-2 h-4 w-4" />}
             <Trans i18nKey="kinder:importExport.chooseFile" />
           </Button>
         </DialogContent>
       </Dialog>
+      <Button
+        onClick={() => handleDownloadTemplate()}
+          type="button"
+          variant="outline"
+        >
+          <Trans i18nKey="kinder:importExport.template" />
+        </Button>
     </div>
   );
 }

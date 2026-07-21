@@ -1,23 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import Link from 'next/link';
 
 import { GraduationCap } from 'lucide-react';
 
 import { Trans } from '@kit/ui/trans';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@kit/ui/table';
+
+import { StudentImportExport } from './student-import-export';
+import { StudentStatusFilter } from './student-status-filter';
+import { Suspense } from 'react';
 
 import {
-  DataTableCard,
   EmptyState,
   EntityRowActions,
   KinderConfirmDialog,
@@ -31,6 +26,9 @@ import type { Student } from '~/lib/kinder/students/types';
 
 import { EditStudentDialog } from './edit-student-dialog';
 import { StudentAvatar } from './student-avatar';
+import type { StudentsWorkspaceProps } from './students-workspace';
+import { BaseTable } from '@/app/app/_components/base-table';
+import { ColumnDef } from '@tanstack/react-table';
 
 const STATUS_TONE: Record<
   Student['status'],
@@ -43,13 +41,12 @@ const STATUS_TONE: Record<
   withdrawn: 'muted',
 };
 
+interface StudentListProp extends StudentsWorkspaceProps { }
+
 export function StudentsList({
-  students,
+  data,
   schoolId,
-}: {
-  students: Student[];
-  schoolId: string;
-}) {
+}: StudentListProp) {
   const [editStudent, setEditStudent] = useState<Student | null>(null);
   const [deleteStudent, setDeleteStudent] = useState<Student | null>(null);
 
@@ -60,133 +57,77 @@ export function StudentsList({
     onSuccess: () => setDeleteStudent(null),
   });
 
-  if (students.length === 0) {
-    return (
-      <EmptyState
-        compact
-        descriptionKey="kinder:ui.emptyDefaultDescription"
-        icon={GraduationCap}
-        titleKey="kinder:students.empty"
-      />
-    );
-  }
+  const columns: ColumnDef<Student>[] = [
+    {
+      accessorKey: 'photo_url',
+      header: () => <Trans i18nKey="kinder:students.photo" />,
+      cell: ({ row }) => (
+        <StudentAvatar
+          name={row.original.full_name}
+          photoUrl={row.original.photo_url}
+          size="sm"
+        />
+      ),
+    },
+    {
+      accessorKey: 'student_code',
+      header: () => <Trans i18nKey="kinder:students.code" />,
+    },
+    {
+      accessorKey: 'full_name',
+      header: () =><Trans i18nKey="kinder:students.fullName" />,
+      cell: ({ row }) => (
+        <Link
+          className="font-medium hover:text-primary hover:underline"
+          href={`${pathsConfig.app.studentDetail}/${row.original.id}`}
+        >
+          {row.original.full_name}
+        </Link>
+      ),
+    },
+    {
+      accessorKey: 'class_name',
+      header: () => <Trans i18nKey="kinder:students.className" />,
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {row.original.class_name ?? '—'}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'status',
+      header: () => <Trans i18nKey="kinder:students.status" />,
+      cell: ({ row }) => (
+        <StatusBadge tone={STATUS_TONE[row.original.status]}>
+          <Trans
+            i18nKey={`kinder:students.statuses.${row.original.status}`}
+          />
+        </StatusBadge>
+      ),
+    },
+    {
+      accessorKey: 'actions',
+      header: () => null,
+      cell: ({ row }) => (
+        <EntityRowActions
+          onDelete={() => setDeleteStudent(row.original)}
+          onEdit={() => setEditStudent(row.original)}
+        />
+      ),
+    },
+  ]
+
+  const toolbar = useMemo<React.ReactNode>(() => (
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <Suspense>
+        <StudentStatusFilter />
+      </Suspense>
+    </div>
+  ), [])
 
   return (
     <>
-      {/* ── Desktop Table ── */}
-      <div className="hidden md:block">
-        <DataTableCard
-          description={<Trans i18nKey="kinder:students.listDescription" />}
-          title={<Trans i18nKey="kinder:students.directory" />}
-        >
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-12" />
-                <TableHead>
-                  <Trans i18nKey="kinder:students.code" />
-                </TableHead>
-                <TableHead>
-                  <Trans i18nKey="kinder:students.fullName" />
-                </TableHead>
-                <TableHead>
-                  <Trans i18nKey="kinder:students.className" />
-                </TableHead>
-                <TableHead>
-                  <Trans i18nKey="kinder:students.status" />
-                </TableHead>
-                <TableHead className="text-right" />
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {students.map((student) => (
-                <TableRow key={student.id}>
-                  <TableCell>
-                    <StudentAvatar
-                      name={student.full_name}
-                      photoUrl={student.photo_url}
-                      size="sm"
-                    />
-                  </TableCell>
-                  <TableCell className="font-mono text-xs">
-                    {student.student_code}
-                  </TableCell>
-                  <TableCell>
-                    <Link
-                      className="font-medium hover:text-primary hover:underline"
-                      href={`${pathsConfig.app.studentDetail}/${student.id}`}
-                    >
-                      {student.full_name}
-                    </Link>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {student.class_name ?? '—'}
-                  </TableCell>
-                  <TableCell>
-                    <StatusBadge tone={STATUS_TONE[student.status]}>
-                      <Trans
-                        i18nKey={`kinder:students.statuses.${student.status}`}
-                      />
-                    </StatusBadge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <EntityRowActions
-                      onDelete={() => setDeleteStudent(student)}
-                      onEdit={() => setEditStudent(student)}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </DataTableCard>
-      </div>
-
-      {/* ── Mobile Cards ── */}
-      <div className="space-y-3 md:hidden">
-        {students.map((student) => (
-          <article className="kinder-mobile-card" key={student.id}>
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex min-w-0 items-start gap-3">
-                <StudentAvatar
-                  name={student.full_name}
-                  photoUrl={student.photo_url}
-                  size="md"
-                />
-                <div className="min-w-0">
-                  <Link
-                    className="text-foreground truncate font-medium hover:text-primary hover:underline"
-                    href={`${pathsConfig.app.studentDetail}/${student.id}`}
-                  >
-                    {student.full_name}
-                  </Link>
-                  <p className="text-muted-foreground mt-0.5 font-mono text-xs">
-                    {student.student_code}
-                  </p>
-                </div>
-              </div>
-              <StatusBadge tone={STATUS_TONE[student.status]}>
-                <Trans
-                  i18nKey={`kinder:students.statuses.${student.status}`}
-                />
-              </StatusBadge>
-            </div>
-
-            <div className="text-muted-foreground text-sm">
-              <Trans i18nKey="kinder:students.className" />:{' '}
-              <span className="text-foreground">
-                {student.class_name ?? '—'}
-              </span>
-            </div>
-
-            <EntityRowActions
-              onDelete={() => setDeleteStudent(student)}
-              onEdit={() => setEditStudent(student)}
-            />
-          </article>
-        ))}
-      </div>
+      <BaseTable columns={columns} data={data.data} pagination={data.pagination} toolbarActions={toolbar} />
 
       {editStudent ? (
         <EditStudentDialog

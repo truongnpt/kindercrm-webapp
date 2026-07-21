@@ -1,3 +1,5 @@
+import { PaginationParams } from "../types/pagination";
+
 export type StudentStatus =
   | 'active'
   | 'inactive'
@@ -77,3 +79,7 @@ export interface StudentPickupPerson {
   relationship: string | null;
   photo_url: string | null;
 }
+
+export type StudentFilters = PaginationParams & {
+  status?: string;
+};

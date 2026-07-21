@@ -12,6 +12,9 @@ import {
   shouldShowTrialBanner,
 } from '~/lib/kinder/subscription/package-features';
 import type { Package, SchoolSubscription } from '~/lib/kinder/types';
+import {
+  formatDate,
+} from '~/lib/utils/date';
 
 export function TrialBanner({
   subscription,
@@ -25,9 +28,7 @@ export function TrialBanner({
   }
 
   const daysRemaining = getTrialDaysRemaining(subscription);
-  const trialEnds = subscription?.trial_ends_at
-    ? new Date(subscription.trial_ends_at).toLocaleDateString()
-    : null;
+  const trialEnds = formatDate(subscription?.trial_ends_at);
   const urgent = daysRemaining !== null && daysRemaining <= 3;
 
   const messageKey =
@@ -54,7 +55,7 @@ export function TrialBanner({
                 i18nKey={messageKey}
                 values={{
                   count: daysRemaining,
-                  date: trialEnds ?? '',
+                  date: trialEnds,
                 }}
               />
             )}

@@ -567,7 +567,7 @@ export function DashboardOverview({
       </BentoGrid>
 
       {/* Quick Stats overview panel */}
-      <SectionCard title="Số liệu vận hành nhanh">
+      <SectionCard title="Số liệu vận hành nhanh" className='kinder-bento-tile'>
         <BentoGrid columns={3}>
           {features.students ? (
             <div className="kinder-stat-inline bg-gradient-to-br from-card to-blue-500/[0.005]">

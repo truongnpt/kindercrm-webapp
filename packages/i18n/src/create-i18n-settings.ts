@@ -38,5 +38,8 @@ export function createI18nSettings({
     react: {
       useSuspense: true,
     },
+    interpolation: {
+      escapeValue: false,
+    }
   };
 }

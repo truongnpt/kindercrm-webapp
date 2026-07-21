@@ -141,7 +141,7 @@ async function StaffPage({
 
         <StaffHrAlerts alerts={alerts} />
 
-        <StaffOverview employees={allEmployees} />
+        {/* <StaffOverview employees={allEmployees} /> */}
 
         <StaffWorkspace
           campuses={campuses}

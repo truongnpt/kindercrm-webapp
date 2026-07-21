@@ -32,6 +32,7 @@
 }
 
 @layer components {
+
   /* ── Sidebar menu (TailAdmin) ── */
   [data-sidebar='menu-button'] {
     @apply text-muted-foreground h-11 rounded-lg px-3 text-sm font-medium transition-colors duration-150;
@@ -52,7 +53,7 @@
   [data-sidebar='menu-button'] svg {
     @apply text-muted-foreground/80 size-[18px] transition-transform duration-200;
   }
-  
+
   [data-sidebar='menu-button']:hover svg {
     @apply scale-105;
   }
@@ -64,8 +65,8 @@
   /* ── Surfaces (Premium SaaS card) ── */
   .kinder-surface,
   .kinder-bento-tile {
-    @apply relative min-w-0 overflow-hidden rounded-2xl border border-border bg-card/90 backdrop-blur-sm;
-    box-shadow: var(--kinder-shadow-xs);
+    @apply relative min-w-0 overflow-hidden rounded-2xl bg-card/90 backdrop-blur-sm;
+    box-shadow: var(--kinder-shadow-md);
   }
 
   .kinder-surface-interactive,
@@ -96,15 +97,15 @@
     @apply bg-card/95 backdrop-blur-md;
   }
 
-  .kinder-page-actions > button,
-  .kinder-page-actions > a[role='button'],
+  .kinder-page-actions>button,
+  .kinder-page-actions>a[role='button'],
   .kinder-page-actions a:has(button) button {
     @apply rounded-xl font-medium shadow-sm transition-all duration-200 active:scale-95;
   }
 
   /* ── Data table ── */
   .kinder-data-table {
-    @apply w-full overflow-hidden rounded-2xl border border-border bg-card text-sm shadow-sm;
+    @apply w-full overflow-hidden rounded-2xl border border-border bg-card text-sm;
   }
 
   .kinder-data-table thead {
@@ -194,6 +195,7 @@
       opacity: 0;
       transform: translateY(2px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -206,7 +208,7 @@
   }
 
   .kinder-empty-glow {
-    background: radial-gradient(circle at center, rgba(3, 76, 248, 0.03) 0%, transparent 70%);
+    @apply bg-white;
   }
 
   .kinder-form-panel {
@@ -217,7 +219,7 @@
     @apply flex flex-col gap-2.5;
   }
 
-  .kinder-list-panel > li {
+  .kinder-list-panel>li {
     @apply flex flex-col gap-3 rounded-xl border border-border bg-card p-4.5 transition-all duration-200 hover:-translate-y-0.5;
     box-shadow: var(--kinder-shadow-xs);
   }
@@ -250,7 +252,7 @@
   }
 
   .kinder-bento-tile-header {
-    @apply border-border/50 mb-5 flex flex-col gap-2.5 border-b pb-4 sm:flex-row sm:items-start sm:justify-between;
+    @apply mb-5 flex flex-col gap-2.5 border-b pb-4 sm:flex-row sm:items-start sm:justify-between;
   }
 
   /* ── CRM kanban ── */
@@ -286,8 +288,9 @@
   }
 
   .kinder-crm-column {
-    @apply flex w-[min(100%,290px)] shrink-0 flex-col rounded-2xl border border-border bg-muted/10 p-3.5 transition-colors duration-200 sm:w-[310px] lg:w-[330px];
+    @apply flex shrink-0 flex-col rounded-2xl border border-border bg-muted/10 p-3.5 transition-colors duration-200 sm:w-[310px] lg:w-[330px];
     min-height: min(75vh, 560px);
+    width: min(100%, 290px);
   }
 
   .kinder-crm-column--over {
@@ -315,7 +318,7 @@
 
   /* ── Stat card ── */
   .kinder-stat-card {
-    @apply rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-200 ease-out relative;
+    @apply rounded-2xl bg-card p-6 shadow-md transition-all duration-200 ease-out relative;
   }
 
   .kinder-stat-card:hover {
@@ -325,7 +328,7 @@
   .kinder-stat-card__icon {
     @apply flex size-12 shrink-0 items-center justify-center rounded-xl transition-all duration-300;
   }
-  
+
   .kinder-stat-card:hover .kinder-stat-card__icon {
     @apply scale-105;
   }
@@ -403,7 +406,7 @@
   .kinder-form-field [data-slot='select-trigger'] {
     @apply h-10.5 rounded-xl border border-border bg-muted/20 px-3.5 text-sm transition-all duration-200 shadow-none outline-none;
   }
-  
+
   .kinder-form-field input:focus,
   .kinder-form-field textarea:focus,
   .kinder-form-field [data-slot='select-trigger']:focus {
@@ -446,7 +449,7 @@
 
   /* ── Month calendar ── */
   .kinder-month-calendar {
-    @apply overflow-hidden rounded-2xl border border-border bg-card shadow-sm;
+    @apply overflow-hidden rounded-2xl border border-border bg-card;
   }
 
   .kinder-month-calendar__header {
@@ -645,5 +648,57 @@
 
   .kinder-messages-composer-reply {
     @apply mx-auto mb-3 flex w-full max-w-3xl items-start gap-2 rounded-2xl border border-primary/15 bg-primary/5 px-3 py-2.5;
+  }
+
+  /* ================================
+ * Kinder Scrollbar
+ * Hidden by default, show on hover
+ * ================================ */
+
+  .kinder-scrollbar {
+    overflow: auto;
+
+    /* Firefox */
+    scrollbar-width: none;
+
+    /* IE */
+    -ms-overflow-style: none;
+  }
+
+  /* Chrome / Safari / Edge */
+  .kinder-scrollbar::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  .kinder-scrollbar:hover {
+    /* Firefox */
+    scrollbar-width: thin;
+  }
+
+  .kinder-scrollbar:hover::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .kinder-scrollbar:hover::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .kinder-scrollbar:hover::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.35);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+    transition: background-color 0.2s ease;
+  }
+
+  .kinder-scrollbar:hover::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.55);
+    background-clip: content-box;
+  }
+
+  .kinder-scrollbar:hover::-webkit-scrollbar-corner {
+    background: transparent;
   }
 }

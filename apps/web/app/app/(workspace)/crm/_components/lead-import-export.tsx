@@ -142,7 +142,6 @@ export function LeadImportExport({
     <div className="flex items-center gap-2">
       <Button
  onClick={handleExport}
- size="sm"
  type="button"
  variant="outline"
  >
@@ -152,7 +151,7 @@ export function LeadImportExport({
 
       <Dialog onOpenChange={setOpen} open={open}>
         <DialogTrigger asChild>
-          <Button size="sm" type="button" variant="outline">
+          <Button type="button" variant="outline">
             <Upload className="mr-2 size-4" />
             <Trans i18nKey="kinder:importExport.import" />
           </Button>

@@ -148,7 +148,7 @@ export function CreateStudentContractDialog({
       title={<Trans i18nKey="kinder:studentContracts.create" />}
       trigger={
         trigger ?? (
-          <Button disabled={students.length === 0} size="sm" type="button">
+          <Button disabled={students.length === 0} type="button">
             <Plus className="mr-1.5 size-4" />
             <Trans i18nKey="kinder:studentContracts.create" />
           </Button>

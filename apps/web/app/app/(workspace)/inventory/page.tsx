@@ -83,7 +83,7 @@ async function InventoryPage({
 
       <KinderPageBody>
         <ExpiryAlertsBanner batches={expiringBatches} />
-        <InventoryOverview summary={summary} />
+        {/* <InventoryOverview summary={summary} /> */}
         <InventoryWorkspace
           activeStockCount={activeStockCount}
           defaultTab={tab ?? 'products'}

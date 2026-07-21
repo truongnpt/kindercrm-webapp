@@ -8,7 +8,7 @@ export function CampusesList({ campuses }: { campuses: Campus[] }) {
   return (
     <BentoGrid columns={3}>
       {campuses.map((campus) => (
-        <BentoTile key={campus.id}>
+        <BentoTile key={campus.id} className='border shadow-none'>
           <BentoTileHeader title={campus.name} />
           {campus.address ? (
             <p className="text-muted-foreground text-sm">{campus.address}</p>

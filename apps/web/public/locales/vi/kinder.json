@@ -1027,6 +1027,7 @@
   "importExport": {
     "import": "Nhập CSV",
     "export": "Xuất CSV",
+    "template": "Tải mẫu",
     "chooseFile": "Chọn file CSV",
     "importStudents": "Nhập học sinh từ CSV",
     "importLeads": "Nhập lead từ CSV",
@@ -2118,6 +2119,8 @@
     }
   },
   "ui": {
+    "search": "Tìm kiếm",
+    "rows": "Số dòng",
     "errorTitle": "Đã xảy ra lỗi",
     "errorDescription": "Không thể tải trang này. Vui lòng thử lại hoặc quay về bảng điều khiển.",
     "retry": "Thử lại",

@@ -74,7 +74,7 @@ function WorkspaceLayout({ children }: React.PropsWithChildren) {
           user={user}
         />
 
-        <main className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto bg-muted/30">
+        <main className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto bg-primary/5 rounded-tl-xl border-t-1 border-l-1 border-primary/10">
           <div className="mx-auto w-full max-w-[1536px] px-4 py-6 sm:px-6 lg:px-8">
             <BillingStatusBanner
               isOwner={context.role === 'owner'}

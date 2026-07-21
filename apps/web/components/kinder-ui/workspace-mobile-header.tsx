@@ -130,7 +130,7 @@ export function WorkspaceMobileHeader({
           <DropdownMenuSeparator />
 
           <div className="p-2">
-            <AppAccountDropdown user={user} />
+            <AppAccountDropdown user={user} className="w-full" />
           </div>
         </DropdownMenuContent>
       </DropdownMenu>

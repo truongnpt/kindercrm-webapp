@@ -18,7 +18,7 @@ const features = {
   enableThemeToggle: featuresFlagConfig.enableThemeToggle,
 };
 
-export function AppAccountDropdown({ user }: { user: JwtPayload }) {
+export function AppAccountDropdown({ user, className }: { user: JwtPayload, className?: string }) {
   const signOut = useSignOut();
   const userQuery = useUser(user);
   const userData = userQuery.data ?? user;
@@ -30,6 +30,7 @@ export function AppAccountDropdown({ user }: { user: JwtPayload }) {
       features={features}
       user={userData}
       signOutRequested={() => signOut.mutateAsync()}
+      className={className}
     />
   );
 }

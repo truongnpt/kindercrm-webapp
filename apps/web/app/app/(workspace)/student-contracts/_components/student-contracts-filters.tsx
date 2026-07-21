@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-
 import { useTranslation } from 'react-i18next';
 
 import { Input } from '@kit/ui/input';
@@ -24,73 +23,85 @@ export function StudentContractsFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { t } = useTranslation('kinder');
+
+  const currentSearch = searchParams.get('search') ?? '';
   const currentType = searchParams.get('type') ?? 'all';
   const currentStatus = searchParams.get('status') ?? 'all';
-  const currentQuery = searchParams.get('q') ?? '';
 
   function updateParams(updates: Record<string, string | null>) {
     const params = new URLSearchParams(searchParams.toString());
 
-    for (const [key, value] of Object.entries(updates)) {
+    Object.entries(updates).forEach(([key, value]) => {
       if (!value || value === 'all') {
         params.delete(key);
       } else {
         params.set(key, value);
       }
-    }
+    });
 
-    const query = params.toString();
-    router.push(
-      query
-        ? `${pathsConfig.app.studentContracts}?${query}`
-        : pathsConfig.app.studentContracts,
-    );
+    // Filter/Search => quay về trang đầu
+    params.delete('page');
+
+    const nextUrl = params.toString()
+      ? `${pathsConfig.app.studentContracts}?${params.toString()}`
+      : pathsConfig.app.studentContracts;
+
+    if (nextUrl !== window.location.pathname + window.location.search) {
+      router.push(nextUrl);
+    }
   }
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-      <Input
-        className="h-11 w-full sm:max-w-xs"
-        onChange={(event) => {
-          updateParams({ q: event.target.value || null });
-        }}
-        placeholder={t('studentContracts.searchPlaceholder')}
-        value={currentQuery}
-      />
-
+    <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
       <Select
-        onValueChange={(value) => updateParams({ type: value })}
         value={currentType}
+        onValueChange={(value) =>
+          updateParams({
+            type: value,
+          })
+        }
       >
         <SelectTrigger className="h-11 w-full sm:w-[200px]">
           <SelectValue />
         </SelectTrigger>
+
         <SelectContent>
           <SelectItem value="all">
             <Trans i18nKey="kinder:studentContracts.filterAllTypes" />
           </SelectItem>
+
           {STUDENT_CONTRACT_TYPES.map((type) => (
             <SelectItem key={type} value={type}>
-              <Trans i18nKey={`kinder:studentContracts.types.${type}`} />
+              <Trans
+                i18nKey={`kinder:studentContracts.types.${type}`}
+              />
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
 
       <Select
-        onValueChange={(value) => updateParams({ status: value })}
         value={currentStatus}
+        onValueChange={(value) =>
+          updateParams({
+            status: value,
+          })
+        }
       >
         <SelectTrigger className="h-11 w-full sm:w-[200px]">
           <SelectValue />
         </SelectTrigger>
+
         <SelectContent>
           <SelectItem value="all">
             <Trans i18nKey="kinder:studentContracts.filterAllStatuses" />
           </SelectItem>
+
           {STUDENT_CONTRACT_STATUSES.map((status) => (
             <SelectItem key={status} value={status}>
-              <Trans i18nKey={`kinder:studentContracts.statuses.${status}`} />
+              <Trans
+                i18nKey={`kinder:studentContracts.statuses.${status}`}
+              />
             </SelectItem>
           ))}
         </SelectContent>

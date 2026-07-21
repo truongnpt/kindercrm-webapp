@@ -36,9 +36,14 @@ export function SchoolSwitcher({
     }
 
     return (
-      <div className="text-muted-foreground truncate px-2 text-xs font-medium">
-        {school.name}
-      </div>
+      <Button
+          className="w-full justify-between gap-2 point-event-none"
+          variant="secondary"
+        >
+          <span className="truncate text-left text-sm font-medium">
+            {school.name}
+          </span>
+        </Button>
     );
   }
 
@@ -49,8 +54,7 @@ export function SchoolSwitcher({
       <DropdownMenuTrigger asChild>
         <Button
           className="w-full justify-between gap-2"
-          size="sm"
-          variant="outline"
+          variant="secondary"
         >
           <span className="truncate text-left text-sm font-medium">
             {active.name}

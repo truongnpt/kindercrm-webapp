@@ -65,7 +65,7 @@ async function CrmPage() {
       />
 
       <KinderPageBody>
-        <CrmOverview leads={leads} />
+        {/* <CrmOverview leads={leads} /> */}
 
         <CrmWorkspace
           leads={leads}

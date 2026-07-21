@@ -113,7 +113,7 @@ export function SubscriptionWorkspace({
 
   return (
     <BentoTile className="min-w-0">
-      <div className="border-b border-border px-5 py-4 sm:px-6">
+      <div className="border-b border-border py-4">
         <BentoTileHeader
           className="mb-0 border-0 pb-0"
           description={<Trans i18nKey="kinder:subscription.workspaceHint" />}
@@ -122,7 +122,7 @@ export function SubscriptionWorkspace({
       </div>
 
       <TabbedModule
-        className="min-w-0 gap-0 p-4 sm:p-6"
+        className="min-w-0 gap-0 mt-6"
         defaultValue={defaultTab}
         onValueChange={setTab}
         value={activeTab}

@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Trans } from '@kit/ui/trans';
 
 import {
+  BentoTile,
   DayAgenda,
   EmptyState,
   MonthCalendar,
@@ -139,7 +140,7 @@ export function CalendarWorkspace({
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <BentoTile className="flex flex-col gap-4">
       <CalendarFilters classes={classes} />
 
       <TabbedModule onValueChange={setView} value={view}>
@@ -157,8 +158,7 @@ export function CalendarWorkspace({
 
         <TabbedModuleContent value="month">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-            <div className="rounded-2xl border border-border bg-card p-4">
-              <MonthCalendar
+            <MonthCalendar
                 events={calendarEvents}
                 initialMonth={month}
                 onDateSelect={(date) => updateParams({ date, view: 'month' })}
@@ -166,15 +166,13 @@ export function CalendarWorkspace({
                   updateParams({ month: monthKey, date: null })
                 }
               />
-            </div>
             {renderEventList()}
           </div>
         </TabbedModuleContent>
 
         <TabbedModuleContent value="week">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-            <div className="rounded-2xl border border-border bg-card p-4">
-              <WeekCalendar
+            <WeekCalendar
                 events={weekEvents}
                 onDateSelect={(date) => updateParams({ date, view: 'week' })}
                 onWeekChange={(nextWeek) =>
@@ -183,21 +181,18 @@ export function CalendarWorkspace({
                 selectedDate={selectedDate}
                 weekStart={weekStart}
               />
-            </div>
             {renderEventList()}
           </div>
         </TabbedModuleContent>
 
         <TabbedModuleContent value="day">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-            <div className="rounded-2xl border border-border bg-card p-4">
-              <DayAgenda date={activeDate} events={dayEvents} />
-            </div>
+            <DayAgenda date={activeDate} events={dayEvents} />
             {renderEventList()}
           </div>
         </TabbedModuleContent>
       </TabbedModule>
-    </div>
+    </BentoTile>
   );
 
   function renderEventList() {
@@ -224,6 +219,7 @@ export function CalendarWorkspace({
             descriptionKey="kinder:calendar.emptyDescription"
             icon={CalendarDays}
             titleKey="kinder:calendar.empty"
+            className='border shadow-none'
           />
         ) : (
           <div className="flex flex-col gap-3">

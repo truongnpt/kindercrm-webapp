@@ -1027,6 +1027,7 @@
   "importExport": {
     "import": "Import CSV",
     "export": "Export CSV",
+    "template": "Download template",
     "chooseFile": "Choose CSV file",
     "importStudents": "Import students from CSV",
     "importLeads": "Import leads from CSV",
@@ -2118,6 +2119,8 @@
     }
   },
   "ui": {
+    "search": "Search",
+    "rows": "Rows",
     "errorTitle": "Something went wrong",
     "errorDescription": "We couldn't load this page. Please try again or return to the dashboard.",
     "retry": "Try again",

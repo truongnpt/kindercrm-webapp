@@ -5,21 +5,11 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { Search } from 'lucide-react';
+import { FileX, LucideIcon, Search } from 'lucide-react';
 
 import { Input } from '@kit/ui/input';
-import { Button } from '@kit/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@kit/ui/select';
 
 import {
   Table,
@@ -29,10 +19,19 @@ import {
   TableCell,
   TableRow,
 } from '@kit/ui/table';
+import { EmptyState, PaginationBar } from '@/components/kinder-ui';
+import { Pagination } from '@/lib/kinder/types/pagination';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import pathsConfig from '@/config/paths.config';
+import { Trans } from '@kit/ui/trans';
+import { createI18nServerInstance } from '@/lib/i18n/i18n.server';
+import { useTranslation } from 'react-i18next';
 
 export interface BaseTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData, any>[];
+
+  pagination?: Pagination
 
   loading?: boolean;
 
@@ -44,53 +43,90 @@ export interface BaseTableProps<TData> {
 
   emptyText?: string;
 
+  emptyDescription?: string;
+
+  emptyIcon?: LucideIcon;
+
   pageSizeOptions?: number[];
 }
 
 export function BaseTable<TData>({
   data,
   columns,
+  pagination,
 
   loading = false,
 
   searchable = true,
 
-  searchPlaceholder = 'Search...',
+  searchPlaceholder = 'kinder:ui.search',
 
   toolbarActions,
 
-  emptyText = 'No data found.',
+  emptyText = 'kinder:ui.emptyDefaultDescription',
 
-  pageSizeOptions = [10, 20, 50],
+  emptyDescription = 'kinder:ui.emptyDefaultDescription',
+
+  emptyIcon = FileX,
+
 }: BaseTableProps<TData>) {
-  const [globalFilter, setGlobalFilter] = React.useState('');
+  const { t } = useTranslation('kinder');
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const searchValue = searchParams.get('search') || "";
+  const router = useRouter();
+  const currentPage = searchParams.get('page') ?? '1';
 
-  const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: 10,
+
+  const [paginateState, setPaginateState] = React.useState({
+    pageIndex: Number(currentPage ?? 1) - 1,
+    pageSize: pagination?.limit ?? 10,
   });
+
+  const onChangePage = React.useCallback((page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.set('page', String(page));
+    setPaginateState({
+      ...paginateState,
+      pageIndex: page - 1
+    })
+
+    const query = params.toString();
+    router.push(
+      query
+        ? `${pathname}?${query}`
+        : pathname,
+    );
+  }, [paginateState, setPaginateState])
+
+  const onSearch = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    setTimeout(() => {
+      if (!!value) {
+        params.set('search', value);
+      } else {
+        params.delete('search');
+      }
+
+      const query = params.toString();
+      router.push(
+        query
+          ? `${pathname}?${query}`
+          : pathname,
+      );
+      
+    }, 2000)
+  }
 
   const table = useReactTable({
     data,
 
     columns,
 
-    state: {
-      globalFilter,
-      pagination,
-    },
-
-    onGlobalFilterChange: setGlobalFilter,
-
-    onPaginationChange: setPagination,
-
     getCoreRowModel: getCoreRowModel(),
 
-    getFilteredRowModel: getFilteredRowModel(),
-
-    getPaginationRowModel: getPaginationRowModel(),
-
-    globalFilterFn: 'includesString',
   });
 
   return (
@@ -106,15 +142,15 @@ export function BaseTable<TData>({
             <Search className="text-muted-foreground absolute top-2.5 left-3 h-4 w-4" />
 
             <Input
-              value={globalFilter}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              placeholder={searchPlaceholder}
+              defaultValue={searchValue}
+              onChange={(e) => onSearch(e.target.value)}
+              placeholder={t(searchPlaceholder)}
               className="pl-9"
             />
           </div>
         )}
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 justify-end  md:flex-1">
           {toolbarActions}
         </div>
       </div>
@@ -198,7 +234,13 @@ export function BaseTable<TData>({
                   colSpan={columns.length}
                   className="h-32 text-center text-muted-foreground"
                 >
-                  {emptyText}
+                    <EmptyState
+                      compact
+                      descriptionKey={emptyDescription}
+                      icon={emptyIcon}
+                      titleKey={emptyText}
+                    />
+                  
                 </TableCell>
 
               </TableRow>
@@ -212,87 +254,8 @@ export function BaseTable<TData>({
       </div>
 
       {/* Pagination */}
+      <PaginationBar page={pagination?.page || 1} pageSize={pagination?.limit || 10} totalPages={pagination?.totalPages || 1} totalItems={pagination?.totalItems || 0} onPageChange={onChangePage} />
 
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-
-        <p className="text-sm text-muted-foreground">
-          {table.getFilteredRowModel().rows.length} item(s)
-        </p>
-
-        <div className="flex items-center gap-3">
-
-          <div className="flex items-center gap-2">
-
-            <span className="text-sm">
-              Rows
-            </span>
-
-            <Select
-              value={String(table.getState().pagination.pageSize)}
-              onValueChange={(value) =>
-                table.setPageSize(Number(value))
-              }
-            >
-              <SelectTrigger className="w-20">
-                <SelectValue />
-              </SelectTrigger>
-
-              <SelectContent>
-
-                {pageSizeOptions.map((size) => (
-
-                  <SelectItem
-                    key={size}
-                    value={String(size)}
-                  >
-                    {size}
-                  </SelectItem>
-
-                ))}
-
-              </SelectContent>
-
-            </Select>
-
-          </div>
-
-          <span className="text-sm">
-
-            Page{' '}
-
-            <strong>
-
-              {table.getState().pagination.pageIndex + 1}
-
-            </strong>
-
-            {' / '}
-
-            {table.getPageCount()}
-
-          </span>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-
-        </div>
-
-      </div>
 
     </div>
   );

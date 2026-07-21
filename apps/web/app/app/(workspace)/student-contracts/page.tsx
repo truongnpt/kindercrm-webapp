@@ -16,7 +16,6 @@ import {
 } from '~/lib/kinder/permissions';
 import {
   loadStudentContracts,
-  loadStudentContractsSummary,
 } from '~/lib/kinder/student-contracts/load-student-contracts';
 import { requirePackageFeature } from '~/lib/kinder/subscription/features';
 import { getSchoolContext } from '~/lib/kinder/tenant/get-school-context';
@@ -29,6 +28,7 @@ import { StudentContractsExport } from './_components/student-contracts-export';
 import { StudentContractsFilters } from './_components/student-contracts-filters';
 import { StudentContractsList } from './_components/student-contracts-list';
 import { StudentContractsOverview } from './_components/student-contracts-overview';
+import { StudentContractsWorkspace } from './_components/student-contract-workspace';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -48,9 +48,9 @@ async function StudentContractsPage({
     q?: string;
   }>;
 }) {
-  const { type, status, studentId, q } = await searchParams;
   const user = await requireUserInServerComponent();
   const context = await getSchoolContext(user.id);
+  const filters = await searchParams;
 
   if (!context) {
     return null;
@@ -70,14 +70,13 @@ async function StudentContractsPage({
 
   const permissions = buildStudentsModulePermissions(memberPermissions);
 
-  const [summary, contracts, students, feeItems] = await Promise.all([
-    loadStudentContractsSummary(context.school.id),
+  const [studentContracts, students, feeItems] = await Promise.all([
+    // loadStudentContracts(context.school.id),
     loadStudentContracts(context.school.id, {
-      type,
-      status,
-      studentId,
-      query: q,
-    }),
+          page: 1,
+          limit: 10,
+          ...filters,
+        }),
     loadActiveStudentsForFinance(context.school.id),
     loadActiveTuitionFeeItems(context.school.id),
   ]);
@@ -87,7 +86,7 @@ async function StudentContractsPage({
       <KinderPageHeader
         actions={
           <div className="flex flex-wrap items-center gap-2">
-            <StudentContractsExport contracts={contracts} />
+            <StudentContractsExport contracts={studentContracts.data} />
             {permissions.canManageContracts ? (
               <CreateStudentContractDialog
                 feeItems={feeItems}
@@ -109,18 +108,18 @@ async function StudentContractsPage({
       />
 
       <KinderPageBody>
-        <StudentContractsOverview summary={summary} />
+        {/* <StudentContractsOverview summary={summary} /> */}
 
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <Suspense>
             <StudentContractsFilters />
           </Suspense>
-        </div>
+        </div> */}
 
-        <StudentContractsList
+        <StudentContractsWorkspace
           canManage={permissions.canManageContracts}
-          contracts={contracts}
           schoolId={context.school.id}
+          data={studentContracts || []}
         />
       </KinderPageBody>
     </>

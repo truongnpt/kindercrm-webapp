@@ -4,21 +4,10 @@ import appConfig from '~/config/app.config';
 import { formatVnd } from '~/lib/kinder/billing/format-currency';
 
 import type { SaasInvoicePdfData } from './generate-saas-invoice-pdf';
+import { formatDate } from '@/lib/utils/date';
 
 const PRIMARY = '#034cf8';
 
-function formatDateLabel(value: string | null) {
-  if (!value) {
-    return '—';
-  }
-
-  return new Date(value).toLocaleDateString('vi-VN', {
-    timeZone: 'Asia/Ho_Chi_Minh',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
-}
 
 export function buildSaasInvoiceEmail(input: {
   schoolName: string;
@@ -29,7 +18,7 @@ export function buildSaasInvoiceEmail(input: {
   const greeting = input.ownerName ? `Xin chào ${input.ownerName},` : 'Xin chào,';
   const periodLabel =
     input.invoice.billingPeriodStart || input.invoice.billingPeriodEnd
-      ? `${formatDateLabel(input.invoice.billingPeriodStart)} – ${formatDateLabel(input.invoice.billingPeriodEnd)}`
+      ? `${formatDate(input.invoice.billingPeriodStart)} – ${formatDate(input.invoice.billingPeriodEnd)}`
       : '—';
 
   const html = `<!DOCTYPE html>

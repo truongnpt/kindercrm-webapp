@@ -13,8 +13,9 @@ import { requireUserInServerComponent } from '~/lib/server/require-user-in-serve
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import { CreateStudentDialog } from './_components/create-student-dialog';
-import { StudentsOverview } from './_components/students-overview';
 import { StudentsWorkspace } from './_components/students-workspace';
+import { StudentFilters } from '@/lib/kinder/students/types';
+import { StudentImportExport } from './_components/student-import-export';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -27,9 +28,9 @@ export const generateMetadata = async () => {
 async function StudentsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: StudentFilters;
 }) {
-  const { status } = await searchParams;
+  const filters = await searchParams;
   const user = await requireUserInServerComponent();
   const context = await getSchoolContext(user.id);
 
@@ -40,9 +41,12 @@ async function StudentsPage({
   await assertModuleAccessFromContext(context, pathsConfig.app.students, 'view');
 
   const client = getSupabaseServerClient();
-  const [students, allStudents, packages] = await Promise.all([
-    loadStudents(context.school.id, status),
-    loadStudents(context.school.id),
+  const [studentData, packages] = await Promise.all([
+    loadStudents(context.school.id, {
+      page: 1,
+      limit: 10,
+      ...filters,
+    }),
     loadPublicPackages(client),
   ]);
   const quotaSummary = await loadQuotaFormSummary(client, context, packages);
@@ -51,10 +55,13 @@ async function StudentsPage({
     <>
       <KinderPageHeader
         actions={
-          <CreateStudentDialog
-            quotaSummary={quotaSummary}
-            schoolId={context.school.id}
-          />
+          <>
+            <StudentImportExport schoolId={context.school.id} students={studentData?.data || []} />
+            <CreateStudentDialog
+              quotaSummary={quotaSummary}
+              schoolId={context.school.id}
+            />
+          </>
         }
         breadcrumbs={[{ label: <Trans i18nKey="kinder:students.title" /> }]}
         description={<Trans i18nKey="kinder:students.description" />}
@@ -62,10 +69,9 @@ async function StudentsPage({
       />
 
       <KinderPageBody>
-        <StudentsOverview students={allStudents} />
         <StudentsWorkspace
           schoolId={context.school.id}
-          students={students}
+          data={studentData || []}
         />
       </KinderPageBody>
     </>

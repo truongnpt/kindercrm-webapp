@@ -13,33 +13,71 @@ import type {
   StudentMedicalRecord,
   StudentParent,
   StudentPickupPerson,
+  StudentFilters
 } from './types';
 
-export const loadStudents = cache(async (schoolId: string, status?: string) => {
-  const client = getSupabaseServerClient();
+import { PaginatedResponse } from '../types/pagination';
+import { createPagination } from '@/lib/pagination';
 
-  let query = client
-    .from('students')
-    .select('*')
-    .eq('school_id', schoolId)
-    .is('deleted_at', null)
-    .order('full_name');
+export const loadStudents = cache(
+  async (
+    schoolId: string,
+    {
+      page = 1,
+      limit = 10,
+      status,
+      search
+    }: StudentFilters = {},
+  ): Promise<PaginatedResponse<Student>> => {
+    const client = getSupabaseServerClient();
 
-  if (status && status !== 'all') {
-    query = query.eq(
-      'status',
-      status as Database['public']['Enums']['student_status'],
-    );
-  }
+    const { from, to } = createPagination(page, limit);
 
-  const { data, error } = await query;
+    let query = client
+      .from("students")
+      .select("*", { count: "exact" })
+      .eq("school_id", schoolId)
+      .is("deleted_at", null);
 
-  if (error) {
-    throw error;
-  }
+    if (status && status !== "all") {
+      query = query.eq(
+        "status",
+        status as Database["public"]["Enums"]["student_status"],
+      );
+    }
 
-  return (data ?? []) as Student[];
-});
+    if (!!search) {
+      query = query.ilike("full_name", "%" + search + "%");
+    }
+
+    const {
+      data,
+      count,
+      error,
+    } = await query
+      .order("created_at", { ascending: false })
+      .range(from, to);
+
+    if (error) {
+      throw error;
+    }
+
+    const totalItems = count ?? 0;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    return {
+      data: (data ?? []) as Student[],
+      pagination: {
+        page,
+        limit,
+        totalItems,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrevious: page > 1,
+      },
+    };
+  },
+);
 
 export const loadStudentById = cache(
   async (schoolId: string, studentId: string) => {

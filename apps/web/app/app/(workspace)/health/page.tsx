@@ -95,7 +95,7 @@ async function HealthPage({
           />
         ) : (
           <>
-            <HealthOverview summary={summary} />
+            {/* <HealthOverview summary={summary} /> */}
             <HealthWorkspace
               checkups={checkups}
               defaultTab={defaultTab}

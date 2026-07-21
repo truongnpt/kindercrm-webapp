@@ -124,7 +124,7 @@ export function SectionCard({
   className?: string;
 }) {
   return (
-    <section className={cn('kinder-bento-tile overflow-hidden p-0', className)}>
+    <section className={cn('border rounded-lg overflow-hidden p-0', className)}>
       {title ? (
         <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4 sm:px-6">
           <h3 className="kinder-section-title">{title}</h3>

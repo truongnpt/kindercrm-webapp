@@ -4,6 +4,7 @@ import { formatVnd } from '~/lib/kinder/billing/format-currency';
 import { applyUnicodePdfFont } from '~/lib/kinder/export/pdf';
 
 import { getSaasInvoiceSeller } from './saas-invoice-config';
+import { formatDate } from '@/lib/utils/date';
 
 export type SaasInvoicePdfData = {
   invoiceNumber: string;
@@ -20,25 +21,12 @@ export type SaasInvoicePdfData = {
   currency: string;
 };
 
-function formatDateLabel(value: string | null) {
-  if (!value) {
-    return '—';
-  }
-
-  return new Date(value).toLocaleDateString('vi-VN', {
-    timeZone: 'Asia/Ho_Chi_Minh',
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
-}
-
 function formatPeriodLabel(start: string | null, end: string | null) {
   if (!start && !end) {
     return '—';
   }
 
-  return `${formatDateLabel(start)} – ${formatDateLabel(end)}`;
+  return `${formatDate(start)} – ${formatDate(end)}`;
 }
 
 export function buildSaasInvoicePdfFilename(invoiceNumber: string) {
@@ -72,7 +60,7 @@ export async function generateSaasInvoicePdfBuffer(data: SaasInvoicePdfData) {
   doc.setFontSize(11);
   doc.text(`Số hóa đơn: ${data.invoiceNumber}`, margin, y);
   y += 6;
-  doc.text(`Ngày phát hành: ${formatDateLabel(data.issuedAt)}`, margin, y);
+  doc.text(`Ngày phát hành: ${formatDate(data.issuedAt)}`, margin, y);
   y += 10;
 
   doc.setFontSize(10);

@@ -113,7 +113,6 @@ export function StudentContractsExportMenu({
         <Button
           className={cn(className)}
           disabled={rows.length === 0 || isExportingPdf}
-          size={size}
           type="button"
           variant={variant}
         >
