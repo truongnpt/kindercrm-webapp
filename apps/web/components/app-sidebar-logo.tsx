@@ -1,13 +1,16 @@
+"use client";
 import Link from 'next/link';
 
 import { cn } from '@kit/ui/utils';
 import appConfig from '~/config/app.config';
 import Image from 'next/image';
+import { useSidebar } from '@kit/ui/shadcn-sidebar';
 
 const logo = {
   width: 640,
   height: 321,
   src: '/images/logo/primary-logo.png',
+  src_short: '/images/logo/short-logo.png',
 };
 
 function LogoImage({
@@ -19,6 +22,22 @@ function LogoImage({
   width?: number;
   height?: number;
 }) {
+  const {open} = useSidebar();
+  if (!open) {
+    return (
+      <Image
+        alt={appConfig.name}
+        className={cn(
+          'h-10 w-auto max-w-[min(100%,220px)] object-contain object-left sm:h-10 lg:h-14 xl:h-16',
+          className,
+        )}
+        height={height}
+        priority
+        src={logo.src_short}
+        width={width}
+      />
+    );
+  }
   return (
     <Image
       alt={appConfig.name}
@@ -34,7 +53,7 @@ function LogoImage({
   );
 }
 
-export function AppLogo({
+export function AppSidebarLogo({
   href,
   label,
   className,
