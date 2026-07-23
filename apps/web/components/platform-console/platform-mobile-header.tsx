@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { Menu } from 'lucide-react';
+import { LogOut, Menu } from 'lucide-react';
 
 import { Button } from '@kit/ui/button';
 import {
@@ -18,10 +18,13 @@ import pathsConfig from '~/config/paths.config';
 
 import { usePlatformConsole } from './platform-context';
 import { PlatformNavLinks } from './platform-nav-links';
+import { useSignOut } from '@kit/supabase/hooks/use-sign-out';
+import { Separator } from '@kit/ui/separator';
 
 export function PlatformMobileHeader() {
   const [open, setOpen] = useState(false);
   const { platformRole } = usePlatformConsole();
+  const signOut = useSignOut();
 
   return (
     <>
@@ -62,6 +65,18 @@ export function PlatformMobileHeader() {
               onNavigate={() => setOpen(false)}
               platformRole={platformRole}
             />
+          </div>
+          <div className="p-4 space-y-4">
+            <Separator />
+            <Button
+              className="w-full gap-2"
+              disabled={signOut.isPending}
+              onClick={() => signOut.mutateAsync()}
+              type="button"
+            >
+              <LogOut data-icon="inline-start" className="h-4 w-4" />
+              <Trans i18nKey="auth:signOut" />
+            </Button>
           </div>
         </SheetContent>
       </Sheet>

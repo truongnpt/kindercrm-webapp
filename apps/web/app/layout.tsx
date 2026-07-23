@@ -24,7 +24,7 @@ export default async function RootLayout({
   const className = getClassName(theme);
 
   return (
-    <html lang={language} className={cn(className, "font-sans", geist.variable)}>
+    <html lang={language} className={cn(className, "font-sans", geist.variable)} suppressHydrationWarning>
       <body>
         <RootProviders theme={theme} lang={language}>
           {children}

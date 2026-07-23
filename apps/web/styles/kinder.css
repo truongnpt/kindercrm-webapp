@@ -303,11 +303,11 @@
   }
 
   .kinder-crm-lead-card--dragging {
-    @apply opacity-30 scale-95;
+    @apply opacity-30 scale-95 transition-none;
   }
 
   .kinder-crm-lead-card--overlay {
-    @apply cursor-grabbing border-primary/25 scale-[1.02];
+    @apply cursor-grabbing border-primary/25 scale-[1.02] transition-none;
     box-shadow: var(--kinder-shadow-md);
   }
 

@@ -1,4 +1,5 @@
 export { PlatformShell } from './platform-shell';
+export { PlatformHeader } from './platform-header';
 export { PlatformConsoleProvider, usePlatformConsole } from './platform-context';
 export {
   PlatformPageHeader,
@@ -8,3 +9,4 @@ export {
   PlatformDataTable,
   PlatformEmptyState,
 } from './platform-page';
+

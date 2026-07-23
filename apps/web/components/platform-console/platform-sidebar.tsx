@@ -45,13 +45,12 @@ export function PlatformSidebar() {
         ) : null}
 
         <Button
-          className="min-h-10 justify-start"
+          className="min-h-10 gap-2"
           disabled={signOut.isPending}
           onClick={() => signOut.mutateAsync()}
           type="button"
-          variant="ghost"
         >
-          <LogOut data-icon="inline-start" />
+          <LogOut className="size-4" />
           <Trans i18nKey="auth:signOut" />
         </Button>
       </div>

@@ -12,7 +12,11 @@ async function PlatformLayout({ children }: React.PropsWithChildren) {
   const hasStaffSchool = memberships.some((m) => m.role !== 'parent');
 
   return (
-    <PlatformShell platformRole={platform.role} showWorkspaceLink={hasStaffSchool}>
+    <PlatformShell
+      platformRole={platform.role}
+      showWorkspaceLink={hasStaffSchool}
+      user={user}
+    >
       {children}
     </PlatformShell>
   );

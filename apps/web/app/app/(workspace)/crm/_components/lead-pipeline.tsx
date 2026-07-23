@@ -6,6 +6,7 @@ import {
   DndContext,
   DragOverlay,
   PointerSensor,
+  pointerWithin,
   useDraggable,
   useDroppable,
   useSensor,
@@ -200,6 +201,7 @@ export function LeadPipelineBoard({
       onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
       sensors={sensors}
+      collisionDetection={pointerWithin}
     >
       <div className="kinder-crm-kanban-toolbar">
         <div className="kinder-crm-stage-pills">
@@ -232,7 +234,7 @@ export function LeadPipelineBoard({
       <DragOverlay dropAnimation={{ duration: 180, easing: 'ease-out' }}>
         {activeLead ? (
           <LeadPipelineCardContent
-            className="kinder-crm-lead-card--overlay"
+            className="kinder-crm-lead-card--overlay translate-y-2/2 lg:-translate-x-2/2 lg:-translate-y-1/2"
             dragHandle={false}
             isOverlay
             lead={activeLead}
@@ -300,27 +302,23 @@ function LeadPipelineCard({
   lead: LeadRow;
   onStageChange: (leadId: string, targetStage: LeadStage) => void;
 }) {
-  const { attributes, isDragging, listeners, setNodeRef, transform } =
+  const { attributes, isDragging, listeners, setNodeRef, setActivatorNodeRef } =
     useDraggable({
       id: lead.id,
       data: { stage: lead.stage },
     });
 
-  const style = transform
-    ? { transform: CSS.Translate.toString(transform) }
-    : undefined;
-
   return (
     <div
       className={cn(isDragging && 'kinder-crm-lead-card--dragging')}
       ref={setNodeRef}
-      style={style}
     >
       <LeadPipelineCardContent
         dragAttributes={attributes}
         dragListeners={listeners}
         lead={lead}
         onStageChange={onStageChange}
+        setActivatorNodeRef={setActivatorNodeRef}
       />
     </div>
   );
@@ -329,6 +327,7 @@ function LeadPipelineCard({
 function LeadPipelineCardContent({
   lead,
   onStageChange,
+  setActivatorNodeRef,
   dragListeners,
   dragAttributes,
   dragHandle = true,
@@ -337,6 +336,7 @@ function LeadPipelineCardContent({
 }: {
   lead: LeadRow;
   onStageChange?: (leadId: string, targetStage: LeadStage) => void;
+  setActivatorNodeRef?: (element: HTMLElement | null) => void;
   dragListeners?: SyntheticListenerMap;
   dragAttributes?: DraggableAttributes;
   dragHandle?: boolean;
@@ -355,6 +355,7 @@ function LeadPipelineCardContent({
             aria-label={t('crm.dragLead')}
             className="text-muted-foreground hover:text-foreground mt-0.5 shrink-0 cursor-grab touch-none rounded-md p-0.5 active:cursor-grabbing"
             type="button"
+            ref={setActivatorNodeRef}
             {...dragAttributes}
             {...dragListeners}
           >
