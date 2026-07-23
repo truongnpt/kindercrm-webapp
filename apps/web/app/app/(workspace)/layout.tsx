@@ -40,17 +40,19 @@ function WorkspaceLayout({ children }: React.PropsWithChildren) {
     redirect(pathsConfig.app.suspended);
   }
 
+  const primaryColor = context.school.theme_primary_color || '#034cf8';
+
   const sidebarDefaultOpen = !navigationConfig.sidebarCollapsed;
 
     const customTheme = {
-            "--primary": context.school.theme_primary_color,
-            "--color-primary": context.school.theme_primary_color,
-            "--color-secondary-foreground": context.school.theme_primary_color,
-            "--color-sidebar-accent-foreground": context.school.theme_primary_color,
-            "--color-accent-foreground": context.school.theme_primary_color,
-            "--color-accent": `color-mix(in srgb, ${context.school.theme_primary_color} 8%, white)`,
-            "--color-secondary": `color-mix(in srgb, ${context.school.theme_primary_color} 8%, white)`,
-            "--color-sidebar-accent": `color-mix(in srgb, ${context.school.theme_primary_color} 8%, white)`
+            "--primary": primaryColor,
+            "--color-primary": primaryColor,
+            "--color-secondary-foreground": primaryColor,
+            "--color-sidebar-accent-foreground": primaryColor,
+            "--color-accent-foreground": primaryColor,
+            "--color-accent": `color-mix(in srgb, ${primaryColor} 8%, white)`,
+            "--color-secondary": `color-mix(in srgb, ${primaryColor} 8%, white)`,
+            "--color-sidebar-accent": `color-mix(in srgb, ${primaryColor} 8%, white)`
           } as React.CSSProperties
 
   return (

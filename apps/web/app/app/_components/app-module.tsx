@@ -46,7 +46,7 @@ export function AppModule({ school }: AppModuleProps) {
                                     {item.icon}
                                 </Button>
                             </TooltipTrigger>
-                            <TooltipContent side="right" className="w-fit">
+                            <TooltipContent side="right" sideOffset={16} className="w-fit">
                                 <p className="p-1 text-sm">{item.name}</p>
                             </TooltipContent>
                         </Tooltip>
