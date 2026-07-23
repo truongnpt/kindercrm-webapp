@@ -24,6 +24,7 @@ import { AppAccountDropdown } from '../../app/app/_components/app-account-dropdo
 import { SchoolSwitcher } from '../../app/app/_components/school-switcher';
 
 import { WorkspaceSearch } from './workspace-search';
+import { Separator } from '@kit/ui/separator';
 
 const ModeToggle = dynamic(
   () => import('@kit/ui/mode-toggle').then((mod) => mod.ModeToggle),
@@ -56,6 +57,7 @@ export function WorkspaceHeader({
         className,
       )}
     >
+      <Separator orientation="vertical" className='h-10 mt-3' />
       <div className="flex h-full w-full items-center gap-4 px-4 sm:px-6 lg:px-8">
         <SidebarTrigger className="text-muted-foreground hover:bg-muted hover:text-foreground size-10 shrink-0 rounded-lg" />
 

@@ -1,15 +1,12 @@
 import { convertVndToUsdCents } from './vnd-usd-exchange';
 
 export function formatVnd(amount: number) {
-  if (amount <= 0) {
-    return 'Miễn phí';
-  }
 
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
     currency: 'VND',
     maximumFractionDigits: 0,
-  }).format(amount);
+  }).format(amount <= 0 ? 0 : amount);
 }
 
 export function formatUsdFromCents(cents: number) {
