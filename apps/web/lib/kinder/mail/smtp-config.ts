@@ -16,7 +16,7 @@ export function getSmtpConfig() {
   const user = process.env.SMTP_USER?.trim();
   const pass = process.env.SMTP_PASSWORD?.trim();
   const fromEmail =
-    process.env.SMTP_FROM_EMAIL?.trim() ?? 'noreply@kindercrm.local';
+    process.env.SMTP_FROM_EMAIL?.trim() ?? 'noreply@cudem.online';
   const fromName = process.env.SMTP_FROM_NAME?.trim() ?? appConfig.name;
   const secure = process.env.SMTP_SECURE === 'true' || port === 465;
 

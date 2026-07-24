@@ -66,7 +66,7 @@ on conflict (code) do update set
   sort_order = excluded.sort_order;
 
 -- Platform Super Admin (EPIC-035): seeded by migration 20260732000000
--- Default login: superadmin@kindercrm.app / SuperAdmin123!
+-- Default login: superadmin@kinderpms.app / SuperAdmin123!
 -- Or grant an existing user:
 -- INSERT INTO public.platform_admins (user_id, role)
 -- SELECT id, 'super_admin' FROM auth.users WHERE email = 'you@example.com' LIMIT 1;

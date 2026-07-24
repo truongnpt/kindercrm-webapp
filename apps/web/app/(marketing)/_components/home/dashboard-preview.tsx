@@ -76,7 +76,7 @@ export function DashboardPreview() {
             <span className="size-3 rounded-full bg-green-400" />
           </div>
           <span className="mx-auto text-xs text-[var(--marketing-text-muted)]">
-            kindercrm.app
+            kinderpms.app
           </span>
         </div>
 

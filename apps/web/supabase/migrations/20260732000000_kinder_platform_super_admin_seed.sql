@@ -5,7 +5,7 @@
  * `platform_admins.role = super_admin`.
  *
  * Default credentials (local / first deploy — change after login):
- *   Email:    superadmin@kindercrm.app
+ *   Email:    superadmin@kinderpms.app
  *   Password: SuperAdmin123!
  *
  * Idempotent: safe to re-run (`supabase migration up` / `db reset`).
@@ -14,7 +14,7 @@
 create extension if not exists pgcrypto with schema extensions;
 
 create or replace function public.bootstrap_platform_super_admin(
-  p_email text default 'superadmin@kindercrm.app',
+  p_email text default 'superadmin@kinderpms.app',
   p_password text default 'SuperAdmin123!',
   p_name text default 'Platform Super Admin'
 )
