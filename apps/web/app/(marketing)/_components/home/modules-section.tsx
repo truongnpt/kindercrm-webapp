@@ -23,6 +23,7 @@ import {
   Stagger,
   StaggerItem,
 } from '~/components/marketing';
+import appConfig from '@/config/app.config';
 
 const modules = [
   { icon: Target, labelKey: 'marketing:heroFeatureCrm', descKey: 'marketing:heroFeatureCrmDesc' },
@@ -48,7 +49,7 @@ export function ModulesSection() {
         subtitle={
           <Trans
             i18nKey="marketing:heroFeatureSubheading"
-            values={{ productName: 'Kinder CRM' }}
+            values={{ productName: appConfig.name }}
           />
         }
         className="mb-14"

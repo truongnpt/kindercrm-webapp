@@ -54,14 +54,14 @@ export function LanguageToggle(props: { className?: string }) {
   return (
     <div
       className={cn(
-        'flex items-center gap-4 text-xs font-medium bg-gray-200 dark:bg-gray-800 rounded-md p-1',
+        'flex items-center gap-0 text-xs font-medium bg-gray-200 dark:bg-gray-800 rounded-sm p-1',
         props.className,
       )}
       role="group"
       aria-label="Language"
     >
       <span
-        className={cn('transition-colors rounded-md p-1', {
+        className={cn('cursor-pointer transition-colors rounded-[6px] w-9 h-7 flex items-center justify-center', {
           'text-foreground bg-white dark:bg-white dark:text-gray-800': !isDefault,
           'text-muted-foreground dark:text-gray-400': isDefault,
         })}
@@ -70,7 +70,7 @@ export function LanguageToggle(props: { className?: string }) {
         {LOCALE_LABELS[primary] ?? primary.toUpperCase()}
       </span>
       <span
-        className={cn('transition-colors rounded-sm px-2 py-1', {
+        className={cn(' cursor-pointer transition-colors rounded-[6px] w-9 h-7 flex items-center justify-center', {
           'text-foreground bg-white dark:bg-white dark:text-gray-800': isDefault,
           'text-muted-foreground': !isDefault,
         })}

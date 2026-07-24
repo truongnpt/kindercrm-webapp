@@ -113,7 +113,7 @@ export function TrustedBySection() {
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map(({ value, labelKey }) => (
           <FadeIn key={labelKey}>
-            <div className="marketing-card rounded-2xl p-6 text-center">
+            <div className="marketing-card rounded-2xl p-6 text-center h-full">
               <p className="text-3xl font-bold text-[var(--marketing-primary)]">
                 {value}
               </p>

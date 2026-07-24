@@ -20,6 +20,7 @@ import {
   Stagger,
   StaggerItem,
 } from '~/components/marketing';
+import appConfig from '@/config/app.config';
 
 const experiences = [
   {
@@ -76,7 +77,7 @@ function PhoneMockup({ variant }: { variant: string }) {
       <div className="rounded-[2rem] border-4 border-[var(--marketing-text)]/10 bg-[var(--marketing-text)] p-2 shadow-2xl">
         <div className="overflow-hidden rounded-[1.5rem] bg-white">
           <div className="bg-[var(--marketing-primary)] px-4 py-6 text-white">
-            <p className="text-xs opacity-80">Kinder CRM</p>
+            <p className="text-xs opacity-80">{appConfig.name}</p>
             <p className="text-lg font-semibold">{labels[variant]}</p>
           </div>
           <div className="space-y-2 p-4">

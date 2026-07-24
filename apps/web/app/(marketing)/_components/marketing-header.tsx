@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import type { JwtPayload } from '@supabase/supabase-js';
 import { Menu, X } from 'lucide-react';
@@ -20,6 +20,7 @@ import {
   RequestDemoButton,
 } from '~/components/marketing';
 import pathsConfig from '~/config/paths.config';
+import appConfig from '@/config/app.config';
 
 const navLinks = [
   { href: '/#features', label: 'marketing:navFeatures', match: 'hash' as const },
@@ -28,22 +29,40 @@ const navLinks = [
   { href: '/faq', label: 'marketing:faq', match: 'path' as const },
 ] as const;
 
-function useNavActive() {
-  const pathname = usePathname();
+export function useHash() {
+  const [hash, setHash] = useState('');
 
-  return (link: (typeof navLinks)[number]) => {
-    if (link.match === 'path') {
-      return pathname === link.href;
-    }
+  useEffect(() => {
+    const updateHash = () => {
+      setHash(window.location.hash);
+    };
 
-    return false;
-  };
+    updateHash();
+    window.addEventListener('hashchange', updateHash);
+
+    return () => {
+      window.removeEventListener('hashchange', updateHash);
+    };
+  }, []);
+
+  return hash;
 }
+
 
 export function MarketingHeader({ user }: { user?: JwtPayload | null }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const isActive = useNavActive();
+  const pathname = usePathname();
+  const hash = useHash();
+  const isActive = useCallback((link: (typeof navLinks)[number]) => {
+    if (link.match === 'path') {
+      return pathname === link.href;
+    } else if (link.match === 'hash') {
+      return link.href === `/${hash}`;
+    }
+
+    return false;
+  },[hash, pathname]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -82,7 +101,7 @@ export function MarketingHeader({ user }: { user?: JwtPayload | null }) {
             <Link
               href="/"
               className="shrink-0"
-              aria-label="Kinder CRM home"
+              aria-label={`${appConfig.name} home`}
               onClick={closeMobile}
             >
               <AppLogo href={null} className="!h-8 w-auto sm:!h-9" />
@@ -93,23 +112,23 @@ export function MarketingHeader({ user }: { user?: JwtPayload | null }) {
               className="hidden justify-center lg:flex"
               aria-label="Main navigation"
             >
-              <ul className="inline-flex items-center gap-0.5 rounded-full border border-[var(--marketing-border)]/80 bg-[var(--marketing-section)]/80 p-1">
+              <ul className="inline-flex items-center gap-0.5 rounded-full border border-[var(--marketing-border)]/80 bg-[var(--marketing-section)]/80 p-2">
                 {navLinks.map((link) => {
                   const active = isActive(link);
 
                   return (
                     <li key={link.href}>
-                      <Link
+                      <a
                         href={link.href}
                         className={cn(
-                          'relative rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200',
+                          'relative rounded-full px-2 py-1.5 text-sm font-medium transition-all duration-200',
                           active ?
                             'bg-white text-[var(--marketing-primary)] shadow-sm'
-                          : 'text-[var(--marketing-text-muted)] hover:text-[var(--marketing-text)]',
+                          : 'text-[var(--marketing-text-muted)] hover:text-primary hover:bg-white hover:shadow-sm',
                         )}
                       >
                         <Trans i18nKey={link.label} />
-                      </Link>
+                      </a>
                     </li>
                   );
                 })}
@@ -122,13 +141,13 @@ export function MarketingHeader({ user }: { user?: JwtPayload | null }) {
 
               {user ?
                 <>
-                  <MarketingButton
+                  {/* <MarketingButton
                     href={pathsConfig.app.home}
                     variant="outline"
                     size="sm"
                   >
                     <Trans i18nKey="marketing:ctaGoToDashboard" />
-                  </MarketingButton>
+                  </MarketingButton> */}
                   <MarketingAccountMenu user={user} />
                 </>
               : <>
@@ -164,6 +183,9 @@ export function MarketingHeader({ user }: { user?: JwtPayload | null }) {
                 <X className="size-5" />
               : <Menu className="size-5" />}
             </button>
+            {user && (
+              <div className='lg:hidden'><MarketingAccountMenu user={user} /></div>
+            )}
           </div>
         </div>
       </header>
@@ -235,20 +257,8 @@ export function MarketingHeader({ user }: { user?: JwtPayload | null }) {
               <LanguageToggle />
             </div>
 
-            {user ?
-              <div className="space-y-2">
-                <MarketingButton
-                  href={pathsConfig.app.home}
-                  variant="outline"
-                  className="w-full justify-center"
-                >
-                  <Trans i18nKey="marketing:ctaGoToDashboard" />
-                </MarketingButton>
-                <div className="flex justify-center">
-                  <MarketingAccountMenu user={user} />
-                </div>
-              </div>
-            : <div className="flex flex-col gap-2">
+             {!user && (
+              <div className="flex flex-col gap-2">
                 <RequestDemoButton
                   size="default"
                   className="w-full justify-center"
@@ -261,7 +271,7 @@ export function MarketingHeader({ user }: { user?: JwtPayload | null }) {
                   <Trans i18nKey="auth:signIn" />
                 </MarketingButton>
               </div>
-            }
+             )}
           </div>
         </div>
       </div>

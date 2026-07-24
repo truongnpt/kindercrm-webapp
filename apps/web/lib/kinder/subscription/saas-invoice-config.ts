@@ -1,3 +1,4 @@
+import appConfig from '@/config/app.config';
 import 'server-only';
 
 const DEFAULT_VAT_RATE = 10;
@@ -11,7 +12,7 @@ export function getSaasVatRate() {
 
 export function getSaasInvoiceSeller() {
   return {
-    name: process.env.SAAS_INVOICE_SELLER_NAME?.trim() || 'Kinder CRM',
+    name: process.env.SAAS_INVOICE_SELLER_NAME?.trim() || appConfig.name,
     taxCode: process.env.SAAS_INVOICE_SELLER_TAX_CODE?.trim() || '',
     address: process.env.SAAS_INVOICE_SELLER_ADDRESS?.trim() || '',
     email: process.env.SAAS_INVOICE_SELLER_EMAIL?.trim() || '',

@@ -5,6 +5,7 @@ import { applyUnicodePdfFont } from '~/lib/kinder/export/pdf';
 
 import { getSaasInvoiceSeller } from './saas-invoice-config';
 import { formatDate } from '@/lib/utils/date';
+import appConfig from '@/config/app.config';
 
 export type SaasInvoicePdfData = {
   invoiceNumber: string;
@@ -54,7 +55,7 @@ export async function generateSaasInvoicePdfBuffer(data: SaasInvoicePdfData) {
   y += 8;
 
   doc.setFontSize(10);
-  doc.text('(Phí phần mềm Kinder CRM — SaaS)', margin, y);
+  doc.text(`(Phí phần mềm ${appConfig.name} — SaaS)`, margin, y);
   y += 10;
 
   doc.setFontSize(11);
@@ -143,7 +144,7 @@ export async function generateSaasInvoicePdfBuffer(data: SaasInvoicePdfData) {
   doc.setFontSize(8);
   doc.setTextColor(100);
   doc.text(
-    'Hóa đơn điện tử cho phí sử dụng phần mềm Kinder CRM. Không phải hóa đơn học phí học sinh.',
+    `Hóa đơn điện tử cho phí sử dụng phần mềm ${appConfig.name}. Không phải hóa đơn học phí học sinh.`,
     margin,
     y,
     { maxWidth: 180 },

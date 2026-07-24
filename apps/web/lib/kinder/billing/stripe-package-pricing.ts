@@ -5,6 +5,7 @@ import type { SubscriptionBillingInterval } from '~/lib/kinder/subscription/subs
 
 import { convertVndToUsdCents } from './vnd-usd-exchange';
 import { getStripeVndPerUsd } from './stripe-vnd-exchange.server';
+import appConfig from '@/config/app.config';
 
 const STRIPE_CURRENCY = 'usd';
 
@@ -71,7 +72,7 @@ export function buildStripeCheckoutLineItem(
         interval: interval === 'yearly' ? 'year' : 'month',
       },
       product_data: {
-        name: `${pkg.name} — Kinder CRM`,
+        name: `${pkg.name} — ${appConfig.name}`,
         description: `${formatVndLabel(pricing.vndAmount)} (quy đổi USD)`,
         metadata: {
           package_code: pkg.code,

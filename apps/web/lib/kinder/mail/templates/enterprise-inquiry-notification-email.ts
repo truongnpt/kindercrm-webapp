@@ -1,3 +1,4 @@
+import appConfig from '@/config/app.config';
 import 'server-only';
 
 export function buildEnterpriseInquiryNotificationEmail(input: {
@@ -16,7 +17,7 @@ export function buildEnterpriseInquiryNotificationEmail(input: {
       : '—';
 
   const notesLabel = input.notes?.trim() || '—';
-  const subject = `[Kinder CRM] Yêu cầu Enterprise — ${input.schoolName}`;
+  const subject = `[${appConfig.name}] Yêu cầu Enterprise — ${input.schoolName}`;
 
   const text = [
     'Yêu cầu Enterprise mới',
@@ -64,7 +65,7 @@ export function buildEnterpriseInquiryNotificationEmail(input: {
           <table role="presentation" class="email-container" width="560" border="0" cellspacing="0" cellpadding="0" style="max-width: 560px; width: 100%">
             <tr>
               <td align="center" style="padding-bottom: 24px; font-size: 20px; font-weight: 700; color: #034cf8; letter-spacing: -0.02em;">
-                Kinder CRM
+                ${appConfig.name}
               </td>
             </tr>
             <tr>
@@ -73,7 +74,7 @@ export function buildEnterpriseInquiryNotificationEmail(input: {
                   Yêu cầu Enterprise mới
                 </h2>
                 <p style="margin: 0 0 20px; font-size: 15px; line-height: 1.6; color: #4a5568;">
-                  Có một yêu cầu liên hệ Enterprise mới từ website Kinder CRM.
+                  Có một yêu cầu liên hệ Enterprise mới từ website ${appConfig.name}.
                 </p>
                 <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size: 14px; line-height: 1.6; color: #4a5568;">
                   <tr><td style="padding: 6px 0; width: 42%;">Trường</td><td style="padding: 6px 0;"><strong>${input.schoolName}</strong> (${input.schoolSlug})</td></tr>

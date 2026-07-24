@@ -1,3 +1,4 @@
+import appConfig from '@/config/app.config';
 import 'server-only';
 
 export function isSmtpConfigured() {
@@ -16,7 +17,7 @@ export function getSmtpConfig() {
   const pass = process.env.SMTP_PASSWORD?.trim();
   const fromEmail =
     process.env.SMTP_FROM_EMAIL?.trim() ?? 'noreply@kindercrm.local';
-  const fromName = process.env.SMTP_FROM_NAME?.trim() ?? 'Kinder CRM';
+  const fromName = process.env.SMTP_FROM_NAME?.trim() ?? appConfig.name;
   const secure = process.env.SMTP_SECURE === 'true' || port === 465;
 
   return {

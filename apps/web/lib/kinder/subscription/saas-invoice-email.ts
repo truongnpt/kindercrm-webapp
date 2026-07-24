@@ -29,7 +29,7 @@ export function buildSaasInvoiceEmail(input: {
     <tr><td align="center" style="padding:40px 16px;">
       <table role="presentation" width="560" cellspacing="0" cellpadding="0" style="max-width:560px;width:100%;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(3,76,248,0.08);">
         <tr><td style="background:${PRIMARY};padding:28px 32px;">
-          <p style="margin:0;color:#fff;font-size:20px;font-weight:700;">Kinder CRM</p>
+          <p style="margin:0;color:#fff;font-size:20px;font-weight:700;">${appConfig.name}</p>
           <p style="margin:8px 0 0;color:rgba(255,255,255,0.9);font-size:14px;">Hóa đơn phí phần mềm</p>
         </td></tr>
         <tr><td style="padding:32px;">
@@ -60,7 +60,7 @@ Tổng thanh toán: ${formatVnd(input.invoice.totalAmount)}
 Xem lịch sử: ${subscriptionUrl}`;
 
   return {
-    subject: `Hóa đơn Kinder CRM ${input.invoice.invoiceNumber} — ${input.schoolName}`,
+    subject: `Hóa đơn ${appConfig.name} ${input.invoice.invoiceNumber} — ${input.schoolName}`,
     html,
     text,
   };

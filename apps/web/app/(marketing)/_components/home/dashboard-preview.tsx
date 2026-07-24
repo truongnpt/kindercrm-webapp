@@ -13,6 +13,7 @@ import {
 import { Trans } from '@kit/ui/trans';
 
 import { MotionFloat } from '~/components/marketing';
+import appConfig from '@/config/app.config';
 
 function StatCard({
   label,
@@ -75,7 +76,7 @@ export function DashboardPreview() {
             <span className="size-3 rounded-full bg-green-400" />
           </div>
           <span className="mx-auto text-xs text-[var(--marketing-text-muted)]">
-            app.kindercrm.com
+            kindercrm.app
           </span>
         </div>
 
@@ -83,7 +84,7 @@ export function DashboardPreview() {
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-lg font-semibold text-[var(--marketing-text)]">
-                Kinder CRM
+                {appConfig.name}
               </p>
               <p className="text-sm text-[var(--marketing-text-muted)]">
                 <Trans i18nKey="marketing:heroPreviewWorkspace" />

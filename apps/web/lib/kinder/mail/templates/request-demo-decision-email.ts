@@ -1,3 +1,4 @@
+import appConfig from '@/config/app.config';
 import 'server-only';
 
 export function buildRequestDemoDecisionEmail(input: {
@@ -7,37 +8,37 @@ export function buildRequestDemoDecisionEmail(input: {
   const isApproved = input.decision === 'approved';
 
   const subject = isApproved
-    ? '[Kinder CRM] Cảm ơn bạn đã đặt lịch demo'
-    : '[Kinder CRM] Cảm ơn bạn đã quan tâm đến lịch demo';
+    ? `[${appConfig.name}] Cảm ơn bạn đã đặt lịch demo`
+    : `[${appConfig.name}] Cảm ơn bạn đã quan tâm đến lịch demo`;
 
   const text = isApproved
     ? [
-        `Xin chào ${input.schoolName},`,
-        '',
-        'Cảm ơn bạn đã gửi yêu cầu đặt lịch demo với Kinder CRM.',
-        'Chúng tôi sẽ liên hệ với bạn để trao đổi thêm và sắp xếp lịch phù hợp.',
-        '',
-        'Trân trọng,',
-        'Kinder CRM',
-      ].join('\n')
+      `Xin chào ${input.schoolName},`,
+      '',
+      `Cảm ơn bạn đã gửi yêu cầu đặt lịch demo với ${appConfig.name}.`,
+      'Chúng tôi sẽ liên hệ với bạn để trao đổi thêm và sắp xếp lịch phù hợp.',
+      '',
+      'Trân trọng,',
+      appConfig.name,
+    ].join('\n')
     : [
-        `Xin chào ${input.schoolName},`,
-        '',
-        'Cảm ơn bạn đã quan tâm đến Kinder CRM.',
-        'Rất tiếc thời điểm này chúng tôi không thể tiến hành demo.',
-        'Chúng tôi sẽ liên hệ với bạn khi hệ thống đã sẵn sàng.',
-        '',
-        'Trân trọng,',
-        'Kinder CRM',
-      ].join('\n');
+      `Xin chào ${input.schoolName},`,
+      '',
+      `Cảm ơn bạn đã quan tâm đến ${appConfig.name}.`,
+      'Rất tiếc thời điểm này chúng tôi không thể tiến hành demo.',
+      'Chúng tôi sẽ liên hệ với bạn khi hệ thống đã sẵn sàng.',
+      '',
+      'Trân trọng,',
+      appConfig.name,
+    ].join('\n');
 
   const title = isApproved
     ? 'Yêu cầu demo đã được xác nhận'
     : 'Phản hồi yêu cầu demo';
 
   const paragraph1 = isApproved
-    ? 'Cảm ơn bạn đã gửi yêu cầu đặt lịch demo với Kinder CRM.'
-    : 'Cảm ơn bạn đã quan tâm và gửi yêu cầu demo đến Kinder CRM.';
+    ? `Cảm ơn bạn đã gửi yêu cầu đặt lịch demo với ${appConfig.name}.`
+    : `Cảm ơn bạn đã quan tâm và gửi yêu cầu demo đến ${appConfig.name}.`;
 
   const paragraph2 = isApproved
     ? 'Đội ngũ của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất để trao đổi thêm và sắp xếp lịch phù hợp.'
@@ -81,7 +82,7 @@ export function buildRequestDemoDecisionEmail(input: {
           <table role="presentation" class="email-container" width="560" border="0" cellspacing="0" cellpadding="0" style="max-width: 560px; width: 100%">
             <tr>
               <td align="center" style="padding-bottom: 24px; font-size: 20px; font-weight: 700; color: #034cf8; letter-spacing: -0.02em;">
-                Kinder CRM
+                ${appConfig.name}
               </td>
             </tr>
             <tr>
@@ -100,13 +101,13 @@ export function buildRequestDemoDecisionEmail(input: {
                 </p>
                 <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #718096;">
                   Trân trọng,<br />
-                  Kinder CRM
+                  ${appConfig.name}
                 </p>
               </td>
             </tr>
             <tr>
               <td align="center" style="padding: 24px 16px 0; font-size: 12px; line-height: 1.5; color: #a0aec0;">
-                &copy; Kinder CRM — Nền tảng quản lý trường mầm non
+                &copy; ${appConfig.name} — Nền tảng quản lý trường mầm non
               </td>
             </tr>
           </table>

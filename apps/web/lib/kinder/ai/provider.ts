@@ -2,8 +2,9 @@ import 'server-only';
 
 import { getAiConfig } from './config';
 import type { AiCompletionMessage } from './types';
+import appConfig from '@/config/app.config';
 
-const SYSTEM_PROMPT_VI = `Bạn là trợ lý AI của Kinder CRM — nền tảng quản lý trường mầm non tại Việt Nam.
+const SYSTEM_PROMPT_VI = `Bạn là trợ lý AI của ${appConfig.name} — nền tảng quản lý trường mầm non tại Việt Nam.
 Trả lời ngắn gọn, thực tế, bằng tiếng Việt. Tập trung hỗ trợ giáo viên và quản lý nhà trường.
 Không đưa ra lời khuyên y tế chẩn đoán. Khi thiếu dữ liệu, nói rõ và gợi ý bước tiếp theo.`;
 
@@ -83,7 +84,7 @@ function buildFallbackReply(messages: AiCompletionMessage[]) {
   const lastUser = [...messages].reverse().find((m) => m.role === 'user');
 
   if (!lastUser) {
-    return 'Xin chào! Tôi là trợ lý Kinder CRM. Hãy cấu hình OPENAI_API_KEY để dùng AI đầy đủ, hoặc hỏi về điểm danh, nhật ký, thực đơn và kho.';
+    return `Xin chào! Tôi là trợ lý ${appConfig.name}. Hãy cấu hình OPENAI_API_KEY để dùng AI đầy đủ, hoặc hỏi về điểm danh, nhật ký, thực đơn và kho.`;
   }
 
   const text = lastUser.content.toLowerCase();

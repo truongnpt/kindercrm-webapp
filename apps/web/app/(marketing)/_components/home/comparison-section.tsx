@@ -9,6 +9,7 @@ import {
   MarketingSection,
   SectionHeader,
 } from '~/components/marketing';
+import appConfig from '@/config/app.config';
 
 const comparisonRows = [
   { key: 'marketing:compareRow1', traditional: false, kinder: true },
@@ -45,7 +46,7 @@ export function ComparisonSection() {
               <Trans i18nKey="marketing:compareTraditional" />
             </div>
             <div className="border-l border-[var(--marketing-border)] bg-[var(--marketing-primary)]/5 p-4 text-center text-[var(--marketing-primary)] md:p-5">
-              Kinder CRM
+              {appConfig.name}
             </div>
           </div>
 
