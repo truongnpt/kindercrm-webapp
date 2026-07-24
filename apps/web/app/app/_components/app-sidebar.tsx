@@ -8,27 +8,18 @@ import {
   SidebarNavigation,
 } from '@kit/ui/shadcn-sidebar';
 
-import { AppLogo } from '~/components/app-logo';
 import type { navigationConfig } from '~/config/navigation.config';
 import pathsConfig from '~/config/paths.config';
-import type { School, SchoolMemberRole } from '~/lib/kinder/types';
+import type { School } from '~/lib/kinder/types';
 
-import { AppAccountDropdown } from './app-account-dropdown';
-import { SchoolSwitcher } from './school-switcher';
 import { Separator } from '@kit/ui/separator';
 import { AppSidebarLogo } from '@/components/app-sidebar-logo';
 
 export function AppSidebar({
-  user,
   school,
-  schools,
-  activeSchoolId,
   navigation,
 }: {
-  user: JwtPayload;
   school: School;
-  schools: Array<{ id: string; name: string; role: SchoolMemberRole }>;
-  activeSchoolId: string;
   navigation: typeof navigationConfig;
 }) {
   return (
@@ -43,9 +34,9 @@ export function AppSidebar({
         <SidebarNavigation config={navigation} />
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className="h-14 lg:h-12">
         <Separator />
-        <div className="group-data-[collapsible=icon]:hidden px-6">
+        <div className="group-data-[collapsible=icon]:p-2 lg:px-10 h-8 flex items-center justify-center">
           <AppSidebarLogo href="/" />
         </div>
       </SidebarFooter>

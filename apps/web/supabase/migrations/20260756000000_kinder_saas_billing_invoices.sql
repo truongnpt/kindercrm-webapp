@@ -32,7 +32,7 @@ create index if not exists saas_billing_invoices_school_created_idx
   on public.saas_billing_invoices (school_id, created_at desc);
 
 comment on table public.saas_billing_invoices is
-  'VAT invoices for Kinder CRM SaaS subscription fees (SUB-021).';
+  'VAT invoices for Kinder PMS SaaS subscription fees (SUB-021).';
 
 alter table public.saas_billing_invoices enable row level security;
 

@@ -1,6 +1,6 @@
-# Kinder CRM
+# Kinder PMS
 
-**Kinder CRM – One Platform. Every School.**
+**Kinder PMS – Preschool Management System.**
 
 Nền tảng SaaS quản lý trường mầm non. Monorepo Next.js 15 + Supabase, hiện tại gồm:
 

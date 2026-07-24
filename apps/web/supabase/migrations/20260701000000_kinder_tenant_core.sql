@@ -1,5 +1,5 @@
 /*
- * Kinder CRM — Phase 1 foundation
+ * Kinder PMS — Phase 1 foundation
  * EPIC-001 Tenant Management + EPIC-002 Subscription & Package (core tables)
  */
 

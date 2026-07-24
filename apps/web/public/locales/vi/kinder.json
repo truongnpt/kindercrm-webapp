@@ -3,7 +3,7 @@
     "title": "Thiết lập trường học",
     "description": "Điền thông tin trường mầm non để tạo không gian làm việc.",
     "heroTitle": "Quản lý trường mầm non trên một nền tảng",
-    "heroSubtitle": "Kinder CRM giúp bạn xử lý tuyển sinh, học sinh, học phí, điểm danh và kết nối phụ huynh trong cùng một hệ thống.",
+    "heroSubtitle": "Kinder PMS giúp bạn xử lý tuyển sinh, học sinh, học phí, điểm danh và kết nối phụ huynh trong cùng một hệ thống.",
     "badge": "Bắt đầu",
     "footerHint": "Bạn có thể cập nhật thông tin trường bất cứ lúc nào sau khi thiết lập.",
     "defaultCampusName": "Cơ sở chính",
@@ -33,7 +33,7 @@
   "dashboard": {
     "title": "Bảng điều khiển",
     "description": "Tổng quan hoạt động của {{schoolName}}.",
-    "welcome": "Chào mừng đến Kinder CRM",
+    "welcome": "Chào mừng đến Kinder PMS",
     "packageLabel": "Gói hiện tại",
     "trialEnds": "Dùng thử đến {{date}}",
     "trialExpired": "Hết hạn dùng thử vào {{date}}",
@@ -113,7 +113,7 @@
     },
     "schools": {
       "title": "Danh sách trường",
-      "description": "Tất cả tenant trên nền tảng Kinder CRM.",
+      "description": "Tất cả tenant trên nền tảng Kinder PMS.",
       "empty": "Không có trường phù hợp bộ lọc.",
       "name": "Trường",
       "slug": "Slug",
@@ -237,7 +237,7 @@
   },
   "suspended": {
     "title": "Trường đã tạm ngưng",
-    "description": "{{schoolName}} đã bị tạm ngưng. Vui lòng liên hệ quản trị viên hoặc bộ phận hỗ trợ Kinder CRM."
+    "description": "{{schoolName}} đã bị tạm ngưng. Vui lòng liên hệ quản trị viên hoặc bộ phận hỗ trợ Kinder PMS."
   },
   "subscription": {
     "title": "Gói đăng ký",
@@ -341,7 +341,7 @@
     "history.invoiceId": "Hóa đơn: {{id}}",
     "saasInvoices": {
       "title": "Hóa đơn phí phần mềm",
-      "hint": "Hóa đơn GTGT cho phí đăng ký Kinder CRM — tách biệt với học phí học sinh.",
+      "hint": "Hóa đơn GTGT cho phí đăng ký Kinder PMS — tách biệt với học phí học sinh.",
       "empty": "Chưa có hóa đơn SaaS",
       "emptyDescription": "Hóa đơn sẽ được tạo và gửi email sau mỗi lần thanh toán Stripe thành công.",
       "downloadPdf": "Tải PDF",

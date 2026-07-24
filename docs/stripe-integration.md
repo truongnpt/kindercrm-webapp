@@ -1,6 +1,6 @@
 # Hướng dẫn tích hợp Stripe (SaaS billing)
 
-Tài liệu mô tả cách cấu hình thanh toán gói **Starter** và **Pro** qua Stripe Checkout cho Kinder CRM.
+Tài liệu mô tả cách cấu hình thanh toán gói **Starter** và **Pro** qua Stripe Checkout cho Kinder PMS.
 
 **Nguyên tắc giá:** giá **hiển thị** lấy từ `packages` (`price_monthly`, `price_yearly`) bằng **VND**. Stripe **không hỗ trợ VND** — khi checkout app quy đổi sang **USD** theo `STRIPE_VND_PER_USD`. Không dùng biến env `STRIPE_PRICE_*`.
 
@@ -25,7 +25,7 @@ Giá trên là giá mặc định sau migration; có thể chỉnh tại **Platf
 ```mermaid
 sequenceDiagram
   participant Owner as Chủ trường (Owner)
-  participant App as Kinder CRM
+  participant App as Kinder PMS
   participant Stripe as Stripe
   participant DB as Supabase
 
@@ -334,7 +334,7 @@ Sau mỗi lần thanh toán thành công (`checkout.session.completed` hoặc `i
 
 ```env
 SAAS_VAT_RATE=10
-SAAS_INVOICE_SELLER_NAME=Kinder CRM
+SAAS_INVOICE_SELLER_NAME=Kinder PMS
 SAAS_INVOICE_SELLER_TAX_CODE=
 SAAS_INVOICE_SELLER_ADDRESS=
 SAAS_INVOICE_SELLER_EMAIL=

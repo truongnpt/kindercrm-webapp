@@ -1,8 +1,8 @@
-# Kinder CRM Webapp
+# Kinder PMS Webapp
 
 Nền tảng SaaS quản lý trường mầm non — monorepo Next.js + Supabase.
 
-Tài liệu này mô tả các bước đưa **Kinder CRM** lên môi trường thật. Đọc kèm [README.md](../README.md).
+Tài liệu này mô tả các bước đưa **Kinder PMS** lên môi trường thật. Đọc kèm [README.md](../README.md).
 
 ## 1. Phân biệt local và production
 

@@ -1,4 +1,4 @@
-# Kinder CRM — Backlog còn lại
+# Kinder PMS — Backlog còn lại
 
 Version: 1.5
 

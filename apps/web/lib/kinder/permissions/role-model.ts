@@ -3,7 +3,7 @@ import type { SchoolMemberRole } from '~/lib/kinder/types';
 import type { ConfigurableRole } from './permission-keys';
 
 /**
- * Production role taxonomy for Kinder CRM.
+ * Production role taxonomy for Kinder PMS.
  *
  * | Role    | App area        | Permission source                    |
  * |---------|-----------------|--------------------------------------|

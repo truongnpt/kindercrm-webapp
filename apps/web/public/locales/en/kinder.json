@@ -3,7 +3,7 @@
     "title": "Set up your school",
     "description": "Fill in your preschool details to create your workspace.",
     "heroTitle": "Start managing your preschool in one place",
-    "heroSubtitle": "Kinder CRM helps you handle enrollment, students, tuition, attendance, and parent communication from a single platform.",
+    "heroSubtitle": "Kinder PMS helps you handle enrollment, students, tuition, attendance, and parent communication from a single platform.",
     "badge": "Getting started",
     "footerHint": "You can update school settings anytime after setup.",
     "defaultCampusName": "Main campus",
@@ -33,7 +33,7 @@
   "dashboard": {
     "title": "Dashboard",
     "description": "Overview for {{schoolName}}.",
-    "welcome": "Welcome to Kinder CRM",
+    "welcome": "Welcome to Kinder PMS",
     "packageLabel": "Current plan",
     "trialEnds": "Trial ends {{date}}",
     "trialExpired": "Trial expired on {{date}}",
@@ -113,7 +113,7 @@
     },
     "schools": {
       "title": "Schools",
-      "description": "All tenants on the Kinder CRM platform.",
+      "description": "All tenants on the Kinder PMS platform.",
       "empty": "No schools match your filters.",
       "name": "School",
       "slug": "Slug",
@@ -237,7 +237,7 @@
   },
   "suspended": {
     "title": "School suspended",
-    "description": "{{schoolName}} has been temporarily suspended. Please contact your administrator or Kinder CRM support."
+    "description": "{{schoolName}} has been temporarily suspended. Please contact your administrator or Kinder PMS support."
   },
   "subscription": {
     "title": "Subscription",
@@ -341,7 +341,7 @@
     "history.invoiceId": "Invoice: {{id}}",
     "saasInvoices": {
       "title": "Software invoices",
-      "hint": "VAT invoices for Kinder CRM subscription fees — separate from student tuition.",
+      "hint": "VAT invoices for Kinder PMS subscription fees — separate from student tuition.",
       "empty": "No SaaS invoices yet",
       "emptyDescription": "Invoices are created and emailed after each successful Stripe payment.",
       "downloadPdf": "Download PDF",

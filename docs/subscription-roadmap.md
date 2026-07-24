@@ -1,4 +1,4 @@
-# Kinder CRM — Roadmap Gói đăng ký & Billing
+# Kinder PMS — Roadmap Gói đăng ký & Billing
 
 Version: 1.0  
 Status: Đề xuất  

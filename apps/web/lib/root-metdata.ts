@@ -27,7 +27,7 @@ export const generateRootMetadata = async (): Promise<Metadata> => {
       description: appConfig.description,
       images: [
         {
-          url: '/images/logo/Kinder CRM-logo.jpg',
+          url: '/images/logo/Kinder PMS-logo.jpg',
           alt: appConfig.name,
           width: 1200,
           height: 630,

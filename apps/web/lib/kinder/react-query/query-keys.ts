@@ -1,5 +1,5 @@
 /**
- * Centralized React Query keys for Kinder CRM.
+ * Centralized React Query keys for Kinder PMS.
  * Use these with invalidateQueries after server-action mutations.
  */
 export const kinderQueryKeys = {

@@ -1,5 +1,5 @@
 /*
- * Kinder CRM — EPIC-035 Platform Super Admin
+ * Kinder PMS — EPIC-035 Platform Super Admin
  * Platform-level administrators and audit trail (cross-tenant)
  */
 

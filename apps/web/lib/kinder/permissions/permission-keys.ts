@@ -1,5 +1,5 @@
 /**
- * Canonical permission keys for Kinder CRM.
+ * Canonical permission keys for Kinder PMS.
  * Format: `{module}.{resource}.{action}`
  *
  * Layering:

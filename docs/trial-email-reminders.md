@@ -34,7 +34,7 @@ Thêm biến môi trường trên hosting (và `.env.local` khi dev):
 | `SMTP_USER` | Tuỳ provider | Username SMTP |
 | `SMTP_PASSWORD` | Tuỳ provider | Mật khẩu / API key SMTP |
 | `SMTP_FROM_EMAIL` | Có | Email người gửi (domain đã xác minh) |
-| `SMTP_FROM_NAME` | Khuyến nghị | Ví dụ `Kinder CRM` |
+| `SMTP_FROM_NAME` | Khuyến nghị | Ví dụ `Kinder PMS` |
 | `SMTP_SECURE` | Tuỳ chọn | `true` nếu port 465 |
 | `CRON_SECRET` | Có | Bảo vệ endpoint cron |
 
@@ -48,7 +48,7 @@ Khi chạy `pnpm supabase:web:start`, Supabase mở SMTP test tại port **55525
 SMTP_HOST=127.0.0.1
 SMTP_PORT=55525
 SMTP_FROM_EMAIL=noreply@localhost
-SMTP_FROM_NAME=Kinder CRM
+SMTP_FROM_NAME=Kinder PMS
 CRON_SECRET=dev-cron-secret
 ```
 
