@@ -203,16 +203,16 @@ export function LeadPipelineBoard({
       sensors={sensors}
       collisionDetection={pointerWithin}
     >
-      <div className="kinder-crm-kanban-toolbar">
-        <div className="kinder-crm-stage-pills">
-          <span className="kinder-crm-stage-pill kinder-crm-stage-pill--active">
+      <div className="kinder-pms-kanban-toolbar">
+        <div className="kinder-pms-stage-pills">
+          <span className="kinder-pms-stage-pill kinder-pms-stage-pill--active">
             <Trans i18nKey="kinder:crm.allLeads" />
-            <span className="kinder-crm-stage-pill__count">{totalLeads}</span>
+            <span className="kinder-pms-stage-pill__count">{totalLeads}</span>
           </span>
           {ACTIVE_PIPELINE_STAGES.map((stage) => (
-            <span className="kinder-crm-stage-pill" key={stage}>
+            <span className="kinder-pms-stage-pill" key={stage}>
               <Trans i18nKey={LEAD_STAGE_I18N_KEYS[stage]} />
-              <span className="kinder-crm-stage-pill__count">
+              <span className="kinder-pms-stage-pill__count">
                 {items[stage].length}
               </span>
             </span>
@@ -220,7 +220,7 @@ export function LeadPipelineBoard({
         </div>
       </div>
 
-      <div className="kinder-crm-kanban">
+      <div className="kinder-pms-kanban">
         {ACTIVE_PIPELINE_STAGES.map((stage) => (
           <PipelineColumn
             key={stage}
@@ -234,7 +234,7 @@ export function LeadPipelineBoard({
       <DragOverlay dropAnimation={{ duration: 180, easing: 'ease-out' }}>
         {activeLead ? (
           <LeadPipelineCardContent
-            className="kinder-crm-lead-card--overlay translate-y-2/2 lg:-translate-x-2/2 lg:-translate-y-1/2"
+            className="kinder-pms-lead-card--overlay translate-y-2/2 lg:-translate-x-2/2 lg:-translate-y-1/2"
             dragHandle={false}
             isOverlay
             lead={activeLead}
@@ -259,8 +259,8 @@ function PipelineColumn({
   return (
     <section
       className={cn(
-        'kinder-crm-column flex min-w-0 flex-col',
-        isOver && 'kinder-crm-column--over',
+        'kinder-pms-column flex min-w-0 flex-col',
+        isOver && 'kinder-pms-column--over',
       )}
       ref={setNodeRef}
     >
@@ -271,7 +271,7 @@ function PipelineColumn({
             <Trans i18nKey={LEAD_STAGE_I18N_KEYS[stage]} />
           </h3>
         </div>
-        <span className="kinder-crm-stage-pill__count bg-muted px-2 py-0.5">
+        <span className="kinder-pms-stage-pill__count bg-muted px-2 py-0.5">
           {leads.length}
         </span>
       </header>
@@ -310,7 +310,7 @@ function LeadPipelineCard({
 
   return (
     <div
-      className={cn(isDragging && 'kinder-crm-lead-card--dragging')}
+      className={cn(isDragging && 'kinder-pms-lead-card--dragging')}
       ref={setNodeRef}
     >
       <LeadPipelineCardContent
@@ -347,7 +347,7 @@ function LeadPipelineCardContent({
 
   return (
     <article
-      className={cn('kinder-crm-lead-card group min-w-0', className)}
+      className={cn('kinder-pms-lead-card group min-w-0', className)}
     >
       <div className="flex items-start gap-2">
         {dragHandle ? (

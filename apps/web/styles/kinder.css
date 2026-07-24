@@ -9,10 +9,10 @@
     --kinder-radius-lg: 1rem;
     --kinder-radius-xl: 1.25rem;
     --kinder-shadow-xs: 0 1px 2px rgb(15 23 42 / 0.04);
-    --kinder-shadow-sm: 0 1px 3px rgb(15 23 42 / 0.08),
-      0 1px 2px rgb(15 23 42 / 0.04);
-    --kinder-shadow-md: 0 4px 8px rgb(15 23 42 / 0.06),
-      0 2px 4px rgb(15 23 42 / 0.04);
+    --kinder-shadow-sm:
+      0 1px 3px rgb(15 23 42 / 0.08), 0 1px 2px rgb(15 23 42 / 0.04);
+    --kinder-shadow-md:
+      0 4px 8px rgb(15 23 42 / 0.06), 0 2px 4px rgb(15 23 42 / 0.04);
     --kinder-transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
     --kinder-success: #16a34a;
     --kinder-warning: #f59e0b;
@@ -32,7 +32,6 @@
 }
 
 @layer components {
-
   /* ── Sidebar menu (TailAdmin) ── */
   [data-sidebar='menu-button'] {
     @apply text-muted-foreground h-11 rounded-lg px-3 text-sm font-medium transition-colors duration-150;
@@ -65,7 +64,7 @@
   /* ── Surfaces (Premium SaaS card) ── */
   .kinder-surface,
   .kinder-bento-tile {
-    @apply relative min-w-0 overflow-hidden rounded-2xl bg-card/90 backdrop-blur-sm;
+    @apply bg-card/90 relative min-w-0 overflow-hidden rounded-2xl backdrop-blur-sm;
     box-shadow: var(--kinder-shadow-md);
   }
 
@@ -97,27 +96,27 @@
     @apply bg-card/95 backdrop-blur-md;
   }
 
-  .kinder-page-actions>button,
-  .kinder-page-actions>a[role='button'],
+  .kinder-page-actions > button,
+  .kinder-page-actions > a[role='button'],
   .kinder-page-actions a:has(button) button {
     @apply rounded-xl font-medium shadow-sm transition-all duration-200 active:scale-95;
   }
 
   /* ── Data table ── */
   .kinder-data-table {
-    @apply w-full overflow-hidden rounded-2xl border border-border bg-card text-sm;
+    @apply border-border bg-card w-full overflow-hidden rounded-2xl border text-sm;
   }
 
   .kinder-data-table thead {
-    @apply border-b border-border bg-muted/40;
+    @apply border-border bg-muted/40 border-b;
   }
 
   .kinder-data-table th {
-    @apply text-muted-foreground/90 px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider;
+    @apply text-muted-foreground/90 px-6 py-4 text-left text-xs font-semibold tracking-wider uppercase;
   }
 
   .kinder-data-table td {
-    @apply border-b border-border/50 px-6 py-4.5 align-middle last:border-0;
+    @apply border-border/50 border-b px-6 py-4.5 align-middle last:border-0;
   }
 
   .kinder-data-table tbody tr {
@@ -133,12 +132,12 @@
   }
 
   .kinder-mobile-card {
-    @apply flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5;
+    @apply border-border bg-card flex flex-col gap-3 rounded-2xl border p-4 transition-all duration-200 hover:-translate-y-0.5;
     box-shadow: var(--kinder-shadow-sm);
   }
 
   .kinder-card-grid-item {
-    @apply flex flex-col gap-3 rounded-2xl border border-border bg-card p-5 transition-all duration-200 ease-out;
+    @apply border-border bg-card flex flex-col gap-3 rounded-2xl border p-5 transition-all duration-200 ease-out;
     box-shadow: var(--kinder-shadow-xs);
   }
 
@@ -153,11 +152,11 @@
   }
 
   .kinder-tab-bar {
-    @apply border-b border-border bg-transparent px-0 py-0;
+    @apply border-border border-b bg-transparent px-0 py-0;
   }
 
   .kinder-tab-list {
-    @apply inline-flex h-auto w-full flex-wrap gap-1 rounded-xl border border-border bg-muted/30 p-1 sm:w-auto shadow-none;
+    @apply border-border bg-muted/30 inline-flex h-auto w-full flex-wrap gap-1 rounded-xl border p-1 shadow-none sm:w-auto;
   }
 
   .kinder-tab-trigger {
@@ -173,7 +172,7 @@
   }
 
   .kinder-tab-trigger[data-state='active'] {
-    @apply bg-card text-foreground font-semibold shadow-sm scale-[1.02];
+    @apply bg-card text-foreground scale-[1.02] font-semibold shadow-sm;
   }
 
   .kinder-tab-trigger[data-state='active'] svg {
@@ -186,7 +185,7 @@
   }
 
   .kinder-tab-panel {
-    @apply rounded-2xl border border-border bg-card p-5 sm:p-6;
+    @apply border-border bg-card rounded-2xl border p-5 sm:p-6;
     box-shadow: var(--kinder-shadow-xs);
   }
 
@@ -203,7 +202,7 @@
   }
 
   .kinder-toolbar {
-    @apply flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between;
+    @apply border-border bg-card flex flex-col gap-3 rounded-2xl border p-4 sm:flex-row sm:items-center sm:justify-between;
     box-shadow: var(--kinder-shadow-xs);
   }
 
@@ -212,32 +211,32 @@
   }
 
   .kinder-form-panel {
-    @apply grid gap-4 rounded-2xl border border-border bg-muted/20 p-5 sm:p-6;
+    @apply border-border bg-muted/20 grid gap-4 rounded-2xl border p-5 sm:p-6;
   }
 
   .kinder-list-panel {
     @apply flex flex-col gap-2.5;
   }
 
-  .kinder-list-panel>li {
-    @apply flex flex-col gap-3 rounded-xl border border-border bg-card p-4.5 transition-all duration-200 hover:-translate-y-0.5;
+  .kinder-list-panel > li {
+    @apply border-border bg-card flex flex-col gap-3 rounded-xl border p-4.5 transition-all duration-200 hover:-translate-y-0.5;
     box-shadow: var(--kinder-shadow-xs);
   }
 
   .kinder-stat-inline {
-    @apply rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-sm;
+    @apply border-border bg-card rounded-2xl border p-5 shadow-sm sm:p-6;
   }
 
   .kinder-panel-empty {
-    @apply flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card/40 px-6 py-12 text-center backdrop-blur-sm;
+    @apply border-border bg-card/40 flex flex-col items-center justify-center rounded-2xl border border-dashed px-6 py-12 text-center backdrop-blur-sm;
   }
 
   .kinder-pipeline-column {
-    @apply min-w-[240px] rounded-2xl border border-border bg-muted/15 p-4;
+    @apply border-border bg-muted/15 min-w-[240px] rounded-2xl border p-4;
   }
 
   .kinder-pipeline-card {
-    @apply flex flex-col gap-2 rounded-xl border border-border bg-card p-3.5 transition-all duration-200 hover:-translate-y-0.5;
+    @apply border-border bg-card flex flex-col gap-2 rounded-xl border p-3.5 transition-all duration-200 hover:-translate-y-0.5;
     box-shadow: var(--kinder-shadow-xs);
   }
 
@@ -247,7 +246,7 @@
   }
 
   .kinder-bento-dialog {
-    @apply overflow-hidden rounded-2xl border border-border bg-card p-0;
+    @apply border-border bg-card overflow-hidden rounded-2xl border p-0;
     box-shadow: var(--kinder-shadow-md);
   }
 
@@ -256,73 +255,73 @@
   }
 
   /* ── CRM kanban ── */
-  .kinder-crm-kanban {
+  .kinder-pms-kanban {
     @apply flex min-w-0 gap-4 overflow-x-auto pb-3;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
   }
 
-  .kinder-crm-kanban-toolbar {
+  .kinder-pms-kanban-toolbar {
     @apply mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between;
   }
 
-  .kinder-crm-stage-pills {
+  .kinder-pms-stage-pills {
     @apply flex flex-wrap gap-2;
   }
 
-  .kinder-crm-stage-pill {
-    @apply text-muted-foreground inline-flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2.5 text-sm font-medium transition-all duration-200 hover:-translate-y-0.5;
+  .kinder-pms-stage-pill {
+    @apply text-muted-foreground border-border bg-card inline-flex items-center gap-2 rounded-xl border px-3.5 py-2.5 text-sm font-medium transition-all duration-200 hover:-translate-y-0.5;
     box-shadow: var(--kinder-shadow-xs);
   }
 
-  .kinder-crm-stage-pill--active {
-    @apply border-primary/25 bg-primary/5 text-primary ring-1 ring-primary/10;
+  .kinder-pms-stage-pill--active {
+    @apply border-primary/25 bg-primary/5 text-primary ring-primary/10 ring-1;
   }
 
-  .kinder-crm-stage-pill__count {
+  .kinder-pms-stage-pill__count {
     @apply bg-muted text-muted-foreground rounded-md px-2 py-0.5 text-xs font-bold tabular-nums;
   }
 
-  .kinder-crm-stage-pill--active .kinder-crm-stage-pill__count {
+  .kinder-pms-stage-pill--active .kinder-pms-stage-pill__count {
     @apply bg-primary/15 text-primary;
   }
 
-  .kinder-crm-column {
-    @apply flex shrink-0 flex-col rounded-2xl border border-border bg-muted/10 p-3.5 transition-colors duration-200 sm:w-[310px] lg:w-[330px];
+  .kinder-pms-column {
+    @apply border-border bg-muted/10 flex shrink-0 flex-col rounded-2xl border p-3.5 transition-colors duration-200 sm:w-[310px] lg:w-[330px];
     min-height: min(75vh, 560px);
     width: min(100%, 290px);
   }
 
-  .kinder-crm-column--over {
+  .kinder-pms-column--over {
     @apply border-primary/25 bg-primary/5;
   }
 
-  .kinder-crm-lead-card {
-    @apply min-w-0 rounded-xl border border-border bg-card p-4.5 transition-all duration-200 hover:-translate-y-0.5;
+  .kinder-pms-lead-card {
+    @apply border-border bg-card min-w-0 rounded-xl border p-4.5 transition-all duration-200 hover:-translate-y-0.5;
     box-shadow: var(--kinder-shadow-xs);
   }
 
-  .kinder-crm-lead-card--dragging {
-    @apply opacity-30 scale-95 transition-none;
+  .kinder-pms-lead-card--dragging {
+    @apply scale-95 opacity-30 transition-none;
   }
 
-  .kinder-crm-lead-card--overlay {
-    @apply cursor-grabbing border-primary/25 scale-[1.02] transition-none;
+  .kinder-pms-lead-card--overlay {
+    @apply border-primary/25 scale-[1.02] cursor-grabbing transition-none;
     box-shadow: var(--kinder-shadow-md);
   }
 
-  .kinder-crm-lead-card:hover {
+  .kinder-pms-lead-card:hover {
     @apply border-primary/20;
     box-shadow: var(--kinder-shadow-sm);
   }
 
   /* ── Stat card ── */
   .kinder-stat-card {
-    @apply rounded-2xl bg-card p-6 shadow-md transition-all duration-200 ease-out relative;
+    @apply bg-card relative rounded-2xl p-6 shadow-md transition-all duration-200 ease-out;
   }
 
   .kinder-stat-card:hover {
-    @apply -translate-y-0.5 border-primary/20 shadow-md;
+    @apply border-primary/20 -translate-y-0.5 shadow-md;
   }
 
   .kinder-stat-card__icon {
@@ -334,7 +333,7 @@
   }
 
   .kinder-stat-card__value {
-    @apply text-foreground mt-4 text-3xl font-bold tracking-tight sm:text-[32px] font-sans;
+    @apply text-foreground mt-4 font-sans text-3xl font-bold tracking-tight sm:text-[32px];
   }
 
   .kinder-stat-card__label {
@@ -343,7 +342,7 @@
 
   /* ── Workspace search trigger ── */
   .kinder-search-trigger {
-    @apply text-muted-foreground hover:text-foreground flex h-10 w-full max-w-xl items-center gap-3 rounded-xl border border-border bg-muted/20 px-4 text-sm transition-all duration-200 ease-out;
+    @apply text-muted-foreground hover:text-foreground border-border bg-muted/20 flex h-10 w-full max-w-xl items-center gap-3 rounded-xl border px-4 text-sm transition-all duration-200 ease-out;
   }
 
   .kinder-search-trigger:hover {
@@ -351,16 +350,16 @@
   }
 
   .kinder-search-kbd {
-    @apply text-muted-foreground/80 hidden rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-medium lg:inline;
+    @apply text-muted-foreground/80 border-border bg-muted hidden rounded border px-1.5 py-0.5 text-[10px] font-medium lg:inline;
   }
 
   /* ── Data table card ── */
   .kinder-data-table-card {
-    @apply overflow-hidden rounded-2xl border border-border bg-card shadow-sm;
+    @apply border-border bg-card overflow-hidden rounded-2xl border shadow-sm;
   }
 
   .kinder-data-table-card__header {
-    @apply flex flex-col gap-3 border-b border-border px-5 py-4.5 sm:flex-row sm:items-start sm:justify-between sm:px-6;
+    @apply border-border flex flex-col gap-3 border-b px-5 py-4.5 sm:flex-row sm:items-start sm:justify-between sm:px-6;
   }
 
   .kinder-data-table-card__title {
@@ -372,21 +371,21 @@
   }
 
   .kinder-data-table-card__toolbar {
-    @apply border-b border-border px-5 py-4 sm:px-6;
+    @apply border-border border-b px-5 py-4 sm:px-6;
   }
 
   .kinder-data-table-card__footer {
-    @apply border-t border-border px-5 py-4 sm:px-6;
+    @apply border-border border-t px-5 py-4 sm:px-6;
   }
 
   /* ── Form section ── */
   .kinder-form-section {
-    @apply overflow-hidden rounded-2xl border border-border bg-card;
+    @apply border-border bg-card overflow-hidden rounded-2xl border;
     box-shadow: var(--kinder-shadow-xs);
   }
 
   .kinder-form-section__header {
-    @apply border-b border-border px-5 py-4.5 sm:px-6;
+    @apply border-border border-b px-5 py-4.5 sm:px-6;
   }
 
   .kinder-form-section__title {
@@ -404,23 +403,23 @@
   .kinder-form-field input,
   .kinder-form-field textarea,
   .kinder-form-field [data-slot='select-trigger'] {
-    @apply h-10.5 rounded-xl border border-border bg-muted/20 px-3.5 text-sm transition-all duration-200 shadow-none outline-none;
+    @apply border-border bg-muted/20 h-10.5 rounded-xl border px-3.5 text-sm shadow-none transition-all duration-200 outline-none;
   }
 
   .kinder-form-field input:focus,
   .kinder-form-field textarea:focus,
   .kinder-form-field [data-slot='select-trigger']:focus {
-    @apply border-primary/45 bg-card ring-2 ring-primary/10;
+    @apply border-primary/45 bg-card ring-primary/10 ring-2;
   }
 
   /* ── Pricing card ── */
   .kinder-pricing-card {
-    @apply flex h-full flex-col rounded-2xl border border-border bg-card p-6 transition-all duration-200 hover:-translate-y-0.5;
+    @apply border-border bg-card flex h-full flex-col rounded-2xl border p-6 transition-all duration-200 hover:-translate-y-0.5;
     box-shadow: var(--kinder-shadow-xs);
   }
 
   .kinder-pricing-card--highlighted {
-    @apply border-primary ring-1 ring-primary/20 bg-card/95;
+    @apply border-primary ring-primary/20 bg-card/95 ring-1;
     box-shadow: var(--kinder-shadow-md);
   }
 
@@ -449,15 +448,15 @@
 
   /* ── Month calendar ── */
   .kinder-month-calendar {
-    @apply overflow-hidden rounded-2xl border border-border bg-card;
+    @apply border-border bg-card overflow-hidden rounded-2xl border;
   }
 
   .kinder-month-calendar__header {
-    @apply flex items-center justify-between gap-3 border-b border-border px-5 py-4.5 sm:px-6;
+    @apply border-border flex items-center justify-between gap-3 border-b px-5 py-4.5 sm:px-6;
   }
 
   .kinder-month-calendar__grid {
-    @apply grid grid-cols-7 gap-px border-b border-border bg-border/50;
+    @apply border-border bg-border/50 grid grid-cols-7 gap-px border-b;
   }
 
   .kinder-month-calendar__weekday {
@@ -473,7 +472,7 @@
   }
 
   .kinder-month-calendar__cell--today {
-    @apply ring-primary/25 ring-1 ring-inset bg-primary/[0.02];
+    @apply ring-primary/25 bg-primary/[0.02] ring-1 ring-inset;
   }
 
   .kinder-month-calendar__cell--selected {
@@ -498,11 +497,11 @@
 
   /* ── Chat layout ── */
   .kinder-chat-layout {
-    @apply flex min-h-[32rem] flex-col overflow-hidden rounded-2xl border border-border bg-card lg:min-h-[36rem] lg:flex-row shadow-sm;
+    @apply border-border bg-card flex min-h-[32rem] flex-col overflow-hidden rounded-2xl border shadow-sm lg:min-h-[36rem] lg:flex-row;
   }
 
   .kinder-chat-sidebar {
-    @apply border-b border-border lg:w-80 lg:shrink-0 lg:border-r lg:border-b-0;
+    @apply border-border border-b lg:w-80 lg:shrink-0 lg:border-r lg:border-b-0;
   }
 
   .kinder-chat-main {
@@ -514,7 +513,7 @@
   }
 
   .kinder-chat-composer {
-    @apply flex gap-2 border-t border-border p-3 sm:p-4;
+    @apply border-border flex gap-2 border-t p-3 sm:p-4;
   }
 
   .kinder-chat-bubble--user {
@@ -527,15 +526,15 @@
 
   /* ── Messages ── */
   .kinder-messages-layout {
-    @apply flex min-h-[32rem] max-h-[calc(100vh-16rem)] flex-col overflow-hidden rounded-2xl border border-border bg-card lg:min-h-[36rem] lg:max-h-[calc(100vh-15rem)] lg:flex-row shadow-sm;
+    @apply border-border bg-card flex max-h-[calc(100vh-16rem)] min-h-[32rem] flex-col overflow-hidden rounded-2xl border shadow-sm lg:max-h-[calc(100vh-15rem)] lg:min-h-[36rem] lg:flex-row;
   }
 
   .kinder-messages-sidebar {
-    @apply flex min-h-0 w-full flex-col border-b border-border bg-muted/10 lg:w-[22rem] lg:shrink-0 lg:border-r lg:border-b-0 xl:w-80;
+    @apply border-border bg-muted/10 flex min-h-0 w-full flex-col border-b lg:w-[22rem] lg:shrink-0 lg:border-r lg:border-b-0 xl:w-80;
   }
 
   .kinder-messages-sidebar-header {
-    @apply shrink-0 border-b border-border bg-card/85 px-4 py-4 backdrop-blur-sm sm:px-5;
+    @apply border-border bg-card/85 shrink-0 border-b px-4 py-4 backdrop-blur-sm sm:px-5;
   }
 
   .kinder-messages-thread-scroll {
@@ -551,7 +550,7 @@
   }
 
   .kinder-messages-thread--active {
-    @apply border-primary/15 bg-primary/5 ring-1 ring-primary/15;
+    @apply border-primary/15 bg-primary/5 ring-primary/15 ring-1;
   }
 
   .kinder-messages-avatar {
@@ -563,19 +562,19 @@
   }
 
   .kinder-messages-unread {
-    @apply mt-1 flex size-5 shrink-0 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground;
+    @apply bg-destructive text-destructive-foreground mt-1 flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold;
   }
 
   .kinder-messages-main {
-    @apply flex min-h-0 min-w-0 flex-1 flex-col bg-background/50;
+    @apply bg-background/50 flex min-h-0 min-w-0 flex-1 flex-col;
   }
 
   .kinder-messages-main--empty {
-    @apply items-center justify-center bg-muted/5;
+    @apply bg-muted/5 items-center justify-center;
   }
 
   .kinder-messages-main-header {
-    @apply shrink-0 border-b border-border bg-card/90 px-4 py-3.5 backdrop-blur-sm sm:px-5 sm:py-3.5;
+    @apply border-border bg-card/90 shrink-0 border-b px-4 py-3.5 backdrop-blur-sm sm:px-5 sm:py-3.5;
   }
 
   .kinder-messages-scroll {
@@ -587,7 +586,7 @@
   }
 
   .kinder-messages-day-separator span {
-    @apply rounded-full bg-muted/65 px-3 py-1 text-[11px] font-semibold text-muted-foreground;
+    @apply bg-muted/65 text-muted-foreground rounded-full px-3 py-1 text-[11px] font-semibold;
   }
 
   .kinder-messages-bubble-row {
@@ -599,31 +598,31 @@
   }
 
   .kinder-messages-bubble {
-    @apply px-4 py-3 shadow-sm leading-relaxed;
+    @apply px-4 py-3 leading-relaxed shadow-sm;
   }
 
   .kinder-messages-bubble--mine {
-    @apply rounded-2xl rounded-br-md bg-primary text-primary-foreground font-medium;
+    @apply bg-primary text-primary-foreground rounded-2xl rounded-br-md font-medium;
   }
 
   .kinder-messages-bubble--theirs {
-    @apply rounded-2xl rounded-bl-md border border-border/75 bg-card text-foreground;
+    @apply border-border/75 bg-card text-foreground rounded-2xl rounded-bl-md border;
   }
 
   .kinder-messages-composer {
-    @apply shrink-0 border-t border-border bg-card/85 px-3 py-3 backdrop-blur-sm sm:px-5 sm:py-4;
+    @apply border-border bg-card/85 shrink-0 border-t px-3 py-3 backdrop-blur-sm sm:px-5 sm:py-4;
   }
 
   .kinder-messages-composer-inner {
-    @apply mx-auto flex w-full max-w-3xl items-end gap-2 rounded-2xl border border-border bg-background p-2 transition-all duration-200 focus-within:border-primary/25 focus-within:ring-2 focus-within:ring-primary/5;
+    @apply border-border bg-background focus-within:border-primary/25 focus-within:ring-primary/5 mx-auto flex w-full max-w-3xl items-end gap-2 rounded-2xl border p-2 transition-all duration-200 focus-within:ring-2;
   }
 
   .kinder-messages-input {
-    @apply max-h-32 min-h-10 flex-1 resize-none bg-transparent px-2.5 py-2.5 text-sm leading-relaxed outline-none placeholder:text-muted-foreground/80;
+    @apply placeholder:text-muted-foreground/80 max-h-32 min-h-10 flex-1 resize-none bg-transparent px-2.5 py-2.5 text-sm leading-relaxed outline-none;
   }
 
   .kinder-messages-reaction-pill {
-    @apply inline-flex items-center gap-1 rounded-full border border-border/80 bg-card px-2 py-0.5 shadow-sm transition-colors hover:bg-muted;
+    @apply border-border/80 bg-card hover:bg-muted inline-flex items-center gap-1 rounded-full border px-2 py-0.5 shadow-sm transition-colors;
   }
 
   .kinder-messages-reaction-pill--active {
@@ -631,7 +630,7 @@
   }
 
   .kinder-messages-image-preview {
-    @apply relative mx-auto mb-3 h-28 w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-muted;
+    @apply border-border bg-muted relative mx-auto mb-3 h-28 w-full max-w-3xl overflow-hidden rounded-2xl border;
   }
 
   .kinder-messages-reply-quote {
@@ -647,7 +646,7 @@
   }
 
   .kinder-messages-composer-reply {
-    @apply mx-auto mb-3 flex w-full max-w-3xl items-start gap-2 rounded-2xl border border-primary/15 bg-primary/5 px-3 py-2.5;
+    @apply border-primary/15 bg-primary/5 mx-auto mb-3 flex w-full max-w-3xl items-start gap-2 rounded-2xl border px-3 py-2.5;
   }
 
   /* ================================

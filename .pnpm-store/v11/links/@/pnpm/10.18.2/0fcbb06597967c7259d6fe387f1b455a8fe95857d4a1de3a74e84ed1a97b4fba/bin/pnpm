@@ -35,4 +35,4 @@ elif [ -n "$exe" ] && command -v node.exe >/dev/null 2>&1; then
 else
   exec node  "$basedir/../node_modules/pnpm/bin/pnpm.cjs" "$@"
 fi
-# cmd-shim-target=/Users/npttruong/projects/npt-project/kinder-crm-webapp/.pnpm-store/v11/links/@/pnpm/10.18.2/0fcbb06597967c7259d6fe387f1b455a8fe95857d4a1de3a74e84ed1a97b4fba/node_modules/pnpm/bin/pnpm.cjs
+# cmd-shim-target=/Users/npttruong/projects/npt-project/kinder-pms-webapp/.pnpm-store/v11/links/@/pnpm/10.18.2/0fcbb06597967c7259d6fe387f1b455a8fe95857d4a1de3a74e84ed1a97b4fba/node_modules/pnpm/bin/pnpm.cjs
